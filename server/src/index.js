@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
-import https from 'https';
+// import https from 'https';
 import { readFileSync } from 'fs';
 import { resolve, join } from 'path';
 import passport from 'passport';
@@ -18,8 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 require('./services/jwtStrategy');
-require('./services/facebookStrategy');
-require('./services/googleStrategy');
+// require('./services/facebookStrategy');
+// require('./services/googleStrategy');
 require('./services/localStrategy');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -61,13 +61,7 @@ if (isProduction) {
 } else {
   const port = process.env.PORT || 5000;
 
-  const httpsOptions = {
-    key: readFileSync(resolve(__dirname, '../security/cert.key')),
-    cert: readFileSync(resolve(__dirname, '../security/cert.pem')),
-  };
-
-  const server = https.createServer(httpsOptions, app).listen(port, () => {
-    console.log('https server running at ' + port);
-    // console.log(all_routes(app));
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
   });
 }
