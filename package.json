@@ -1,0 +1,22 @@
+{
+  "name": "mern-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "npm run start-prod --prefix server",
+    "start-dev": "node --experimental-modules babel-node server/src/index.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "docker:prod:client:build": "docker compose build mdp-client",
+    "docker:prod:server:build": "docker compose build mdp-server",
+    "docker:prod:arm:client:build": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/arm64 docker compose build mdp-client",
+    "docker:prod:arm:server:build": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/arm64 docker compose build mdp-server",
+    "docker:prod:client:push": "docker push nemanjamitic/mern-boilerplate-client:latest",
+    "docker:prod:server:push": "docker push nemanjamitic/mern-boilerplate-server:latest"
+  },
+  "author": "Nemanja Mitic (https://github.com/nemanjam)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
