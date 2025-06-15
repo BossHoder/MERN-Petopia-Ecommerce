@@ -1,247 +1,400 @@
-# MERN Boilerplate
+# 🐾 Petopia Store - Pet Shop E-Commerce Platform
 
-This is full stack boilerplate with React, Redux, Express, Mongoose and Passport. Skip the tedious part and get straight to developing your app.
+> A modern, full-stack MERN (MongoDB, Express.js, React, Node.js) e-commerce application designed specifically for pet stores and pet product retailers.
 
-## Demo
+[![Node.js](https://img.shields.io/badge/Node.js-16.x-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-5.x-green.svg)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/Express-4.x-lightgrey.svg)](https://expressjs.com/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-- Live demo is available here: **[https://mern-boilerplate.arm1.nemanjamitic.com](https://mern-boilerplate.arm1.nemanjamitic.com)**
+## 🌟 Overview
 
-## Deployment with Docker (2023. update)
+Petopia Store is a comprehensive e-commerce solution built specifically for pet retailers. It provides a seamless shopping experience for pet owners while offering robust management tools for store administrators. The platform supports product catalogs, user management, order processing, and administrative controls.
 
-Since Heroku is no longer free I made Docker production deployment that you can use on any Linux VPS.
+## ✨ Key Features
 
-- original [mern-docker-prod](https://github.com/nemanjam/mern-docker-prod) repository with Docker code and instructions that you can reuse to deploy your own Mern apps
-- Traefik part of the deployment [traefik-proxy](https://github.com/nemanjam/traefik-proxy) and [traefik-proxy/apps/mern-boilerplate](https://github.com/nemanjam/traefik-proxy/tree/main/apps/mern-boilerplate)
+### 🛒 **E-Commerce Core**
+- **Product Catalog**: Browse pet products with categories, filters, and search
+- **Shopping Cart**: Add, remove, and manage items before checkout
+- **User Accounts**: Registration, login, profile management
+- **Order Management**: Track orders from placement to delivery
+- **Payment Integration**: Secure payment processing
+- **Inventory Management**: Real-time stock tracking
 
+### 👤 **User Management**
+- **Customer Profiles**: Personal information, order history, preferences
+- **Admin Dashboard**: Comprehensive administrative controls
+- **Role-Based Access**: Customer, Staff, and Admin permission levels
+- **Authentication**: JWT-based secure authentication
+- **Social Login**: Google and Facebook OAuth integration
 
-## Features
+### 📱 **Modern UX/UI**
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Real-time Updates**: Live inventory and order status updates
+- **Interactive Components**: Dynamic product displays and filters
+- **Loading States**: Smooth user experience with loading indicators
+- **Error Handling**: Comprehensive error management and user feedback
 
-- Server
+### 🔧 **Technical Features**
+- **RESTful API**: Clean, documented API endpoints
+- **File Upload**: Product images and user avatars
+- **Data Validation**: Client and server-side input validation
+- **Search & Filtering**: Advanced product search capabilities
+- **Pagination**: Efficient large dataset handling
+- **Caching**: Performance optimization with intelligent caching
 
-  - User and Message models with `1:N` relation
-  - Full CRUD REST API operations for both Message and User models
-  - Passport authentication with local `email/password`, Facebook and Google OAuth strategies and JWT protected APIs
-  - `User` and `Admin` roles
-  - NodeJS server with Babel for new JS syntax unified with React client
-  - `async/await` syntax across whole app
-  - Joi server side validation of user's input
-  - Single `.env` file configuration
-  - Image upload with Multer
-  - Database seed
+## 🏗️ **Architecture & Technology Stack**
 
-- Client
-
-  - React client with functional components and Hooks
-  - Redux state management with Thunk for async actions
-  - CSS agnostic, so you don't waste your time replacing my CSS framework with yours
-  - Home, Users, Profile, Admin, Notfound, Login and Register pages
-  - Protected routes with Higher order components
-  - Different views for unauthenticated, authenticated and admin user
-  - Edit/Delete forms for Message and User with Formik and Yup validation
-  - Admin has privileges to edit and delete other users and their messages
-  - Layout component, so you can have pages without Navbar
-  - Loading states with Loader component
-  - Single config file within `/constants` folder
-
-## Installation
-
-Read on on how to set up this for development. Clone the repo.
-
+### **Backend (Server)**
 ```
-$ git clone https://github.com/nemanjam/mern-boilerplate.git
-$ cd mern-boilerplate
+🔧 Runtime:        Node.js 16+
+🚀 Framework:      Express.js 4.x
+🗄️ Database:       MongoDB 5.x with Mongoose ODM
+🔐 Authentication: JWT + Passport.js (Local, Google, Facebook)
+✅ Validation:     Joi schema validation
+📁 File Upload:    Multer middleware
+🔒 Security:       Helmet, CORS, bcrypt
+📧 Email:          Nodemailer integration
+⚡ Performance:    Compression, rate limiting
 ```
 
-### Server
-
-#### .env file
-
-Rename `.env.example` to `.env` and fill in database connection strings, Google and Facebook tokens, JWT secret and your client and server production URLs.
-
+### **Frontend (Client)**
 ```
-#db
-MONGO_URI_DEV=mongodb://localhost:27017/mernboilerplate
-MONGO_URI_PROD=
+⚛️ Library:        React 18.x with Hooks
+🏪 State:          Redux Toolkit + RTK Query
+🎨 Styling:        CSS3, CSS Modules, Styled Components
+📱 Responsive:     Mobile-first design approach
+🔄 HTTP Client:    Axios with interceptors
+📋 Forms:          Formik + Yup validation
+🧭 Routing:        React Router v6
+🎭 UI Components:  Custom component library
+```
 
-#google
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
+### **DevOps & Tools**
+```
+🐳 Containerization: Docker & Docker Compose
+☁️ Deployment:       Cloud platforms (AWS, Heroku, DigitalOcean)
+🔄 CI/CD:            GitHub Actions
+📊 Monitoring:       Application logging and monitoring
+🔒 Security:         Environment variables, secrets management
+📦 Package Manager:  npm
+🧪 Testing:          Jest, React Testing Library, Supertest
+🎯 Code Quality:     ESLint, Prettier, Husky
+```
+
+## 📸 Screenshots
+
+<div align="center">
+
+### 🏠 Homepage
+![Homepage](screenshots/Screenshot_1.png)
+
+### 🛍️ Product Catalog
+![Product Catalog](screenshots/Screenshot_2.png)
+
+### 👤 User Profile
+![User Profile](screenshots/Screenshot_3.png)
+
+### 🔐 Authentication
+![Login](screenshots/Screenshot_4.png)
+
+### ⚙️ Admin Dashboard
+![Admin Dashboard](screenshots/Screenshot_5.png)
+
+### 💬 User Management
+![User Management](screenshots/Screenshot_6.png)
+
+</div>
+
+## 🚀 Quick Start
+
+### Prerequisites
+Make sure you have the following installed:
+- **Node.js** (v16 or higher)
+- **MongoDB** (v5 or higher)
+- **Git**
+- **npm** or **yarn**
+
+### 🔧 Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/yourusername/petopia-store.git
+cd petopia-store
+```
+
+2. **Install dependencies**
+```bash
+# Install server dependencies
+cd server
+npm install
+
+# Install client dependencies
+cd ../client
+npm install
+```
+
+3. **Environment Configuration**
+
+Create a `.env` file in the root directory:
+
+```env
+# Database
+MONGODB_URI=mongodb://localhost:27017/petopia_store
+MONGODB_URI_TEST=mongodb://localhost:27017/petopia_store_test
+
+# JWT Configuration
+JWT_SECRET=your_super_secret_jwt_key_here
+JWT_EXPIRE=30d
+
+# OAuth Configuration
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_CALLBACK_URL=/auth/google/callback
 
-#facebook
-FACEBOOK_APP_ID=
-FACEBOOK_SECRET=
+FACEBOOK_APP_ID=your_facebook_app_id
+FACEBOOK_SECRET=your_facebook_secret
 FACEBOOK_CALLBACK_URL=/auth/facebook/callback
 
-#jwt
-JWT_SECRET_DEV=secret
-JWT_SECRET_PROD=
+# Application URLs
+CLIENT_URL=http://localhost:3000
+SERVER_URL=http://localhost:5000
 
-#site urls
-CLIENT_URL_DEV=https://localhost:3000
-CLIENT_URL_PROD=https://mern-boilerplate-demo.herokuapp.com
-SERVER_URL_DEV=https://localhost:5000
-SERVER_URL_PROD=https://mern-boilerplate-demo.herokuapp.com
+# File Upload
+UPLOAD_PATH=./public/uploads
+MAX_FILE_SIZE=5000000
 
-#img folder path
-IMAGES_FOLDER_PATH=/public/images/
+# Email Configuration (Optional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+
+# Payment Integration (Optional)
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
 ```
 
-#### Generate certificates
+4. **Database Setup**
 
-Facebook OAuth requires that your server runs on `https` in development as well, so you need to generate certificates. Go to `/server/security` folder and run this.
+Start MongoDB and create the database:
+```bash
+# Start MongoDB service
+mongod
 
-```
-$ cd server/security
-$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.pem -config req.cnf -sha256
-```
-
-#### Install dependencies
-
-```
-$ cd server
-$ npm install
+# The application will automatically create the database on first run
 ```
 
-#### Run the server
+5. **Run the Application**
 
-You are good to go, server will be available on `https://localhost:5000`
+```bash
+# Development mode (runs both client and server)
+npm run dev
 
-```
-$ npm run server
-```
+# Or run separately:
+# Server (http://localhost:5000)
+cd server && npm run server
 
-### Client
-
-Just install the dependencies and run the dev server. App will load on `https://localhost:3000`.
-
-```
-$ cd client
-$ npm install
-$ npm start
+# Client (http://localhost:3000)
+cd client && npm start
 ```
 
-That's it as far for development setup. For production check the `Deployment on Heroku` section.
+## 🐳 Docker Deployment
 
-## Screenshots
+### Development with Docker
+```bash
+# Build and run with Docker Compose
+docker-compose up --build
 
-![Screenshot1](/screenshots/Screenshot_1.png)
-
-![Screenshot2](/screenshots/Screenshot_2.png)
-
-![Screenshot3](/screenshots/Screenshot_3.png)
-
-![Screenshot4](/screenshots/Screenshot_4.png)
-
-![Screenshot5](/screenshots/Screenshot_5.png)
-
-![Screenshot6](/screenshots/Screenshot_6.png)
-
-## Deployment on Heroku
-
-#### Push to Heroku
-
-This project is already all set up for deployment on Heroku, you just need to create Heroku application add heroku remote to this repo and push it to `heroku` origin.
-
-```
-$ heroku login
-$ heroku create my-own-app-name
-$ git remote add heroku https://git.heroku.com/my-own-app-name.git
-$ git push heroku master
-$ heroku open
+# Run in background
+docker-compose up -d
 ```
 
-#### Database setup
+### Production Deployment
+```bash
+# Production build
+docker-compose -f docker-compose.prod.yml up --build
 
-But before that you need MongoDB database, so go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas), create cluster, whitelist all IPs and get database URL. Set that URL in `.env` file as `MONGO_URI_PROD`.
-
-```
-MONGO_URI_PROD=mongodb+srv://<your-username-here>:<your-password-here>@cluster0-abcd.mongodb.net/test?retryWrites=true&w=majority
-```
-
-If you don't insert environment variables in Heroku manually via web interface or console you'll need to remove `.env` file from `server/.gitignore` and push it to Heroku. Never push `.env` file to development repo though.
-
-```
-...
-#.env #comment out .env file
-...
+# With environment variables
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
 ```
 
-In the following section you can read detailed instructions about Heroku deployment process.
+## 📚 API Documentation
 
-### Server setup
-
-#### Development
-
-Server uses Babel so that we can use the same newer JavaScript syntax like the one used on the Client. In development we are passing `server/src/index.js` file to `babel-node` executable along with `nodemon` daemon. We run that with `npm run server` script.
-
+### Authentication Endpoints
 ```
-"server": "nodemon --exec babel-node src/index.js",
-```
-
-#### Production
-
-That is fine for development, we compile the source on every run but for production we want to avoid that and to compile and build code once to JavaScript version which Node.JS can execute. So we take all the code from `/server/src` folder compile it and put the output into `/server/build` destination folder. `-d` is short for destination, and `-s` flag is for sourcemaps for debugging. We make that into `build-babel` script.
-
-```
-"build-babel": "babel -d ./build ./src -s",
+POST   /api/auth/register     # User registration
+POST   /api/auth/login        # User login
+GET    /api/auth/logout       # User logout
+GET    /api/auth/me           # Get current user
+PUT    /api/auth/profile      # Update user profile
 ```
 
-We also need to delete and make `build` folder on every deployment, so we do that with this simple script.
-
+### Product Endpoints
 ```
-"clean": "rm -rf build && mkdir build",
-```
-
-Now we have everything to build our server code. We do that by calling 2 last scripts.
-
-```
-"build": "npm run clean && npm run build-babel",
+GET    /api/products          # Get all products
+GET    /api/products/:id      # Get single product
+POST   /api/products          # Create product (Admin)
+PUT    /api/products/:id      # Update product (Admin)
+DELETE /api/products/:id      # Delete product (Admin)
 ```
 
-Now we just need to call build script and run compiled file with node. Make sure Babel is in the production dependencies in the `server/package.json` or you'll get "babel is not defined" error on Heroku.
-
+### User Management (Admin)
 ```
-"start-prod": "npm run build && node ./build/index.js",
-```
-
-#### Running server on Heroku
-
-Our server is now all set up, all we need is to call `start-prod` script. Heroku infers runtime he needs to run the application by the type of dependencies file in the root folder, so for Node.JS we need another `package.json`. Heroku will call `start` script after building phase so we just need to pass our `start-prod` script to spin up the server with the `--prefix server` where `server` is folder in which `package.json` with that script is located.
-
-```
-"start": "npm run start-prod --prefix server",
+GET    /api/users             # Get all users
+GET    /api/users/:id         # Get single user
+PUT    /api/users/:id         # Update user
+DELETE /api/users/:id         # Delete user
 ```
 
-#### Installing dependencies
-
-Before all this happens Heroku needs to install the dependencies for both server and client, `heroku-postbuild` script is meant for that. `NPM_CONFIG_PRODUCTION=false` variable is there to disable production environment while dependencies are being installed. Again `--prefix` flag is specifying the folder of the script being run. In this script we build our React client as well.
-
+### Orders & Cart
 ```
-"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix server && npm install --prefix client && npm run build --prefix client"
-```
-
-### Client Setup
-
-Before you push to production you'll need to set your URLs in `client/constants`. That's it.
-
-```javascript
-export const FACEBOOK_AUTH_LINK =
-  "https://my-own-app.herokuapp.com/auth/facebook";
-export const GOOGLE_AUTH_LINK = "https://my-own-app.herokuapp.com/auth/google";
+GET    /api/orders            # Get user orders
+POST   /api/orders            # Create new order  
+GET    /api/cart              # Get user cart
+POST   /api/cart              # Add to cart
+PUT    /api/cart/:id          # Update cart item
+DELETE /api/cart/:id          # Remove from cart
 ```
 
-## References
+For detailed API documentation, visit `/api/docs` when running the server.
 
-- Brad Traversy [Dev connector 2.0](https://github.com/bradtraversy/devconnector_2.0)
-- Brad Traversy [Learn The MERN Stack Youtube playlist](https://www.youtube.com/watch?v=PBTYxXADG_k&list=PLillGF-RfqbbiTGgA77tGO426V3hRF9iE)
-- Thinkster [react-redux-realworld-example-app](https://github.com/gothinkster/react-redux-realworld-example-app)
-- Thinkster [
-  node-express-realworld-example-app ](https://github.com/gothinkster/node-express-realworld-example-app)
-- Quinston Pimenta [Deploy React with Node (Express, configured for ES6, Babel) to Heroku (without babel-node)](https://www.youtube.com/watch?v=mvI25HLDfR4)
+## 🧪 Testing
 
-- Kim Nguyen [How to Deploy ES6 Node.js & Express back-end to Heroku](https://medium.com/@kimtnguyen/how-to-deploy-es6-node-js-express-back-end-to-heroku-7e6743e8d2ff)
+```bash
+# Run all tests
+npm test
 
-## Licence
+# Run server tests only
+cd server && npm test
 
-### MIT
+# Run client tests only  
+cd client && npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run e2e tests
+npm run test:e2e
+```
+
+## 📁 Project Structure
+
+```
+petopia-store/
+├── 📁 client/                 # React frontend application
+├── 📁 server/                 # Express backend application  
+├── 📁 docs/                   # Project documentation
+├── 📁 tests/                  # Testing suites
+├── 📁 scripts/                # Build and deployment scripts
+├── 📁 screenshots/            # Application screenshots
+├── 🐳 docker-compose.yml      # Docker development setup
+├── 🐳 docker-compose.prod.yml # Docker production setup
+├── 📄 README.md               # Project documentation
+└── 📄 package.json            # Root package configuration
+```
+
+For detailed structure information, see [Project Structure Documentation](docs/PROJECT_STRUCTURE.md).
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Make your changes** and ensure tests pass
+4. **Commit your changes**: `git commit -m 'Add amazing feature'`
+5. **Push to branch**: `git push origin feature/amazing-feature`
+6. **Open a Pull Request**
+
+### Development Guidelines
+- Follow the existing code style and conventions
+- Write tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
+
+## 📋 Roadmap
+
+### Version 2.0 (Planned)
+- [ ] **Advanced Search**: AI-powered product recommendations
+- [ ] **Mobile App**: React Native mobile application
+- [ ] **Multi-vendor**: Support for multiple store vendors
+- [ ] **Advanced Analytics**: Detailed sales and user analytics
+- [ ] **Subscription Service**: Recurring pet supply deliveries
+- [ ] **Veterinary Integration**: Connect with local veterinary services
+
+### Version 1.5 (In Progress)
+- [ ] **Payment Integration**: Stripe and PayPal integration
+- [ ] **Email Notifications**: Order confirmations and updates
+- [ ] **Reviews & Ratings**: Product review system
+- [ ] **Wishlist Feature**: Save favorite products
+- [ ] **Advanced Filtering**: Price, brand, category filters
+
+## 🔒 Security
+
+- JWT token-based authentication
+- Password hashing with bcrypt
+- Input validation and sanitization
+- CORS configuration
+- Rate limiting on API endpoints
+- File upload restrictions
+- SQL injection prevention
+- XSS protection
+
+## 📊 Performance
+
+- Database query optimization
+- Image compression and optimization
+- Lazy loading for components
+- Code splitting and bundling
+- Caching strategies
+- CDN integration ready
+- Performance monitoring
+
+## 🌐 Browser Support
+
+- **Chrome** (latest 2 versions)
+- **Firefox** (latest 2 versions)  
+- **Safari** (latest 2 versions)
+- **Edge** (latest 2 versions)
+- **Mobile browsers** (iOS Safari, Chrome Mobile)
+
+## 📝 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Your Name**
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
+- Email: your.email@example.com
+
+## 🙏 Acknowledgments
+
+- **React Team** for the amazing React framework
+- **Express.js** for the robust backend framework
+- **MongoDB** for the flexible database solution
+- **Open Source Community** for countless helpful libraries
+- **Pet Store Industry** for inspiration and requirements
+
+## 💬 Support
+
+If you have any questions or need help:
+
+1. **Check the documentation** in the `/docs` folder
+2. **Search existing issues** on GitHub
+3. **Create a new issue** if you found a bug
+4. **Join our Discord** for community support
+5. **Email support** at support@petopia-store.com
+
+---
+
+<div align="center">
+
+**Made with ❤️ for pet lovers everywhere**
+
+[⭐ Star this repository](https://github.com/yourusername/petopia-store) if you found it helpful!
+
+</div>

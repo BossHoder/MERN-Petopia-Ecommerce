@@ -15,7 +15,7 @@
     "docker:prod:client:push": "docker push nemanjamitic/mern-boilerplate-client:latest",
     "docker:prod:server:push": "docker push nemanjamitic/mern-boilerplate-server:latest"
   },
-  "author": "Nemanja Mitic (https://github.com/nemanjam)",
+  "author": "Theanhdola",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {}

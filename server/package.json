@@ -1,7 +1,8 @@
 {
   "name": "MERN-Petopia-Ecommerce",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pet shop e-commerce application built with the MERN stack.",
+  "type": "module",
   "main": "index.js",
   "engines": {
     "node": "12.16.1"
@@ -17,7 +18,7 @@
     "client": "npm start --prefix ../client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "author": "Nemanja Mitic (https://github.com/nemanjam)",
+  "author": "Theanhdola",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
