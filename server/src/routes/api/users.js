@@ -2,10 +2,10 @@ import { Router } from 'express';
 import multer from 'multer';
 import { resolve } from 'path';
 
-import requireJwtAuth from '../../middleware/requireJwtAuth';
-import User, { hashPassword, validateUser } from '../../models/User';
-import Message from '../../models/Message';
-import { seedDb } from '../../utils/seed';
+import requireJwtAuth from '../../middleware/requireJwtAuth.js';
+import User, { hashPassword, validateUser } from '../../models/User.js';
+import Message from '../../models/Message.js';
+// import { seedDb } from '../../utils/seed'; // Tạm thời comment out
 
 const router = Router();
 
@@ -73,8 +73,8 @@ router.put('/:id', [requireJwtAuth, upload.single('avatar')], async (req, res, n
 });
 
 router.get('/reseed', async (req, res) => {
-  await seedDb();
-  res.json({ message: 'Database reseeded successfully.' });
+  // await seedDb(); // Tạm thời comment out
+  res.json({ message: 'Database reseed functionality temporarily disabled.' });
 });
 
 router.get('/me', requireJwtAuth, (req, res) => {

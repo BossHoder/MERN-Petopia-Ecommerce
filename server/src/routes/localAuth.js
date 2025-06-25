@@ -2,9 +2,9 @@ import { Router } from 'express';
 import Joi from 'joi';
 import faker from 'faker';
 
-import User from '../models/User';
-import requireLocalAuth from '../middleware/requireLocalAuth';
-import { registerSchema } from '../services/validators';
+import User from '../models/User.js';
+import requireLocalAuth from '../middleware/requireLocalAuth.js';
+import { registerSchema } from '../services/validators.js';
 
 const router = Router();
 

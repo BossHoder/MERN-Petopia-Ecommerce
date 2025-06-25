@@ -1,11 +1,15 @@
 import fs from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import { isValidUrl } from '../utils/utils';
-import { IMAGES_FOLDER_PATH } from '../utils/constants';
+import { isValidUrl } from '../utils/utils.js';
+import { IMAGES_FOLDER_PATH } from '../utils/constants.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const { Schema } = mongoose;
 

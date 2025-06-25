@@ -2,8 +2,8 @@ import passport from 'passport';
 import { Strategy as PassportLocalStrategy } from 'passport-local';
 import Joi from 'joi';
 
-import User from '../models/User';
-import { loginSchema } from './validators';
+import User from '../models/User.js';
+import { loginSchema } from './validators.js';
 
 const passportLogin = new PassportLocalStrategy(
   {

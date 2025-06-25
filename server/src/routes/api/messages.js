@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import requireJwtAuth from '../../middleware/requireJwtAuth';
-import Message, { validateMessage } from '../../models/Message';
+import requireJwtAuth from '../../middleware/requireJwtAuth.js';
+import Message, { validateMessage } from '../../models/Message.js';
 
 const router = Router();
 

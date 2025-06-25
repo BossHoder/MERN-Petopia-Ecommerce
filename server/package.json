@@ -1,8 +1,8 @@
 {
   "name": "MERN-Petopia-Ecommerce",
   "version": "1.0.0",
-  "description": "Pet shop e-commerce application built with the MERN stack.",
   "type": "module",
+  "description": "Pet shop e-commerce application built with the MERN stack.",
   "main": "index.js",
   "engines": {
     "node": "12.16.1"

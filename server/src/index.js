@@ -1,45 +1,41 @@
-import 'dotenv/config';
-import express from 'express';
+import 'dotenv/config.js';
+import express, { Router } from 'express';
 import mongoose from 'mongoose';
 // import https from 'https';
 import { readFileSync } from 'fs';
-import { resolve, join } from 'path';
+import { resolve, join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import passport from 'passport';
 import all_routes from 'express-list-endpoints';
 
-import routes from './routes';
-import { seedDb } from './utils/seed';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+import routes from './routes/index.js';
+// import { seedDb } from './utils/seed.js'; // Tạm thời comment out
+import connectDB from './config/database.js';
 
 const app = express();
+const router = Router();
 
 // Bodyparser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
-require('./services/jwtStrategy');
-// require('./services/facebookStrategy');
-// require('./services/googleStrategy');
-require('./services/localStrategy');
+import './services/jwtStrategy.js';
+// import './services/facebookStrategy.js';
+// import './services/googleStrategy.js';
+import './services/localStrategy.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 // DB Config
 const dbConnection = isProduction ? process.env.MONGO_URI_PROD : process.env.MONGO_URI_DEV;
 
-// Connect to Mongo
-mongoose
-  .connect(dbConnection, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .then(() => {
-    console.log('MongoDB Connected...');
-    seedDb();
-  })
-  .catch((err) => console.log(err));
+// Connect to MongoDB
+connectDB();
+// seedDb(); // Tạm thời comment out để tránh lỗi
 
 // Use Routes
 app.use('/', routes);
