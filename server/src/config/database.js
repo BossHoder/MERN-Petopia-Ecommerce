@@ -3,19 +3,23 @@ import config from 'config';
 
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || config.get('mongoURI');
+    const mongoURI = process.env.MONGO_URI_DEV || config.get('mongoURI');
     
+    if (!mongoURI) {
+      throw new Error('MongoDB URI not found in config or environment variables');
+    }
+    
+    console.log('Connecting to MongoDB...');
     const conn = await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    return conn;
   } catch (error) {
     console.error('Database connection error:', error.message);
-    console.log('Continuing without database connection...');
-    // Comment out process.exit(1) to allow server to start without DB
-    // process.exit(1);
+    throw error;
   }
 };
 

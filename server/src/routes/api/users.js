@@ -4,7 +4,7 @@ import { resolve } from 'path';
 
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
 import User, { hashPassword, validateUser } from '../../models/User.js';
-import Message from '../../models/Message.js';
+// import Message from '../../models/Message.js';
 // import { seedDb } from '../../utils/seed'; // Tạm thời comment out
 
 const router = Router();

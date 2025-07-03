@@ -7,6 +7,7 @@ import { resolve, join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
 import all_routes from 'express-list-endpoints';
+import products from './data/Products.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,6 +19,8 @@ import connectDB from './config/database.js';
 const app = express();
 const router = Router();
 
+console.log('🚀 Server is starting...');
+
 // Bodyparser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +30,7 @@ import './services/jwtStrategy.js';
 // import './services/facebookStrategy.js';
 // import './services/googleStrategy.js';
 import './services/localStrategy.js';
+import sampleProducts from './data/Products.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -52,11 +56,14 @@ if (isProduction) {
   //   res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html')); 
   // });
 
-  const port = process.env.PORT || 80;
+
+  const port = process.env.PORT;
   app.listen(port, () => console.log(`Server started on port ${port}`));
 } else {
-  const port = process.env.PORT || 5000;
-
+  const port = process.env.PORT;
+  app.get("/data/products", (req, res) => {
+    res.json(products);
+  });
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
   });
