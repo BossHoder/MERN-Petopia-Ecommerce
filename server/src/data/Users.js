@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import '../config/database.js';
 
 // Sample user data for pet store
 const sampleUsers = [
@@ -10,7 +11,8 @@ const sampleUsers = [
         name: 'Admin User',
         role: 'ADMIN',
         bio: 'System Administrator for Petopia Store',
-        avatar: 'avatar1.jpg'
+        avatar: 'avatar1.jpg',
+        timestamp: true
     },
     {
         provider: 'local',
@@ -20,7 +22,8 @@ const sampleUsers = [
         name: 'John Doe',
         role: 'USER',
         bio: 'Dog lover and frequent customer',
-        avatar: 'avatar2.jpg'
+        avatar: 'avatar2.jpg',
+        timestamp: true
     },
     {
         provider: 'local',
@@ -30,7 +33,8 @@ const sampleUsers = [
         name: 'Jane Smith',
         role: 'USER',
         bio: 'Cat enthusiast and pet care expert',
-        avatar: 'avatar3.jpg'
+        avatar: 'avatar3.jpg',
+        timestamp: true
     },
     {
         provider: 'local',
@@ -40,7 +44,8 @@ const sampleUsers = [
         name: 'Pet Lover',
         role: 'USER',
         bio: 'Owns multiple pets including dogs, cats, and birds',
-        avatar: 'avatar4.jpg'
+        avatar: 'avatar4.jpg',
+        timestamp: true
     },
     {
         provider: 'google',
@@ -50,7 +55,8 @@ const sampleUsers = [
         role: 'USER',
         bio: 'Signed up via Google OAuth',
         avatar: 'https://lh3.googleusercontent.com/a/default-user',
-        googleId: 'google123456789'
+        googleId: 'google123456789',
+        timestamp: true
     },
     {
         provider: 'facebook',
@@ -60,7 +66,8 @@ const sampleUsers = [
         role: 'USER',
         bio: 'Signed up via Facebook',
         avatar: 'https://graph.facebook.com/12345/picture',
-        facebookId: 'facebook123456789'
+        facebookId: 'facebook123456789',
+        timestamp: true
     }
 ];
 

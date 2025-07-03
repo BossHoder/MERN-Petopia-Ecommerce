@@ -1,11 +1,176 @@
-import mongoose from 'mongoose';
+import '../config/database.js';
 
 const sampleCategories = [
+    // Dog Categories
     {
-        name: "Dog Food",
-        slug: "dog-food",
+        name: "Dry Dog Food",
+        slug: "dry-dog-food",
         parentCategory: "Dog Supplies",
-        iconUrl: "https://example.com/icons/dog-food-icon.png",
-        
-    }
+        iconUrl: "https://example.com/icons/dry-dog-food-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Wet Dog Food",
+        slug: "wet-dog-food",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/wet-dog-food-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Bones & Treats",
+        slug: "dog-bones-treats",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-bones-treats-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Vitamins & Supplements",
+        slug: "dog-vitamins-supplements",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-vitamins-supplements-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Toys",
+        slug: "dog-toys",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-toys-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Collars & Leashes",
+        slug: "dog-collars-leashes",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-collars-leashes-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Clothing & Fashion Accessories",
+        slug: "dog-clothing-fashion-accessories",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-clothing-fashion-accessories-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Crates, Beds & Houses",
+        slug: "dog-crates-beds-houses",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-crates-beds-houses-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Food Bowls & Waterers",
+        slug: "dog-food-bowls-waterers",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-food-bowls-waterers-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Shampoos & Grooming Products",
+        slug: "dog-shampoos-grooming-products",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-shampoos-grooming-products-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Potty Training & Diapers",
+        slug: "dog-potty-training-diapers",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-potty-training-diapers-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Dog Medicine & Health Products",
+        slug: "dog-medicine-health-products",
+        parentCategory: "Dog Supplies",
+        iconUrl: "https://example.com/icons/dog-medicine-health-products-icon.png",
+        timestamp: true
+    },
+    // Cat Categories
+    {
+        name: "Cat Dry Food & Kibble",
+        slug: "cat-dry-food-kibble",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-dry-food-kibble-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Wet Food & Pate",
+        slug: "cat-wet-food-pate",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-wet-food-pate-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Catnip & Snacks",
+        slug: "cat-catnip-snacks",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-catnip-snacks-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Vitamins & Supplements",
+        slug: "cat-vitamins-supplements",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-vitamins-supplements-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Toys & Teasers",
+        slug: "cat-toys-teasers",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-toys-teasers-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Scratching Posts & Cat Trees",
+        slug: "cat-scratching-posts-cat-trees",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-scratching-posts-cat-trees-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Collars & Accessories",
+        slug: "cat-collars-accessories",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-collars-accessories-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Litter & Litter Boxes",
+        slug: "cat-litter-litter-boxes",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-litter-litter-boxes-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Carriers & Travel Bags",
+        slug: "cat-carriers-travel-bags",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-carriers-travel-bags-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Crates, Beds & Houses",
+        slug: "cat-crates-beds-houses",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-crates-beds-houses-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Shampoos & Grooming Products",
+        slug: "cat-shampoos-grooming-products",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-shampoos-grooming-products-icon.png",
+        timestamp: true
+    },
+    {
+        name: "Cat Medicine & Health Products",
+        slug: "cat-medicine-health-products",
+        parentCategory: "Cat Supplies",
+        iconUrl: "https://example.com/icons/cat-medicine-health-products-icon.png",
+        timestamp: true
+    },
 ]
+
+export default sampleCategories;
