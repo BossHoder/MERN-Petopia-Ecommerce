@@ -5,10 +5,10 @@ const seedProducts = async () => {
     try {
         console.log('Seeding products...');
         
-        // Clear existing products
+        // Clear existing data
         await Product.deleteMany({});
         
-        // Insert new products
+        // Insert sample data
         await Product.insertMany(sampleProducts);
         
         console.log('Products seeded successfully!');

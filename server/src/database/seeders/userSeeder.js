@@ -5,13 +5,13 @@ const seedUsers = async () => {
     try {
         console.log('Seeding users...');
         
-        // Clear existing users
+        // Clear existing data
         await User.deleteMany({});
         
-        // Hash passwords for local users
+        // Hash passwords before inserting
         const hashedUsers = await hashSamplePasswords(sampleUsers);
         
-        // Insert new users
+        // Insert sample data
         await User.insertMany(hashedUsers);
         
         console.log('Users seeded successfully!');

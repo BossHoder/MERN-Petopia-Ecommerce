@@ -18,7 +18,7 @@
     "client": "npm start --prefix ../client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "seed:products": "nodemon --exec babel-node src/scripts/createProductCollection.js",
-    "seed": "cross-env NODE_CONFIG_DIR=./config node src/database/seeders/index.js"
+    "seed": "node src/database/seeders/index.js"
   },
   "author": "Theanhdola",
   "license": "ISC",
