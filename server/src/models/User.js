@@ -4,9 +4,10 @@ import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import Joi from 'joi';
 import { isValidUrl } from '../utils/utils.js';
 import { IMAGES_FOLDER_PATH } from '../utils/constants.js';
+import { hashPassword } from '../helpers/passwordHelper.js';
+import { validateUserModel } from '../validations/userValidation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -57,7 +58,7 @@ const userSchema = new Schema(
       unique: true,
       sparse: true,
     },
-    messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+    // messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
   },
   { timestamps: true },
 );
@@ -122,36 +123,7 @@ userSchema.methods.comparePassword = function (candidatePassword, callback) {
   });
 };
 
-// const delay = (t, ...vs) => new Promise(r => setTimeout(r, t, ...vs)) or util.promisify(setTimeout)
-
-export async function hashPassword(password) {
-  const saltRounds = 10;
-
-  const hashedPassword = await new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, function (err, hash) {
-      if (err) reject(err);
-      else resolve(hash);
-    });
-  });
-
-  return hashedPassword;
-}
-
-export const validateUser = (user) => {
-  const schema = {
-    avatar: Joi.any(),
-    name: Joi.string().min(2).max(30).required(),
-    username: Joi.string()
-      .min(2)
-      .max(20)
-      .regex(/^[a-zA-Z0-9_]+$/)
-      .required(),
-    password: Joi.string().min(6).max(20).allow('').allow(null),
-  };
-
-  return Joi.validate(user, schema);
-};
-
 const User = mongoose.model('User', userSchema);
 
 export default User;
+export { hashPassword, validateUserModel };

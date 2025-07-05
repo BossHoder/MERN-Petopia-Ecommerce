@@ -1,5 +1,5 @@
 {
-  "name": "MERN-Petopia-Ecommerce",
+  "name": "mern-petopia-ecommerce",
   "version": "1.0.0",
   "type": "module",
   "description": "Pet shop e-commerce application built with the MERN stack.",
@@ -16,7 +16,9 @@
     "start-dev": "node --exec babel-node src/index.js",
     "server": "nodemon --exec babel-node src/index.js",
     "client": "npm start --prefix ../client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed:products": "nodemon --exec babel-node src/scripts/createProductCollection.js",
+    "seed": "node src/database/seeders/index.js"
   },
   "author": "Theanhdola",
   "license": "ISC",

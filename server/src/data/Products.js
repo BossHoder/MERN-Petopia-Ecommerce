@@ -1,0 +1,334 @@
+import '../config/database.js';
+
+// Sample product data for pet store
+const sampleProducts = [
+    // Dog Food Products
+    {
+        name: "Premium Dry Dog Food - Chicken & Rice",
+        description: "High-quality dry dog food made with real chicken and brown rice. Perfect for adult dogs of all sizes.",
+        price: 45.99,
+        sku: "DOG-FOOD-DRY-001",
+        category: "dry-dog-food",
+        stockQuantity: 50,
+        images: [
+            "https://example.com/images/premium-dry-dog-food-chicken-rice.jpg"
+        ],
+        brand: "PetNutrition Pro",
+        petSpecifics: "For adult dogs, all breeds",
+        isPublished: true,
+        ratings: 4.5,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Grain-Free Wet Dog Food - Beef Stew",
+        description: "Delicious grain-free wet dog food with tender beef chunks and vegetables in savory gravy.",
+        price: 3.49,
+        sku: "DOG-FOOD-WET-001",
+        category: "wet-dog-food",
+        stockQuantity: 100,
+        images: [
+            "https://example.com/images/grain-free-wet-dog-food-beef-stew.jpg"
+        ],
+        brand: "NaturalPaws",
+        petSpecifics: "For all dog breeds, grain-free",
+        isPublished: true,
+        ratings: 4.7,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Dog Training Treats - Chicken Flavor",
+        description: "Small, soft training treats perfect for rewarding good behavior. Made with real chicken.",
+        price: 8.99,
+        sku: "DOG-TREAT-001",
+        category: "dog-bones-treats",
+        stockQuantity: 75,
+        images: [
+            "https://example.com/images/dog-training-treats-chicken.jpg"
+        ],
+        brand: "TrainRight",
+        petSpecifics: "For training, all dog sizes",
+        isPublished: true,
+        ratings: 4.8,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Daily Multivitamin for Dogs",
+        description: "Complete daily vitamin supplement to support your dog's overall health and immune system.",
+        price: 19.99,
+        sku: "DOG-VIT-001",
+        category: "dog-vitamins-supplements",
+        stockQuantity: 30,
+        images: [
+            "https://example.com/images/daily-multivitamin-dogs.jpg"
+        ],
+        brand: "VitaPet",
+        petSpecifics: "For adult dogs, 30-day supply",
+        isPublished: true,
+        ratings: 4.3,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Rope Toy - Heavy Duty",
+        description: "Durable rope toy perfect for tug-of-war and chewing. Helps clean teeth while playing.",
+        price: 12.99,
+        sku: "DOG-TOY-001",
+        category: "dog-toys",
+        stockQuantity: 40,
+        images: [
+            "https://example.com/images/rope-toy-heavy-duty.jpg"
+        ],
+        brand: "PlayTime",
+        petSpecifics: "For medium to large dogs",
+        isPublished: true,
+        ratings: 4.6,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Dog Leash - Retractable",
+        description: "Heavy-duty retractable leash with comfortable grip handle and 16-foot extension.",
+        price: 24.99,
+        sku: "DOG-LEASH-RET-001",
+        category: "dog-collars-leashes",
+        stockQuantity: 15,
+        images: [
+            "https://example.com/images/dog-leash-retractable.jpg"
+        ],
+        brand: "WalkEasy",
+        petSpecifics: "For dogs up to 110 lbs",
+        isPublished: true,
+        ratings: 4.4,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Dog Sweater - Warm Winter Coat",
+        description: "Cozy winter sweater to keep your dog warm during cold weather. Machine washable.",
+        price: 29.99,
+        sku: "DOG-CLOTH-001",
+        category: "dog-clothing-fashion-accessories",
+        stockQuantity: 25,
+        images: [
+            "https://example.com/images/dog-sweater-winter-coat.jpg"
+        ],
+        brand: "PetFashion",
+        petSpecifics: "Available in sizes XS-XL",
+        isPublished: true,
+        ratings: 4.2,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Dog Crate - Medium Size",
+        description: "Sturdy metal dog crate with secure locking mechanism. Includes removable tray for easy cleaning.",
+        price: 89.99,
+        sku: "DOG-CRATE-001",
+        category: "dog-crates-beds-houses",
+        stockQuantity: 10,
+        images: [
+            "https://example.com/images/dog-crate-medium.jpg"
+        ],
+        brand: "SecureHome",
+        petSpecifics: "For dogs 30-70 lbs",
+        isPublished: true,
+        ratings: 4.5,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Stainless Steel Dog Bowl Set",
+        description: "Non-slip stainless steel food and water bowl set. Dishwasher safe and rust-resistant.",
+        price: 16.99,
+        sku: "DOG-BOWL-001",
+        category: "dog-food-bowls-waterers",
+        stockQuantity: 35,
+        images: [
+            "https://example.com/images/stainless-steel-dog-bowl-set.jpg"
+        ],
+        brand: "FeedWell",
+        petSpecifics: "For medium to large dogs",
+        isPublished: true,
+        ratings: 4.7,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Dog Shampoo - Oatmeal & Honey",
+        description: "Gentle oatmeal and honey shampoo for sensitive skin. Moisturizes and soothes while cleaning.",
+        price: 13.99,
+        sku: "DOG-SHAM-001",
+        category: "dog-shampoos-grooming-products",
+        stockQuantity: 45,
+        images: [
+            "https://example.com/images/dog-shampoo-oatmeal-honey.jpg"
+        ],
+        brand: "GentleClean",
+        petSpecifics: "For all dog breeds, sensitive skin formula",
+        isPublished: true,
+        ratings: 4.6,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+
+    // Cat Food Products
+    {
+        name: "Premium Cat Kibble - Salmon & Tuna",
+        description: "High-protein dry cat food with real salmon and tuna. Supports healthy coat and digestion.",
+        price: 32.99,
+        sku: "CAT-FOOD-DRY-001",
+        category: "cat-dry-food-kibble",
+        stockQuantity: 60,
+        images: [
+            "https://example.com/images/premium-cat-kibble-salmon-tuna.jpg"
+        ],
+        brand: "FelinePro",
+        petSpecifics: "For adult cats, all breeds",
+        isPublished: true,
+        ratings: 4.8,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Wet Cat Food - Chicken Pate",
+        description: "Smooth chicken pate with essential nutrients. Perfect for cats who prefer wet food.",
+        price: 2.99,
+        sku: "CAT-FOOD-WET-001",
+        category: "cat-wet-food-pate",
+        stockQuantity: 80,
+        images: [
+            "https://example.com/images/wet-cat-food-chicken-pate.jpg"
+        ],
+        brand: "WhiskerDelight",
+        petSpecifics: "For adult cats, 3 oz can",
+        isPublished: true,
+        ratings: 4.5,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Organic Catnip - Premium Grade",
+        description: "100% organic catnip grown without pesticides. Drives cats wild and encourages play.",
+        price: 6.99,
+        sku: "CAT-CATNIP-001",
+        category: "cat-catnip-snacks",
+        stockQuantity: 50,
+        images: [
+            "https://example.com/images/organic-catnip-premium.jpg"
+        ],
+        brand: "PureCatnip",
+        petSpecifics: "For all cats, 1 oz package",
+        isPublished: true,
+        ratings: 4.9,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Interactive Cat Toy - Feather Wand",
+        description: "Extendable feather wand toy to keep your cat active and engaged. Replaceable feathers included.",
+        price: 9.99,
+        sku: "CAT-TOY-001",
+        category: "cat-toys-teasers",
+        stockQuantity: 30,
+        images: [
+            "https://example.com/images/interactive-cat-toy-feather-wand.jpg"
+        ],
+        brand: "PlayCat",
+        petSpecifics: "For all cats, interactive play",
+        isPublished: true,
+        ratings: 4.7,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Cat Scratching Post - Tall Tower",
+        description: "Multi-level scratching post with sisal rope and plush platforms. Perfect for stretching and scratching.",
+        price: 79.99,
+        sku: "CAT-SCRATCH-001",
+        category: "cat-scratching-posts-cat-trees",
+        stockQuantity: 8,
+        images: [
+            "https://example.com/images/cat-scratching-post-tall-tower.jpg"
+        ],
+        brand: "ScratchMaster",
+        petSpecifics: "For cats up to 20 lbs, 48 inches tall",
+        isPublished: true,
+        ratings: 4.6,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Clumping Cat Litter - Unscented",
+        description: "High-quality clumping clay litter that controls odors naturally. Dust-free formula.",
+        price: 18.99,
+        sku: "CAT-LITTER-001",
+        category: "cat-litter-litter-boxes",
+        stockQuantity: 40,
+        images: [
+            "https://example.com/images/clumping-cat-litter-unscented.jpg"
+        ],
+        brand: "CleanPaws",
+        petSpecifics: "For all cats, 25 lb bag",
+        isPublished: true,
+        ratings: 4.4,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Cat Carrier - Airline Approved",
+        description: "Sturdy airline-approved cat carrier with ventilation windows and secure latching system.",
+        price: 49.99,
+        sku: "CAT-CARRIER-001",
+        category: "cat-carriers-travel-bags",
+        stockQuantity: 12,
+        images: [
+            "https://example.com/images/cat-carrier-airline-approved.jpg"
+        ],
+        brand: "TravelSafe",
+        petSpecifics: "For cats up to 18 lbs",
+        isPublished: true,
+        ratings: 4.3,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    },
+    {
+        name: "Cat Bed - Memory Foam Cushion",
+        description: "Ultra-comfortable memory foam cat bed with removable washable cover. Perfect for senior cats.",
+        price: 34.99,
+        sku: "CAT-BED-001",
+        category: "cat-crates-beds-houses",
+        stockQuantity: 20,
+        images: [
+            "https://example.com/images/cat-bed-memory-foam.jpg"
+        ],
+        brand: "ComfortCat",
+        petSpecifics: "For all cats, orthopedic support",
+        isPublished: true,
+        ratings: 4.8,
+        reviews: [],
+        numReviews: 0,
+        timestamp: true
+    }
+];
+
+export default sampleProducts;
