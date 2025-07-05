@@ -18,6 +18,8 @@ import connectDB from './config/database.js';
 const app = express();
 const router = Router();
 
+console.log('🚀 Server is starting...');
+
 // Bodyparser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
