@@ -31,6 +31,16 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        lowercase: true,
+        ref: 'Category',
+        validate: {
+            validator: async function(v) {
+                const Category = mongoose.model('Category');
+                const category = await Category.findOne({ slug: v });
+                return !!category;
+            },
+            message: 'Category slug does not exist'
+        }
     },
     stockQuantity: {
         type: Number,
@@ -111,6 +121,11 @@ productSchema.index({ category: 1 });
 productSchema.index({ brand: 1 });
 productSchema.index({ sku: 1 }, { unique: true });
 productSchema.index({ name: 'text', description: 'text' });
+// Compound indexes for common queries
+productSchema.index({ category: 1, isPublished: 1 });
+productSchema.index({ price: 1, salePrice: 1 });
+productSchema.index({ stockQuantity: 1, isPublished: 1 });
+productSchema.index({ ratings: -1, numReviews: -1 });
 
 // Virtual for average rating calculation
 productSchema.virtual('averageRating').get(function () {
@@ -128,6 +143,43 @@ productSchema.pre('save', function (next) {
     }
     next();
 });
+
+// Static methods for better performance
+productSchema.statics.findBySku = function(sku) {
+    return this.findOne({ sku: sku.toUpperCase() });
+};
+
+productSchema.statics.findByCategory = function(categorySlug, options = {}) {
+    const { limit = 20, skip = 0, sort = { createdAt: -1 } } = options;
+    return this.find({ category: categorySlug, isPublished: true })
+               .limit(limit)
+               .skip(skip)
+               .sort(sort);
+};
+
+productSchema.statics.findInStock = function() {
+    return this.find({ stockQuantity: { $gt: 0 }, isPublished: true });
+};
+
+productSchema.statics.findOnSale = function() {
+    return this.find({ 
+        salePrice: { $exists: true, $ne: null, $gt: 0 },
+        isPublished: true 
+    });
+};
+
+productSchema.statics.search = function(query, options = {}) {
+    const { limit = 20, skip = 0 } = options;
+    return this.find({
+        $text: { $search: query },
+        isPublished: true
+    }, {
+        score: { $meta: "textScore" }
+    })
+    .sort({ score: { $meta: "textScore" } })
+    .limit(limit)
+    .skip(skip);
+};
 
 // Add method to calculate discounted price
 productSchema.virtual('discountedPrice').get(function () {

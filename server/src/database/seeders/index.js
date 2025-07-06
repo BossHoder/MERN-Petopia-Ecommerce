@@ -14,13 +14,15 @@ const runSeeders = async () => {
         
         // Connect to database first
         await connectDB();
+        
+        // Seed in correct order due to dependencies
         await seedPaymentMethods();
-        await seedCarts();
-        await seedOrders();
-        // await seedParentCategories();
-        // await seedCategories();
-        // await seedProducts();
-        // await seedUsers();
+        await seedParentCategories(); // Must be first
+        await seedCategories();       // Depends on parent categories
+        await seedProducts();         // Depends on categories
+        await seedUsers();           // Independent
+        await seedCarts();           // Depends on users and products
+        await seedOrders();          // Depends on users and products
         
         console.log('Database seeding completed!');
     } catch (error) {
