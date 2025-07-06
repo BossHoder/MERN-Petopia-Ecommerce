@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { generateSlug } from '../helpers/stringHelper.js';
 
 const categorySchema = new mongoose.Schema({
     name: {
@@ -69,13 +70,8 @@ categorySchema.pre('save', function(next) {
     if (this.slug) {
         this.slug = this.slug.toLowerCase();
     } else if (this.name) {
-        // Auto-generate slug from name if not provided
-        this.slug = this.name
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-')         // Replace spaces with hyphens
-            .replace(/-+/g, '-')          // Replace multiple hyphens with single
-            .trim();
+        // Use helper function for slug generation
+        this.slug = generateSlug(this.name);
     }
     next();
 });

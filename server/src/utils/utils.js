@@ -24,3 +24,45 @@ export const isValidUrl = (str) => {
   var url = new RegExp(urlRegex, 'i');
   return str.length < 2083 && url.test(str);
 };
+
+/**
+ * Generate random string
+ * @param {number} length - Length of string
+ * @returns {string} - Random string
+ */
+export const generateRandomString = (length = 10) => {
+  return Math.random().toString(36).substring(2, length + 2);
+};
+
+/**
+ * Delay execution
+ * @param {number} ms - Milliseconds to delay
+ * @returns {Promise} - Promise that resolves after delay
+ */
+export const delay = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+/**
+ * Deep clone object
+ * @param {Object} obj - Object to clone
+ * @returns {Object} - Cloned object
+ */
+export const deepClone = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+/**
+ * Remove empty properties from object
+ * @param {Object} obj - Object to clean
+ * @returns {Object} - Cleaned object
+ */
+export const removeEmptyProperties = (obj) => {
+  const cleaned = {};
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] !== null && obj[key] !== undefined && obj[key] !== '') {
+      cleaned[key] = obj[key];
+    }
+  });
+  return cleaned;
+};
