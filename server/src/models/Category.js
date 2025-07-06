@@ -16,15 +16,20 @@ const categorySchema = new mongoose.Schema({
         maxlength: [100, 'Category slug cannot exceed 100 characters']
     },
     parentCategory: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: [true, 'Parent category is required'],
-        trim: true,
         ref: 'ParentCategory'
     },
     iconUrl: {
         type: String,
         required: [true, 'Icon URL is required'],
-        trim: true
+        trim: true,
+        validate: {
+            validator: function(v) {
+                return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/i.test(v) || v.startsWith('/');
+            },
+            message: 'Invalid icon URL format'
+        }
     },
     description: {
         type: String,

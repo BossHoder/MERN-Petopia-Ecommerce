@@ -1,5 +1,6 @@
 const sampleOrders = [
     {
+        orderNumber: "ORD-1720272000000-ABC12",
         username: "admin",
         orderItems: [
             {
@@ -16,8 +17,13 @@ const sampleOrders = [
             phone: "0123456789"
         },
         totalAmount: 49.48,
-        paymentMethod: "cod",
-        paymentResult: "pending",
+        paymentMethod: "bank_transfer",
+        paymentResult: {
+            id: "BT-PhaevqOivlKJwgvc",
+            status: "completed",
+            update_time: "2024-06-10T10:00:00Z",
+            email_address: "customer@example.com"
+        },
         status: "pending",
     }
 ]

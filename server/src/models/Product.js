@@ -42,10 +42,11 @@ const productSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (v) {
-                // Simple URL validation
-                return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif))$/i.test(v);
+                const isUrl = /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+                const isLocalPath = /^\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+                return isUrl || isLocalPath;
             },
-            message: props => `${props.value} is not a valid image URL!`
+            message: props => `${props.value} is not a valid image URL or path!`
         }
     }],
     brand: {
@@ -112,20 +113,30 @@ productSchema.index({ sku: 1 }, { unique: true });
 productSchema.index({ name: 'text', description: 'text' });
 
 // Virtual for average rating calculation
-productSchema.virtual('averageRating').get(function() {
+productSchema.virtual('averageRating').get(function () {
     if (this.reviews.length === 0) return 0;
     const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
     return Math.round((sum / this.reviews.length) * 10) / 10;
 });
 
 // Pre-save middleware to update ratings and numReviews
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function (next) {
     if (this.reviews && this.reviews.length > 0) {
         this.numReviews = this.reviews.length;
         const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
         this.ratings = Math.round((sum / this.reviews.length) * 10) / 10;
     }
     next();
+});
+
+// Add method to calculate discounted price
+productSchema.virtual('discountedPrice').get(function () {
+    return this.salePrice && this.salePrice < this.price ? this.salePrice : this.price;
+});
+
+// Add method to check if product is on sale
+productSchema.virtual('isOnSale').get(function () {
+    return this.salePrice && this.salePrice < this.price;
 });
 
 const Product = mongoose.model('Product', productSchema);

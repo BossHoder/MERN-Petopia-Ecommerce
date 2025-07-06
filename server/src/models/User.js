@@ -63,16 +63,14 @@ const userSchema = new Schema(
   { timestamps: true },
 );
 
-console.log(join(__dirname, '../..', IMAGES_FOLDER_PATH));
-
 userSchema.methods.toJSON = function () {
   // if not exists avatar1 default
   const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
   const avatar = isValidUrl(this.avatar)
     ? this.avatar
     : fs.existsSync(absoluteAvatarFilePath)
-    ? `${IMAGES_FOLDER_PATH}${this.avatar}`
-    : `${IMAGES_FOLDER_PATH}avatar2.jpg`;
+      ? `${IMAGES_FOLDER_PATH}${this.avatar}`
+      : `${IMAGES_FOLDER_PATH}avatar2.jpg`;
 
   return {
     id: this._id,
@@ -103,18 +101,21 @@ userSchema.methods.generateJWT = function () {
   return token;
 };
 
-userSchema.methods.registerUser = (newUser, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(newUser.password, salt, (errh, hash) => {
-      if (err) {
-        console.log(err);
-      }
-      // set pasword to hash
-      newUser.password = hash;
-      newUser.save(callback);
-    });
-  });
+userSchema.methods.registerUser = async function () {
+  if (this.password && this.provider === 'local') {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+  return this.save();
 };
+
+// Add password validation
+userSchema.pre('save', function (next) {
+  if (this.provider === 'local' && (!this.password || this.password.length < 6)) {
+    return next(new Error('Password is required and must be at least 6 characters for local users'));
+  }
+  next();
+});
 
 userSchema.methods.comparePassword = function (candidatePassword, callback) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {

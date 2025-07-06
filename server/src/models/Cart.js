@@ -1,5 +1,23 @@
 import mongoose from 'mongoose';
 
+// Add addedAt field to items schema first
+const cartItemSchema = new mongoose.Schema({
+    productId: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+    },
+    addedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const cartSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -7,32 +25,12 @@ const cartSchema = new mongoose.Schema({
         trim: true,
         unique: true,
     },
-    items: [
-        {
-            productId: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                min: 1,
-            }
-        }
-    ],
+    items: [cartItemSchema], // Use the defined schema
 }, {
     timestamps: true,
 })
 
-// Add indexes for better performance
-cartSchema.index({ username: 1 }, { unique: true });
-cartSchema.index({ sessionId: 1 });
-cartSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL index
-cartSchema.index({ 'items.productId': 1 });
-const Cart = mongoose.model('Cart', cartSchema);
-
-//Validation: dont allow duplicate products in the same cart
+// Move ALL middleware and methods BEFORE model creation
 cartSchema.pre('save', function(next) {
     const productIds = this.items.map(item => item.productId);
     const uniqueProductIds = [...new Set(productIds)];
@@ -114,5 +112,12 @@ cartSchema.statics.findByUsernameOrCreate = async function(username) {
 cartSchema.statics.cleanupExpired = function() {
     return this.deleteMany({ expiresAt: { $lt: new Date() } });
 };
+
+// Add indexes for better performance
+cartSchema.index({ username: 1 }, { unique: true });
+cartSchema.index({ 'items.productId': 1 });
+
+// CREATE MODEL LAST
+const Cart = mongoose.model('Cart', cartSchema);
 
 export default Cart;
