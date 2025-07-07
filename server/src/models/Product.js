@@ -20,6 +20,12 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: false,
         min: 0,
+        validate: {
+            validator: function(v) {
+                return !v || v < this.price;
+            },
+            message: 'Sale price must be less than regular price'
+        }
     },
     sku: {
         type: String,
@@ -28,18 +34,16 @@ const productSchema = new mongoose.Schema({
         trim: true,
     },
     category: {
-        type: String,
-        required: true,
-        trim: true,
-        lowercase: true,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
+        required: true,
         validate: {
             validator: async function(v) {
                 const Category = mongoose.model('Category');
-                const category = await Category.findOne({ slug: v });
+                const category = await Category.findById(v);
                 return !!category;
             },
-            message: 'Category slug does not exist'
+            message: 'Category does not exist'
         }
     },
     stockQuantity: {
@@ -190,6 +194,21 @@ productSchema.virtual('discountedPrice').get(function () {
 productSchema.virtual('isOnSale').get(function () {
     return this.salePrice && this.salePrice < this.price;
 });
+
+// Add method to check and reserve stock
+productSchema.methods.checkAndReserveStock = function(quantity) {
+    if (this.stockQuantity < quantity) {
+        throw new Error(`Insufficient stock. Available: ${this.stockQuantity}, Requested: ${quantity}`);
+    }
+    this.stockQuantity -= quantity;
+    return this.save();
+};
+
+// Add method to restore stock (for cancelled orders)
+productSchema.methods.restoreStock = function(quantity) {
+    this.stockQuantity += quantity;
+    return this.save();
+};
 
 const Product = mongoose.model('Product', productSchema);
 

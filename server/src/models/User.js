@@ -26,6 +26,8 @@ const userSchema = new Schema(
       unique: true,
       required: [true, "can't be blank"],
       match: [/^[a-zA-Z0-9_]+$/, 'is invalid'],
+      minlength: [3, 'Username must be at least 3 characters'],
+      maxlength: [20, 'Username cannot exceed 20 characters'],
       index: true,
     },
     email: {
@@ -33,7 +35,7 @@ const userSchema = new Schema(
       lowercase: true,
       unique: true,
       required: [true, "can't be blank"],
-      match: [/\S+@\S+\.\S+/, 'is invalid'],
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'is invalid'],
       index: true,
     },
     password: {
@@ -42,10 +44,25 @@ const userSchema = new Schema(
       minlength: 6,
       maxlength: 60,
     },
-    name: String,
+    name: {
+      type: String,
+      required: [true, 'Name is required'],
+      trim: true,
+      minlength: [2, 'Name must be at least 2 characters'],
+      maxlength: [50, 'Name cannot exceed 50 characters']
+    },
     avatar: String,
-    role: { type: String, default: 'USER' },
-    bio: String,
+    role: { 
+      type: String, 
+      default: 'USER',
+      enum: ['USER', 'ADMIN'],
+      uppercase: true
+    },
+    bio: {
+      type: String,
+      maxlength: [500, 'Bio cannot exceed 500 characters'],
+      trim: true
+    },
     // google
     googleId: {
       type: String,

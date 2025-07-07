@@ -17,10 +17,17 @@ const categorySchema = new mongoose.Schema({
         maxlength: [100, 'Category slug cannot exceed 100 characters']
     },
     parentCategory: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ParentCategory',
         required: [true, 'Parent category is required'],
-        trim: true,
-        ref: 'ParentCategory'
+        validate: {
+            validator: async function(v) {
+                const ParentCategory = mongoose.model('ParentCategory');
+                const parent = await ParentCategory.findById(v);
+                return !!parent;
+            },
+            message: 'Parent category does not exist'
+        }
     },
     iconUrl: {
         type: String,

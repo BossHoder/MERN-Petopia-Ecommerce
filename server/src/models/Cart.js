@@ -3,9 +3,17 @@ import mongoose from 'mongoose';
 // Add addedAt field to items schema first
 const cartItemSchema = new mongoose.Schema({
     productId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
         required: true,
-        trim: true
+        validate: {
+            validator: async function(v) {
+                const Product = mongoose.model('Product');
+                const product = await Product.findById(v);
+                return !!product;
+            },
+            message: 'Product does not exist'
+        }
     },
     quantity: {
         type: Number,
@@ -20,10 +28,18 @@ const cartItemSchema = new mongoose.Schema({
 
 const cartSchema = new mongoose.Schema({
     username: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
-        trim: true,
         unique: true,
+        validate: {
+            validator: async function(v) {
+                const User = mongoose.model('User');
+                const user = await User.findById(v);
+                return !!user;
+            },
+            message: 'User does not exist'
+        }
     },
     items: [cartItemSchema], // Use the defined schema
 }, {
@@ -116,6 +132,7 @@ cartSchema.statics.cleanupExpired = function() {
 // Add indexes for better performance
 cartSchema.index({ username: 1 }, { unique: true });
 cartSchema.index({ 'items.productId': 1 });
+cartSchema.index({ updatedAt: -1 });
 
 // CREATE MODEL LAST
 const Cart = mongoose.model('Cart', cartSchema);
