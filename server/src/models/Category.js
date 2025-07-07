@@ -50,40 +50,35 @@ const categorySchema = new mongoose.Schema({
             message: 'Invalid icon URL format'
         }
     },
-    // Short description of this category
     description: {
         type: String,
         trim: true,
         maxlength: [500, 'Description cannot exceed 500 characters']
     },
-    // Whether this category is visible to customers
     isPublished: {
         type: Boolean,
         default: true
     },
-    // Order to display categories (lower numbers first)
     sortOrder: {
         type: Number,
         default: 0
     },
-    // How many products are in this category
     productCount: {
         type: Number,
         default: 0
     }
 }, {
-    timestamps: true, // Auto add createdAt and updatedAt
-    versionKey: false // Remove __v field
+    timestamps: true,
+    versionKey: false
 });
 
 // ===========================================
 // DATABASE INDEXES (for faster searches)
 // ===========================================
-categorySchema.index({ slug: 1 }); // Find by slug quickly
-categorySchema.index({ parentCategory: 1 }); // Find by parent quickly
-categorySchema.index({ isPublished: 1 }); // Filter published categories
-categorySchema.index({ name: 'text', description: 'text' }); // Text search
-// Compound indexes for common query combinations
+categorySchema.index({ slug: 1 });
+categorySchema.index({ parentCategory: 1 });
+categorySchema.index({ isPublished: 1 });
+categorySchema.index({ name: 'text', description: 'text' });
 categorySchema.index({ parentCategory: 1, isPublished: 1 });
 categorySchema.index({ isPublished: 1, sortOrder: 1 });
 categorySchema.index({ productCount: -1, isPublished: 1 });
@@ -94,10 +89,8 @@ categorySchema.index({ productCount: -1, isPublished: 1 });
 // Auto-generate slug from name if not provided
 categorySchema.pre('save', function(next) {
     if (this.slug) {
-        // Make sure slug is lowercase
         this.slug = this.slug.toLowerCase();
     } else if (this.name) {
-        // Generate slug from name using helper function
         this.slug = generateSlug(this.name);
     }
     next();

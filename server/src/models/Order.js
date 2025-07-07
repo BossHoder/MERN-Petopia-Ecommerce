@@ -26,7 +26,6 @@ const orderItemSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    // Product image (saved at time of order)
     image: {
         type: String,
         required: true,
@@ -115,19 +114,16 @@ const orderSchema = new mongoose.Schema({
             return this.calculateShippingFee();
         }
     },
-    // Tax amount
     taxPrice: {
         type: Number,
         default: 0,
         min: 0
     },
-    // Discount amount (from coupons, promotions)
     discount: {
         type: Number,
         default: 0,
         min: 0
     },
-    // Final total amount
     totalAmount: {
         type: Number,
         required: true,
@@ -151,12 +147,10 @@ const orderSchema = new mongoose.Schema({
         update_time: { type: String },
         email_address: { type: String }
     },
-    // Whether payment has been received
     isPaid: {
         type: Boolean,
         default: false
     },
-    // When payment was received
     paidAt: {
         type: Date
     },
@@ -171,12 +165,10 @@ const orderSchema = new mongoose.Schema({
         enum: ['pending', 'processing', 'completed', 'cancelled'],
         default: 'pending'
     },
-    // Whether order has been delivered
     isDelivered: {
         type: Boolean,
         default: false
     },
-    // When order was delivered
     deliveredAt: {
         type: Date
     },
@@ -200,18 +192,18 @@ const orderSchema = new mongoose.Schema({
         maxlength: 500
     },
 }, {
-    timestamps: true // Auto add createdAt and updatedAt
+    timestamps: true
 })
 
 // ===========================================
 // DATABASE INDEXES (for faster searches)
 // ===========================================
-orderSchema.index({ username: 1, status: 1 }); // Find user's orders by status
-orderSchema.index({ status: 1 }); // Filter by status
-orderSchema.index({ paymentMethod: 1 }); // Filter by payment method
-orderSchema.index({ orderNumber: 1 }, { unique: true }); // Unique order lookup
-orderSchema.index({ createdAt: -1 }); // Sort by newest first
-orderSchema.index({ 'orderItems.productId': 1 }); // Find orders containing specific product
+orderSchema.index({ username: 1, status: 1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ paymentMethod: 1 });
+orderSchema.index({ orderNumber: 1 }, { unique: true });
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ 'orderItems.productId': 1 });
 
 // ===========================================
 // VIRTUAL FIELDS (calculated fields)
@@ -248,12 +240,11 @@ orderSchema.pre('save', function (next) {
 // Handle status transitions and auto-update timestamps
 orderSchema.pre('save', function (next) {
     if (this.isModified('status') && !this.isNew) {
-        // Define valid status transitions
         const validTransitions = {
             'pending': ['processing', 'cancelled'],
             'processing': ['completed', 'cancelled'],
-            'completed': [], // Cannot change from completed
-            'cancelled': [] // Cannot change from cancelled
+            'completed': [],
+            'cancelled': []
         };
 
         const currentStatus = this.status;

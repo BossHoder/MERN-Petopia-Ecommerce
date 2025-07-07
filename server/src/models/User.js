@@ -35,64 +35,58 @@ const userSchema = new Schema(
       match: [/^[a-zA-Z0-9_]+$/, 'is invalid'], // Only letters, numbers, underscore
       minlength: [3, 'Username must be at least 3 characters'],
       maxlength: [20, 'Username cannot exceed 20 characters'],
-      index: true, // For fast lookup
+      index: true,
     },
-    // User's email address
-    email: {
-      type: String,
-      lowercase: true,
-      unique: true,
-      required: [true, "can't be blank"],
-      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'is invalid'], // Valid email format
-      index: true, // For fast lookup
+      email: {
+        type: String,
+        lowercase: true,
+        unique: true,
+        required: [true, "can't be blank"],
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'is invalid'],
+        index: true,
+      },
+      password: {
+        type: String,
+        trim: true,
+        minlength: 6,
+        maxlength: 60,
+      },
+      name: {
+        type: String,
+        required: [true, 'Name is required'],
+        trim: true,
+        minlength: [2, 'Name must be at least 2 characters'],
+        maxlength: [50, 'Name cannot exceed 50 characters']
+      },
+      avatar: String,
+      role: {
+        type: String,
+        default: 'USER',
+        enum: ['USER', 'ADMIN'],
+        uppercase: true
+      },
+      bio: {
+        type: String,
+        maxlength: [500, 'Bio cannot exceed 500 characters'],
+        trim: true
+      },
+      // ===========================================
+      // SOCIAL LOGIN IDs
+      // ===========================================
+      // Google account ID (for Google login)
+      googleId: {
+        type: String,
+        unique: true,
+        sparse: true, // Allow multiple null values
+      },
+      // Facebook account ID (for Facebook login)
+      facebookId: {
+        type: String,
+        unique: true,
+        sparse: true, // Allow multiple null values
+      },
     },
-    // Password (only for local accounts, not social login)
-    password: {
-      type: String,
-      trim: true,
-      minlength: 6,
-      maxlength: 60,
-    },
-    // User's display name
-    name: {
-      type: String,
-      required: [true, 'Name is required'],
-      trim: true,
-      minlength: [2, 'Name must be at least 2 characters'],
-      maxlength: [50, 'Name cannot exceed 50 characters']
-    },
-    // Profile picture
-    avatar: String,
-    // User role (regular user or admin)
-    role: { 
-      type: String, 
-      default: 'USER',
-      enum: ['USER', 'ADMIN'],
-      uppercase: true
-    },
-    // User's bio/description
-    bio: {
-      type: String,
-      maxlength: [500, 'Bio cannot exceed 500 characters'],
-      trim: true
-    },
-    // ===========================================
-    // SOCIAL LOGIN IDs
-    // ===========================================
-    // Google account ID (for Google login)
-    googleId: {
-      type: String,
-      unique: true,
-      sparse: true, // Allow multiple null values
-    },
-    // Facebook account ID (for Facebook login)
-    facebookId: {
-      type: String,
-      unique: true,
-      sparse: true, // Allow multiple null values
-    },
-  },
-  { timestamps: true }, // Auto add createdAt and updatedAt
+  { timestamps: true },
 );
 
 // ===========================================

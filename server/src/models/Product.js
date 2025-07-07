@@ -11,13 +11,11 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    // Product description
     description: {
         type: String,
         required: true,
         trim: true,
     },
-    // Regular price
     price: {
         type: Number,
         required: true,
@@ -57,7 +55,6 @@ const productSchema = new mongoose.Schema({
             message: 'Category does not exist'
         }
     },
-    // How many items are in stock
     stockQuantity: {
         type: Number,
         required: true,
@@ -77,24 +74,20 @@ const productSchema = new mongoose.Schema({
             message: props => `${props.value} is not a valid image URL or path!`
         }
     }],
-    // Product brand
     brand: {
         type: String,
         required: true,
         trim: true,
     },
-    // Pet-specific information (like "for dogs", "for cats")
     petSpecifics: {
         type: String,
         required: false,
         trim: true,
     },
-    // Whether product is visible to customers
     isPublished: {
         type: Boolean,
         default: true,
     },
-    // Average rating (0-5 stars)
     ratings: {
         type: Number,
         default: 0,
@@ -108,26 +101,22 @@ const productSchema = new mongoose.Schema({
 // ===========================================
 // Schema for customer reviews of products
 const reviewsSchema = new mongoose.Schema({
-    // Reviewer's name
     name: {
         type: String,
         required: true,
         trim: true,
     },
-    // Rating given (1-5 stars)
     rating: {
         type: Number,
         required: true,
         min: 1,
         max: 5,
     },
-    // Review comment
     comment: {
         type: String,
         required: true,
         trim: true,
     },
-    // Who wrote this review
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -135,10 +124,8 @@ const reviewsSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-// Add reviews to main product schema
 productSchema.add({
     reviews: [reviewsSchema],
-    // Total number of reviews
     numReviews: {
         type: Number,
         default: 0,
@@ -148,11 +135,10 @@ productSchema.add({
 // ===========================================
 // DATABASE INDEXES (for faster searches)
 // ===========================================
-productSchema.index({ category: 1 }); // Find by category quickly
-productSchema.index({ brand: 1 }); // Find by brand quickly
-productSchema.index({ sku: 1 }, { unique: true }); // Unique SKU lookup
-productSchema.index({ name: 'text', description: 'text' }); // Text search
-// Compound indexes for common query combinations
+productSchema.index({ category: 1 });
+productSchema.index({ brand: 1 });
+productSchema.index({ sku: 1 }, { unique: true });
+productSchema.index({ name: 'text', description: 'text' });
 productSchema.index({ category: 1, isPublished: 1 });
 productSchema.index({ price: 1, salePrice: 1 });
 productSchema.index({ stockQuantity: 1, isPublished: 1 });
