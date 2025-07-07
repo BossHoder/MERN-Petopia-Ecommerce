@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
 import { generateSlug } from '../helpers/stringHelper.js';
 
+// ===========================================
+// CATEGORY SCHEMA
+// ===========================================
+// This schema defines product categories (like "Dog Food", "Cat Toys", etc.)
 const categorySchema = new mongoose.Schema({
+    // Category name (displayed to users)
     name: {
         type: String,
         required: [true, 'Category name is required'],
         trim: true,
         maxlength: [100, 'Category name cannot exceed 100 characters']
     },
+    // URL-friendly version of name (like "dog-food")
     slug: {
         type: String,
         required: [true, 'Category slug is required'],
@@ -16,10 +22,12 @@ const categorySchema = new mongoose.Schema({
         lowercase: true,
         maxlength: [100, 'Category slug cannot exceed 100 characters']
     },
+    // Which parent category this belongs to (like "Dogs" > "Dog Food")
     parentCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ParentCategory',
         required: [true, 'Parent category is required'],
+        // Check if parent category actually exists
         validate: {
             validator: async function(v) {
                 const ParentCategory = mongoose.model('ParentCategory');
@@ -29,10 +37,12 @@ const categorySchema = new mongoose.Schema({
             message: 'Parent category does not exist'
         }
     },
+    // Icon image for this category
     iconUrl: {
         type: String,
         required: [true, 'Icon URL is required'],
         trim: true,
+        // Check if URL format is valid
         validate: {
             validator: function(v) {
                 return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/i.test(v) || v.startsWith('/');
@@ -40,57 +50,73 @@ const categorySchema = new mongoose.Schema({
             message: 'Invalid icon URL format'
         }
     },
+    // Short description of this category
     description: {
         type: String,
         trim: true,
         maxlength: [500, 'Description cannot exceed 500 characters']
     },
+    // Whether this category is visible to customers
     isPublished: {
         type: Boolean,
         default: true
     },
+    // Order to display categories (lower numbers first)
     sortOrder: {
         type: Number,
         default: 0
     },
+    // How many products are in this category
     productCount: {
         type: Number,
         default: 0
     }
 }, {
-    timestamps: true,
-    versionKey: false
+    timestamps: true, // Auto add createdAt and updatedAt
+    versionKey: false // Remove __v field
 });
 
-// Add indexes for better performance
-categorySchema.index({ slug: 1 });
-categorySchema.index({ parentCategory: 1 });
-categorySchema.index({ isPublished: 1 });
-categorySchema.index({ name: 'text', description: 'text' });
-// New compound indexes
+// ===========================================
+// DATABASE INDEXES (for faster searches)
+// ===========================================
+categorySchema.index({ slug: 1 }); // Find by slug quickly
+categorySchema.index({ parentCategory: 1 }); // Find by parent quickly
+categorySchema.index({ isPublished: 1 }); // Filter published categories
+categorySchema.index({ name: 'text', description: 'text' }); // Text search
+// Compound indexes for common query combinations
 categorySchema.index({ parentCategory: 1, isPublished: 1 });
 categorySchema.index({ isPublished: 1, sortOrder: 1 });
 categorySchema.index({ productCount: -1, isPublished: 1 });
 
-// Pre-save middleware to ensure slug is lowercase and generate if missing
+// ===========================================
+// MIDDLEWARE (runs before saving)
+// ===========================================
+// Auto-generate slug from name if not provided
 categorySchema.pre('save', function(next) {
     if (this.slug) {
+        // Make sure slug is lowercase
         this.slug = this.slug.toLowerCase();
     } else if (this.name) {
-        // Use helper function for slug generation
+        // Generate slug from name using helper function
         this.slug = generateSlug(this.name);
     }
     next();
 });
 
-// Virtual to get products in this category
+// ===========================================
+// VIRTUAL FIELDS (calculated fields)
+// ===========================================
+// Get all products that belong to this category
 categorySchema.virtual('products', {
     ref: 'Product',
     localField: 'slug',
     foreignField: 'category'
 });
 
-// Method to update product count
+// ===========================================
+// INSTANCE METHODS (actions on individual category)
+// ===========================================
+// Update the count of products in this category
 categorySchema.methods.updateProductCount = async function() {
     const Product = mongoose.model('Product');
     const count = await Product.countDocuments({ category: this.slug });
@@ -98,19 +124,25 @@ categorySchema.methods.updateProductCount = async function() {
     return this.save();
 };
 
-// Static methods for better performance
+// ===========================================
+// STATIC METHODS (actions on Category model)
+// ===========================================
+// Find category by its slug
 categorySchema.statics.findBySlug = function(slug) {
     return this.findOne({ slug: slug.toLowerCase() });
 };
 
+// Get all published categories, sorted by order
 categorySchema.statics.findPublished = function() {
     return this.find({ isPublished: true }).sort({ sortOrder: 1, name: 1 });
 };
 
+// Get all categories under a specific parent category
 categorySchema.statics.findByParent = function(parentCategory) {
     return this.find({ parentCategory, isPublished: true }).sort({ sortOrder: 1, name: 1 });
 };
 
+// Update product counts for all categories (maintenance function)
 categorySchema.statics.updateAllProductCounts = async function() {
     const categories = await this.find();
     const Product = mongoose.model('Product');
@@ -121,6 +153,9 @@ categorySchema.statics.updateAllProductCounts = async function() {
     }
 };
 
+// ===========================================
+// CREATE AND EXPORT MODEL
+// ===========================================
 const Category = mongoose.model('Category', categorySchema);
 
 export default Category;
