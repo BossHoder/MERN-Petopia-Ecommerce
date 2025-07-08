@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 // ===========================================
 // This schema defines discount coupons for the store
 const couponSchema = new mongoose.Schema({
-    // Unique coupon code
     code: {
         type: String,
         required: true,
@@ -15,14 +14,12 @@ const couponSchema = new mongoose.Schema({
         minlength: 3,
         maxlength: 20
     },
-    // Coupon description
     description: {
         type: String,
         required: true,
         trim: true,
         maxlength: 200
     },
-    // Discount type and value
     discountType: {
         type: String,
         required: true,
@@ -43,7 +40,6 @@ const couponSchema = new mongoose.Schema({
             message: 'Percentage discount cannot exceed 100%'
         }
     },
-    // Usage limits
     usageLimit: {
         type: Number,
         default: null, // null means unlimited
@@ -54,7 +50,6 @@ const couponSchema = new mongoose.Schema({
         default: 0,
         min: 0
     },
-    // Per-user usage limit
     perUserLimit: {
         type: Number,
         default: 1,
@@ -71,7 +66,6 @@ const couponSchema = new mongoose.Schema({
         type: Number,
         min: 0
     },
-    // Validity period
     validFrom: {
         type: Date,
         required: true,
@@ -105,12 +99,10 @@ const couponSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     }],
-    // Status
     isActive: {
         type: Boolean,
         default: true
     },
-    // Usage tracking
     usedBy: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
@@ -130,7 +122,6 @@ const couponSchema = new mongoose.Schema({
             required: true
         }
     }],
-    // Created by admin
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

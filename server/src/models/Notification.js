@@ -27,21 +27,18 @@ const notificationSchema = new mongoose.Schema({
             'system'
         ]
     },
-    // Notification title
     title: {
         type: String,
         required: true,
         trim: true,
         maxlength: 100
     },
-    // Notification message
     message: {
         type: String,
         required: true,
         trim: true,
         maxlength: 500
     },
-    // Related data
     relatedData: {
         orderId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -83,7 +80,6 @@ const notificationSchema = new mongoose.Schema({
             default: false
         }
     },
-    // Delivery status
     deliveryStatus: {
         inApp: {
             type: String,
@@ -101,7 +97,6 @@ const notificationSchema = new mongoose.Schema({
             default: 'pending'
         }
     },
-    // Expiration
     expiresAt: {
         type: Date,
         default: function() {
