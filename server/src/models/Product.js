@@ -1,6 +1,37 @@
 import mongoose from 'mongoose';
 
 // ===========================================
+// PRODUCT VARIANT SCHEMA
+// ===========================================
+const variantSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    value: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    price: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    stockQuantity: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    sku: {
+        type: String,
+        required: true,
+        trim: true
+    }
+});
+
+// ===========================================
 // MAIN PRODUCT SCHEMA
 // ===========================================
 // This schema defines products in the pet store
@@ -11,17 +42,28 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true
+    },
     description: {
         type: String,
         required: true,
         trim: true,
+    },
+    shortDescription: {
+        type: String,
+        trim: true,
+        maxlength: 160
     },
     price: {
         type: Number,
         required: true,
         min: 0,
     },
-    // Sale price (optional, must be lower than regular price)
     salePrice: {
         type: Number,
         required: false,
@@ -40,7 +82,6 @@ const productSchema = new mongoose.Schema({
         unique: true,
         trim: true,
     },
-    // Which category this product belongs to
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
@@ -60,7 +101,12 @@ const productSchema = new mongoose.Schema({
         required: true,
         min: 0,
     },
-    // Array of product images
+    lowStockThreshold: {
+        type: Number,
+        default: 10,
+        min: 0
+    },
+    variants: [variantSchema],
     images: [{
         type: String,
         required: true,
@@ -84,9 +130,50 @@ const productSchema = new mongoose.Schema({
         required: false,
         trim: true,
     },
+    attributes: {
+        weight: {
+            type: Number,
+            min: 0
+        },
+        dimensions: {
+            length: { type: Number, min: 0 },
+            width: { type: Number, min: 0 },
+            height: { type: Number, min: 0 }
+        },
+        color: String,
+        material: String,
+        ageGroup: {
+            type: String,
+            enum: ['puppy', 'adult', 'senior', 'all']
+        },
+        petType: {
+            type: String,
+            enum: ['dog', 'cat', 'bird', 'fish', 'other']
+        }
+    },
+    // SEO fields
+    metaTitle: {
+        type: String,
+        trim: true,
+        maxlength: 60
+    },
+    metaDescription: {
+        type: String,
+        trim: true,
+        maxlength: 160
+    },
+    tags: [{
+        type: String,
+        trim: true,
+        lowercase: true
+    }],
     isPublished: {
         type: Boolean,
         default: true,
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
     },
     ratings: {
         type: Number,
@@ -94,6 +181,16 @@ const productSchema = new mongoose.Schema({
         min: 0,
         max: 5,
     },
+    viewCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+    salesCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    }
 }, { timestamps: true });
 
 // ===========================================

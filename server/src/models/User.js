@@ -16,6 +16,51 @@ const __dirname = dirname(__filename);
 const { Schema } = mongoose;
 
 // ===========================================
+// ADDRESS SCHEMA
+// ===========================================
+const addressSchema = new Schema({
+    type: {
+        type: String,
+        enum: ['home', 'work', 'other'],
+        default: 'home'
+    },
+    fullName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    address: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    city: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    district: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    ward: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    isDefault: {
+        type: Boolean,
+        default: false
+    }
+});
+
+// ===========================================
 // USER SCHEMA
 // ===========================================
 // This schema defines user accounts for the e-commerce site
@@ -70,16 +115,67 @@ const userSchema = new Schema(
         maxlength: [500, 'Bio cannot exceed 500 characters'],
         trim: true
       },
+      phoneNumber: {
+        type: String,
+        trim: true,
+        validate: {
+          validator: function(v) {
+            return !v || /^[0-9]{10,11}$/.test(v);
+          },
+          message: 'Phone number must be 10-11 digits'
+        }
+      },
+      dateOfBirth: {
+        type: Date
+      },
+      gender: {
+        type: String,
+        enum: ['male', 'female', 'other'],
+        lowercase: true
+      },
+      addresses: [addressSchema],
+      // Wishlist - products user wants to buy later
+      wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+      }],
+      preferences: {
+        petTypes: [{
+          type: String,
+          enum: ['dog', 'cat', 'bird', 'fish', 'other']
+        }],
+        newsletter: {
+          type: Boolean,
+          default: true
+        },
+        notifications: {
+          orders: { type: Boolean, default: true },
+          promotions: { type: Boolean, default: true },
+          newProducts: { type: Boolean, default: false }
+        }
+      },
+      isActive: {
+        type: Boolean,
+        default: true
+      },
+      lastLogin: {
+        type: Date
+      },
+      emailVerified: {
+        type: Boolean,
+        default: false
+      },
+      emailVerificationToken: String,
+      passwordResetToken: String,
+      passwordResetExpires: Date,
       // ===========================================
       // SOCIAL LOGIN IDs
       // ===========================================
-      // Google account ID (for Google login)
       googleId: {
         type: String,
         unique: true,
         sparse: true, // Allow multiple null values
       },
-      // Facebook account ID (for Facebook login)
       facebookId: {
         type: String,
         unique: true,

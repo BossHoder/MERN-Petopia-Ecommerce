@@ -20,6 +20,11 @@ const orderItemSchema = new mongoose.Schema({
             message: 'Product does not exist'
         }
     },
+    // Selected variant (if any)
+    variantId: {
+        type: String,
+        trim: true
+    },
     // Product name (saved at time of order)
     productName: {
         type: String,
@@ -77,7 +82,27 @@ const orderSchema = new mongoose.Schema({
     // SHIPPING INFORMATION
     // ===========================================
     shippingAddress: {
+        fullName: {
+            type: String,
+            required: true,
+            trim: true
+        },
         address: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        city: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        district: {
+            type: String,
+            required: true,
+            trim: true
+        },
+        ward: {
             type: String,
             required: true,
             trim: true
@@ -119,10 +144,26 @@ const orderSchema = new mongoose.Schema({
         default: 0,
         min: 0
     },
+    // Discount from coupon
     discount: {
         type: Number,
         default: 0,
         min: 0
+    },
+    // Applied coupon details
+    appliedCoupon: {
+        code: {
+            type: String,
+            trim: true
+        },
+        discount: {
+            type: Number,
+            min: 0
+        },
+        discountType: {
+            type: String,
+            enum: ['percentage', 'fixed']
+        }
     },
     totalAmount: {
         type: Number,
@@ -145,7 +186,8 @@ const orderSchema = new mongoose.Schema({
         id: { type: String },
         status: { type: String },
         update_time: { type: String },
-        email_address: { type: String }
+        email_address: { type: String },
+        transaction_id: { type: String }
     },
     isPaid: {
         type: Boolean,
@@ -162,9 +204,29 @@ const orderSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        enum: ['pending', 'processing', 'completed', 'cancelled'],
+        enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'],
         default: 'pending'
     },
+    // Status history for tracking
+    statusHistory: [{
+        status: {
+            type: String,
+            required: true,
+            enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded']
+        },
+        timestamp: {
+            type: Date,
+            default: Date.now
+        },
+        note: {
+            type: String,
+            trim: true
+        },
+        updatedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    }],
     isDelivered: {
         type: Boolean,
         default: false
@@ -176,6 +238,12 @@ const orderSchema = new mongoose.Schema({
     trackingNumber: {
         type: String,
         sparse: true
+    },
+    // Shipping company
+    shippingCompany: {
+        type: String,
+        enum: ['ghn', 'ghtk', 'vnpost', 'self'],
+        default: 'ghn'
     },
     // Expected delivery date
     estimatedDelivery: {
@@ -191,6 +259,35 @@ const orderSchema = new mongoose.Schema({
         trim: true,
         maxlength: 500
     },
+    // Customer service notes (internal)
+    internalNotes: {
+        type: String,
+        trim: true,
+        maxlength: 1000
+    },
+    // Cancellation reason
+    cancellationReason: {
+        type: String,
+        trim: true
+    },
+    // Refund information
+    refundInfo: {
+        amount: {
+            type: Number,
+            min: 0
+        },
+        reason: {
+            type: String,
+            trim: true
+        },
+        processedAt: {
+            type: Date
+        },
+        refundMethod: {
+            type: String,
+            enum: ['bank_transfer', 'momo', 'zalopay', 'cash']
+        }
+    }
 }, {
     timestamps: true
 })
@@ -204,6 +301,7 @@ orderSchema.index({ paymentMethod: 1 });
 orderSchema.index({ orderNumber: 1 }, { unique: true });
 orderSchema.index({ createdAt: -1 });
 orderSchema.index({ 'orderItems.productId': 1 });
+orderSchema.index({ 'appliedCoupon.code': 1 });
 
 // ===========================================
 // VIRTUAL FIELDS (calculated fields)
@@ -241,10 +339,13 @@ orderSchema.pre('save', function (next) {
 orderSchema.pre('save', function (next) {
     if (this.isModified('status') && !this.isNew) {
         const validTransitions = {
-            'pending': ['processing', 'cancelled'],
-            'processing': ['completed', 'cancelled'],
-            'completed': [],
-            'cancelled': []
+            'pending': ['confirmed', 'cancelled'],
+            'confirmed': ['processing', 'cancelled'],
+            'processing': ['shipped', 'cancelled'],
+            'shipped': ['delivered', 'cancelled'],
+            'delivered': ['refunded'],
+            'cancelled': ['refunded'],
+            'refunded': []
         };
 
         const currentStatus = this.status;
@@ -255,10 +356,23 @@ orderSchema.pre('save', function (next) {
             return next(new Error(`Invalid status transition from ${previousStatus} to ${currentStatus}`));
         }
         
-        // Auto-update delivery status when completed
-        if (currentStatus === 'completed' && !this.deliveredAt) {
+        // Add to status history
+        this.statusHistory.push({
+            status: currentStatus,
+            timestamp: new Date(),
+            note: `Status changed from ${previousStatus} to ${currentStatus}`
+        });
+        
+        // Auto-update delivery status when delivered
+        if (currentStatus === 'delivered' && !this.deliveredAt) {
             this.isDelivered = true;
             this.deliveredAt = new Date();
+        }
+        
+        // Auto-update payment status for COD when delivered
+        if (currentStatus === 'delivered' && this.paymentMethod === 'cod' && !this.isPaid) {
+            this.isPaid = true;
+            this.paidAt = new Date();
         }
     }
     next();
@@ -291,9 +405,21 @@ orderSchema.methods.markAsPaid = function(paymentResult = {}) {
     this.isPaid = true;
     this.paidAt = new Date();
     this.paymentResult = {
-        ...this.paymentResult.toObject(),
+        ...this.paymentResult?.toObject(),
         ...paymentResult
     };
+    return this.save();
+};
+
+// Update order status with history
+orderSchema.methods.updateStatus = function(newStatus, note = '', updatedBy = null) {
+    this.status = newStatus;
+    this.statusHistory.push({
+        status: newStatus,
+        timestamp: new Date(),
+        note: note || `Status updated to ${newStatus}`,
+        updatedBy
+    });
     return this.save();
 };
 
@@ -308,6 +434,36 @@ orderSchema.statics.findByUser = function(userId) {
 // Find orders by status
 orderSchema.statics.findByStatus = function(status) {
     return this.find({ status }).sort({ createdAt: -1 });
+};
+
+// Find orders by date range
+orderSchema.statics.findByDateRange = function(startDate, endDate) {
+    return this.find({
+        createdAt: {
+            $gte: startDate,
+            $lte: endDate
+        }
+    }).sort({ createdAt: -1 });
+};
+
+// Get sales statistics
+orderSchema.statics.getSalesStats = function(startDate, endDate) {
+    return this.aggregate([
+        {
+            $match: {
+                createdAt: { $gte: startDate, $lte: endDate },
+                status: { $in: ['delivered', 'shipped', 'processing'] }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalRevenue: { $sum: '$totalAmount' },
+                totalOrders: { $sum: 1 },
+                avgOrderValue: { $avg: '$totalAmount' }
+            }
+        }
+    ]);
 };
 
 // ===========================================
