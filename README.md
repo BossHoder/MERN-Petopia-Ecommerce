@@ -120,7 +120,7 @@ Make sure you have the following installed:
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/petopia-store.git
+git clone https://github.com/BossHoder/petopia-store.git
 cd petopia-store
 ```
 
@@ -367,7 +367,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@BossHoder](https://github.com/BossHoder)
 - LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 - Email: your.email@example.com
 
@@ -395,6 +395,6 @@ If you have any questions or need help:
 
 **Made with ❤️ for pet lovers everywhere**
 
-[⭐ Star this repository](https://github.com/yourusername/petopia-store) if you found it helpful!
+[⭐ Star this repository](https://github.com/BossHoder/petopia-store) if you found it helpful!
 
 </div>

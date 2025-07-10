@@ -14,3 +14,5 @@ client/build
 server/docker/mongo-data/*
 !server/docker/mongo-data/.gitkeep
 
+server/INDEX_OPTIMIZATION_SUMMARY.md
+server/MONGODB_OPTIMIZATION.md
