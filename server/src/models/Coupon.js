@@ -132,11 +132,14 @@ const couponSchema = new mongoose.Schema({
 });
 
 // ===========================================
-// DATABASE INDEXES
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-couponSchema.index({ code: 1 }, { unique: true });
-couponSchema.index({ validFrom: 1, validUntil: 1 });
-couponSchema.index({ isActive: 1 });
+// Keep only essential indexes to save storage
+couponSchema.index({ code: 1 }, { unique: true }); // Required for coupon lookup
+couponSchema.index({ isActive: 1, validFrom: 1, validUntil: 1 }); // Combined validity check
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// couponSchema.index({ validFrom: 1, validUntil: 1 }); // Covered by compound index above
 
 // ===========================================
 // VIRTUAL FIELDS

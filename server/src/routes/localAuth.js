@@ -31,7 +31,7 @@ router.post('/register', async (req, res, next) => {
 
     try {
       const newUser = await new User({
-        provider: 'email',
+        provider: 'local',
         email,
         password,
         username,

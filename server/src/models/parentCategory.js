@@ -38,10 +38,14 @@ const parentCategorySchema = new mongoose.Schema({
 });
 
 // ===========================================
-// DATABASE INDEXES (for faster searches)
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-parentCategorySchema.index({ name: 1 });
-parentCategorySchema.index({ isPublished: 1 });
+// Keep only essential indexes to save storage
+parentCategorySchema.index({ name: 1, isPublished: 1 }); // Combined lookup for published categories
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// parentCategorySchema.index({ name: 1 }); // Covered by compound index above
+// parentCategorySchema.index({ isPublished: 1 }); // Covered by compound index above
 
 // ===========================================
 // CREATE AND EXPORT MODEL

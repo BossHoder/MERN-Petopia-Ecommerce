@@ -29,11 +29,14 @@ const paymentMethodSchema = new mongoose.Schema({
 })
 
 // ===========================================
-// DATABASE INDEXES (for faster searches)
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-paymentMethodSchema.index({ name: 1 }, { unique: true });
-paymentMethodSchema.index({ type: 1 });
-paymentMethodSchema.index({ isActive: 1 });
+// Keep only essential indexes to save storage
+paymentMethodSchema.index({ name: 1 }, { unique: true }); // Required for uniqueness
+paymentMethodSchema.index({ isActive: 1 }); // Filter active payment methods
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// paymentMethodSchema.index({ type: 1 }); // Type filtering not frequent with few payment methods
 
 // ===========================================
 // CREATE AND EXPORT MODEL

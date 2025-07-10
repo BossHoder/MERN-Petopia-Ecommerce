@@ -123,10 +123,15 @@ const cartSchema = new mongoose.Schema({
 })
 
 // ===========================================
-// COMPOUND INDEXES
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-cartSchema.index({ username: 1, sessionId: 1 });
-cartSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Keep only essential indexes to save storage
+cartSchema.index({ username: 1 }); // Primary lookup
+cartSchema.index({ sessionId: 1 }); // Guest cart lookup  
+cartSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL cleanup
+
+// Remove compound index as it's not needed for small scale
+// cartSchema.index({ username: 1, sessionId: 1 }); // REMOVED
 
 // ===========================================
 // MIDDLEWARE (runs before saving)

@@ -109,12 +109,15 @@ const notificationSchema = new mongoose.Schema({
 });
 
 // ===========================================
-// DATABASE INDEXES
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-notificationSchema.index({ recipient: 1, isRead: 1 });
-notificationSchema.index({ type: 1 });
-notificationSchema.index({ createdAt: -1 });
-notificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Keep only essential indexes to save storage
+notificationSchema.index({ recipient: 1, isRead: 1 }); // User's unread notifications
+notificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL cleanup
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// notificationSchema.index({ type: 1 }); // Type filtering not frequent
+// notificationSchema.index({ createdAt: -1 }); // Sorting can be done in memory
 
 // ===========================================
 // INSTANCE METHODS

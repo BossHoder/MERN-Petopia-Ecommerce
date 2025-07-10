@@ -293,15 +293,18 @@ const orderSchema = new mongoose.Schema({
 })
 
 // ===========================================
-// DATABASE INDEXES (for faster searches)
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-orderSchema.index({ username: 1, status: 1 });
-orderSchema.index({ status: 1 });
-orderSchema.index({ paymentMethod: 1 });
-orderSchema.index({ orderNumber: 1 }, { unique: true });
-orderSchema.index({ createdAt: -1 });
-orderSchema.index({ 'orderItems.productId': 1 });
-orderSchema.index({ 'appliedCoupon.code': 1 });
+// Keep only essential indexes to save storage
+orderSchema.index({ username: 1, status: 1 }); // User's order history with status
+orderSchema.index({ orderNumber: 1 }, { unique: true }); // Required for uniqueness
+orderSchema.index({ createdAt: -1 }); // Order history sorting
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// orderSchema.index({ status: 1 }); // Covered by compound index above
+// orderSchema.index({ paymentMethod: 1 }); // Not critical for admin reports
+// orderSchema.index({ 'orderItems.productId': 1 }); // Product sales analysis not frequent
+// orderSchema.index({ 'appliedCoupon.code': 1 }); // Coupon usage tracking not critical
 
 // ===========================================
 // VIRTUAL FIELDS (calculated fields)

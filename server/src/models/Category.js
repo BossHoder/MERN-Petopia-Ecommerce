@@ -73,15 +73,18 @@ const categorySchema = new mongoose.Schema({
 });
 
 // ===========================================
-// DATABASE INDEXES (for faster searches)
+// OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
 // ===========================================
-categorySchema.index({ slug: 1 });
-categorySchema.index({ parentCategory: 1 });
-categorySchema.index({ isPublished: 1 });
-categorySchema.index({ name: 'text', description: 'text' });
-categorySchema.index({ parentCategory: 1, isPublished: 1 });
-categorySchema.index({ isPublished: 1, sortOrder: 1 });
-categorySchema.index({ productCount: -1, isPublished: 1 });
+// Keep only essential indexes to save storage
+categorySchema.index({ slug: 1 }); // Required for URL routing
+categorySchema.index({ parentCategory: 1, isPublished: 1 }); // Main category navigation
+categorySchema.index({ name: 'text', description: 'text' }); // Search functionality
+
+// REMOVED FOR SMALL SCALE (can add back when needed):
+// categorySchema.index({ parentCategory: 1 }); // Covered by compound index above
+// categorySchema.index({ isPublished: 1 }); // Covered by compound index above
+// categorySchema.index({ isPublished: 1, sortOrder: 1 }); // Sorting can be done in memory
+// categorySchema.index({ productCount: -1, isPublished: 1 }); // Analytics not critical
 
 // ===========================================
 // MIDDLEWARE (runs before saving)
