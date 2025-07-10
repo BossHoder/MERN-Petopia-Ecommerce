@@ -366,10 +366,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 👨‍💻 Author
 
-**Your Name**
+**BossHoder**
 - GitHub: [@BossHoder](https://github.com/BossHoder)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- LinkedIn: [Anh Thế](https://www.linkedin.com/in/anh-th%E1%BA%BF-36a298301/)
+- Email: thetruong275@gmail.com
 
 ## 🙏 Acknowledgments
 
