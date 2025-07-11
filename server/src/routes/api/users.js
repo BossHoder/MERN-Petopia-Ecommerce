@@ -3,7 +3,7 @@ import multer from 'multer';
 import { resolve } from 'path';
 
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
-import User, { hashPassword, validateUser } from '../../models/User.js';
+import User, { hashPassword, validateUserModel } from '../../models/User.js';
 import UserService from '../../services/userService.js';
 // import { seedDb } from '../../utils/seed';
 

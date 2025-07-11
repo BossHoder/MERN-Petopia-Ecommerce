@@ -14,6 +14,16 @@ router.use('/api', (req, res) => res.status(404).json('No route for this path'))
 router.get('/', (req, res) => {
   res.status(200).send('<h1>Server của bạn đang chạyyyy!</h1><p>Đây là trang chủ.</p>');
 });
+
+// Redirect routes for convenience
+router.all('/register', (req, res) => {
+  res.redirect(307, '/auth/register');
+});
+
+router.all('/login', (req, res) => {
+  res.redirect(307, '/auth/login');
+});
+
 router.get('/health', (req, res) => {
   res.status(200).send({ status: 'ok' });
 });

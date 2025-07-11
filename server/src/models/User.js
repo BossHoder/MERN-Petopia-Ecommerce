@@ -247,6 +247,16 @@ userSchema.methods.registerUser = async function () {
 // ===========================================
 // MIDDLEWARE (runs before saving)
 // ===========================================
+// Hash password before saving (for local users)
+userSchema.pre('save', async function (next) {
+  // Only hash password if it's modified and user is local
+  if (this.isModified('password') && this.provider === 'local') {
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+  next();
+});
+
 // Validate password for local users before saving
 userSchema.pre('save', function (next) {
   if (this.provider === 'local' && (!this.password || this.password.length < 6)) {

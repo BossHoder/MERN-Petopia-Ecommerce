@@ -45,6 +45,11 @@ connectDB();
 app.use('/', routes);
 app.use('/public/images', express.static(join(__dirname, '../public/images')));
 
+// Debug: Show all available routes
+app.get('/debug/routes', (req, res) => {
+  res.json(all_routes(app));
+});
+
 // Serve static assets if in production
 if (isProduction) {
   // Set static folder
@@ -57,10 +62,10 @@ if (isProduction) {
   // });
 
 
-  const port = process.env.PORT;
+  const port = process.env.PORT || 5000;
   app.listen(port, () => console.log(`Server started on port ${port}`));
 } else {
-  const port = process.env.PORT;
+  const port = process.env.PORT || 5000;
   app.get("/data/products", (req, res) => {
     res.json(products);
   });

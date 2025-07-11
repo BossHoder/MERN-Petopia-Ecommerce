@@ -6,7 +6,7 @@ export const validateUser = (user) => {
     email: Joi.string().min(5).max(255).required().email(),
     username: Joi.string().min(3).max(30).required(),
     password: Joi.string().min(6).max(255).required(),
-    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
+    phoneNumber: Joi.string().regex(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
     dateOfBirth: Joi.date().max('now').optional(),
     gender: Joi.string().valid('male', 'female', 'other').optional()
   });
@@ -25,7 +25,7 @@ export const validateUserModel = (user) => {
       .regex(/^[a-zA-Z0-9_]+$/)
       .required(),
     password: Joi.string().min(6).max(20).allow('').allow(null),
-    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
+    phoneNumber: Joi.string().regex(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
     dateOfBirth: Joi.date().max('now').optional(),
     gender: Joi.string().valid('male', 'female', 'other').optional()
   });
@@ -39,7 +39,7 @@ export const validateUserUpdate = (user) => {
     email: Joi.string().min(5).max(255).email(),
     username: Joi.string().min(3).max(30),
     password: Joi.string().min(6).max(255),
-    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/),
+    phoneNumber: Joi.string().regex(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
     dateOfBirth: Joi.date().max('now'),
     gender: Joi.string().valid('male', 'female', 'other')
   });
@@ -60,7 +60,7 @@ export const validateAddress = (address) => {
   const schema = Joi.object({
     type: Joi.string().valid('home', 'work', 'other').default('home'),
     fullName: Joi.string().min(2).max(100).required(),
-    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).required(),
+    phoneNumber: Joi.string().regex(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).required(),
     address: Joi.string().min(5).max(200).required(),
     city: Joi.string().min(2).max(100).required(),
     district: Joi.string().min(2).max(100).required(),
@@ -90,7 +90,7 @@ export const validateUserRegistration = (user) => {
     email: Joi.string().min(5).max(255).required().email(),
     username: Joi.string().min(3).max(30).required(),
     password: Joi.string().min(6).max(255).required(),
-    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
+    phoneNumber: Joi.string().regex(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
     dateOfBirth: Joi.date().max('now').optional(),
     gender: Joi.string().valid('male', 'female', 'other').optional()
   });
