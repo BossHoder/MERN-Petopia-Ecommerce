@@ -82,3 +82,18 @@ export const validatePreferences = (preferences) => {
 
   return schema.validate(preferences);
 };
+
+// Validation for user registration
+export const validateUserRegistration = (user) => {
+  const schema = Joi.object({
+    name: Joi.string().min(2).max(50).required(),
+    email: Joi.string().min(5).max(255).required().email(),
+    username: Joi.string().min(3).max(30).required(),
+    password: Joi.string().min(6).max(255).required(),
+    phoneNumber: Joi.string().pattern(/^(\+84|84|0)(3|5|7|8|9)\d{8}$/).optional(),
+    dateOfBirth: Joi.date().max('now').optional(),
+    gender: Joi.string().valid('male', 'female', 'other').optional()
+  });
+
+  return schema.validate(user);
+};

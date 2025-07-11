@@ -266,6 +266,11 @@ userSchema.methods.comparePassword = function (candidatePassword, callback) {
   });
 };
 
+// Promise-based version for modern async/await
+userSchema.methods.comparePasswordAsync = function (candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
+
 // ===========================================
 // CREATE AND EXPORT MODEL
 // ===========================================

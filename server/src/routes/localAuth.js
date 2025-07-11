@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import Joi from 'joi';
-import faker from 'faker';
 
-import User from '../models/User.js';
 import requireLocalAuth from '../middleware/requireLocalAuth.js';
-import { registerSchema } from '../services/validators.js';
+import userService from '../services/userService.js';
+import { validateUserRegistration } from '../validations/userValidation.js';
+import { createErrorDto, createSuccessDto } from '../dto/index.js';
 
 const router = Router();
 
@@ -14,41 +13,41 @@ router.post('/login', requireLocalAuth, (req, res) => {
   res.json({ token, me });
 });
 
-router.post('/register', async (req, res, next) => {
-  const { error } = Joi.validate(req.body, registerSchema);
-  if (error) {
-    return res.status(422).send({ message: error.details[0].message });
-  }
-
-  const { email, password, name, username } = req.body;
-
-  try {
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(422).send({ message: 'Email is in use' });
+router.post('/register', async (req, res) => {
+try {
+    const { error } = validateUserRegistration(req.body);
+    if (error) {
+      return res.status(422).json(createErrorDto(
+        error.details[0].message,
+        'VALIDATION_ERROR'
+      ));
     }
 
-    try {
-      const newUser = await new User({
-        provider: 'local',
-        email,
-        password,
-        username,
-        name,
-        avatar: faker.image.avatar(),
-      });
+    const result = await userService.createUser({
+      ...req.body,
+      provider: 'local'
+    });
 
-      newUser.registerUser(newUser, (err, user) => {
-        if (err) throw err;
-        res.json({ message: 'Register success.' }); // just redirect to login
-      });
-    } catch (err) {
-      return next(err);
+    if (!result.success) {
+      return res.status(422).json(createErrorDto(
+        result.error || 'Registration failed',
+        'REGISTRATION_ERROR'
+      ));
     }
-  } catch (err) {
-    return next(err);
+
+    res.status(201).json(createSuccessDto(
+      { user: result.user },
+      'User registered successfully'
+    ));
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json(createErrorDto(
+      'Internal server error',
+      'INTERNAL_SERVER_ERROR'
+    ));
   }
+
 });
 
 // logout
