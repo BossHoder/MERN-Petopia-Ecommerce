@@ -30,6 +30,11 @@ import './services/jwtStrategy.js';
 // import './services/facebookStrategy.js';
 // import './services/googleStrategy.js';
 import './services/localStrategy.js';
+
+// Import models to register them with Mongoose
+import './models/User.js';
+import './models/Product.js';
+
 import sampleProducts from './data/Products.js';
 
 const isProduction = process.env.NODE_ENV === 'production';

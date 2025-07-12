@@ -191,12 +191,21 @@ const userSchema = new Schema(
 // Control what data is sent to frontend (hide sensitive info)
 userSchema.methods.toJSON = function () {
   // Handle avatar path - check if it's a URL or local file
-  const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
-  const avatar = isValidUrl(this.avatar)
-    ? this.avatar // Use URL as-is
-    : fs.existsSync(absoluteAvatarFilePath)
+  let avatar;
+  
+  if (!this.avatar) {
+    // No avatar set, use default
+    avatar = `${IMAGES_FOLDER_PATH}avatar2.jpg`;
+  } else if (isValidUrl(this.avatar)) {
+    // Avatar is a URL
+    avatar = this.avatar;
+  } else {
+    // Avatar is a local file, check if it exists
+    const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
+    avatar = fs.existsSync(absoluteAvatarFilePath)
       ? `${IMAGES_FOLDER_PATH}${this.avatar}` // Use local file
       : `${IMAGES_FOLDER_PATH}avatar2.jpg`; // Use default avatar
+  }
 
   return {
     id: this._id,
