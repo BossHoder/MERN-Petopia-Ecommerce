@@ -22,42 +22,42 @@ const addressSchema = new Schema({
     type: {
         type: String,
         enum: ['home', 'work', 'other'],
-        default: 'home'
+        default: 'home',
     },
     fullName: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     phoneNumber: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     address: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     city: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     district: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     ward: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     isDefault: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
 // ===========================================
@@ -65,124 +65,128 @@ const addressSchema = new Schema({
 // ===========================================
 // This schema defines user accounts for the e-commerce site
 const userSchema = new Schema(
-  {
-    // How the user signed up (local, google, facebook)
-    provider: {
-      type: String,
-      required: true,
-    },
-    // Unique username for login
-    username: {
-      type: String,
-      lowercase: true,
-      unique: true,
-      required: [true, "can't be blank"],
-      match: [/^[a-zA-Z0-9_]+$/, 'is invalid'], // Only letters, numbers, underscore
-      minlength: [3, 'Username must be at least 3 characters'],
-      maxlength: [20, 'Username cannot exceed 20 characters'],
-      index: true,
-    },
-      email: {
-        type: String,
-        lowercase: true,
-        unique: true,
-        required: [true, "can't be blank"],
-        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'is invalid'],
-        index: true,
-      },
-      password: {
-        type: String,
-        trim: true,
-        minlength: 6,
-        maxlength: 60,
-      },
-      name: {
-        type: String,
-        required: [true, 'Name is required'],
-        trim: true,
-        minlength: [2, 'Name must be at least 2 characters'],
-        maxlength: [50, 'Name cannot exceed 50 characters']
-      },
-      avatar: String,
-      role: {
-        type: String,
-        default: 'USER',
-        enum: ['USER', 'ADMIN'],
-        uppercase: true
-      },
-      bio: {
-        type: String,
-        maxlength: [500, 'Bio cannot exceed 500 characters'],
-        trim: true
-      },
-      phoneNumber: {
-        type: String,
-        trim: true,
-        validate: {
-          validator: function(v) {
-            return !v || /^[0-9]{10,11}$/.test(v);
-          },
-          message: 'Phone number must be 10-11 digits'
-        }
-      },
-      dateOfBirth: {
-        type: Date
-      },
-      gender: {
-        type: String,
-        enum: ['male', 'female', 'other'],
-        lowercase: true
-      },
-      addresses: [addressSchema],
-      // Wishlist - products user wants to buy later
-      wishlist: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
-      }],
-      preferences: {
-        petTypes: [{
-          type: String,
-          enum: ['dog', 'cat', 'bird', 'fish', 'other']
-        }],
-        newsletter: {
-          type: Boolean,
-          default: true
+    {
+        // How the user signed up (local, google, facebook)
+        provider: {
+            type: String,
+            required: true,
         },
-        notifications: {
-          orders: { type: Boolean, default: true },
-          promotions: { type: Boolean, default: true },
-          newProducts: { type: Boolean, default: false }
-        }
-      },
-      isActive: {
-        type: Boolean,
-        default: true
-      },
-      lastLogin: {
-        type: Date
-      },
-      emailVerified: {
-        type: Boolean,
-        default: false
-      },
-      emailVerificationToken: String,
-      passwordResetToken: String,
-      passwordResetExpires: Date,
-      // ===========================================
-      // SOCIAL LOGIN IDs
-      // ===========================================
-      googleId: {
-        type: String,
-        unique: true,
-        sparse: true, // Allow multiple null values
-      },
-      facebookId: {
-        type: String,
-        unique: true,
-        sparse: true, // Allow multiple null values
-      },
+        // Unique username for login
+        username: {
+            type: String,
+            lowercase: true,
+            unique: true,
+            required: [true, "can't be blank"],
+            match: [/^[a-zA-Z0-9_]+$/, 'is invalid'], // Only letters, numbers, underscore
+            minlength: [3, 'Username must be at least 3 characters'],
+            maxlength: [20, 'Username cannot exceed 20 characters'],
+            index: true,
+        },
+        email: {
+            type: String,
+            lowercase: true,
+            unique: true,
+            required: [true, "can't be blank"],
+            match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'is invalid'],
+            index: true,
+        },
+        password: {
+            type: String,
+            trim: true,
+            minlength: 6,
+            maxlength: 60,
+        },
+        name: {
+            type: String,
+            required: [true, 'Name is required'],
+            trim: true,
+            minlength: [2, 'Name must be at least 2 characters'],
+            maxlength: [50, 'Name cannot exceed 50 characters'],
+        },
+        avatar: String,
+        role: {
+            type: String,
+            default: 'USER',
+            enum: ['USER', 'ADMIN'],
+            uppercase: true,
+        },
+        bio: {
+            type: String,
+            maxlength: [500, 'Bio cannot exceed 500 characters'],
+            trim: true,
+        },
+        phoneNumber: {
+            type: String,
+            trim: true,
+            validate: {
+                validator: function (v) {
+                    return !v || /^[0-9]{10,11}$/.test(v);
+                },
+                message: 'Phone number must be 10-11 digits',
+            },
+        },
+        dateOfBirth: {
+            type: Date,
+        },
+        gender: {
+            type: String,
+            enum: ['male', 'female', 'other'],
+            lowercase: true,
+        },
+        addresses: [addressSchema],
+        // Wishlist - products user wants to buy later
+        wishlist: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+        ],
+        preferences: {
+            petTypes: [
+                {
+                    type: String,
+                    enum: ['dog', 'cat', 'bird', 'fish', 'other'],
+                },
+            ],
+            newsletter: {
+                type: Boolean,
+                default: true,
+            },
+            notifications: {
+                orders: { type: Boolean, default: true },
+                promotions: { type: Boolean, default: true },
+                newProducts: { type: Boolean, default: false },
+            },
+        },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        lastLogin: {
+            type: Date,
+        },
+        emailVerified: {
+            type: Boolean,
+            default: false,
+        },
+        emailVerificationToken: String,
+        passwordResetToken: String,
+        passwordResetExpires: Date,
+        // ===========================================
+        // SOCIAL LOGIN IDs
+        // ===========================================
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true, // Allow multiple null values
+        },
+        facebookId: {
+            type: String,
+            unique: true,
+            sparse: true, // Allow multiple null values
+        },
     },
-  { timestamps: true },
+    { timestamps: true },
 );
 
 // ===========================================
@@ -190,34 +194,34 @@ const userSchema = new Schema(
 // ===========================================
 // Control what data is sent to frontend (hide sensitive info)
 userSchema.methods.toJSON = function () {
-  // Handle avatar path - check if it's a URL or local file
-  let avatar;
-  
-  if (!this.avatar) {
-    // No avatar set, use default
-    avatar = `${IMAGES_FOLDER_PATH}avatar2.jpg`;
-  } else if (isValidUrl(this.avatar)) {
-    // Avatar is a URL
-    avatar = this.avatar;
-  } else {
-    // Avatar is a local file, check if it exists
-    const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
-    avatar = fs.existsSync(absoluteAvatarFilePath)
-      ? `${IMAGES_FOLDER_PATH}${this.avatar}` // Use local file
-      : `${IMAGES_FOLDER_PATH}avatar2.jpg`; // Use default avatar
-  }
+    // Handle avatar path - check if it's a URL or local file
+    let avatar;
 
-  return {
-    id: this._id,
-    provider: this.provider,
-    email: this.email,
-    username: this.username,
-    avatar: avatar,
-    name: this.name,
-    role: this.role,
-    createdAt: this.createdAt,
-    updatedAt: this.updatedAt,
-  };
+    if (!this.avatar) {
+        // No avatar set, use default
+        avatar = `${IMAGES_FOLDER_PATH}avatar2.jpg`;
+    } else if (isValidUrl(this.avatar)) {
+        // Avatar is a URL
+        avatar = this.avatar;
+    } else {
+        // Avatar is a local file, check if it exists
+        const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
+        avatar = fs.existsSync(absoluteAvatarFilePath)
+            ? `${IMAGES_FOLDER_PATH}${this.avatar}` // Use local file
+            : `${IMAGES_FOLDER_PATH}avatar2.jpg`; // Use default avatar
+    }
+
+    return {
+        id: this._id,
+        provider: this.provider,
+        email: this.email,
+        username: this.username,
+        avatar: avatar,
+        name: this.name,
+        role: this.role,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
+    };
 };
 
 // ===========================================
@@ -229,16 +233,16 @@ const secretOrKey = isProduction ? process.env.JWT_SECRET_PROD : process.env.JWT
 
 // Generate login token for user
 userSchema.methods.generateJWT = function () {
-  const token = jwt.sign(
-    {
-      expiresIn: '12h',
-      id: this._id,
-      provider: this.provider,
-      email: this.email,
-    },
-    secretOrKey,
-  );
-  return token;
+    const token = jwt.sign(
+        {
+            expiresIn: '12h',
+            id: this._id,
+            provider: this.provider,
+            email: this.email,
+        },
+        secretOrKey,
+    );
+    return token;
 };
 
 // ===========================================
@@ -246,11 +250,11 @@ userSchema.methods.generateJWT = function () {
 // ===========================================
 // Register new user (hash password if local account)
 userSchema.methods.registerUser = async function () {
-  if (this.password && this.provider === 'local') {
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
-  }
-  return this.save();
+    if (this.password && this.provider === 'local') {
+        const saltRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+    return this.save();
 };
 
 // ===========================================
@@ -258,20 +262,20 @@ userSchema.methods.registerUser = async function () {
 // ===========================================
 // Hash password before saving (for local users)
 userSchema.pre('save', async function (next) {
-  // Only hash password if it's modified and user is local
-  if (this.isModified('password') && this.provider === 'local') {
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
-  }
-  next();
+    // Only hash password if it's modified and user is local
+    if (this.isModified('password') && this.provider === 'local') {
+        const saltRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+    next();
 });
 
 // Validate password for local users before saving
 userSchema.pre('save', function (next) {
-  if (this.provider === 'local' && (!this.password || this.password.length < 6)) {
-    return next(new Error('Password is required and must be at least 6 characters for local users'));
-  }
-  next();
+    if (this.provider === 'local' && (!this.password || this.password.length < 6)) {
+        return next(new Error('Password is required and must be at least 6 characters for local users'));
+    }
+    next();
 });
 
 // ===========================================
@@ -279,15 +283,15 @@ userSchema.pre('save', function (next) {
 // ===========================================
 // Compare entered password with stored hash
 userSchema.methods.comparePassword = function (candidatePassword, callback) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) return callback(err);
-    callback(null, isMatch);
-  });
+    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+        if (err) return callback(err);
+        callback(null, isMatch);
+    });
 };
 
 // Promise-based version for modern async/await
 userSchema.methods.comparePasswordAsync = function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
+    return bcrypt.compare(candidatePassword, this.password);
 };
 
 // ===========================================

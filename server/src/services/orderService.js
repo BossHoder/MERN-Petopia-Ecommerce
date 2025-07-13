@@ -18,13 +18,13 @@ class OrderService {
             if (!validation.isValid) {
                 return {
                     success: false,
-                    errors: validation.errors
+                    errors: validation.errors,
                 };
             }
 
             // Create order
             const result = await orderHelper.createOrderFromCart(orderData.cart, orderData);
-            
+
             if (result.success) {
                 // Update user order statistics
                 await userService.updateOrderStats(orderData.username, result.order.pricing.total);
@@ -36,7 +36,7 @@ class OrderService {
 
                 return {
                     success: true,
-                    order: orderDto(result.order)
+                    order: orderDto(result.order),
                 };
             }
 
@@ -44,7 +44,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -59,7 +59,7 @@ class OrderService {
             if (!order) {
                 return {
                     success: false,
-                    error: 'Order not found'
+                    error: 'Order not found',
                 };
             }
 
@@ -68,12 +68,12 @@ class OrderService {
 
             return {
                 success: true,
-                order: orderResponse
+                order: orderResponse,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -88,7 +88,7 @@ class OrderService {
             if (!order) {
                 return {
                     success: false,
-                    error: 'Order not found'
+                    error: 'Order not found',
                 };
             }
 
@@ -96,12 +96,12 @@ class OrderService {
 
             return {
                 success: true,
-                order: orderResponse
+                order: orderResponse,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -109,33 +109,22 @@ class OrderService {
     // Get all orders with filtering and pagination
     async getOrders(filters = {}, options = {}) {
         try {
-            const {
-                page = 1,
-                limit = 20,
-                sortBy = 'createdAt',
-                sortOrder = 'desc',
-                isAdmin = false
-            } = options;
+            const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc', isAdmin = false } = options;
 
-            const {
-                status,
-                userId,
-                startDate,
-                endDate,
-                paymentMethod
-            } = filters;
+            const { status, userId, startDate, endDate, paymentMethod } = filters;
 
             // Build query
             const query = {
                 ...(status && { status }),
                 ...(userId && { username: userId }),
                 ...(paymentMethod && { paymentMethod }),
-                ...(startDate && endDate && {
-                    createdAt: {
-                        $gte: new Date(startDate),
-                        $lte: new Date(endDate)
-                    }
-                })
+                ...(startDate &&
+                    endDate && {
+                        createdAt: {
+                            $gte: new Date(startDate),
+                            $lte: new Date(endDate),
+                        },
+                    }),
             };
 
             const orders = await Order.find(query)
@@ -146,9 +135,9 @@ class OrderService {
 
             const total = await Order.countDocuments(query);
 
-            const orderResponse = isAdmin 
-                ? orders.map(order => adminOrderDto(order))
-                : orders.map(order => orderListDto(order));
+            const orderResponse = isAdmin
+                ? orders.map((order) => adminOrderDto(order))
+                : orders.map((order) => orderListDto(order));
 
             return {
                 success: true,
@@ -157,13 +146,13 @@ class OrderService {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -172,12 +161,12 @@ class OrderService {
     async getUserOrders(userId, options = {}) {
         try {
             const result = await orderHelper.getUserOrderHistory(userId, options);
-            
+
             if (result.success) {
                 return {
                     success: true,
-                    orders: result.orders.map(order => customerOrderDto(order)),
-                    pagination: result.pagination
+                    orders: result.orders.map((order) => customerOrderDto(order)),
+                    pagination: result.pagination,
                 };
             }
 
@@ -185,7 +174,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -194,11 +183,11 @@ class OrderService {
     async updateOrderStatus(orderId, newStatus, comment = '', changedBy = null) {
         try {
             const result = await orderHelper.updateOrderStatus(orderId, newStatus, comment, changedBy);
-            
+
             if (result.success) {
                 return {
                     success: true,
-                    order: orderDto(result.order)
+                    order: orderDto(result.order),
                 };
             }
 
@@ -206,7 +195,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -215,7 +204,7 @@ class OrderService {
     async cancelOrder(orderId, reason = '', cancelledBy = null) {
         try {
             const result = await orderHelper.cancelOrder(orderId, reason, cancelledBy);
-            
+
             if (result.success) {
                 // Restock products
                 for (const item of result.order.items) {
@@ -224,7 +213,7 @@ class OrderService {
 
                 return {
                     success: true,
-                    order: orderDto(result.order)
+                    order: orderDto(result.order),
                 };
             }
 
@@ -232,7 +221,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -241,11 +230,11 @@ class OrderService {
     async processRefund(orderId, refundData) {
         try {
             const result = await orderHelper.processRefund(orderId, refundData);
-            
+
             if (result.success) {
                 return {
                     success: true,
-                    order: orderDto(result.order)
+                    order: orderDto(result.order),
                 };
             }
 
@@ -253,7 +242,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -262,11 +251,11 @@ class OrderService {
     async addTrackingInfo(orderId, trackingData) {
         try {
             const result = await orderHelper.addTrackingInfo(orderId, trackingData);
-            
+
             if (result.success) {
                 return {
                     success: true,
-                    order: orderDto(result.order)
+                    order: orderDto(result.order),
                 };
             }
 
@@ -274,7 +263,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -283,11 +272,11 @@ class OrderService {
     async addInternalNote(orderId, note, addedBy) {
         try {
             const result = await orderHelper.addInternalNote(orderId, note, addedBy);
-            
+
             if (result.success) {
                 return {
                     success: true,
-                    order: adminOrderDto(result.order)
+                    order: adminOrderDto(result.order),
                 };
             }
 
@@ -295,7 +284,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -308,7 +297,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -316,21 +305,15 @@ class OrderService {
     // Search orders
     async searchOrders(query, options = {}) {
         try {
-            const {
-                page = 1,
-                limit = 20,
-                sortBy = 'createdAt',
-                sortOrder = 'desc',
-                isAdmin = false
-            } = options;
+            const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc', isAdmin = false } = options;
 
             const searchQuery = {
                 $or: [
                     { orderNumber: { $regex: query, $options: 'i' } },
                     { 'shippingAddress.fullName': { $regex: query, $options: 'i' } },
                     { 'shippingAddress.phoneNumber': { $regex: query, $options: 'i' } },
-                    { trackingNumber: { $regex: query, $options: 'i' } }
-                ]
+                    { trackingNumber: { $regex: query, $options: 'i' } },
+                ],
             };
 
             const orders = await Order.find(searchQuery)
@@ -341,9 +324,9 @@ class OrderService {
 
             const total = await Order.countDocuments(searchQuery);
 
-            const orderResponse = isAdmin 
-                ? orders.map(order => adminOrderDto(order))
-                : orders.map(order => orderListDto(order));
+            const orderResponse = isAdmin
+                ? orders.map((order) => adminOrderDto(order))
+                : orders.map((order) => orderListDto(order));
 
             return {
                 success: true,
@@ -352,13 +335,13 @@ class OrderService {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -371,7 +354,7 @@ class OrderService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -379,23 +362,20 @@ class OrderService {
     // Get recent orders
     async getRecentOrders(limit = 10, isAdmin = false) {
         try {
-            const orders = await Order.find({})
-                .populate('username', 'name email')
-                .sort({ createdAt: -1 })
-                .limit(limit);
+            const orders = await Order.find({}).populate('username', 'name email').sort({ createdAt: -1 }).limit(limit);
 
-            const orderResponse = isAdmin 
-                ? orders.map(order => adminOrderDto(order))
-                : orders.map(order => orderListDto(order));
+            const orderResponse = isAdmin
+                ? orders.map((order) => adminOrderDto(order))
+                : orders.map((order) => orderListDto(order));
 
             return {
                 success: true,
-                orders: orderResponse
+                orders: orderResponse,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -404,29 +384,29 @@ class OrderService {
     async bulkUpdateOrders(updates) {
         try {
             const results = [];
-            
+
             for (const update of updates) {
                 const result = await this.updateOrderStatus(
                     update.orderId,
                     update.status,
                     update.comment,
-                    update.changedBy
+                    update.changedBy,
                 );
                 results.push(result);
             }
 
-            const successful = results.filter(r => r.success).length;
-            const failed = results.filter(r => !r.success).length;
+            const successful = results.filter((r) => r.success).length;
+            const failed = results.filter((r) => !r.success).length;
 
             return {
                 success: true,
                 message: `Updated ${successful} orders, ${failed} failed`,
-                results
+                results,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -435,7 +415,7 @@ class OrderService {
     async getOrderAnalytics(dateRange = {}) {
         try {
             const stats = await this.getOrderStats(null, dateRange);
-            
+
             if (!stats.success) {
                 return stats;
             }
@@ -443,12 +423,13 @@ class OrderService {
             // Get additional analytics
             const { startDate, endDate } = dateRange;
             const matchQuery = {
-                ...(startDate && endDate && {
-                    createdAt: {
-                        $gte: new Date(startDate),
-                        $lte: new Date(endDate)
-                    }
-                })
+                ...(startDate &&
+                    endDate && {
+                        createdAt: {
+                            $gte: new Date(startDate),
+                            $lte: new Date(endDate),
+                        },
+                    }),
             };
 
             const analytics = await Order.aggregate([
@@ -457,21 +438,21 @@ class OrderService {
                     $group: {
                         _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                         dailyOrders: { $sum: 1 },
-                        dailyRevenue: { $sum: '$pricing.total' }
-                    }
+                        dailyRevenue: { $sum: '$pricing.total' },
+                    },
                 },
-                { $sort: { _id: 1 } }
+                { $sort: { _id: 1 } },
             ]);
 
             return {
                 success: true,
                 stats: stats.stats,
-                dailyAnalytics: analytics
+                dailyAnalytics: analytics,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }

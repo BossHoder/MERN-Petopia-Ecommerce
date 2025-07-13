@@ -16,7 +16,7 @@ class UserService {
             if (!validation.isValid) {
                 return {
                     success: false,
-                    errors: validation.errors
+                    errors: validation.errors,
                 };
             }
 
@@ -30,12 +30,12 @@ class UserService {
 
             return {
                 success: true,
-                user: userDto(user)
+                user: userDto(user),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -44,14 +44,14 @@ class UserService {
     async getUser(identifier, isPublic = false) {
         try {
             const isObjectId = identifier.match(/^[0-9a-fA-F]{24}$/);
-            const user = isObjectId 
+            const user = isObjectId
                 ? await User.findById(identifier).populate('wishlist', 'name price images')
                 : await User.findOne({ username: identifier }).populate('wishlist', 'name price images');
 
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found',
                 };
             }
 
@@ -60,12 +60,12 @@ class UserService {
 
             return {
                 success: true,
-                user: userResponse
+                user: userResponse,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -78,7 +78,7 @@ class UserService {
             if (!validation.isValid) {
                 return {
                     success: false,
-                    errors: validation.errors
+                    errors: validation.errors,
                 };
             }
 
@@ -87,27 +87,26 @@ class UserService {
                 await userHelper.updateLastLogin(userId);
             }
 
-            const user = await User.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true, runValidators: true }
-            ).populate('wishlist', 'name price images');
+            const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true }).populate(
+                'wishlist',
+                'name price images',
+            );
 
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found',
                 };
             }
 
             return {
                 success: true,
-                user: profileDto(user)
+                user: profileDto(user),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -119,18 +118,18 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found',
                 };
             }
 
             return {
                 success: true,
-                message: 'User account deleted successfully'
+                message: 'User account deleted successfully',
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -138,18 +137,11 @@ class UserService {
     // Get all users (admin only)
     async getUsers(options = {}) {
         try {
-            const {
-                page = 1,
-                limit = 20,
-                sortBy = 'createdAt',
-                sortOrder = 'desc',
-                role,
-                isActive
-            } = options;
+            const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc', role, isActive } = options;
 
             const query = {
                 ...(role && { role }),
-                ...(isActive !== undefined && { isActive })
+                ...(isActive !== undefined && { isActive }),
             };
 
             const users = await User.find(query)
@@ -161,18 +153,18 @@ class UserService {
 
             return {
                 success: true,
-                users: users.map(user => userDto(user)),
+                users: users.map((user) => userDto(user)),
                 pagination: {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -185,7 +177,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -197,7 +189,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -209,7 +201,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -221,7 +213,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -234,7 +226,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -246,7 +238,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -258,7 +250,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -271,7 +263,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -284,7 +276,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -296,7 +288,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -308,7 +300,7 @@ class UserService {
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -319,12 +311,12 @@ class UserService {
             const user = await userHelper.updateOrderStats(userId, orderTotal);
             return {
                 success: true,
-                user: user ? userDto(user) : null
+                user: user ? userDto(user) : null,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -332,19 +324,14 @@ class UserService {
     // Search users (admin only)
     async searchUsers(query, options = {}) {
         try {
-            const {
-                page = 1,
-                limit = 20,
-                sortBy = 'createdAt',
-                sortOrder = 'desc'
-            } = options;
+            const { page = 1, limit = 20, sortBy = 'createdAt', sortOrder = 'desc' } = options;
 
             const searchQuery = {
                 $or: [
                     { name: { $regex: query, $options: 'i' } },
                     { email: { $regex: query, $options: 'i' } },
-                    { username: { $regex: query, $options: 'i' } }
-                ]
+                    { username: { $regex: query, $options: 'i' } },
+                ],
             };
 
             const users = await User.find(searchQuery)
@@ -356,18 +343,18 @@ class UserService {
 
             return {
                 success: true,
-                users: users.map(user => userDto(user)),
+                users: users.map((user) => userDto(user)),
                 pagination: {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -379,7 +366,7 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found',
                 };
             }
 
@@ -391,17 +378,17 @@ class UserService {
                 addresses: user.addresses.length,
                 isEmailVerified: user.isEmailVerified,
                 lastLogin: user.lastLogin,
-                memberSince: user.createdAt
+                memberSince: user.createdAt,
             };
 
             return {
                 success: true,
-                stats
+                stats,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -410,24 +397,24 @@ class UserService {
     async bulkUpdateUsers(updates) {
         try {
             const results = [];
-            
+
             for (const update of updates) {
                 const result = await this.updateProfile(update.id, update.data);
                 results.push(result);
             }
 
-            const successful = results.filter(r => r.success).length;
-            const failed = results.filter(r => !r.success).length;
+            const successful = results.filter((r) => r.success).length;
+            const failed = results.filter((r) => !r.success).length;
 
             return {
                 success: true,
                 message: `Updated ${successful} users, ${failed} failed`,
-                results
+                results,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -435,18 +422,13 @@ class UserService {
     // Get user activity (admin only)
     async getUserActivity(userId, options = {}) {
         try {
-            const {
-                page = 1,
-                limit = 20,
-                startDate,
-                endDate
-            } = options;
+            const { page = 1, limit = 20, startDate, endDate } = options;
 
             const user = await User.findById(userId);
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found',
                 };
             }
 
@@ -462,12 +444,12 @@ class UserService {
 
             return {
                 success: true,
-                activity
+                activity,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }

@@ -5,37 +5,40 @@ import mongoose from 'mongoose';
 // ===========================================
 // This schema defines main category groups (like "Dogs", "Cats", "Birds")
 // Regular categories belong under these parent categories
-const parentCategorySchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Parent category name is required'],
-        unique: true,
-        trim: true,
-        maxlength: [100, 'Parent category name cannot exceed 100 characters']
+const parentCategorySchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: [true, 'Parent category name is required'],
+            unique: true,
+            trim: true,
+            maxlength: [100, 'Parent category name cannot exceed 100 characters'],
+        },
+        description: {
+            type: String,
+            required: [true, 'Description is required'],
+            trim: true,
+            maxlength: [500, 'Description cannot exceed 500 characters'],
+        },
+        image: {
+            type: String,
+            required: [true, 'Image URL is required'],
+            trim: true,
+        },
+        isPublished: {
+            type: Boolean,
+            default: true,
+        },
+        sortOrder: {
+            type: Number,
+            default: 0,
+        },
     },
-    description: {
-        type: String,
-        required: [true, 'Description is required'],
-        trim: true,
-        maxlength: [500, 'Description cannot exceed 500 characters']
+    {
+        timestamps: true,
+        versionKey: false,
     },
-    image: {
-        type: String,
-        required: [true, 'Image URL is required'],
-        trim: true
-    },
-    isPublished: {
-        type: Boolean,
-        default: true
-    },
-    sortOrder: {
-        type: Number,
-        default: 0
-    }
-}, {
-    timestamps: true,
-    versionKey: false
-});
+);
 
 // ===========================================
 // OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)

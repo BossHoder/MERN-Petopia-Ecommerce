@@ -1,5 +1,5 @@
-import Cart from "../../models/Cart.js";
-import sampleCarts from "../../data/Carts.js";
+import Cart from '../../models/Cart.js';
+import sampleCarts from '../../data/Carts.js';
 const seedCarts = async () => {
     try {
         console.log('Seeding carts...');

@@ -7,219 +7,229 @@ const variantSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     value: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     price: {
         type: Number,
         required: true,
-        min: 0
+        min: 0,
     },
     stockQuantity: {
         type: Number,
         required: true,
-        min: 0
+        min: 0,
     },
     sku: {
         type: String,
         required: true,
-        trim: true
-    }
+        trim: true,
+    },
 });
 
 // ===========================================
 // MAIN PRODUCT SCHEMA
 // ===========================================
 // This schema defines products in the pet store
-const productSchema = new mongoose.Schema({
-    // Product name (displayed to customers)
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    slug: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true
-    },
-    description: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    shortDescription: {
-        type: String,
-        trim: true,
-        maxlength: 160
-    },
-    price: {
-        type: Number,
-        required: true,
-        min: 0,
-    },
-    salePrice: {
-        type: Number,
-        required: false,
-        min: 0,
-        validate: {
-            validator: function(v) {
-                return !v || v < this.price;
-            },
-            message: 'Sale price must be less than regular price'
-        }
-    },
-    // Stock Keeping Unit (unique product code)
-    sku: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-        required: true,
-        // Check if category actually exists
-        validate: {
-            validator: async function(v) {
-                const Category = mongoose.model('Category');
-                const category = await Category.findById(v);
-                return !!category;
-            },
-            message: 'Category does not exist'
-        }
-    },
-    stockQuantity: {
-        type: Number,
-        required: true,
-        min: 0,
-    },
-    lowStockThreshold: {
-        type: Number,
-        default: 10,
-        min: 0
-    },
-    variants: [variantSchema],
-    images: [{
-        type: String,
-        required: true,
-        // Validate image URL or path format
-        validate: {
-            validator: function (v) {
-                const isUrl = /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
-                const isLocalPath = /^\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
-                return isUrl || isLocalPath;
-            },
-            message: props => `${props.value} is not a valid image URL or path!`
-        }
-    }],
-    brand: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    petSpecifics: {
-        type: String,
-        required: false,
-        trim: true,
-    },
-    attributes: {
-        weight: {
+const productSchema = new mongoose.Schema(
+    {
+        // Product name (displayed to customers)
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        slug: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            lowercase: true,
+        },
+        description: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        shortDescription: {
+            type: String,
+            trim: true,
+            maxlength: 160,
+        },
+        price: {
             type: Number,
-            min: 0
+            required: true,
+            min: 0,
         },
-        dimensions: {
-            length: { type: Number, min: 0 },
-            width: { type: Number, min: 0 },
-            height: { type: Number, min: 0 }
+        salePrice: {
+            type: Number,
+            required: false,
+            min: 0,
+            validate: {
+                validator: function (v) {
+                    return !v || v < this.price;
+                },
+                message: 'Sale price must be less than regular price',
+            },
         },
-        color: String,
-        material: String,
-        ageGroup: {
+        // Stock Keeping Unit (unique product code)
+        sku: {
             type: String,
-            enum: ['puppy', 'adult', 'senior', 'all']
+            required: true,
+            unique: true,
+            trim: true,
         },
-        petType: {
+        category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+            required: true,
+            // Check if category actually exists
+            validate: {
+                validator: async function (v) {
+                    const Category = mongoose.model('Category');
+                    const category = await Category.findById(v);
+                    return !!category;
+                },
+                message: 'Category does not exist',
+            },
+        },
+        stockQuantity: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        lowStockThreshold: {
+            type: Number,
+            default: 10,
+            min: 0,
+        },
+        variants: [variantSchema],
+        images: [
+            {
+                type: String,
+                required: true,
+                // Validate image URL or path format
+                validate: {
+                    validator: function (v) {
+                        const isUrl = /^https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+                        const isLocalPath = /^\/.*\.(?:png|jpg|jpeg|gif|webp)$/i.test(v);
+                        return isUrl || isLocalPath;
+                    },
+                    message: (props) => `${props.value} is not a valid image URL or path!`,
+                },
+            },
+        ],
+        brand: {
             type: String,
-            enum: ['dog', 'cat', 'bird', 'fish', 'other']
-        }
+            required: true,
+            trim: true,
+        },
+        petSpecifics: {
+            type: String,
+            required: false,
+            trim: true,
+        },
+        attributes: {
+            weight: {
+                type: Number,
+                min: 0,
+            },
+            dimensions: {
+                length: { type: Number, min: 0 },
+                width: { type: Number, min: 0 },
+                height: { type: Number, min: 0 },
+            },
+            color: String,
+            material: String,
+            ageGroup: {
+                type: String,
+                enum: ['puppy', 'adult', 'senior', 'all'],
+            },
+            petType: {
+                type: String,
+                enum: ['dog', 'cat', 'bird', 'fish', 'other'],
+            },
+        },
+        // SEO fields
+        metaTitle: {
+            type: String,
+            trim: true,
+            maxlength: 60,
+        },
+        metaDescription: {
+            type: String,
+            trim: true,
+            maxlength: 160,
+        },
+        tags: [
+            {
+                type: String,
+                trim: true,
+                lowercase: true,
+            },
+        ],
+        isPublished: {
+            type: Boolean,
+            default: true,
+        },
+        isFeatured: {
+            type: Boolean,
+            default: false,
+        },
+        ratings: {
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 5,
+        },
+        viewCount: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
+        salesCount: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
     },
-    // SEO fields
-    metaTitle: {
-        type: String,
-        trim: true,
-        maxlength: 60
-    },
-    metaDescription: {
-        type: String,
-        trim: true,
-        maxlength: 160
-    },
-    tags: [{
-        type: String,
-        trim: true,
-        lowercase: true
-    }],
-    isPublished: {
-        type: Boolean,
-        default: true,
-    },
-    isFeatured: {
-        type: Boolean,
-        default: false
-    },
-    ratings: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 5,
-    },
-    viewCount: {
-        type: Number,
-        default: 0,
-        min: 0
-    },
-    salesCount: {
-        type: Number,
-        default: 0,
-        min: 0
-    }
-}, { timestamps: true });
+    { timestamps: true },
+);
 
 // ===========================================
 // REVIEW SCHEMA (embedded in products)
 // ===========================================
 // Schema for customer reviews of products
-const reviewsSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true,
+const reviewsSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        rating: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5,
+        },
+        comment: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+        },
     },
-    rating: {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 5,
-    },
-    comment: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-}, { timestamps: true });
+    { timestamps: true },
+);
 
 productSchema.add({
     reviews: [reviewsSchema],
@@ -281,51 +291,51 @@ productSchema.pre('save', function (next) {
 // STATIC METHODS (actions on Product model)
 // ===========================================
 // Find product by SKU
-productSchema.statics.findBySku = function(sku) {
+productSchema.statics.findBySku = function (sku) {
     return this.findOne({ sku: sku.toUpperCase() });
 };
 
 // Find products in a specific category
-productSchema.statics.findByCategory = function(categorySlug, options = {}) {
+productSchema.statics.findByCategory = function (categorySlug, options = {}) {
     const { limit = 20, skip = 0, sort = { createdAt: -1 } } = options;
-    return this.find({ category: categorySlug, isPublished: true })
-               .limit(limit)
-               .skip(skip)
-               .sort(sort);
+    return this.find({ category: categorySlug, isPublished: true }).limit(limit).skip(skip).sort(sort);
 };
 
 // Find products that are in stock
-productSchema.statics.findInStock = function() {
+productSchema.statics.findInStock = function () {
     return this.find({ stockQuantity: { $gt: 0 }, isPublished: true });
 };
 
 // Find products that are on sale
-productSchema.statics.findOnSale = function() {
-    return this.find({ 
+productSchema.statics.findOnSale = function () {
+    return this.find({
         salePrice: { $exists: true, $ne: null, $gt: 0 },
-        isPublished: true 
+        isPublished: true,
     });
 };
 
 // Search products by text
-productSchema.statics.search = function(query, options = {}) {
+productSchema.statics.search = function (query, options = {}) {
     const { limit = 20, skip = 0 } = options;
-    return this.find({
-        $text: { $search: query },
-        isPublished: true
-    }, {
-        score: { $meta: "textScore" } // For relevance scoring
-    })
-    .sort({ score: { $meta: "textScore" } })
-    .limit(limit)
-    .skip(skip);
+    return this.find(
+        {
+            $text: { $search: query },
+            isPublished: true,
+        },
+        {
+            score: { $meta: 'textScore' }, // For relevance scoring
+        },
+    )
+        .sort({ score: { $meta: 'textScore' } })
+        .limit(limit)
+        .skip(skip);
 };
 
 // ===========================================
 // INSTANCE METHODS (actions on individual product)
 // ===========================================
 // Reserve stock when customer orders (decrease stock)
-productSchema.methods.checkAndReserveStock = function(quantity) {
+productSchema.methods.checkAndReserveStock = function (quantity) {
     if (this.stockQuantity < quantity) {
         throw new Error(`Insufficient stock. Available: ${this.stockQuantity}, Requested: ${quantity}`);
     }
@@ -334,7 +344,7 @@ productSchema.methods.checkAndReserveStock = function(quantity) {
 };
 
 // Restore stock when order is cancelled (increase stock)
-productSchema.methods.restoreStock = function(quantity) {
+productSchema.methods.restoreStock = function (quantity) {
     this.stockQuantity += quantity;
     return this.save();
 };

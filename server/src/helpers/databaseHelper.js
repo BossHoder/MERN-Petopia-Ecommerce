@@ -8,12 +8,7 @@
  * @returns {Array} - Aggregation pipeline
  */
 export const buildPaginationPipeline = (options = {}) => {
-    const {
-        page = 1,
-        limit = 20,
-        sort = { createdAt: -1 },
-        match = {}
-    } = options;
+    const { page = 1, limit = 20, sort = { createdAt: -1 }, match = {} } = options;
 
     const skip = (page - 1) * limit;
 
@@ -22,14 +17,9 @@ export const buildPaginationPipeline = (options = {}) => {
         { $sort: sort },
         {
             $facet: {
-                data: [
-                    { $skip: skip },
-                    { $limit: limit }
-                ],
-                totalCount: [
-                    { $count: 'count' }
-                ]
-            }
+                data: [{ $skip: skip }, { $limit: limit }],
+                totalCount: [{ $count: 'count' }],
+            },
         },
         {
             $project: {
@@ -39,14 +29,11 @@ export const buildPaginationPipeline = (options = {}) => {
                 limit: { $literal: limit },
                 totalPages: {
                     $ceil: {
-                        $divide: [
-                            { $arrayElemAt: ['$totalCount.count', 0] },
-                            limit
-                        ]
-                    }
-                }
-            }
-        }
+                        $divide: [{ $arrayElemAt: ['$totalCount.count', 0] }, limit],
+                    },
+                },
+            },
+        },
     ];
 };
 
@@ -62,7 +49,7 @@ export const buildSearchPipeline = (options = {}) => {
         filters = {},
         page = 1,
         limit = 20,
-        sort = { createdAt: -1 }
+        sort = { createdAt: -1 },
     } = options;
 
     const pipeline = [];
@@ -71,10 +58,10 @@ export const buildSearchPipeline = (options = {}) => {
     if (searchTerm) {
         pipeline.push({
             $match: {
-                $or: searchFields.map(field => ({
-                    [field]: { $regex: searchTerm, $options: 'i' }
-                }))
-            }
+                $or: searchFields.map((field) => ({
+                    [field]: { $regex: searchTerm, $options: 'i' },
+                })),
+            },
         });
     }
 
@@ -86,15 +73,9 @@ export const buildSearchPipeline = (options = {}) => {
     // Add pagination using facet
     pipeline.push({
         $facet: {
-            data: [
-                { $sort: sort },
-                { $skip: (page - 1) * limit },
-                { $limit: limit }
-            ],
-            totalCount: [
-                { $count: 'count' }
-            ]
-        }
+            data: [{ $sort: sort }, { $skip: (page - 1) * limit }, { $limit: limit }],
+            totalCount: [{ $count: 'count' }],
+        },
     });
 
     // Project final result
@@ -106,13 +87,10 @@ export const buildSearchPipeline = (options = {}) => {
             limit: { $literal: limit },
             totalPages: {
                 $ceil: {
-                    $divide: [
-                        { $arrayElemAt: ['$totalCount.count', 0] },
-                        limit
-                    ]
-                }
-            }
-        }
+                    $divide: [{ $arrayElemAt: ['$totalCount.count', 0] }, limit],
+                },
+            },
+        },
     });
 
     return pipeline;
@@ -129,7 +107,7 @@ export const buildAnalyticsPipeline = (options = {}) => {
         groupBy = 'day',
         metrics = ['count', 'sum'],
         field = 'createdAt',
-        valueField = 'total'
+        valueField = 'total',
     } = options;
 
     const pipeline = [];
@@ -140,9 +118,9 @@ export const buildAnalyticsPipeline = (options = {}) => {
             $match: {
                 [field]: {
                     $gte: new Date(dateRange.start),
-                    $lte: new Date(dateRange.end)
-                }
-            }
+                    $lte: new Date(dateRange.end),
+                },
+            },
         });
     }
 
@@ -150,13 +128,13 @@ export const buildAnalyticsPipeline = (options = {}) => {
     const dateFormats = {
         day: '%Y-%m-%d',
         month: '%Y-%m',
-        year: '%Y'
+        year: '%Y',
     };
 
     const groupStage = {
         $group: {
-            _id: { $dateToString: { format: dateFormats[groupBy], date: `$${field}` } }
-        }
+            _id: { $dateToString: { format: dateFormats[groupBy], date: `$${field}` } },
+        },
     };
 
     // Add metrics
@@ -190,24 +168,24 @@ export const buildPriceRangeAggregation = (options = {}) => {
             { min: 0, max: 100000 },
             { min: 100000, max: 500000 },
             { min: 500000, max: 1000000 },
-            { min: 1000000, max: Number.MAX_SAFE_INTEGER }
-        ]
+            { min: 1000000, max: Number.MAX_SAFE_INTEGER },
+        ],
     } = options;
 
     return [
         {
             $bucket: {
                 groupBy: `$${priceField}`,
-                boundaries: ranges.map(r => r.min).concat([Number.MAX_SAFE_INTEGER]),
+                boundaries: ranges.map((r) => r.min).concat([Number.MAX_SAFE_INTEGER]),
                 default: 'other',
                 output: {
                     count: { $sum: 1 },
                     minPrice: { $min: `$${priceField}` },
                     maxPrice: { $max: `$${priceField}` },
-                    avgPrice: { $avg: `$${priceField}` }
-                }
-            }
-        }
+                    avgPrice: { $avg: `$${priceField}` },
+                },
+            },
+        },
     ];
 };
 
@@ -217,29 +195,26 @@ export const buildPriceRangeAggregation = (options = {}) => {
  * @returns {Array} - Aggregation pipeline
  */
 export const buildCategoryAggregation = (options = {}) => {
-    const {
-        categoryField = 'category',
-        includeSubcategories = false
-    } = options;
+    const { categoryField = 'category', includeSubcategories = false } = options;
 
     const pipeline = [
         {
             $group: {
                 _id: `$${categoryField}`,
                 count: { $sum: 1 },
-                products: { $push: '$$ROOT' }
-            }
+                products: { $push: '$$ROOT' },
+            },
         },
         {
             $lookup: {
                 from: 'categories',
                 localField: '_id',
                 foreignField: '_id',
-                as: 'categoryInfo'
-            }
+                as: 'categoryInfo',
+            },
         },
         {
-            $unwind: '$categoryInfo'
+            $unwind: '$categoryInfo',
         },
         {
             $project: {
@@ -247,12 +222,12 @@ export const buildCategoryAggregation = (options = {}) => {
                 count: 1,
                 name: '$categoryInfo.name',
                 slug: '$categoryInfo.slug',
-                products: { $slice: ['$products', 5] } // Limit to 5 sample products
-            }
+                products: { $slice: ['$products', 5] }, // Limit to 5 sample products
+            },
         },
         {
-            $sort: { count: -1 }
-        }
+            $sort: { count: -1 },
+        },
     ];
 
     return pipeline;
@@ -264,10 +239,7 @@ export const buildCategoryAggregation = (options = {}) => {
  * @returns {Array} - Aggregation pipeline
  */
 export const buildInventoryAggregation = (options = {}) => {
-    const {
-        lowStockThreshold = 10,
-        includeOutOfStock = true
-    } = options;
+    const { lowStockThreshold = 10, includeOutOfStock = true } = options;
 
     const pipeline = [
         {
@@ -277,25 +249,17 @@ export const buildInventoryAggregation = (options = {}) => {
                 totalStock: { $sum: '$stockQuantity' },
                 lowStockProducts: {
                     $sum: {
-                        $cond: [
-                            { $lte: ['$stockQuantity', lowStockThreshold] },
-                            1,
-                            0
-                        ]
-                    }
+                        $cond: [{ $lte: ['$stockQuantity', lowStockThreshold] }, 1, 0],
+                    },
                 },
                 outOfStockProducts: {
                     $sum: {
-                        $cond: [
-                            { $eq: ['$stockQuantity', 0] },
-                            1,
-                            0
-                        ]
-                    }
+                        $cond: [{ $eq: ['$stockQuantity', 0] }, 1, 0],
+                    },
                 },
                 averageStock: { $avg: '$stockQuantity' },
-                categories: { $addToSet: '$category' }
-            }
+                categories: { $addToSet: '$category' },
+            },
         },
         {
             $project: {
@@ -311,19 +275,16 @@ export const buildInventoryAggregation = (options = {}) => {
                         {
                             $multiply: [
                                 {
-                                    $divide: [
-                                        { $subtract: ['$totalProducts', '$lowStockProducts'] },
-                                        '$totalProducts'
-                                    ]
+                                    $divide: [{ $subtract: ['$totalProducts', '$lowStockProducts'] }, '$totalProducts'],
                                 },
-                                100
-                            ]
+                                100,
+                            ],
                         },
-                        2
-                    ]
-                }
-            }
-        }
+                        2,
+                    ],
+                },
+            },
+        },
     ];
 
     return pipeline;
@@ -335,10 +296,7 @@ export const buildInventoryAggregation = (options = {}) => {
  * @returns {Array} - Aggregation pipeline
  */
 export const buildUserActivityAggregation = (options = {}) => {
-    const {
-        dateRange,
-        groupBy = 'day'
-    } = options;
+    const { dateRange, groupBy = 'day' } = options;
 
     const pipeline = [];
 
@@ -348,9 +306,9 @@ export const buildUserActivityAggregation = (options = {}) => {
             $match: {
                 lastLogin: {
                     $gte: new Date(dateRange.start),
-                    $lte: new Date(dateRange.end)
-                }
-            }
+                    $lte: new Date(dateRange.end),
+                },
+            },
         });
     }
 
@@ -358,7 +316,7 @@ export const buildUserActivityAggregation = (options = {}) => {
     const dateFormats = {
         day: '%Y-%m-%d',
         month: '%Y-%m',
-        year: '%Y'
+        year: '%Y',
     };
 
     pipeline.push({
@@ -370,11 +328,11 @@ export const buildUserActivityAggregation = (options = {}) => {
                     $cond: [
                         { $eq: [{ $dateToString: { format: dateFormats[groupBy], date: '$createdAt' } }, '$_id'] },
                         1,
-                        0
-                    ]
-                }
-            }
-        }
+                        0,
+                    ],
+                },
+            },
+        },
     });
 
     pipeline.push({ $sort: { _id: 1 } });
@@ -393,13 +351,13 @@ export const executeAggregation = async (Model, pipeline) => {
         const result = await Model.aggregate(pipeline);
         return {
             success: true,
-            data: result
+            data: result,
         };
     } catch (error) {
         return {
             success: false,
             error: error.message,
-            data: null
+            data: null,
         };
     }
 };
@@ -415,9 +373,9 @@ export const buildTextSearchQuery = (searchTerm, fields = ['name', 'description'
 
     const searchRegex = new RegExp(searchTerm, 'i');
     return {
-        $or: fields.map(field => ({
-            [field]: searchRegex
-        }))
+        $or: fields.map((field) => ({
+            [field]: searchRegex,
+        })),
     };
 };
 

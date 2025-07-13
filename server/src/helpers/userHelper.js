@@ -58,12 +58,12 @@ export const addAddress = async (userId, addressData) => {
 
         return {
             success: true,
-            address: user.addresses[user.addresses.length - 1]
+            address: user.addresses[user.addresses.length - 1],
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -86,12 +86,12 @@ export const updateAddress = async (userId, addressId, addressData) => {
 
         return {
             success: true,
-            address
+            address,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -121,12 +121,12 @@ export const removeAddress = async (userId, addressId) => {
 
         return {
             success: true,
-            message: 'Address removed successfully'
+            message: 'Address removed successfully',
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -140,7 +140,7 @@ export const setDefaultAddress = async (userId, addressId) => {
         }
 
         // Remove default from all addresses
-        user.addresses.forEach(address => {
+        user.addresses.forEach((address) => {
             address.isDefault = false;
         });
 
@@ -155,12 +155,12 @@ export const setDefaultAddress = async (userId, addressId) => {
 
         return {
             success: true,
-            address: targetAddress
+            address: targetAddress,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -180,12 +180,12 @@ export const addToWishlist = async (userId, productId) => {
 
         return {
             success: true,
-            message: 'Product added to wishlist'
+            message: 'Product added to wishlist',
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -203,12 +203,12 @@ export const removeFromWishlist = async (userId, productId) => {
 
         return {
             success: true,
-            message: 'Product removed from wishlist'
+            message: 'Product removed from wishlist',
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -226,12 +226,12 @@ export const updatePreferences = async (userId, preferences) => {
 
         return {
             success: true,
-            preferences: user.preferences
+            preferences: user.preferences,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -244,10 +244,10 @@ export const updateOrderStats = async (userId, orderTotal) => {
             {
                 $inc: {
                     totalOrders: 1,
-                    totalSpent: orderTotal
-                }
+                    totalSpent: orderTotal,
+                },
             },
-            { new: true }
+            { new: true },
         );
 
         return user;
@@ -261,7 +261,7 @@ export const updateOrderStats = async (userId, orderTotal) => {
 export const updateLastLogin = async (userId) => {
     try {
         await User.findByIdAndUpdate(userId, {
-            lastLogin: new Date()
+            lastLogin: new Date(),
         });
     } catch (error) {
         console.error('Error updating last login:', error);
@@ -271,20 +271,16 @@ export const updateLastLogin = async (userId) => {
 // Verify email
 export const verifyEmail = async (userId) => {
     try {
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { isEmailVerified: true },
-            { new: true }
-        );
+        const user = await User.findByIdAndUpdate(userId, { isEmailVerified: true }, { new: true });
 
         return {
             success: true,
-            user
+            user,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -292,20 +288,16 @@ export const verifyEmail = async (userId) => {
 // Deactivate user account
 export const deactivateUser = async (userId) => {
     try {
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { isActive: false },
-            { new: true }
-        );
+        const user = await User.findByIdAndUpdate(userId, { isActive: false }, { new: true });
 
         return {
             success: true,
-            user
+            user,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -313,20 +305,16 @@ export const deactivateUser = async (userId) => {
 // Reactivate user account
 export const reactivateUser = async (userId) => {
     try {
-        const user = await User.findByIdAndUpdate(
-            userId,
-            { isActive: true },
-            { new: true }
-        );
+        const user = await User.findByIdAndUpdate(userId, { isActive: true }, { new: true });
 
         return {
             success: true,
-            user
+            user,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -334,12 +322,11 @@ export const reactivateUser = async (userId) => {
 // Get user's full wishlist with product details
 export const getUserWishlist = async (userId) => {
     try {
-        const user = await User.findById(userId)
-            .populate({
-                path: 'wishlist',
-                select: 'name price salePrice images stockQuantity isPublished',
-                match: { isPublished: true }
-            });
+        const user = await User.findById(userId).populate({
+            path: 'wishlist',
+            select: 'name price salePrice images stockQuantity isPublished',
+            match: { isPublished: true },
+        });
 
         if (!user) {
             throw new Error('User not found');
@@ -347,12 +334,12 @@ export const getUserWishlist = async (userId) => {
 
         return {
             success: true,
-            wishlist: user.wishlist
+            wishlist: user.wishlist,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -373,11 +360,11 @@ export const validateProfileData = (profileData) => {
         const birthDate = new Date(profileData.dateOfBirth);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear();
-        
+
         if (age < 13) {
             errors.push('User must be at least 13 years old');
         }
-        
+
         if (age > 120) {
             errors.push('Invalid birth date');
         }
@@ -389,6 +376,6 @@ export const validateProfileData = (profileData) => {
 
     return {
         isValid: errors.length === 0,
-        errors
+        errors,
     };
 };

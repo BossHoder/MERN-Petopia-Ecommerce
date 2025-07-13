@@ -24,15 +24,15 @@ export const validateCouponCode = (code) => {
 // Check if coupon is valid for user and order
 export const validateCouponForOrder = async (couponCode, userId, orderValue, cartItems = []) => {
     try {
-        const coupon = await Coupon.findOne({ 
+        const coupon = await Coupon.findOne({
             code: couponCode.toUpperCase(),
-            isActive: true
+            isActive: true,
         });
 
         if (!coupon) {
             return {
                 isValid: false,
-                message: 'Coupon not found or inactive'
+                message: 'Coupon not found or inactive',
             };
         }
 
@@ -40,7 +40,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (!coupon.isValid) {
             return {
                 isValid: false,
-                message: 'Coupon is expired or has reached usage limit'
+                message: 'Coupon is expired or has reached usage limit',
             };
         }
 
@@ -48,7 +48,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (!coupon.canBeUsedBy(userId)) {
             return {
                 isValid: false,
-                message: 'You have already used this coupon maximum times'
+                message: 'You have already used this coupon maximum times',
             };
         }
 
@@ -56,7 +56,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (orderValue < coupon.minOrderValue) {
             return {
                 isValid: false,
-                message: `Minimum order value is ${coupon.minOrderValue.toLocaleString()}đ`
+                message: `Minimum order value is ${coupon.minOrderValue.toLocaleString()}đ`,
             };
         }
 
@@ -66,7 +66,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
             if (!isApplicable) {
                 return {
                     isValid: false,
-                    message: 'Coupon is not applicable to items in your cart'
+                    message: 'Coupon is not applicable to items in your cart',
                 };
             }
         }
@@ -76,7 +76,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (hasExcludedItems) {
             return {
                 isValid: false,
-                message: 'Coupon cannot be applied to some items in your cart'
+                message: 'Coupon cannot be applied to some items in your cart',
             };
         }
 
@@ -91,15 +91,14 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
                 code: coupon.code,
                 description: coupon.description,
                 discountType: coupon.discountType,
-                discountValue: coupon.discountValue
-            }
+                discountValue: coupon.discountValue,
+            },
         };
-
     } catch (error) {
         console.error('Error validating coupon:', error);
         return {
             isValid: false,
-            message: 'Error validating coupon'
+            message: 'Error validating coupon',
         };
     }
 };
@@ -111,23 +110,23 @@ const checkCouponApplicability = async (coupon, cartItems) => {
     }
 
     const Product = mongoose.model('Product');
-    
+
     for (const item of cartItems) {
         const product = await Product.findById(item.productId).populate('category');
-        
+
         if (product) {
             // Check if product is in applicable products
             if (coupon.applicableProducts.includes(product._id)) {
                 return true;
             }
-            
+
             // Check if product's category is in applicable categories
             if (coupon.applicableCategories.includes(product.category._id)) {
                 return true;
             }
         }
     }
-    
+
     return false;
 };
 
@@ -138,23 +137,23 @@ const checkCouponExclusions = async (coupon, cartItems) => {
     }
 
     const Product = mongoose.model('Product');
-    
+
     for (const item of cartItems) {
         const product = await Product.findById(item.productId).populate('category');
-        
+
         if (product) {
             // Check if product is in excluded products
             if (coupon.excludeProducts.includes(product._id)) {
                 return true;
             }
-            
+
             // Check if product's category is in excluded categories
             if (coupon.excludeCategories.includes(product.category._id)) {
                 return true;
             }
         }
     }
-    
+
     return false;
 };
 
@@ -162,7 +161,7 @@ const checkCouponExclusions = async (coupon, cartItems) => {
 export const findBestCouponForOrder = async (userId, orderValue, cartItems = []) => {
     try {
         const availableCoupons = await Coupon.findValidCoupons(userId, orderValue);
-        
+
         if (availableCoupons.length === 0) {
             return null;
         }
@@ -172,12 +171,12 @@ export const findBestCouponForOrder = async (userId, orderValue, cartItems = [])
 
         for (const coupon of availableCoupons) {
             const validation = await validateCouponForOrder(coupon.code, userId, orderValue, cartItems);
-            
+
             if (validation.isValid && validation.discountAmount > maxDiscount) {
                 maxDiscount = validation.discountAmount;
                 bestCoupon = {
                     ...validation,
-                    savings: validation.discountAmount
+                    savings: validation.discountAmount,
                 };
             }
         }
@@ -193,13 +192,13 @@ export const findBestCouponForOrder = async (userId, orderValue, cartItems = [])
 export const applyCouponToOrder = async (couponCode, userId, orderValue, cartItems = []) => {
     try {
         const validation = await validateCouponForOrder(couponCode, userId, orderValue, cartItems);
-        
+
         if (!validation.isValid) {
             return validation;
         }
 
         const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
-        
+
         // Apply coupon usage (don't save to DB yet, that happens when order is created)
         return {
             isValid: true,
@@ -210,15 +209,14 @@ export const applyCouponToOrder = async (couponCode, userId, orderValue, cartIte
                 code: coupon.code,
                 description: coupon.description,
                 discountType: coupon.discountType,
-                discountValue: coupon.discountValue
-            }
+                discountValue: coupon.discountValue,
+            },
         };
-
     } catch (error) {
         console.error('Error applying coupon:', error);
         return {
             isValid: false,
-            message: 'Error applying coupon'
+            message: 'Error applying coupon',
         };
     }
 };
@@ -227,26 +225,26 @@ export const applyCouponToOrder = async (couponCode, userId, orderValue, cartIte
 export const getCouponUsageStats = async (couponId) => {
     try {
         const coupon = await Coupon.findById(couponId);
-        
+
         if (!coupon) {
             return null;
         }
 
         const totalUsage = coupon.usageCount;
         const totalDiscount = coupon.usedBy.reduce((total, usage) => total + usage.discountAmount, 0);
-        const averageOrderValue = coupon.usedBy.length > 0 
-            ? coupon.usedBy.reduce((total, usage) => total + usage.orderValue, 0) / coupon.usedBy.length
-            : 0;
+        const averageOrderValue =
+            coupon.usedBy.length > 0
+                ? coupon.usedBy.reduce((total, usage) => total + usage.orderValue, 0) / coupon.usedBy.length
+                : 0;
 
         return {
             totalUsage,
             totalDiscount,
             averageOrderValue,
-            usageRate: coupon.usageLimit ? (totalUsage / coupon.usageLimit * 100) : null,
+            usageRate: coupon.usageLimit ? (totalUsage / coupon.usageLimit) * 100 : null,
             isActive: coupon.isActive,
-            isValid: coupon.isValid
+            isValid: coupon.isValid,
         };
-
     } catch (error) {
         console.error('Error getting coupon stats:', error);
         return null;

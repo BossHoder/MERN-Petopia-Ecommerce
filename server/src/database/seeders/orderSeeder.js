@@ -1,5 +1,5 @@
-import Order from "../../models/Order.js";
-import sampleOrders from "../../data/Orders.js";
+import Order from '../../models/Order.js';
+import sampleOrders from '../../data/Orders.js';
 const seedOrders = async () => {
     try {
         console.log('Seeding orders...');

@@ -4,7 +4,7 @@
 // This service handles notification-related business logic
 
 import Notification from '../models/Notification.js';
-import { 
+import {
     createNotification,
     createBulkNotifications,
     createOrderStatusNotification,
@@ -13,13 +13,13 @@ import {
     createPromotionalNotification,
     createWelcomeNotification,
     createReviewRequestNotification,
-    getNotificationStats
+    getNotificationStats,
 } from '../helpers/notificationHelper.js';
-import { 
-    notificationDto, 
-    notificationListDto, 
+import {
+    notificationDto,
+    notificationListDto,
     notificationSummaryDto,
-    notificationAdminDto 
+    notificationAdminDto,
 } from '../dto/notificationDto.js';
 
 class NotificationService {
@@ -28,17 +28,14 @@ class NotificationService {
         try {
             const skip = (page - 1) * limit;
             const query = { recipient: userId };
-            
+
             if (unreadOnly) {
                 query.isRead = false;
             }
 
             const [notifications, total] = await Promise.all([
-                Notification.find(query)
-                    .sort({ createdAt: -1 })
-                    .skip(skip)
-                    .limit(limit),
-                Notification.countDocuments(query)
+                Notification.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+                Notification.countDocuments(query),
             ]);
 
             return {
@@ -48,14 +45,14 @@ class NotificationService {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             console.error('Error getting user notifications:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -65,20 +62,18 @@ class NotificationService {
         try {
             const [unreadCount, recentNotifications] = await Promise.all([
                 Notification.countDocuments({ recipient: userId, isRead: false }),
-                Notification.find({ recipient: userId })
-                    .sort({ createdAt: -1 })
-                    .limit(5)
+                Notification.find({ recipient: userId }).sort({ createdAt: -1 }).limit(5),
             ]);
 
             return {
                 success: true,
-                summary: notificationSummaryDto(unreadCount, recentNotifications)
+                summary: notificationSummaryDto(unreadCount, recentNotifications),
             };
         } catch (error) {
             console.error('Error getting notification summary:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -88,7 +83,7 @@ class NotificationService {
         try {
             const notification = await Notification.findOne({
                 _id: notificationId,
-                recipient: userId
+                recipient: userId,
             });
 
             if (!notification) {
@@ -99,13 +94,13 @@ class NotificationService {
 
             return {
                 success: true,
-                message: 'Notification marked as read'
+                message: 'Notification marked as read',
             };
         } catch (error) {
             console.error('Error marking notification as read:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -117,13 +112,13 @@ class NotificationService {
 
             return {
                 success: true,
-                message: 'All notifications marked as read'
+                message: 'All notifications marked as read',
             };
         } catch (error) {
             console.error('Error marking all notifications as read:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -133,7 +128,7 @@ class NotificationService {
         try {
             const notification = await Notification.findOne({
                 _id: notificationId,
-                recipient: userId
+                recipient: userId,
             });
 
             if (!notification) {
@@ -144,13 +139,13 @@ class NotificationService {
 
             return {
                 success: true,
-                message: 'Notification deleted successfully'
+                message: 'Notification deleted successfully',
             };
         } catch (error) {
             console.error('Error deleting notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -164,7 +159,7 @@ class NotificationService {
             console.error('Error creating order status notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -178,7 +173,7 @@ class NotificationService {
             console.error('Error creating payment notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -192,7 +187,7 @@ class NotificationService {
             console.error('Error creating stock notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -206,7 +201,7 @@ class NotificationService {
             console.error('Error creating promotional notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -220,7 +215,7 @@ class NotificationService {
             console.error('Error creating welcome notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -234,7 +229,7 @@ class NotificationService {
             console.error('Error creating review request notification:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -248,7 +243,7 @@ class NotificationService {
             console.error('Error sending bulk notifications:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -259,13 +254,13 @@ class NotificationService {
             const stats = await getNotificationStats(userId);
             return {
                 success: true,
-                stats
+                stats,
             };
         } catch (error) {
             console.error('Error getting notification stats:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -282,24 +277,24 @@ class NotificationService {
                     .sort({ createdAt: -1 })
                     .skip(skip)
                     .limit(limit),
-                Notification.countDocuments(query)
+                Notification.countDocuments(query),
             ]);
 
             return {
                 success: true,
-                notifications: notifications.map(n => notificationAdminDto(n)),
+                notifications: notifications.map((n) => notificationAdminDto(n)),
                 pagination: {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             console.error('Error getting all notifications:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -310,13 +305,13 @@ class NotificationService {
             const result = await Notification.cleanupExpired();
             return {
                 success: true,
-                message: `Cleaned up ${result.deletedCount} old notifications`
+                message: `Cleaned up ${result.deletedCount} old notifications`,
             };
         } catch (error) {
             console.error('Error cleaning up notifications:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -344,14 +339,14 @@ class NotificationService {
         if (filters.search) {
             query.$or = [
                 { title: { $regex: filters.search, $options: 'i' } },
-                { message: { $regex: filters.search, $options: 'i' } }
+                { message: { $regex: filters.search, $options: 'i' } },
             ];
         }
 
         if (filters.dateFrom && filters.dateTo) {
             query.createdAt = {
                 $gte: new Date(filters.dateFrom),
-                $lte: new Date(filters.dateTo)
+                $lte: new Date(filters.dateTo),
             };
         }
 

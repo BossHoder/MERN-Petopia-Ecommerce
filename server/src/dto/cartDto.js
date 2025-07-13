@@ -26,15 +26,15 @@ export const cartItemDto = (item, productDetails = null) => {
                 maxQuantity: productDetails.stockQuantity,
                 variants: productDetails.variants,
                 category: productDetails.category,
-                brand: productDetails.brand
-            }
-        })
+                brand: productDetails.brand,
+            },
+        }),
     };
 };
 
 export const cartDto = (cart, populatedProducts = []) => {
-    const itemsWithProducts = cart.items.map(item => {
-        const productDetails = populatedProducts.find(p => p._id.toString() === item.productId.toString());
+    const itemsWithProducts = cart.items.map((item) => {
+        const productDetails = populatedProducts.find((p) => p._id.toString() === item.productId.toString());
         return cartItemDto(item, productDetails);
     });
 
@@ -51,7 +51,7 @@ export const cartDto = (cart, populatedProducts = []) => {
         isExpired: cart.isExpired,
         expiresAt: cart.expiresAt,
         createdAt: cart.createdAt,
-        updatedAt: cart.updatedAt
+        updatedAt: cart.updatedAt,
     };
 };
 
@@ -59,17 +59,17 @@ export const cartDto = (cart, populatedProducts = []) => {
 export const cartCheckoutDto = (cart) => {
     return {
         id: cart._id,
-        items: cart.items.map(item => ({
+        items: cart.items.map((item) => ({
             productId: item.productId,
             variantId: item.variantId,
             productName: item.productName,
             productImage: item.productImage,
             price: item.price,
-            quantity: item.quantity
+            quantity: item.quantity,
         })),
         totals: cart.totals,
         appliedCoupon: cart.appliedCoupon,
-        shippingAddress: cart.shippingAddress
+        shippingAddress: cart.shippingAddress,
     };
 };
 
@@ -81,7 +81,7 @@ export const cartSummaryDto = (cart) => {
         subtotal: cart.totals.subtotal,
         total: cart.totals.total,
         hasItems: cart.totalItems > 0,
-        updatedAt: cart.updatedAt
+        updatedAt: cart.updatedAt,
     };
 };
 
@@ -90,6 +90,6 @@ export const addToCartResponseDto = (success, message, cart = null) => {
     return {
         success,
         message,
-        cart: cart ? cartSummaryDto(cart) : null
+        cart: cart ? cartSummaryDto(cart) : null,
     };
 };

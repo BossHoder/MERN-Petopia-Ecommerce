@@ -25,7 +25,7 @@ export const serviceRegistry = {
     userService: null,
     orderService: null,
     couponService: null,
-    notificationService: null
+    notificationService: null,
 };
 
 // Initialize services
@@ -67,7 +67,7 @@ export const checkServicesHealth = async () => {
     const health = {
         status: 'healthy',
         services: {},
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 
     try {
@@ -78,9 +78,9 @@ export const checkServicesHealth = async () => {
                     await service.healthCheck();
                     health.services[name] = { status: 'healthy' };
                 } catch (error) {
-                    health.services[name] = { 
-                        status: 'unhealthy', 
-                        error: error.message 
+                    health.services[name] = {
+                        status: 'unhealthy',
+                        error: error.message,
                     };
                     health.status = 'degraded';
                 }
@@ -99,7 +99,7 @@ export const checkServicesHealth = async () => {
 // Graceful shutdown
 export const shutdownServices = async () => {
     console.log('🔄 Shutting down services...');
-    
+
     try {
         // Shutdown services that have cleanup methods
         for (const [name, service] of Object.entries(serviceRegistry)) {
@@ -112,12 +112,12 @@ export const shutdownServices = async () => {
                 }
             }
         }
-        
+
         // Clear registry
-        Object.keys(serviceRegistry).forEach(key => {
+        Object.keys(serviceRegistry).forEach((key) => {
             serviceRegistry[key] = null;
         });
-        
+
         console.log('✅ All services shut down successfully');
     } catch (error) {
         console.error('❌ Error during service shutdown:', error);
@@ -136,7 +136,7 @@ export const withErrorHandling = (service) => {
     return new Proxy(service, {
         get(target, prop) {
             const originalMethod = target[prop];
-            
+
             if (typeof originalMethod === 'function') {
                 return async (...args) => {
                     try {
@@ -146,14 +146,14 @@ export const withErrorHandling = (service) => {
                         return {
                             success: false,
                             error: error.message,
-                            timestamp: new Date().toISOString()
+                            timestamp: new Date().toISOString(),
                         };
                     }
                 };
             }
-            
+
             return originalMethod;
-        }
+        },
     });
 };
 
@@ -161,9 +161,9 @@ export const withErrorHandling = (service) => {
 export const getServiceMetrics = () => {
     const metrics = {
         totalServices: Object.keys(serviceRegistry).length,
-        activeServices: Object.values(serviceRegistry).filter(s => s !== null).length,
+        activeServices: Object.values(serviceRegistry).filter((s) => s !== null).length,
         services: {},
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 
     // Get metrics from services that support it

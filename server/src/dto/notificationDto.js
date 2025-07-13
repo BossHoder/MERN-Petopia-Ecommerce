@@ -15,13 +15,13 @@ export const notificationDto = (notification) => {
         readAt: notification.readAt,
         priority: notification.priority,
         createdAt: notification.createdAt,
-        expiresAt: notification.expiresAt
+        expiresAt: notification.expiresAt,
     };
 };
 
 // Notification list for user
 export const notificationListDto = (notifications) => {
-    return notifications.map(notification => ({
+    return notifications.map((notification) => ({
         id: notification._id,
         type: notification.type,
         title: notification.title,
@@ -30,7 +30,7 @@ export const notificationListDto = (notifications) => {
         isRead: notification.isRead,
         readAt: notification.readAt,
         priority: notification.priority,
-        createdAt: notification.createdAt
+        createdAt: notification.createdAt,
     }));
 };
 
@@ -38,7 +38,7 @@ export const notificationListDto = (notifications) => {
 export const notificationSummaryDto = (unreadCount, recentNotifications) => {
     return {
         unreadCount,
-        recentNotifications: notificationListDto(recentNotifications)
+        recentNotifications: notificationListDto(recentNotifications),
     };
 };
 
@@ -58,7 +58,7 @@ export const notificationAdminDto = (notification) => {
         deliveryStatus: notification.deliveryStatus,
         createdAt: notification.createdAt,
         updatedAt: notification.updatedAt,
-        expiresAt: notification.expiresAt
+        expiresAt: notification.expiresAt,
     };
 };
 
@@ -75,9 +75,9 @@ export const createNotificationDto = (data) => {
             inApp: true,
             email: false,
             sms: false,
-            ...data.channels
+            ...data.channels,
         },
-        expiresAt: data.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        expiresAt: data.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     };
 };
 
@@ -88,7 +88,7 @@ export const notificationStatsDto = (stats) => {
         unread: stats.unread,
         byType: stats.byType,
         byPriority: stats.byPriority,
-        deliveryStats: stats.deliveryStats
+        deliveryStats: stats.deliveryStats,
     };
 };
 
@@ -98,6 +98,6 @@ export const bulkNotificationResultDto = (results) => {
         success: results.success,
         failed: results.failed,
         total: results.total,
-        details: results.details
+        details: results.details,
     };
 };

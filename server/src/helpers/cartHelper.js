@@ -16,13 +16,13 @@ export const getOrCreateCart = async (userId = null, sessionId = null) => {
         const cart = await Cart.findByUserOrSession(userId, sessionId);
         return {
             success: true,
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error getting/creating cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -46,8 +46,8 @@ export const addItemToCart = async (cartId, productId, quantity = 1, variantId =
         }
 
         // Check stock availability
-        const availableStock = variantId 
-            ? product.variants.find(v => v.sku === variantId)?.stockQuantity || 0
+        const availableStock = variantId
+            ? product.variants.find((v) => v.sku === variantId)?.stockQuantity || 0
             : product.stockQuantity;
 
         if (availableStock < quantity) {
@@ -55,40 +55,41 @@ export const addItemToCart = async (cartId, productId, quantity = 1, variantId =
         }
 
         // Check if item already exists in cart
-        const existingItem = cart.items.find(item => 
-            item.productId.toString() === productId.toString() && 
-            item.variantId === variantId
+        const existingItem = cart.items.find(
+            (item) => item.productId.toString() === productId.toString() && item.variantId === variantId,
         );
 
         if (existingItem) {
             const newQuantity = existingItem.quantity + quantity;
             if (newQuantity > availableStock) {
-                throw new Error(`Cannot add ${quantity} items. Only ${availableStock - existingItem.quantity} more available`);
+                throw new Error(
+                    `Cannot add ${quantity} items. Only ${availableStock - existingItem.quantity} more available`,
+                );
             }
         }
 
         // Get product price (variant price if applicable)
-        const price = variantId 
-            ? product.variants.find(v => v.sku === variantId)?.price || product.price
+        const price = variantId
+            ? product.variants.find((v) => v.sku === variantId)?.price || product.price
             : product.salePrice || product.price;
 
         // Add item to cart
         await cart.addItem(productId, quantity, variantId, {
             name: product.name,
             image: product.images[0],
-            price: price
+            price: price,
         });
 
         return {
             success: true,
             message: 'Item added to cart successfully',
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error adding item to cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -106,13 +107,13 @@ export const removeItemFromCart = async (cartId, productId, variantId = null) =>
         return {
             success: true,
             message: 'Item removed from cart',
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error removing item from cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -135,8 +136,8 @@ export const updateCartItemQuantity = async (cartId, productId, quantity, varian
             throw new Error('Product not found');
         }
 
-        const availableStock = variantId 
-            ? product.variants.find(v => v.sku === variantId)?.stockQuantity || 0
+        const availableStock = variantId
+            ? product.variants.find((v) => v.sku === variantId)?.stockQuantity || 0
             : product.stockQuantity;
 
         if (quantity > availableStock) {
@@ -148,13 +149,13 @@ export const updateCartItemQuantity = async (cartId, productId, quantity, varian
         return {
             success: true,
             message: 'Cart updated successfully',
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error updating cart quantity:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -169,35 +170,26 @@ export const applyCouponToCart = async (cartId, couponCode) => {
 
         // Import coupon helper to validate coupon
         const { validateCouponForOrder } = await import('./couponHelper.js');
-        
-        const validation = await validateCouponForOrder(
-            couponCode,
-            cart.username,
-            cart.totals.subtotal,
-            cart.items
-        );
+
+        const validation = await validateCouponForOrder(couponCode, cart.username, cart.totals.subtotal, cart.items);
 
         if (!validation.isValid) {
             throw new Error(validation.message);
         }
 
-        await cart.applyCoupon(
-            validation.coupon.code,
-            validation.discountAmount,
-            validation.coupon.discountType
-        );
+        await cart.applyCoupon(validation.coupon.code, validation.discountAmount, validation.coupon.discountType);
 
         return {
             success: true,
             message: 'Coupon applied successfully',
             cart,
-            discount: validation.discountAmount
+            discount: validation.discountAmount,
         };
     } catch (error) {
         console.error('Error applying coupon to cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -216,13 +208,13 @@ export const removeCouponFromCart = async (cartId) => {
         return {
             success: true,
             message: 'Coupon removed from cart',
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error removing coupon from cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -231,25 +223,25 @@ export const removeCouponFromCart = async (cartId) => {
 export const mergeGuestCartWithUserCart = async (sessionId, userId) => {
     try {
         const mergedCart = await Cart.mergeGuestCart(sessionId, userId);
-        
+
         if (!mergedCart) {
             return {
                 success: true,
                 message: 'No guest cart to merge',
-                cart: null
+                cart: null,
             };
         }
 
         return {
             success: true,
             message: 'Guest cart merged successfully',
-            cart: mergedCart
+            cart: mergedCart,
         };
     } catch (error) {
         console.error('Error merging guest cart:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -275,7 +267,7 @@ export const validateCartForCheckout = async (cartId) => {
         // Check each item
         for (const item of cart.items) {
             const product = item.productId;
-            
+
             if (!product) {
                 validationErrors.push(`Product not found for item ${item.productName}`);
                 continue;
@@ -286,8 +278,8 @@ export const validateCartForCheckout = async (cartId) => {
                 continue;
             }
 
-            const availableStock = item.variantId 
-                ? product.variants.find(v => v.sku === item.variantId)?.stockQuantity || 0
+            const availableStock = item.variantId
+                ? product.variants.find((v) => v.sku === item.variantId)?.stockQuantity || 0
                 : product.stockQuantity;
 
             if (availableStock < item.quantity) {
@@ -298,20 +290,20 @@ export const validateCartForCheckout = async (cartId) => {
         if (validationErrors.length > 0) {
             return {
                 success: false,
-                errors: validationErrors
+                errors: validationErrors,
             };
         }
 
         return {
             success: true,
             message: 'Cart is valid for checkout',
-            cart
+            cart,
         };
     } catch (error) {
         console.error('Error validating cart for checkout:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -319,7 +311,10 @@ export const validateCartForCheckout = async (cartId) => {
 // Get cart summary
 export const getCartSummary = async (cartId) => {
     try {
-        const cart = await Cart.findById(cartId).populate('items.productId', 'name images price salePrice stockQuantity');
+        const cart = await Cart.findById(cartId).populate(
+            'items.productId',
+            'name images price salePrice stockQuantity',
+        );
         if (!cart) {
             throw new Error('Cart not found');
         }
@@ -335,14 +330,14 @@ export const getCartSummary = async (cartId) => {
                 total: cart.totals.total,
                 appliedCoupon: cart.appliedCoupon,
                 hasItems: !cart.isEmpty(),
-                isExpired: cart.isExpired
-            }
+                isExpired: cart.isExpired,
+            },
         };
     } catch (error) {
         console.error('Error getting cart summary:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -353,13 +348,13 @@ export const clearExpiredCarts = async () => {
         const result = await Cart.cleanupExpired();
         return {
             success: true,
-            deletedCount: result.deletedCount
+            deletedCount: result.deletedCount,
         };
     } catch (error) {
         console.error('Error clearing expired carts:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };

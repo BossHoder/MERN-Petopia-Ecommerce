@@ -16,7 +16,7 @@ class ProductService {
             if (!validation.isValid) {
                 return {
                     success: false,
-                    errors: validation.errors
+                    errors: validation.errors,
                 };
             }
 
@@ -24,7 +24,7 @@ class ProductService {
             if (!productData.slug) {
                 productData.slug = productHelper.generateSlug(productData.name);
             }
-            
+
             if (!productData.sku) {
                 productData.sku = await productHelper.generateSKU();
             }
@@ -34,12 +34,12 @@ class ProductService {
 
             return {
                 success: true,
-                product: productDto(product)
+                product: productDto(product),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -48,14 +48,14 @@ class ProductService {
     async getProduct(identifier, incrementView = false) {
         try {
             const isObjectId = identifier.match(/^[0-9a-fA-F]{24}$/);
-            const product = isObjectId 
+            const product = isObjectId
                 ? await Product.findById(identifier).populate('category', 'name parentCategory')
                 : await Product.findOne({ slug: identifier }).populate('category', 'name parentCategory');
 
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found'
+                    error: 'Product not found',
                 };
             }
 
@@ -67,12 +67,12 @@ class ProductService {
 
             return {
                 success: true,
-                product: productDto(product)
+                product: productDto(product),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -85,27 +85,26 @@ class ProductService {
                 updateData.slug = productHelper.generateSlug(updateData.name);
             }
 
-            const product = await Product.findByIdAndUpdate(
-                productId,
-                updateData,
-                { new: true, runValidators: true }
-            ).populate('category', 'name parentCategory');
+            const product = await Product.findByIdAndUpdate(productId, updateData, {
+                new: true,
+                runValidators: true,
+            }).populate('category', 'name parentCategory');
 
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found'
+                    error: 'Product not found',
                 };
             }
 
             return {
                 success: true,
-                product: productDto(product)
+                product: productDto(product),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -117,18 +116,18 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found'
+                    error: 'Product not found',
                 };
             }
 
             return {
                 success: true,
-                message: 'Product deleted successfully'
+                message: 'Product deleted successfully',
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -141,18 +140,10 @@ class ProductService {
                 limit = 12,
                 sortBy = 'createdAt',
                 sortOrder = 'desc',
-                includeUnpublished = false
+                includeUnpublished = false,
             } = options;
 
-            const {
-                category,
-                brand,
-                minPrice,
-                maxPrice,
-                tags,
-                isFeatured,
-                inStock = true
-            } = filters;
+            const { category, brand, minPrice, maxPrice, tags, isFeatured, inStock = true } = filters;
 
             // Build query
             const query = {
@@ -162,15 +153,15 @@ class ProductService {
                 ...(brand && { brand }),
                 ...(tags && { tags: { $in: tags } }),
                 ...(isFeatured !== undefined && { isFeatured }),
-                ...(minPrice || maxPrice) && {
+                ...((minPrice || maxPrice) && {
                     $or: [
                         { salePrice: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) } },
-                        { 
+                        {
                             salePrice: { $exists: false },
-                            price: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) }
-                        }
-                    ]
-                }
+                            price: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) },
+                        },
+                    ],
+                }),
             };
 
             const sortOptions = { [sortBy]: sortOrder === 'desc' ? -1 : 1 };
@@ -185,18 +176,18 @@ class ProductService {
 
             return {
                 success: true,
-                products: products.map(product => productCardDto(product)),
+                products: products.map((product) => productCardDto(product)),
                 pagination: {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -205,16 +196,16 @@ class ProductService {
     async searchProducts(query, filters = {}, options = {}) {
         try {
             const result = await productHelper.searchProducts(query, filters, options);
-            
+
             return {
                 success: true,
-                products: result.products.map(product => productSearchDto(product)),
-                pagination: result.pagination
+                products: result.products.map((product) => productSearchDto(product)),
+                pagination: result.pagination,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -223,15 +214,15 @@ class ProductService {
     async getFeaturedProducts(limit = 8) {
         try {
             const products = await productHelper.getFeaturedProducts(limit);
-            
+
             return {
                 success: true,
-                products: products.map(product => productCardDto(product))
+                products: products.map((product) => productCardDto(product)),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -240,15 +231,15 @@ class ProductService {
     async getBestSellers(limit = 8) {
         try {
             const products = await productHelper.getBestSellers(limit);
-            
+
             return {
                 success: true,
-                products: products.map(product => productCardDto(product))
+                products: products.map((product) => productCardDto(product)),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -260,20 +251,20 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found'
+                    error: 'Product not found',
                 };
             }
 
             const products = await productHelper.getRelatedProducts(productId, product.category, limit);
-            
+
             return {
                 success: true,
-                products: products.map(product => productCardDto(product))
+                products: products.map((product) => productCardDto(product)),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -283,12 +274,12 @@ class ProductService {
         try {
             const method = operation === 'add' ? productHelper.restockProduct : productHelper.updateStock;
             const result = await method(productId, variantId, Math.abs(quantity));
-            
+
             return result;
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -297,24 +288,24 @@ class ProductService {
     async bulkUpdateProducts(updates) {
         try {
             const results = [];
-            
+
             for (const update of updates) {
                 const result = await this.updateProduct(update.id, update.data);
                 results.push(result);
             }
 
-            const successful = results.filter(r => r.success).length;
-            const failed = results.filter(r => !r.success).length;
+            const successful = results.filter((r) => r.success).length;
+            const failed = results.filter((r) => !r.success).length;
 
             return {
                 success: true,
                 message: `Updated ${successful} products, ${failed} failed`,
-                results
+                results,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -324,17 +315,17 @@ class ProductService {
         try {
             const products = await Product.find({
                 isPublished: true,
-                $expr: { $lte: ['$stockQuantity', '$lowStockThreshold'] }
+                $expr: { $lte: ['$stockQuantity', '$lowStockThreshold'] },
             }).populate('category', 'name');
 
             return {
                 success: true,
-                products: products.map(product => productCardDto(product))
+                products: products.map((product) => productCardDto(product)),
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -346,7 +337,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found'
+                    error: 'Product not found',
                 };
             }
 
@@ -359,17 +350,17 @@ class ProductService {
                 onSale: productHelper.isOnSale(product),
                 discount: productHelper.calculateDiscount(product.price, product.salePrice),
                 finalPrice: productHelper.getProductPrice(product),
-                revenue: product.salesCount * productHelper.getProductPrice(product)
+                revenue: product.salesCount * productHelper.getProductPrice(product),
             };
 
             return {
                 success: true,
-                analytics
+                analytics,
             };
         } catch (error) {
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }

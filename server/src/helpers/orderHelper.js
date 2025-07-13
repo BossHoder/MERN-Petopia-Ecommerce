@@ -15,7 +15,7 @@ export const generateOrderNumber = () => {
 
 // Calculate order pricing
 export const calculateOrderPricing = (items, shippingCost = 0, couponDiscount = 0) => {
-    const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
     const shipping = subtotal >= 200000 ? 0 : shippingCost; // Free shipping over 200k VND
     const discount = couponDiscount;
     const total = subtotal + shipping - discount;
@@ -24,60 +24,57 @@ export const calculateOrderPricing = (items, shippingCost = 0, couponDiscount = 
         subtotal,
         shipping,
         discount,
-        total
+        total,
     };
 };
 
 // Create order from cart
 export const createOrderFromCart = async (cart, orderData) => {
     try {
-        const {
-            username,
-            shippingAddress,
-            paymentMethod,
-            appliedCoupon
-        } = orderData;
+        const { username, shippingAddress, paymentMethod, appliedCoupon } = orderData;
 
         // Calculate pricing
         const pricing = calculateOrderPricing(
             cart.items,
             20000, // Default shipping cost
-            appliedCoupon?.discount || 0
+            appliedCoupon?.discount || 0,
         );
 
         // Create order
         const order = new Order({
             orderNumber: generateOrderNumber(),
             username,
-            items: cart.items.map(item => ({
+            items: cart.items.map((item) => ({
                 productId: item.productId,
                 variantId: item.variantId,
                 productName: item.productName,
                 image: item.productImage,
                 price: item.price,
-                quantity: item.quantity
+                quantity: item.quantity,
             })),
             shippingAddress,
             paymentMethod,
             appliedCoupon,
             pricing,
             status: 'pending',
-            statusHistory: [{
-                status: 'pending',
-                comment: 'Order created',
-                timestamp: new Date()
-            }]
+            statusHistory: [
+                {
+                    status: 'pending',
+                    comment: 'Order created',
+                    timestamp: new Date(),
+                },
+            ],
         });
 
         await order.save();
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -102,7 +99,7 @@ export const updateOrderStatus = async (orderId, newStatus, comment = '', change
             status: newStatus,
             comment,
             changedBy,
-            timestamp: new Date()
+            timestamp: new Date(),
         });
 
         // Update special fields based on status
@@ -118,12 +115,12 @@ export const updateOrderStatus = async (orderId, newStatus, comment = '', change
 
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -146,19 +143,19 @@ export const cancelOrder = async (orderId, reason = '', cancelledBy = null) => {
             status: 'cancelled',
             comment: `Order cancelled. Reason: ${reason}`,
             changedBy: cancelledBy,
-            timestamp: new Date()
+            timestamp: new Date(),
         });
 
         await order.save();
 
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -175,19 +172,14 @@ export const processRefund = async (orderId, refundData) => {
             throw new Error('Order cannot be refunded');
         }
 
-        const {
-            amount,
-            reason,
-            method = 'original_payment',
-            processedBy
-        } = refundData;
+        const { amount, reason, method = 'original_payment', processedBy } = refundData;
 
         order.refundInfo = {
             amount,
             reason,
             method,
             processedBy,
-            processedAt: new Date()
+            processedAt: new Date(),
         };
 
         order.status = 'refunded';
@@ -195,19 +187,19 @@ export const processRefund = async (orderId, refundData) => {
             status: 'refunded',
             comment: `Refund processed: ${amount} VND. Reason: ${reason}`,
             changedBy: processedBy,
-            timestamp: new Date()
+            timestamp: new Date(),
         });
 
         await order.save();
 
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -220,11 +212,7 @@ export const addTrackingInfo = async (orderId, trackingData) => {
             throw new Error('Order not found');
         }
 
-        const {
-            shippingCompany,
-            trackingNumber,
-            estimatedDelivery
-        } = trackingData;
+        const { shippingCompany, trackingNumber, estimatedDelivery } = trackingData;
 
         order.shippingCompany = shippingCompany;
         order.trackingNumber = trackingNumber;
@@ -236,7 +224,7 @@ export const addTrackingInfo = async (orderId, trackingData) => {
             order.statusHistory.push({
                 status: 'shipped',
                 comment: `Order shipped via ${shippingCompany}. Tracking: ${trackingNumber}`,
-                timestamp: new Date()
+                timestamp: new Date(),
             });
         }
 
@@ -244,12 +232,12 @@ export const addTrackingInfo = async (orderId, trackingData) => {
 
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -258,15 +246,16 @@ export const addTrackingInfo = async (orderId, trackingData) => {
 export const getOrderStats = async (userId = null, dateRange = {}) => {
     try {
         const { startDate, endDate } = dateRange;
-        
+
         const matchQuery = {
             ...(userId && { username: userId }),
-            ...(startDate && endDate && {
-                createdAt: {
-                    $gte: new Date(startDate),
-                    $lte: new Date(endDate)
-                }
-            })
+            ...(startDate &&
+                endDate && {
+                    createdAt: {
+                        $gte: new Date(startDate),
+                        $lte: new Date(endDate),
+                    },
+                }),
         };
 
         const stats = await Order.aggregate([
@@ -278,22 +267,22 @@ export const getOrderStats = async (userId = null, dateRange = {}) => {
                     totalRevenue: { $sum: '$pricing.total' },
                     averageOrderValue: { $avg: '$pricing.total' },
                     pendingOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
                     },
                     confirmedOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'confirmed'] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ['$status', 'confirmed'] }, 1, 0] },
                     },
                     shippedOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'shipped'] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ['$status', 'shipped'] }, 1, 0] },
                     },
                     deliveredOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] }
+                        $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] },
                     },
                     cancelledOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] }
-                    }
-                }
-            }
+                        $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] },
+                    },
+                },
+            },
         ]);
 
         return {
@@ -306,13 +295,13 @@ export const getOrderStats = async (userId = null, dateRange = {}) => {
                 confirmedOrders: 0,
                 shippedOrders: 0,
                 deliveredOrders: 0,
-                cancelledOrders: 0
-            }
+                cancelledOrders: 0,
+            },
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -320,13 +309,7 @@ export const getOrderStats = async (userId = null, dateRange = {}) => {
 // Get user's order history
 export const getUserOrderHistory = async (userId, options = {}) => {
     try {
-        const {
-            page = 1,
-            limit = 10,
-            status,
-            sortBy = 'createdAt',
-            sortOrder = 'desc'
-        } = options;
+        const { page = 1, limit = 10, status, sortBy = 'createdAt', sortOrder = 'desc' } = options;
 
         const query = { username: userId };
         if (status) {
@@ -348,13 +331,13 @@ export const getUserOrderHistory = async (userId, options = {}) => {
                 page,
                 limit,
                 total,
-                pages: Math.ceil(total / limit)
-            }
+                pages: Math.ceil(total / limit),
+            },
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -383,19 +366,19 @@ export const addInternalNote = async (orderId, note, addedBy) => {
         order.internalNotes.push({
             note,
             addedBy,
-            addedAt: new Date()
+            addedAt: new Date(),
         });
 
         await order.save();
 
         return {
             success: true,
-            order
+            order,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -429,6 +412,6 @@ export const validateOrderData = (orderData) => {
 
     return {
         isValid: errors.length === 0,
-        errors
+        errors,
     };
 };

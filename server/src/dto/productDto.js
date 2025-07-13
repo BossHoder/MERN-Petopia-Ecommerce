@@ -35,12 +35,12 @@ export const productDto = (product) => {
         metaTitle: product.metaTitle,
         metaDescription: product.metaDescription,
         createdAt: product.createdAt,
-        updatedAt: product.updatedAt
+        updatedAt: product.updatedAt,
     };
 };
 
 export const productsDto = (products) => {
-    return products.map(product => productDto(product));
+    return products.map((product) => productDto(product));
 };
 
 // Simplified DTO for product cards/listings
@@ -64,12 +64,12 @@ export const productCardDto = (product) => {
         numReviews: product.numReviews,
         tags: product.tags,
         viewCount: product.viewCount,
-        salesCount: product.salesCount
+        salesCount: product.salesCount,
     };
 };
 
 export const productsCardDto = (products) => {
-    return products.map(product => productCardDto(product));
+    return products.map((product) => productCardDto(product));
 };
 
 // DTO for search results
@@ -86,6 +86,6 @@ export const productSearchDto = (product) => {
         inStock: product.stockQuantity > 0,
         ratings: product.ratings,
         tags: product.tags,
-        brand: product.brand
+        brand: product.brand,
     };
 };

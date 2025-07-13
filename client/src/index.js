@@ -12,23 +12,23 @@ import rootReducer from './store/reducers';
 const initialState = {};
 
 const store = createStore(
-  rootReducer,
-  initialState,
-  compose(
-    applyMiddleware(thunk),
-    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()) ||
-      compose,
-  ),
+    rootReducer,
+    initialState,
+    compose(
+        applyMiddleware(thunk),
+        (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+            window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()) ||
+            compose,
+    ),
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router>
-      <Switch>
-        <Route path="/" component={App} />
-      </Switch>
-    </Router>
-  </Provider>,
-  document.getElementById('root'),
+    <Provider store={store}>
+        <Router>
+            <Switch>
+                <Route path="/" component={App} />
+            </Switch>
+        </Router>
+    </Provider>,
+    document.getElementById('root'),
 );

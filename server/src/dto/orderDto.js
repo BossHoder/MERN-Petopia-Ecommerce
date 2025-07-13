@@ -11,7 +11,7 @@ export const orderItemDto = (item) => {
         image: item.image,
         price: item.price,
         quantity: item.quantity,
-        subtotal: item.price * item.quantity
+        subtotal: item.price * item.quantity,
     };
 };
 
@@ -20,7 +20,7 @@ export const orderDto = (order) => {
         id: order._id,
         orderNumber: order.orderNumber,
         username: order.username,
-        items: order.items.map(item => orderItemDto(item)),
+        items: order.items.map((item) => orderItemDto(item)),
         shippingAddress: order.shippingAddress,
         paymentMethod: order.paymentMethod,
         appliedCoupon: order.appliedCoupon,
@@ -32,7 +32,7 @@ export const orderDto = (order) => {
             shippingCompany: order.shippingCompany,
             trackingNumber: order.trackingNumber,
             estimatedDelivery: order.estimatedDelivery,
-            actualDelivery: order.actualDelivery
+            actualDelivery: order.actualDelivery,
         },
         refundInfo: order.refundInfo,
         cancellationReason: order.cancellationReason,
@@ -43,12 +43,12 @@ export const orderDto = (order) => {
         canBeCancelled: order.canBeCancelled,
         canBeRefunded: order.canBeRefunded,
         createdAt: order.createdAt,
-        updatedAt: order.updatedAt
+        updatedAt: order.updatedAt,
     };
 };
 
 export const ordersDto = (orders) => {
-    return orders.map(order => orderDto(order));
+    return orders.map((order) => orderDto(order));
 };
 
 // Simplified DTO for order lists
@@ -63,12 +63,12 @@ export const orderListDto = (order) => {
         isPaid: order.isPaid,
         isDelivered: order.isDelivered,
         createdAt: order.createdAt,
-        updatedAt: order.updatedAt
+        updatedAt: order.updatedAt,
     };
 };
 
 export const ordersListDto = (orders) => {
-    return orders.map(order => orderListDto(order));
+    return orders.map((order) => orderListDto(order));
 };
 
 // Admin DTO (includes internal notes)
@@ -76,7 +76,7 @@ export const adminOrderDto = (order) => {
     return {
         ...orderDto(order),
         internalNotes: order.internalNotes,
-        paymentDetails: order.paymentDetails
+        paymentDetails: order.paymentDetails,
     };
 };
 
@@ -91,10 +91,10 @@ export const customerOrderDto = (order) => {
 
 // Status history DTO
 export const statusHistoryDto = (statusHistory) => {
-    return statusHistory.map(status => ({
+    return statusHistory.map((status) => ({
         status: status.status,
         comment: status.comment,
         changedBy: status.changedBy,
-        timestamp: status.timestamp
+        timestamp: status.timestamp,
     }));
 };

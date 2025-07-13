@@ -24,7 +24,7 @@ export const generateSKU = async (categoryCode = 'PET', brand = 'PETOPIA') => {
 // Check if product is in stock
 export const checkStock = (product, variantId = null, quantity = 1) => {
     if (variantId) {
-        const variant = product.variants.find(v => v.sku === variantId);
+        const variant = product.variants.find((v) => v.sku === variantId);
         return variant ? variant.stockQuantity >= quantity : false;
     }
     return product.stockQuantity >= quantity;
@@ -33,7 +33,7 @@ export const checkStock = (product, variantId = null, quantity = 1) => {
 // Get product price (considering sale price)
 export const getProductPrice = (product, variantId = null) => {
     if (variantId) {
-        const variant = product.variants.find(v => v.sku === variantId);
+        const variant = product.variants.find((v) => v.sku === variantId);
         return variant ? variant.price : product.price;
     }
     return product.salePrice || product.price;
@@ -53,7 +53,7 @@ export const calculateDiscount = (originalPrice, salePrice) => {
 // Check if product is low stock
 export const isLowStock = (product, variantId = null) => {
     if (variantId) {
-        const variant = product.variants.find(v => v.sku === variantId);
+        const variant = product.variants.find((v) => v.sku === variantId);
         return variant ? variant.stockQuantity <= product.lowStockThreshold : false;
     }
     return product.stockQuantity <= product.lowStockThreshold;
@@ -68,7 +68,7 @@ export const updateStock = async (productId, variantId = null, quantity) => {
         }
 
         if (variantId) {
-            const variant = product.variants.find(v => v.sku === variantId);
+            const variant = product.variants.find((v) => v.sku === variantId);
             if (!variant) {
                 throw new Error('Variant not found');
             }
@@ -80,12 +80,12 @@ export const updateStock = async (productId, variantId = null, quantity) => {
         await product.save();
         return {
             success: true,
-            product
+            product,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -99,7 +99,7 @@ export const restockProduct = async (productId, variantId = null, quantity) => {
         }
 
         if (variantId) {
-            const variant = product.variants.find(v => v.sku === variantId);
+            const variant = product.variants.find((v) => v.sku === variantId);
             if (!variant) {
                 throw new Error('Variant not found');
             }
@@ -111,12 +111,12 @@ export const restockProduct = async (productId, variantId = null, quantity) => {
         await product.save();
         return {
             success: true,
-            product
+            product,
         };
     } catch (error) {
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -124,11 +124,7 @@ export const restockProduct = async (productId, variantId = null, quantity) => {
 // Increment view count
 export const incrementViewCount = async (productId) => {
     try {
-        const product = await Product.findByIdAndUpdate(
-            productId,
-            { $inc: { viewCount: 1 } },
-            { new: true }
-        );
+        const product = await Product.findByIdAndUpdate(productId, { $inc: { viewCount: 1 } }, { new: true });
         return product;
     } catch (error) {
         console.error('Error incrementing view count:', error);
@@ -139,11 +135,7 @@ export const incrementViewCount = async (productId) => {
 // Increment sales count
 export const incrementSalesCount = async (productId, quantity = 1) => {
     try {
-        const product = await Product.findByIdAndUpdate(
-            productId,
-            { $inc: { salesCount: quantity } },
-            { new: true }
-        );
+        const product = await Product.findByIdAndUpdate(productId, { $inc: { salesCount: quantity } }, { new: true });
         return product;
     } catch (error) {
         console.error('Error incrementing sales count:', error);
@@ -158,11 +150,11 @@ export const getRelatedProducts = async (productId, categoryId, limit = 4) => {
             _id: { $ne: productId },
             category: categoryId,
             isPublished: true,
-            stockQuantity: { $gt: 0 }
+            stockQuantity: { $gt: 0 },
         })
-        .limit(limit)
-        .populate('category', 'name')
-        .sort({ salesCount: -1, createdAt: -1 });
+            .limit(limit)
+            .populate('category', 'name')
+            .sort({ salesCount: -1, createdAt: -1 });
 
         return products;
     } catch (error) {
@@ -177,11 +169,11 @@ export const getFeaturedProducts = async (limit = 8) => {
         const products = await Product.find({
             isFeatured: true,
             isPublished: true,
-            stockQuantity: { $gt: 0 }
+            stockQuantity: { $gt: 0 },
         })
-        .limit(limit)
-        .populate('category', 'name')
-        .sort({ salesCount: -1, createdAt: -1 });
+            .limit(limit)
+            .populate('category', 'name')
+            .sort({ salesCount: -1, createdAt: -1 });
 
         return products;
     } catch (error) {
@@ -195,11 +187,11 @@ export const getBestSellers = async (limit = 8) => {
     try {
         const products = await Product.find({
             isPublished: true,
-            stockQuantity: { $gt: 0 }
+            stockQuantity: { $gt: 0 },
         })
-        .limit(limit)
-        .populate('category', 'name')
-        .sort({ salesCount: -1, viewCount: -1 });
+            .limit(limit)
+            .populate('category', 'name')
+            .sort({ salesCount: -1, viewCount: -1 });
 
         return products;
     } catch (error) {
@@ -211,20 +203,9 @@ export const getBestSellers = async (limit = 8) => {
 // Product search with filters
 export const searchProducts = async (query, filters = {}, options = {}) => {
     try {
-        const {
-            category,
-            brand,
-            minPrice,
-            maxPrice,
-            tags,
-            inStock = true,
-            sortBy = 'relevance'
-        } = filters;
+        const { category, brand, minPrice, maxPrice, tags, inStock = true, sortBy = 'relevance' } = filters;
 
-        const {
-            page = 1,
-            limit = 12
-        } = options;
+        const { page = 1, limit = 12 } = options;
 
         // Build search query
         const searchQuery = {
@@ -233,15 +214,15 @@ export const searchProducts = async (query, filters = {}, options = {}) => {
             ...(category && { category }),
             ...(brand && { brand }),
             ...(tags && { tags: { $in: tags } }),
-            ...(minPrice || maxPrice) && {
+            ...((minPrice || maxPrice) && {
                 $or: [
                     { salePrice: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) } },
-                    { 
+                    {
                         salePrice: { $exists: false },
-                        price: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) }
-                    }
-                ]
-            }
+                        price: { ...(minPrice && { $gte: minPrice }), ...(maxPrice && { $lte: maxPrice }) },
+                    },
+                ],
+            }),
         };
 
         // Add text search if query provided
@@ -285,14 +266,14 @@ export const searchProducts = async (query, filters = {}, options = {}) => {
                 page,
                 limit,
                 total,
-                pages: Math.ceil(total / limit)
-            }
+                pages: Math.ceil(total / limit),
+            },
         };
     } catch (error) {
         console.error('Error searching products:', error);
         return {
             products: [],
-            pagination: { page: 1, limit: 12, total: 0, pages: 0 }
+            pagination: { page: 1, limit: 12, total: 0, pages: 0 },
         };
     }
 };
@@ -327,6 +308,6 @@ export const validateProductData = (productData) => {
 
     return {
         isValid: errors.length === 0,
-        errors
+        errors,
     };
 };

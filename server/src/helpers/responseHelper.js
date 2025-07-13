@@ -14,7 +14,7 @@ export const successResponse = (res, data = null, message = 'Success', statusCod
         success: true,
         message,
         data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     });
 };
 
@@ -30,7 +30,7 @@ export const errorResponse = (res, message = 'Something went wrong', statusCode 
         success: false,
         message,
         errors,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     });
 };
 
@@ -51,9 +51,9 @@ export const paginatedResponse = (res, data, message = 'Success') => {
             totalCount: data.totalCount || 0,
             totalPages: data.totalPages || 0,
             hasNextPage: (data.page || 1) < (data.totalPages || 0),
-            hasPrevPage: (data.page || 1) > 1
+            hasPrevPage: (data.page || 1) > 1,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
     };
 
     return res.status(200).json(response);
@@ -65,9 +65,9 @@ export const paginatedResponse = (res, data, message = 'Success') => {
  * @param {Object} error - Joi validation error
  */
 export const validationErrorResponse = (res, error) => {
-    const errors = error.details.map(detail => ({
+    const errors = error.details.map((detail) => ({
         field: detail.path.join('.'),
-        message: detail.message
+        message: detail.message,
     }));
 
     return errorResponse(res, 'Validation failed', 400, errors);
@@ -152,15 +152,19 @@ export const serviceUnavailableResponse = (res, message = 'Service temporarily u
  * @param {string} message - Success message
  */
 export const cartResponse = (res, cart, message = 'Cart retrieved successfully') => {
-    return successResponse(res, {
-        cart,
-        summary: {
-            totalItems: cart.totalItems,
-            totalUniqueItems: cart.totalUniqueItems,
-            isEmpty: cart.isEmpty,
-            totals: cart.totals
-        }
-    }, message);
+    return successResponse(
+        res,
+        {
+            cart,
+            summary: {
+                totalItems: cart.totalItems,
+                totalUniqueItems: cart.totalUniqueItems,
+                isEmpty: cart.isEmpty,
+                totals: cart.totals,
+            },
+        },
+        message,
+    );
 };
 
 /**
@@ -170,16 +174,20 @@ export const cartResponse = (res, cart, message = 'Cart retrieved successfully')
  * @param {string} message - Success message
  */
 export const orderResponse = (res, order, message = 'Order processed successfully') => {
-    return successResponse(res, {
-        order,
-        status: {
-            current: order.status,
-            canBeCancelled: order.canBeCancelled,
-            canBeRefunded: order.canBeRefunded,
-            isPaid: order.isPaid,
-            isDelivered: order.isDelivered
-        }
-    }, message);
+    return successResponse(
+        res,
+        {
+            order,
+            status: {
+                current: order.status,
+                canBeCancelled: order.canBeCancelled,
+                canBeRefunded: order.canBeRefunded,
+                isPaid: order.isPaid,
+                isDelivered: order.isDelivered,
+            },
+        },
+        message,
+    );
 };
 
 /**
@@ -220,12 +228,16 @@ export const userProfileResponse = (res, user, stats = null, message = 'Profile 
  * @param {string} message - Success message
  */
 export const searchResponse = (res, results, filters = {}, message = 'Search completed successfully') => {
-    return successResponse(res, {
-        results: results.data || results,
-        filters: filters,
-        pagination: results.pagination || null,
-        total: results.total || (results.data ? results.data.length : 0)
-    }, message);
+    return successResponse(
+        res,
+        {
+            results: results.data || results,
+            filters: filters,
+            pagination: results.pagination || null,
+            total: results.total || (results.data ? results.data.length : 0),
+        },
+        message,
+    );
 };
 
 /**
@@ -236,11 +248,15 @@ export const searchResponse = (res, results, filters = {}, message = 'Search com
  * @param {string} message - Success message
  */
 export const authResponse = (res, user, token, message = 'Authentication successful') => {
-    return successResponse(res, {
-        user,
-        token,
-        expiresIn: '24h'
-    }, message);
+    return successResponse(
+        res,
+        {
+            user,
+            token,
+            expiresIn: '24h',
+        },
+        message,
+    );
 };
 
 /**
@@ -266,11 +282,15 @@ export const couponResponse = (res, coupon, discount = null, message = 'Coupon a
  * @param {string} message - Success message
  */
 export const analyticsResponse = (res, analytics, period = 'all', message = 'Analytics retrieved successfully') => {
-    return successResponse(res, {
-        analytics,
-        period,
-        generatedAt: new Date().toISOString()
-    }, message);
+    return successResponse(
+        res,
+        {
+            analytics,
+            period,
+            generatedAt: new Date().toISOString(),
+        },
+        message,
+    );
 };
 
 /**
@@ -280,15 +300,19 @@ export const analyticsResponse = (res, analytics, period = 'all', message = 'Ana
  * @param {string} message - Success message
  */
 export const batchResponse = (res, results, message = 'Batch operation completed') => {
-    const successful = results.filter(r => r.success).length;
-    const failed = results.filter(r => !r.success).length;
-    
-    return successResponse(res, {
-        results,
-        summary: {
-            total: results.length,
-            successful,
-            failed
-        }
-    }, `${message}. ${successful} successful, ${failed} failed`);
+    const successful = results.filter((r) => r.success).length;
+    const failed = results.filter((r) => !r.success).length;
+
+    return successResponse(
+        res,
+        {
+            results,
+            summary: {
+                total: results.length,
+                successful,
+                failed,
+            },
+        },
+        `${message}. ${successful} successful, ${failed} failed`,
+    );
 };

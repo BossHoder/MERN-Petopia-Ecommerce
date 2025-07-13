@@ -4,25 +4,25 @@ const readdir = promisify(fs.readdir);
 const unlink = promisify(fs.unlink);
 
 export const deleteAllAvatars = async (absoluteFolderPath) => {
-  try {
-    const files = await readdir(absoluteFolderPath);
-    const unlinkPromises = files.map((filename) => {
-      if (!['avatar0.jpg', 'avatar1.jpg', 'avatar2.jpg'].includes(filename)) {
-        console.log('Deleting avatar: ', filename);
-        unlink(`${absoluteFolderPath}/${filename}`);
-      }
-    });
-    return Promise.all(unlinkPromises);
-  } catch (err) {
-    console.log(err);
-  }
+    try {
+        const files = await readdir(absoluteFolderPath);
+        const unlinkPromises = files.map((filename) => {
+            if (!['avatar0.jpg', 'avatar1.jpg', 'avatar2.jpg'].includes(filename)) {
+                console.log('Deleting avatar: ', filename);
+                unlink(`${absoluteFolderPath}/${filename}`);
+            }
+        });
+        return Promise.all(unlinkPromises);
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 export const isValidUrl = (str) => {
-  var urlRegex =
-    '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-  var url = new RegExp(urlRegex, 'i');
-  return str.length < 2083 && url.test(str);
+    var urlRegex =
+        '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
+    var url = new RegExp(urlRegex, 'i');
+    return str.length < 2083 && url.test(str);
 };
 
 /**
@@ -31,7 +31,9 @@ export const isValidUrl = (str) => {
  * @returns {string} - Random string
  */
 export const generateRandomString = (length = 10) => {
-  return Math.random().toString(36).substring(2, length + 2);
+    return Math.random()
+        .toString(36)
+        .substring(2, length + 2);
 };
 
 /**
@@ -40,7 +42,7 @@ export const generateRandomString = (length = 10) => {
  * @returns {Promise} - Promise that resolves after delay
  */
 export const delay = (ms) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 /**
@@ -49,7 +51,7 @@ export const delay = (ms) => {
  * @returns {Object} - Cloned object
  */
 export const deepClone = (obj) => {
-  return JSON.parse(JSON.stringify(obj));
+    return JSON.parse(JSON.stringify(obj));
 };
 
 /**
@@ -58,13 +60,13 @@ export const deepClone = (obj) => {
  * @returns {Object} - Cleaned object
  */
 export const removeEmptyProperties = (obj) => {
-  const cleaned = {};
-  Object.keys(obj).forEach((key) => {
-    if (obj[key] !== null && obj[key] !== undefined && obj[key] !== '') {
-      cleaned[key] = obj[key];
-    }
-  });
-  return cleaned;
+    const cleaned = {};
+    Object.keys(obj).forEach((key) => {
+        if (obj[key] !== null && obj[key] !== undefined && obj[key] !== '') {
+            cleaned[key] = obj[key];
+        }
+    });
+    return cleaned;
 };
 
 /**
@@ -73,10 +75,10 @@ export const removeEmptyProperties = (obj) => {
  * @returns {string} - Formatted currency
  */
 export const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(amount);
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(amount);
 };
 
 /**
@@ -85,11 +87,11 @@ export const formatCurrency = (amount) => {
  * @returns {string} - Formatted date
  */
 export const formatDate = (date) => {
-  return new Intl.DateTimeFormat('vi-VN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }).format(new Date(date));
+    return new Intl.DateTimeFormat('vi-VN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    }).format(new Date(date));
 };
 
 /**
@@ -98,9 +100,9 @@ export const formatDate = (date) => {
  * @returns {string} - Formatted phone number
  */
 export const formatPhoneNumber = (phone) => {
-  if (!phone) return '';
-  // Convert to standard format: 0xxx xxx xxx
-  return phone.replace(/(\+84|84)/, '0').replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+    if (!phone) return '';
+    // Convert to standard format: 0xxx xxx xxx
+    return phone.replace(/(\+84|84)/, '0').replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
 };
 
 /**
@@ -109,17 +111,17 @@ export const formatPhoneNumber = (phone) => {
  * @returns {number} - Age in years
  */
 export const calculateAge = (dateOfBirth) => {
-  if (!dateOfBirth) return 0;
-  const today = new Date();
-  const birth = new Date(dateOfBirth);
-  let age = today.getFullYear() - birth.getFullYear();
-  const monthDiff = today.getMonth() - birth.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-  
-  return age;
+    if (!dateOfBirth) return 0;
+    const today = new Date();
+    const birth = new Date(dateOfBirth);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+
+    return age;
 };
 
 /**
@@ -128,8 +130,8 @@ export const calculateAge = (dateOfBirth) => {
  * @returns {boolean} - Is valid email
  */
 export const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
 };
 
 /**
@@ -138,8 +140,8 @@ export const isValidEmail = (email) => {
  * @returns {boolean} - Is valid phone number
  */
 export const isValidPhoneNumber = (phone) => {
-  const phoneRegex = /^(\+84|84|0)(3|5|7|8|9)\d{8}$/;
-  return phoneRegex.test(phone);
+    const phoneRegex = /^(\+84|84|0)(3|5|7|8|9)\d{8}$/;
+    return phoneRegex.test(phone);
 };
 
 /**
@@ -147,9 +149,9 @@ export const isValidPhoneNumber = (phone) => {
  * @returns {string} - Unique order number
  */
 export const generateOrderNumber = () => {
-  const timestamp = Date.now().toString();
-  const random = Math.random().toString(36).substr(2, 4).toUpperCase();
-  return `ORD-${timestamp}-${random}`;
+    const timestamp = Date.now().toString();
+    const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+    return `ORD-${timestamp}-${random}`;
 };
 
 /**
@@ -160,10 +162,10 @@ export const generateOrderNumber = () => {
  * @returns {number} - Discount amount
  */
 export const calculateDiscount = (price, discount, type) => {
-  if (type === 'percentage') {
-    return (price * discount) / 100;
-  }
-  return discount;
+    if (type === 'percentage') {
+        return (price * discount) / 100;
+    }
+    return discount;
 };
 
 /**
@@ -172,7 +174,7 @@ export const calculateDiscount = (price, discount, type) => {
  * @returns {boolean} - Is expired
  */
 export const isExpired = (date) => {
-  return new Date(date) < new Date();
+    return new Date(date) < new Date();
 };
 
 /**
@@ -181,17 +183,17 @@ export const isExpired = (date) => {
  * @returns {string} - Time difference
  */
 export const getTimeDifference = (date) => {
-  const now = new Date();
-  const diff = now - new Date(date);
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+    const now = new Date();
+    const diff = now - new Date(date);
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
 
-  if (days > 0) return `${days} ngày trước`;
-  if (hours > 0) return `${hours} giờ trước`;
-  if (minutes > 0) return `${minutes} phút trước`;
-  return `${seconds} giây trước`;
+    if (days > 0) return `${days} ngày trước`;
+    if (hours > 0) return `${hours} giờ trước`;
+    if (minutes > 0) return `${minutes} phút trước`;
+    return `${seconds} giây trước`;
 };
 
 /**
@@ -200,13 +202,13 @@ export const getTimeDifference = (date) => {
  * @returns {string} - Sanitized content
  */
 export const sanitizeHtml = (html) => {
-  if (!html) return '';
-  return html
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+="[^"]*"/gi, '')
-    .replace(/on\w+='[^']*'/gi, '');
+    if (!html) return '';
+    return html
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+="[^"]*"/gi, '')
+        .replace(/on\w+='[^']*'/gi, '');
 };
 
 /**
@@ -216,8 +218,8 @@ export const sanitizeHtml = (html) => {
  * @returns {string} - Truncated text
  */
 export const truncateText = (text, maxLength = 100) => {
-  if (!text || text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
+    if (!text || text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
 };
 
 /**
@@ -226,10 +228,10 @@ export const truncateText = (text, maxLength = 100) => {
  * @returns {string} - Title case string
  */
 export const toTitleCase = (str) => {
-  if (!str) return '';
-  return str.replace(/\w\S*/g, (txt) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
+    if (!str) return '';
+    return str.replace(/\w\S*/g, (txt) => {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 };
 
 /**
@@ -238,10 +240,10 @@ export const toTitleCase = (str) => {
  * @returns {Object} - Sort object for MongoDB
  */
 export const parseSortParam = (sortParam) => {
-  if (!sortParam) return { createdAt: -1 };
-  
-  const [field, order] = sortParam.split(':');
-  return { [field]: order === 'desc' ? -1 : 1 };
+    if (!sortParam) return { createdAt: -1 };
+
+    const [field, order] = sortParam.split(':');
+    return { [field]: order === 'desc' ? -1 : 1 };
 };
 
 /**
@@ -252,13 +254,13 @@ export const parseSortParam = (sortParam) => {
  * @returns {Object} - Pagination object
  */
 export const buildPagination = (page, limit, total) => {
-  const totalPages = Math.ceil(total / limit);
-  return {
-    page: parseInt(page),
-    limit: parseInt(limit),
-    total: parseInt(total),
-    totalPages,
-    hasNext: page < totalPages,
-    hasPrev: page > 1
-  };
+    const totalPages = Math.ceil(total / limit);
+    return {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: parseInt(total),
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+    };
 };

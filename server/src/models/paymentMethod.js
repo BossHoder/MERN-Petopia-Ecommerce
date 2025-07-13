@@ -9,24 +9,24 @@ const paymentMethodSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        trim: true
+        trim: true,
     },
     description: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     type: {
         type: String,
         required: true,
         enum: ['momo', 'zalopay', 'bank_transfer', 'cod'],
-        default: 'cod'
+        default: 'cod',
     },
     isActive: {
         type: Boolean,
-        default: true
+        default: true,
     },
-})
+});
 
 // ===========================================
 // OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)

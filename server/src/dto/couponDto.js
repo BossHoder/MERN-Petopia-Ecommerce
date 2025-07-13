@@ -15,7 +15,7 @@ export const couponPublicDto = (coupon) => {
         validFrom: coupon.validFrom,
         validUntil: coupon.validUntil,
         isValid: coupon.isValid,
-        isExpired: coupon.isExpired
+        isExpired: coupon.isExpired,
     };
 };
 
@@ -44,7 +44,7 @@ export const couponAdminDto = (coupon) => {
         usedBy: coupon.usedBy,
         createdBy: coupon.createdBy,
         createdAt: coupon.createdAt,
-        updatedAt: coupon.updatedAt
+        updatedAt: coupon.updatedAt,
     };
 };
 
@@ -54,7 +54,7 @@ export const couponUsageDto = (usage) => {
         user: usage.user,
         usedAt: usage.usedAt,
         orderValue: usage.orderValue,
-        discountAmount: usage.discountAmount
+        discountAmount: usage.discountAmount,
     };
 };
 
@@ -63,13 +63,13 @@ export const couponValidationDto = (isValid, message = null, discountAmount = 0)
     return {
         isValid,
         message,
-        discountAmount
+        discountAmount,
     };
 };
 
 // Coupon list for admin dashboard
 export const couponListDto = (coupons) => {
-    return coupons.map(coupon => ({
+    return coupons.map((coupon) => ({
         id: coupon._id,
         code: coupon.code,
         description: coupon.description,
@@ -82,7 +82,7 @@ export const couponListDto = (coupons) => {
         isExpired: coupon.isExpired,
         validFrom: coupon.validFrom,
         validUntil: coupon.validUntil,
-        createdAt: coupon.createdAt
+        createdAt: coupon.createdAt,
     }));
 };
 
@@ -104,6 +104,6 @@ export const createCouponDto = (data) => {
         excludeProducts: data.excludeProducts || [],
         excludeCategories: data.excludeCategories || [],
         isActive: data.isActive !== undefined ? data.isActive : true,
-        createdBy: data.createdBy
+        createdBy: data.createdBy,
     };
 };

@@ -4,109 +4,112 @@ import mongoose from 'mongoose';
 // NOTIFICATION SCHEMA
 // ===========================================
 // This schema defines notifications for users
-const notificationSchema = new mongoose.Schema({
-    // Who receives this notification
-    recipient: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    // Notification type
-    type: {
-        type: String,
-        required: true,
-        enum: [
-            'order_status',
-            'payment_success',
-            'payment_failed',
-            'product_back_in_stock',
-            'new_product',
-            'promotion',
-            'welcome',
-            'review_request',
-            'system'
-        ]
-    },
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 100
-    },
-    message: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 500
-    },
-    relatedData: {
-        orderId: {
+const notificationSchema = new mongoose.Schema(
+    {
+        // Who receives this notification
+        recipient: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Order'
+            ref: 'User',
+            required: true,
         },
-        productId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product'
-        },
-        couponCode: String,
-        actionUrl: String // URL to redirect when notification is clicked
-    },
-    // Status
-    isRead: {
-        type: Boolean,
-        default: false
-    },
-    readAt: {
-        type: Date
-    },
-    // Priority
-    priority: {
-        type: String,
-        enum: ['low', 'medium', 'high'],
-        default: 'medium'
-    },
-    // Send via channels
-    channels: {
-        inApp: {
-            type: Boolean,
-            default: true
-        },
-        email: {
-            type: Boolean,
-            default: false
-        },
-        sms: {
-            type: Boolean,
-            default: false
-        }
-    },
-    deliveryStatus: {
-        inApp: {
+        // Notification type
+        type: {
             type: String,
-            enum: ['pending', 'sent', 'failed'],
-            default: 'pending'
+            required: true,
+            enum: [
+                'order_status',
+                'payment_success',
+                'payment_failed',
+                'product_back_in_stock',
+                'new_product',
+                'promotion',
+                'welcome',
+                'review_request',
+                'system',
+            ],
         },
-        email: {
+        title: {
             type: String,
-            enum: ['pending', 'sent', 'failed'],
-            default: 'pending'
+            required: true,
+            trim: true,
+            maxlength: 100,
         },
-        sms: {
+        message: {
             type: String,
-            enum: ['pending', 'sent', 'failed'],
-            default: 'pending'
-        }
+            required: true,
+            trim: true,
+            maxlength: 500,
+        },
+        relatedData: {
+            orderId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Order',
+            },
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+            couponCode: String,
+            actionUrl: String, // URL to redirect when notification is clicked
+        },
+        // Status
+        isRead: {
+            type: Boolean,
+            default: false,
+        },
+        readAt: {
+            type: Date,
+        },
+        // Priority
+        priority: {
+            type: String,
+            enum: ['low', 'medium', 'high'],
+            default: 'medium',
+        },
+        // Send via channels
+        channels: {
+            inApp: {
+                type: Boolean,
+                default: true,
+            },
+            email: {
+                type: Boolean,
+                default: false,
+            },
+            sms: {
+                type: Boolean,
+                default: false,
+            },
+        },
+        deliveryStatus: {
+            inApp: {
+                type: String,
+                enum: ['pending', 'sent', 'failed'],
+                default: 'pending',
+            },
+            email: {
+                type: String,
+                enum: ['pending', 'sent', 'failed'],
+                default: 'pending',
+            },
+            sms: {
+                type: String,
+                enum: ['pending', 'sent', 'failed'],
+                default: 'pending',
+            },
+        },
+        expiresAt: {
+            type: Date,
+            default: function () {
+                // Notifications expire after 30 days
+                return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            },
+        },
     },
-    expiresAt: {
-        type: Date,
-        default: function() {
-            // Notifications expire after 30 days
-            return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-        }
-    }
-}, {
-    timestamps: true
-});
+    {
+        timestamps: true,
+    },
+);
 
 // ===========================================
 // OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
@@ -123,7 +126,7 @@ notificationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL cl
 // INSTANCE METHODS
 // ===========================================
 // Mark notification as read
-notificationSchema.methods.markAsRead = function() {
+notificationSchema.methods.markAsRead = function () {
     this.isRead = true;
     this.readAt = new Date();
     return this.save();
@@ -133,7 +136,7 @@ notificationSchema.methods.markAsRead = function() {
 // STATIC METHODS
 // ===========================================
 // Create notification for user
-notificationSchema.statics.createForUser = function(userId, type, title, message, relatedData = {}, channels = {}) {
+notificationSchema.statics.createForUser = function (userId, type, title, message, relatedData = {}, channels = {}) {
     return this.create({
         recipient: userId,
         type,
@@ -144,43 +147,40 @@ notificationSchema.statics.createForUser = function(userId, type, title, message
             inApp: true,
             email: false,
             sms: false,
-            ...channels
-        }
+            ...channels,
+        },
     });
 };
 
 // Get unread notifications for user
-notificationSchema.statics.getUnreadForUser = function(userId) {
+notificationSchema.statics.getUnreadForUser = function (userId) {
     return this.find({
         recipient: userId,
-        isRead: false
+        isRead: false,
     }).sort({ createdAt: -1 });
 };
 
 // Get all notifications for user with pagination
-notificationSchema.statics.getForUser = function(userId, page = 1, limit = 20) {
+notificationSchema.statics.getForUser = function (userId, page = 1, limit = 20) {
     const skip = (page - 1) * limit;
-    return this.find({ recipient: userId })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+    return this.find({ recipient: userId }).sort({ createdAt: -1 }).skip(skip).limit(limit);
 };
 
 // Mark all notifications as read for user
-notificationSchema.statics.markAllAsReadForUser = function(userId) {
+notificationSchema.statics.markAllAsReadForUser = function (userId) {
     return this.updateMany(
         { recipient: userId, isRead: false },
-        { 
+        {
             isRead: true,
-            readAt: new Date()
-        }
+            readAt: new Date(),
+        },
     );
 };
 
 // Clean up expired notifications
-notificationSchema.statics.cleanupExpired = function() {
+notificationSchema.statics.cleanupExpired = function () {
     return this.deleteMany({
-        expiresAt: { $lt: new Date() }
+        expiresAt: { $lt: new Date() },
     });
 };
 

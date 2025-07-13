@@ -8,24 +8,17 @@ import Notification from '../models/Notification.js';
 // Create notification for user
 export const createNotification = async (userId, type, title, message, relatedData = {}, channels = {}) => {
     try {
-        const notification = await Notification.createForUser(
-            userId,
-            type,
-            title,
-            message,
-            relatedData,
-            channels
-        );
+        const notification = await Notification.createForUser(userId, type, title, message, relatedData, channels);
 
         return {
             success: true,
-            notification
+            notification,
         };
     } catch (error) {
         console.error('Error creating notification:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -44,13 +37,13 @@ export const createBulkNotifications = async (userIds, type, title, message, rel
                     title,
                     message,
                     relatedData,
-                    channels
+                    channels,
                 );
                 notifications.push(notification);
             } catch (error) {
                 failed.push({
                     userId,
-                    error: error.message
+                    error: error.message,
                 });
             }
         }
@@ -61,14 +54,14 @@ export const createBulkNotifications = async (userIds, type, title, message, rel
             failed: failed.length,
             details: {
                 notifications,
-                failed
-            }
+                failed,
+            },
         };
     } catch (error) {
         console.error('Error creating bulk notifications:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };
@@ -80,32 +73,32 @@ export const createOrderStatusNotification = async (userId, orderId, status, ord
             title: 'Order Confirmed',
             message: `Your order ${orderNumber || orderId} has been confirmed and is being processed.`,
             priority: 'high',
-            channels: { inApp: true, email: true, sms: true }
+            channels: { inApp: true, email: true, sms: true },
         },
         processing: {
             title: 'Order Processing',
             message: `Your order ${orderNumber || orderId} is being prepared for shipment.`,
             priority: 'medium',
-            channels: { inApp: true, email: true, sms: false }
+            channels: { inApp: true, email: true, sms: false },
         },
         shipped: {
             title: 'Order Shipped',
             message: `Great news! Your order ${orderNumber || orderId} has been shipped and is on its way.`,
             priority: 'high',
-            channels: { inApp: true, email: true, sms: true }
+            channels: { inApp: true, email: true, sms: true },
         },
         delivered: {
             title: 'Order Delivered',
             message: `Your order ${orderNumber || orderId} has been successfully delivered. Thank you for shopping with us!`,
             priority: 'medium',
-            channels: { inApp: true, email: true, sms: false }
+            channels: { inApp: true, email: true, sms: false },
         },
         cancelled: {
             title: 'Order Cancelled',
             message: `Your order ${orderNumber || orderId} has been cancelled. If you have any questions, please contact support.`,
             priority: 'high',
-            channels: { inApp: true, email: true, sms: false }
-        }
+            channels: { inApp: true, email: true, sms: false },
+        },
     };
 
     const template = templates[status];
@@ -122,9 +115,9 @@ export const createOrderStatusNotification = async (userId, orderId, status, ord
             orderId,
             orderNumber,
             status,
-            actionUrl: `/orders/${orderId}`
+            actionUrl: `/orders/${orderId}`,
         },
-        template.channels
+        template.channels,
     );
 };
 
@@ -135,20 +128,20 @@ export const createPaymentNotification = async (userId, orderId, paymentStatus, 
             title: 'Payment Successful',
             message: `Your payment${amount ? ` of ${amount.toLocaleString()}đ` : ''} has been processed successfully.`,
             priority: 'high',
-            channels: { inApp: true, email: true, sms: false }
+            channels: { inApp: true, email: true, sms: false },
         },
         failed: {
             title: 'Payment Failed',
             message: `We couldn't process your payment${amount ? ` of ${amount.toLocaleString()}đ` : ''}. Please try again.`,
             priority: 'high',
-            channels: { inApp: true, email: true, sms: false }
+            channels: { inApp: true, email: true, sms: false },
         },
         refunded: {
             title: 'Payment Refunded',
             message: `Your refund${amount ? ` of ${amount.toLocaleString()}đ` : ''} has been processed and will appear in your account within 5-7 business days.`,
             priority: 'medium',
-            channels: { inApp: true, email: true, sms: false }
-        }
+            channels: { inApp: true, email: true, sms: false },
+        },
     };
 
     const template = templates[paymentStatus];
@@ -165,9 +158,9 @@ export const createPaymentNotification = async (userId, orderId, paymentStatus, 
             orderId,
             paymentStatus,
             amount,
-            actionUrl: `/orders/${orderId}`
+            actionUrl: `/orders/${orderId}`,
         },
-        template.channels
+        template.channels,
     );
 };
 
@@ -181,9 +174,9 @@ export const createStockNotification = async (userId, productId, productName) =>
         {
             productId,
             productName,
-            actionUrl: `/products/${productId}`
+            actionUrl: `/products/${productId}`,
         },
-        { inApp: true, email: true, sms: false }
+        { inApp: true, email: true, sms: false },
     );
 };
 
@@ -196,15 +189,15 @@ export const createPromotionalNotification = async (userId, title, message, acti
         message,
         {
             couponCode,
-            actionUrl: actionUrl || '/products'
+            actionUrl: actionUrl || '/products',
         },
-        { inApp: true, email: true, sms: false }
+        { inApp: true, email: true, sms: false },
     );
 };
 
 // Welcome notification for new users
 export const createWelcomeNotification = async (userId, userName = null) => {
-    const message = userName 
+    const message = userName
         ? `Welcome to Petopia, ${userName}! Thank you for joining our pet-loving community.`
         : 'Welcome to Petopia! Thank you for joining our pet-loving community.';
 
@@ -214,17 +207,15 @@ export const createWelcomeNotification = async (userId, userName = null) => {
         'Welcome to Petopia!',
         message,
         {
-            actionUrl: '/products'
+            actionUrl: '/products',
         },
-        { inApp: true, email: true, sms: false }
+        { inApp: true, email: true, sms: false },
     );
 };
 
 // Review request notification
 export const createReviewRequestNotification = async (userId, orderId, productNames = []) => {
-    const productText = productNames.length > 0 
-        ? `for ${productNames.join(', ')}`
-        : 'for your recent purchase';
+    const productText = productNames.length > 0 ? `for ${productNames.join(', ')}` : 'for your recent purchase';
 
     return await createNotification(
         userId,
@@ -233,9 +224,9 @@ export const createReviewRequestNotification = async (userId, orderId, productNa
         `We'd love to hear about your experience ${productText}. Your review helps other pet owners make informed decisions.`,
         {
             orderId,
-            actionUrl: `/orders/${orderId}/review`
+            actionUrl: `/orders/${orderId}/review`,
         },
-        { inApp: true, email: true, sms: false }
+        { inApp: true, email: true, sms: false },
     );
 };
 
@@ -243,18 +234,12 @@ export const createReviewRequestNotification = async (userId, orderId, productNa
 export const getNotificationStats = async (userId = null) => {
     try {
         const query = userId ? { recipient: userId } : {};
-        
+
         const [total, unread, byType, byPriority] = await Promise.all([
             Notification.countDocuments(query),
             Notification.countDocuments({ ...query, isRead: false }),
-            Notification.aggregate([
-                { $match: query },
-                { $group: { _id: '$type', count: { $sum: 1 } } }
-            ]),
-            Notification.aggregate([
-                { $match: query },
-                { $group: { _id: '$priority', count: { $sum: 1 } } }
-            ])
+            Notification.aggregate([{ $match: query }, { $group: { _id: '$type', count: { $sum: 1 } } }]),
+            Notification.aggregate([{ $match: query }, { $group: { _id: '$priority', count: { $sum: 1 } } }]),
         ]);
 
         return {
@@ -267,7 +252,7 @@ export const getNotificationStats = async (userId = null) => {
             byPriority: byPriority.reduce((acc, item) => {
                 acc[item._id] = item.count;
                 return acc;
-            }, {})
+            }, {}),
         };
     } catch (error) {
         console.error('Error getting notification stats:', error);
@@ -279,21 +264,21 @@ export const getNotificationStats = async (userId = null) => {
 export const cleanupOldNotifications = async (daysOld = 30) => {
     try {
         const cutoffDate = new Date(Date.now() - daysOld * 24 * 60 * 60 * 1000);
-        
+
         const result = await Notification.deleteMany({
             createdAt: { $lt: cutoffDate },
-            isRead: true
+            isRead: true,
         });
 
         return {
             success: true,
-            deletedCount: result.deletedCount
+            deletedCount: result.deletedCount,
         };
     } catch (error) {
         console.error('Error cleaning up notifications:', error);
         return {
             success: false,
-            error: error.message
+            error: error.message,
         };
     }
 };

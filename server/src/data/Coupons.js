@@ -5,9 +5,9 @@
 
 const coupons = [
     {
-        code: "WELCOME10",
-        description: "10% discount for new customers",
-        discountType: "percentage",
+        code: 'WELCOME10',
+        description: '10% discount for new customers',
+        discountType: 'percentage',
         discountValue: 10,
         usageLimit: 1000,
         usageCount: 0,
@@ -21,17 +21,17 @@ const coupons = [
         excludeProducts: [],
         excludeCategories: [],
         isActive: true,
-        usedBy: []
+        usedBy: [],
     },
     {
-        code: "FREESHIP",
-        description: "Free shipping for orders over 200k",
-        discountType: "fixed",
-        discountValue: 20000, 
+        code: 'FREESHIP',
+        description: 'Free shipping for orders over 200k',
+        discountType: 'fixed',
+        discountValue: 20000,
         usageLimit: null, // Unlimited
         usageCount: 0,
         perUserLimit: 3,
-        minOrderValue: 200000, 
+        minOrderValue: 200000,
         maxDiscountAmount: null,
         validFrom: new Date(),
         validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
@@ -40,18 +40,18 @@ const coupons = [
         excludeProducts: [],
         excludeCategories: [],
         isActive: true,
-        usedBy: []
+        usedBy: [],
     },
     {
-        code: "DOGFOOD20",
-        description: "20% discount on dog food products",
-        discountType: "percentage",
+        code: 'DOGFOOD20',
+        description: '20% discount on dog food products',
+        discountType: 'percentage',
         discountValue: 20,
         usageLimit: 500,
         usageCount: 0,
         perUserLimit: 2,
-        minOrderValue: 50000, 
-        maxDiscountAmount: 100000, 
+        minOrderValue: 50000,
+        maxDiscountAmount: 100000,
         validFrom: new Date(),
         validUntil: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 days
         applicableProducts: [],
@@ -59,12 +59,12 @@ const coupons = [
         excludeProducts: [],
         excludeCategories: [],
         isActive: true,
-        usedBy: []
+        usedBy: [],
     },
     {
-        code: "FLASH50",
-        description: "Flash sale - 50k off for orders over 300k",
-        discountType: "fixed",
+        code: 'FLASH50',
+        description: 'Flash sale - 50k off for orders over 300k',
+        discountType: 'fixed',
         discountValue: 50000,
         usageLimit: 100,
         usageCount: 0,
@@ -78,12 +78,12 @@ const coupons = [
         excludeProducts: [],
         excludeCategories: [],
         isActive: true,
-        usedBy: []
+        usedBy: [],
     },
     {
-        code: "BIRTHDAY30",
-        description: "Birthday special - 30% off everything",
-        discountType: "percentage",
+        code: 'BIRTHDAY30',
+        description: 'Birthday special - 30% off everything',
+        discountType: 'percentage',
         discountValue: 30,
         usageLimit: 50,
         usageCount: 0,
@@ -97,8 +97,8 @@ const coupons = [
         excludeProducts: [],
         excludeCategories: [],
         isActive: true,
-        usedBy: []
-    }
+        usedBy: [],
+    },
 ];
 
 export default coupons;

@@ -13,7 +13,7 @@ class CouponService {
         try {
             // Validate coupon data
             const dto = createCouponDto({ ...couponData, createdBy });
-            
+
             // Check if coupon code already exists
             const existingCoupon = await Coupon.findOne({ code: dto.code });
             if (existingCoupon) {
@@ -27,13 +27,13 @@ class CouponService {
             return {
                 success: true,
                 message: 'Coupon created successfully',
-                coupon: couponAdminDto(coupon)
+                coupon: couponAdminDto(coupon),
             };
         } catch (error) {
             console.error('Error creating coupon:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -45,12 +45,8 @@ class CouponService {
             const query = this.buildCouponQuery(filters);
 
             const [coupons, total] = await Promise.all([
-                Coupon.find(query)
-                    .sort({ createdAt: -1 })
-                    .skip(skip)
-                    .limit(limit)
-                    .populate('createdBy', 'name email'),
-                Coupon.countDocuments(query)
+                Coupon.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('createdBy', 'name email'),
+                Coupon.countDocuments(query),
             ]);
 
             return {
@@ -60,14 +56,14 @@ class CouponService {
                     page,
                     limit,
                     total,
-                    pages: Math.ceil(total / limit)
-                }
+                    pages: Math.ceil(total / limit),
+                },
             };
         } catch (error) {
             console.error('Error getting coupons:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -88,13 +84,13 @@ class CouponService {
 
             return {
                 success: true,
-                coupon: couponAdminDto(coupon)
+                coupon: couponAdminDto(coupon),
             };
         } catch (error) {
             console.error('Error getting coupon:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -108,7 +104,7 @@ class CouponService {
             }
 
             // Update coupon fields
-            Object.keys(updateData).forEach(key => {
+            Object.keys(updateData).forEach((key) => {
                 if (updateData[key] !== undefined) {
                     coupon[key] = updateData[key];
                 }
@@ -119,13 +115,13 @@ class CouponService {
             return {
                 success: true,
                 message: 'Coupon updated successfully',
-                coupon: couponAdminDto(coupon)
+                coupon: couponAdminDto(coupon),
             };
         } catch (error) {
             console.error('Error updating coupon:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -142,13 +138,13 @@ class CouponService {
 
             return {
                 success: true,
-                message: 'Coupon deleted successfully'
+                message: 'Coupon deleted successfully',
             };
         } catch (error) {
             console.error('Error deleting coupon:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -159,13 +155,13 @@ class CouponService {
             const result = await validateCouponForOrder(couponCode, userId, orderValue, cartItems);
             return {
                 success: true,
-                validation: result
+                validation: result,
             };
         } catch (error) {
             console.error('Error validating coupon:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -174,24 +170,24 @@ class CouponService {
     async getAvailableCoupons(userId, orderValue = 0) {
         try {
             const coupons = await Coupon.findValidCoupons(userId, orderValue);
-            
+
             return {
                 success: true,
-                coupons: coupons.map(coupon => ({
+                coupons: coupons.map((coupon) => ({
                     code: coupon.code,
                     description: coupon.description,
                     discountType: coupon.discountType,
                     discountValue: coupon.discountValue,
                     minOrderValue: coupon.minOrderValue,
                     maxDiscountAmount: coupon.maxDiscountAmount,
-                    validUntil: coupon.validUntil
-                }))
+                    validUntil: coupon.validUntil,
+                })),
             };
         } catch (error) {
             console.error('Error getting available coupons:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -210,13 +206,13 @@ class CouponService {
             return {
                 success: true,
                 discountAmount,
-                message: 'Coupon applied successfully'
+                message: 'Coupon applied successfully',
             };
         } catch (error) {
             console.error('Error applying coupon usage:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -243,13 +239,13 @@ class CouponService {
 
             return {
                 success: true,
-                code
+                code,
             };
         } catch (error) {
             console.error('Error generating coupon code:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -270,9 +266,9 @@ class CouponService {
                         totalCoupons: { $sum: 1 },
                         activeCoupons: { $sum: { $cond: ['$isActive', 1, 0] } },
                         totalUsage: { $sum: '$usageCount' },
-                        totalDiscount: { $sum: { $sum: '$usedBy.discountAmount' } }
-                    }
-                }
+                        totalDiscount: { $sum: { $sum: '$usedBy.discountAmount' } },
+                    },
+                },
             ]);
 
             return {
@@ -281,14 +277,14 @@ class CouponService {
                     totalCoupons: 0,
                     activeCoupons: 0,
                     totalUsage: 0,
-                    totalDiscount: 0
-                }
+                    totalDiscount: 0,
+                },
             };
         } catch (error) {
             console.error('Error getting coupon stats:', error);
             return {
                 success: false,
-                error: error.message
+                error: error.message,
             };
         }
     }
@@ -308,7 +304,7 @@ class CouponService {
         if (filters.search) {
             query.$or = [
                 { code: { $regex: filters.search, $options: 'i' } },
-                { description: { $regex: filters.search, $options: 'i' } }
+                { description: { $regex: filters.search, $options: 'i' } },
             ];
         }
 

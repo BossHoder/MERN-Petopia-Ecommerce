@@ -6,17 +6,17 @@ import Footer from '../components/Footer/Footer';
 import './styles.css';
 
 const Layout = ({ children }) => {
-  return (
-    <>
-      <Navbar />
-      <div className="container">{children}</div>
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <Navbar />
+            <div className="container">{children}</div>
+            <Footer />
+        </>
+    );
 };
 
 Layout.propTypes = {
-  children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 export default Layout;

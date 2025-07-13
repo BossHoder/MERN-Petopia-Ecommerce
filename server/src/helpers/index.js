@@ -39,12 +39,12 @@ export const createId = () => {
 };
 
 export const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 export const retry = async (fn, maxRetries = 3, delay = 1000) => {
     let lastError;
-    
+
     for (let i = 0; i < maxRetries; i++) {
         try {
             return await fn();
@@ -55,7 +55,7 @@ export const retry = async (fn, maxRetries = 3, delay = 1000) => {
             }
         }
     }
-    
+
     throw lastError;
 };
 
@@ -70,7 +70,7 @@ export const chunk = (array, size) => {
 export const unique = (array, key) => {
     if (key) {
         const seen = new Set();
-        return array.filter(item => {
+        return array.filter((item) => {
             const value = item[key];
             if (seen.has(value)) {
                 return false;
@@ -84,13 +84,13 @@ export const unique = (array, key) => {
 
 export const omit = (obj, keys) => {
     const result = { ...obj };
-    keys.forEach(key => delete result[key]);
+    keys.forEach((key) => delete result[key]);
     return result;
 };
 
 export const pick = (obj, keys) => {
     const result = {};
-    keys.forEach(key => {
+    keys.forEach((key) => {
         if (key in obj) {
             result[key] = obj[key];
         }
@@ -127,7 +127,7 @@ export const sortBy = (array, key, order = 'asc') => {
     return [...array].sort((a, b) => {
         const aVal = a[key];
         const bVal = b[key];
-        
+
         if (aVal < bVal) return order === 'asc' ? -1 : 1;
         if (aVal > bVal) return order === 'asc' ? 1 : -1;
         return 0;
@@ -148,7 +148,7 @@ export const throttle = (func, limit) => {
         if (!inThrottle) {
             func.apply(null, args);
             inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            setTimeout(() => (inThrottle = false), limit);
         }
     };
 };

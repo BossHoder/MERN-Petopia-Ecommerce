@@ -12,7 +12,7 @@ const sampleUsers = [
         role: 'ADMIN',
         bio: 'System Administrator for Petopia Store',
         avatar: 'avatar1.jpg',
-        timestamp: true
+        timestamp: true,
     },
     {
         provider: 'local',
@@ -23,7 +23,7 @@ const sampleUsers = [
         role: 'USER',
         bio: 'Dog lover and frequent customer',
         avatar: 'avatar2.jpg',
-        timestamp: true
+        timestamp: true,
     },
     {
         provider: 'local',
@@ -34,7 +34,7 @@ const sampleUsers = [
         role: 'USER',
         bio: 'Cat enthusiast and pet care expert',
         avatar: 'avatar3.jpg',
-        timestamp: true
+        timestamp: true,
     },
     {
         provider: 'local',
@@ -45,7 +45,7 @@ const sampleUsers = [
         role: 'USER',
         bio: 'Owns multiple pets including dogs, cats, and birds',
         avatar: 'avatar4.jpg',
-        timestamp: true
+        timestamp: true,
     },
     {
         provider: 'google',
@@ -56,7 +56,7 @@ const sampleUsers = [
         bio: 'Signed up via Google OAuth',
         avatar: 'https://lh3.googleusercontent.com/a/default-user',
         googleId: 'google123456789',
-        timestamp: true
+        timestamp: true,
     },
     {
         provider: 'facebook',
@@ -67,19 +67,21 @@ const sampleUsers = [
         bio: 'Signed up via Facebook',
         avatar: 'https://graph.facebook.com/12345/picture',
         facebookId: 'facebook123456789',
-        timestamp: true
-    }
+        timestamp: true,
+    },
 ];
 
 export const hashSamplePasswords = async (users) => {
-    const hashedUsers = await Promise.all(users.map(async (user) => {
-        if (user.provider === 'local' && user.password) {
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-            return { ...user, password: hashedPassword };
-        }
-        return user;
-    }));
+    const hashedUsers = await Promise.all(
+        users.map(async (user) => {
+            if (user.provider === 'local' && user.password) {
+                const saltRounds = 10;
+                const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+                return { ...user, password: hashedPassword };
+            }
+            return user;
+        }),
+    );
     return hashedUsers;
 };
 

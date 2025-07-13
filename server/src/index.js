@@ -46,26 +46,25 @@ app.use('/public/images', express.static(join(__dirname, '../public/images')));
 
 // Debug: Show all available routes
 app.get('/debug/routes', (req, res) => {
-  res.json(all_routes(app));
+    res.json(all_routes(app));
 });
 
 // Serve static assets if in production
 if (isProduction) {
-  // Set static folder
-  // nginx will handle this
-  // app.use(express.static(join(__dirname, '../../client/build')));
+    // Set static folder
+    // nginx will handle this
+    // app.use(express.static(join(__dirname, '../../client/build')));
 
-  // app.get('*', (req, res) => {
-  //   // index is in /server/src so 2 folders up
-  //   res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html')); 
-  // });
+    // app.get('*', (req, res) => {
+    //   // index is in /server/src so 2 folders up
+    //   res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html'));
+    // });
 
-
-  const port = process.env.PORT || 5000;
-  app.listen(port, () => console.log(`Server started on port ${port}`));
+    const port = process.env.PORT || 5000;
+    app.listen(port, () => console.log(`Server started on port ${port}`));
 } else {
-  const port = process.env.PORT || 5000;
-  app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-  });
+    const port = process.env.PORT || 5000;
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
 }

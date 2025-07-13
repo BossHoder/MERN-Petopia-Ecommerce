@@ -7,40 +7,26 @@ import { createErrorDto, createSuccessDto } from '../../dto/index.js';
 const router = Router();
 
 router.post('/register', async (req, res) => {
-try {
-    const { error } = validateUserRegistration(req.body);
-    if (error) {
-      return res.status(422).json(createErrorDto(
-        error.details[0].message,
-        'VALIDATION_ERROR'
-      ));
+    try {
+        const { error } = validateUserRegistration(req.body);
+        if (error) {
+            return res.status(422).json(createErrorDto(error.details[0].message, 'VALIDATION_ERROR'));
+        }
+
+        const result = await userService.createUser({
+            ...req.body,
+            provider: 'local',
+        });
+
+        if (!result.success) {
+            return res.status(422).json(createErrorDto(result.error || 'Registration failed', 'REGISTRATION_ERROR'));
+        }
+
+        res.status(201).json(createSuccessDto({ user: result.user }, 'User registered successfully'));
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json(createErrorDto('Internal server error', 'INTERNAL_SERVER_ERROR'));
     }
-
-    const result = await userService.createUser({
-      ...req.body,
-      provider: 'local'
-    });
-
-    if (!result.success) {
-      return res.status(422).json(createErrorDto(
-        result.error || 'Registration failed',
-        'REGISTRATION_ERROR'
-      ));
-    }
-
-    res.status(201).json(createSuccessDto(
-      { user: result.user },
-      'User registered successfully'
-    ));
-
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json(createErrorDto(
-      'Internal server error',
-      'INTERNAL_SERVER_ERROR'
-    ));
-  }
-
 });
 
 export default router;

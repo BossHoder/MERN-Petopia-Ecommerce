@@ -10,20 +10,22 @@
 export const generateSlug = (text) => {
     if (!text) return '';
 
-    return text
-        .toLowerCase()
-        .trim()
-        // Replace Vietnamese characters
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        // Replace special characters
-        .replace(/[^a-z0-9\s-]/g, '')
-        // Replace spaces with hyphens
-        .replace(/\s+/g, '-')
-        // Replace multiple hyphens with single
-        .replace(/-+/g, '-')
-        // Remove leading/trailing hyphens
-        .replace(/^-+|-+$/g, '');
+    return (
+        text
+            .toLowerCase()
+            .trim()
+            // Replace Vietnamese characters
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            // Replace special characters
+            .replace(/[^a-z0-9\s-]/g, '')
+            // Replace spaces with hyphens
+            .replace(/\s+/g, '-')
+            // Replace multiple hyphens with single
+            .replace(/-+/g, '-')
+            // Remove leading/trailing hyphens
+            .replace(/^-+|-+$/g, '')
+    );
 };
 
 /**
@@ -67,9 +69,7 @@ export const truncateText = (text, maxLength, suffix = '...') => {
  */
 export const capitalizeWords = (text) => {
     if (!text) return '';
-    return text.replace(/\w\S*/g, (txt) =>
-        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    );
+    return text.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 };
 
 /**
@@ -146,7 +146,7 @@ export const formatVND = (amount) => {
     if (typeof amount !== 'number') return '0đ';
     return new Intl.NumberFormat('vi-VN', {
         style: 'currency',
-        currency: 'VND'
+        currency: 'VND',
     }).format(amount);
 };
 
@@ -157,12 +157,12 @@ export const formatVND = (amount) => {
  */
 export const extractKeywords = (text) => {
     if (!text) return [];
-    
+
     return text
         .toLowerCase()
         .replace(/[^\w\s]/g, ' ')
         .split(/\s+/)
-        .filter(word => word.length > 2)
+        .filter((word) => word.length > 2)
         .slice(0, 20); // Limit to 20 keywords
 };
 
@@ -173,7 +173,7 @@ export const extractKeywords = (text) => {
  */
 export const normalizeSearchText = (text) => {
     if (!text) return '';
-    
+
     return text
         .toLowerCase()
         .normalize('NFD')
@@ -190,7 +190,7 @@ export const normalizeSearchText = (text) => {
  */
 export const generateBreadcrumb = (categories) => {
     if (!categories || categories.length === 0) return '';
-    return categories.map(cat => cat.name).join(' > ');
+    return categories.map((cat) => cat.name).join(' > ');
 };
 
 /**
@@ -210,13 +210,13 @@ export const cleanPhoneNumber = (phone) => {
  */
 export const getOrderStatusText = (status) => {
     const statusMap = {
-        'pending': 'Chờ xác nhận',
-        'confirmed': 'Đã xác nhận',
-        'processing': 'Đang xử lý',
-        'shipped': 'Đã giao hàng',
-        'delivered': 'Đã nhận hàng',
-        'cancelled': 'Đã hủy',
-        'refunded': 'Đã hoàn tiền'
+        pending: 'Chờ xác nhận',
+        confirmed: 'Đã xác nhận',
+        processing: 'Đang xử lý',
+        shipped: 'Đã giao hàng',
+        delivered: 'Đã nhận hàng',
+        cancelled: 'Đã hủy',
+        refunded: 'Đã hoàn tiền',
     };
     return statusMap[status] || status;
 };
@@ -229,16 +229,16 @@ export const getOrderStatusText = (status) => {
  */
 export const generateNotificationTitle = (type, data = {}) => {
     const titleMap = {
-        'order_placed': 'Đơn hàng mới',
-        'order_confirmed': 'Đơn hàng đã xác nhận',
-        'order_shipped': 'Đơn hàng đang giao',
-        'order_delivered': 'Đơn hàng đã giao',
-        'order_cancelled': 'Đơn hàng đã hủy',
-        'payment_received': 'Thanh toán thành công',
-        'product_back_in_stock': 'Sản phẩm đã có hàng',
-        'coupon_expiring': 'Mã giảm giá sắp hết hạn',
-        'welcome': 'Chào mừng bạn đến với Petopia',
-        'system': 'Thông báo hệ thống'
+        order_placed: 'Đơn hàng mới',
+        order_confirmed: 'Đơn hàng đã xác nhận',
+        order_shipped: 'Đơn hàng đang giao',
+        order_delivered: 'Đơn hàng đã giao',
+        order_cancelled: 'Đơn hàng đã hủy',
+        payment_received: 'Thanh toán thành công',
+        product_back_in_stock: 'Sản phẩm đã có hàng',
+        coupon_expiring: 'Mã giảm giá sắp hết hạn',
+        welcome: 'Chào mừng bạn đến với Petopia',
+        system: 'Thông báo hệ thống',
     };
     return titleMap[type] || 'Thông báo';
 };

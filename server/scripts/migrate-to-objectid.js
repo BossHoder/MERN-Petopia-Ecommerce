@@ -18,18 +18,15 @@ const migrateToObjectId = async () => {
         // 1. Migrate Orders - username string to User ObjectId
         console.log('📦 Migrating Orders...');
         const orders = await Order.find({}).lean();
-        
+
         for (const order of orders) {
             if (typeof order.username === 'string') {
                 const user = await User.findOne({ username: order.username });
                 if (user) {
-                    await Order.updateOne(
-                        { _id: order._id },
-                        { username: user._id }
-                    );
+                    await Order.updateOne({ _id: order._id }, { username: user._id });
                 }
             }
-            
+
             // Migrate orderItems productId from SKU to ObjectId
             const updatedItems = [];
             for (const item of order.orderItems) {
@@ -38,35 +35,29 @@ const migrateToObjectId = async () => {
                     if (product) {
                         updatedItems.push({
                             ...item,
-                            productId: product._id
+                            productId: product._id,
                         });
                     }
                 }
             }
-            
+
             if (updatedItems.length > 0) {
-                await Order.updateOne(
-                    { _id: order._id },
-                    { orderItems: updatedItems }
-                );
+                await Order.updateOne({ _id: order._id }, { orderItems: updatedItems });
             }
         }
 
         // 2. Migrate Carts - username string to User ObjectId
         console.log('🛒 Migrating Carts...');
         const carts = await Cart.find({}).lean();
-        
+
         for (const cart of carts) {
             if (typeof cart.username === 'string') {
                 const user = await User.findOne({ username: cart.username });
                 if (user) {
-                    await Cart.updateOne(
-                        { _id: cart._id },
-                        { username: user._id }
-                    );
+                    await Cart.updateOne({ _id: cart._id }, { username: user._id });
                 }
             }
-            
+
             // Migrate cart items productId
             const updatedItems = [];
             for (const item of cart.items) {
@@ -75,32 +66,26 @@ const migrateToObjectId = async () => {
                     if (product) {
                         updatedItems.push({
                             ...item,
-                            productId: product._id
+                            productId: product._id,
                         });
                     }
                 }
             }
-            
+
             if (updatedItems.length > 0) {
-                await Cart.updateOne(
-                    { _id: cart._id },
-                    { items: updatedItems }
-                );
+                await Cart.updateOne({ _id: cart._id }, { items: updatedItems });
             }
         }
 
         // 3. Migrate Products - category slug to Category ObjectId
         console.log('📦 Migrating Products...');
         const products = await Product.find({}).lean();
-        
+
         for (const product of products) {
             if (typeof product.category === 'string') {
                 const category = await Category.findOne({ slug: product.category });
                 if (category) {
-                    await Product.updateOne(
-                        { _id: product._id },
-                        { category: category._id }
-                    );
+                    await Product.updateOne({ _id: product._id }, { category: category._id });
                 }
             }
         }
@@ -108,21 +93,17 @@ const migrateToObjectId = async () => {
         // 4. Migrate Categories - parentCategory name to ParentCategory ObjectId
         console.log('📂 Migrating Categories...');
         const categories = await Category.find({}).lean();
-        
+
         for (const category of categories) {
             if (typeof category.parentCategory === 'string') {
                 const parent = await ParentCategory.findOne({ name: category.parentCategory });
                 if (parent) {
-                    await Category.updateOne(
-                        { _id: category._id },
-                        { parentCategory: parent._id }
-                    );
+                    await Category.updateOne({ _id: category._id }, { parentCategory: parent._id });
                 }
             }
         }
 
         console.log('✅ Migration completed successfully!');
-        
     } catch (error) {
         console.error('❌ Migration failed:', error);
         throw error;
