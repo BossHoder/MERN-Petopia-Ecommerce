@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../services/api';
 
 import {
     REGISTER_WITH_EMAIL_LOADING,
@@ -9,7 +9,7 @@ import {
 export const registerUserWithEmail = (formData, history) => async (dispatch, getState) => {
     dispatch({ type: REGISTER_WITH_EMAIL_LOADING });
     try {
-        await axios.post('/auth/register', formData);
+        await API.post('/auth/register', formData);
         dispatch({
             type: REGISTER_WITH_EMAIL_SUCCESS,
         });

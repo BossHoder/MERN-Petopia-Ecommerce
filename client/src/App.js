@@ -18,8 +18,9 @@ import { logInUserWithOauth, loadMe } from './store/actions/authActions';
 
 const App = ({ logInUserWithOauth, auth, loadMe }) => {
     useEffect(() => {
+        // Gọi loadMe để kiểm tra authentication khi app khởi động
         loadMe();
-    }, [loadMe]);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     //redosled hookova
     useEffect(() => {
@@ -30,13 +31,9 @@ const App = ({ logInUserWithOauth, auth, loadMe }) => {
             Cookies.remove('x-auth-cookie');
             logInUserWithOauth(cookieJwt);
         }
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    useEffect(() => {
-        if (!auth.appLoaded && !auth.isLoading && auth.token && !auth.isAuthenticated) {
-            loadMe();
-        }
-    }, [auth.isAuthenticated, auth.token, loadMe, auth.isLoading, auth.appLoaded]);
+    // Removed problematic useEffect that was causing infinite loops
 
     return (
         <>

@@ -38,6 +38,13 @@ textarea:hover,
 .submit {
     background-color: gray;
     color: white;
+    cursor: pointer;
+}
+
+.submit:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 .bold {

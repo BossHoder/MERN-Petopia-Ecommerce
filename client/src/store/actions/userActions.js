@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../services/api';
 
 import { attachTokenToHeaders } from './authActions';
 import {
@@ -21,7 +21,7 @@ export const editUser = (id, formData, history) => async (dispatch, getState) =>
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.put(`/api/users/${id}`, formData, options);
+        const response = await API.put(`/api/users/${id}`, formData, options);
 
         dispatch({
             type: EDIT_USER_SUCCESS,
@@ -44,19 +44,19 @@ export const getProfile = (username, history) => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.get(`/api/users/${username}`, options);
+        const response = await API.get(`/api/users/${username}`, options);
 
         dispatch({
             type: GET_PROFILE_SUCCESS,
             payload: { profile: response.data.user },
         });
     } catch (err) {
-        if (err?.response.status === 404) {
+        if (err?.response?.status === 404) {
             history.push('/notfound');
         }
         dispatch({
             type: GET_PROFILE_FAIL,
-            payload: { error: err?.response?.data.message || err.message },
+            payload: { error: err?.response?.data?.message || err.message },
         });
     }
 };
@@ -68,7 +68,7 @@ export const deleteUser = (id, history) => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.delete(`/api/users/${id}`, options);
+        const response = await API.delete(`/api/users/${id}`, options);
 
         //logout only if he deleted himself
         if (getState().auth.me.id === response.data.user.id) {

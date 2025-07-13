@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../services/api';
 
 import { getMessages } from './messageActions';
 import {
@@ -18,11 +18,22 @@ import {
 } from '../types';
 
 export const loadMe = () => async (dispatch, getState) => {
+    const state = getState();
+
+    // Nếu không có token, không gọi API
+    if (!state.auth.token) {
+        dispatch({
+            type: ME_FAIL,
+            payload: { error: 'No token found' },
+        });
+        return;
+    }
+
     dispatch({ type: ME_LOADING });
 
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.get('/api/users/me', options);
+        const response = await API.get('/api/users/me', options);
 
         dispatch({
             type: ME_SUCCESS,
@@ -31,7 +42,9 @@ export const loadMe = () => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: ME_FAIL,
-            payload: { error: err.response.data.message },
+            payload: {
+                error: err?.response?.data?.message || err.message || 'Authentication failed',
+            },
         });
     }
 };
@@ -39,19 +52,21 @@ export const loadMe = () => async (dispatch, getState) => {
 export const loginUserWithEmail = (formData, history) => async (dispatch, getState) => {
     dispatch({ type: LOGIN_WITH_EMAIL_LOADING });
     try {
-        const response = await axios.post('/auth/login', formData);
+        const response = await API.post('/auth/login', formData);
 
         dispatch({
             type: LOGIN_WITH_EMAIL_SUCCESS,
             payload: { token: response.data.token, me: response.data.me },
         });
 
-        dispatch(loadMe());
+        // Lưu token vào localStorage
+        localStorage.setItem('token', response.data.token);
+
         history.push('/');
     } catch (err) {
         dispatch({
             type: LOGIN_WITH_EMAIL_FAIL,
-            payload: { error: err.response.data.message },
+            payload: { error: err?.response?.data?.message || err.message },
         });
     }
 };
@@ -65,7 +80,7 @@ export const logInUserWithOauth = (token) => async (dispatch, getState) => {
             'x-auth-token': token,
         };
 
-        const response = await axios.get('/api/users/me', { headers });
+        const response = await API.get('/api/users/me', { headers });
 
         dispatch({
             type: LOGIN_WITH_OAUTH_SUCCESS,
@@ -74,7 +89,7 @@ export const logInUserWithOauth = (token) => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: LOGIN_WITH_OAUTH_FAIL,
-            payload: { error: err.response.data.message },
+            payload: { error: err?.response?.data?.message || err.message },
         });
     }
 };
@@ -84,7 +99,7 @@ export const logOutUser = (history) => async (dispatch) => {
     try {
         deleteAllCookies();
         //just to log user logut on the server
-        await axios.get('/auth/logout');
+        await API.get('/auth/logout');
 
         dispatch({
             type: LOGOUT_SUCCESS,
@@ -98,7 +113,7 @@ export const reseedDatabase = () => async (dispatch, getState) => {
         type: RESEED_DATABASE_LOADING,
     });
     try {
-        await axios.get('/api/users/reseed');
+        await API.get('/api/users/reseed');
 
         dispatch({
             type: RESEED_DATABASE_SUCCESS,

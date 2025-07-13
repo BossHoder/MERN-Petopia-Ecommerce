@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../services/api';
 
 import { attachTokenToHeaders } from './authActions';
 import {
@@ -23,7 +23,7 @@ export const getMessages = () => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.get('/api/messages', options);
+        const response = await API.get('/api/messages', options);
 
         dispatch({
             type: GET_MESSAGES_SUCCESS,
@@ -44,7 +44,7 @@ export const addMessage = (formData) => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.post('/api/messages', formData, options);
+        const response = await API.post('/api/messages', formData, options);
 
         dispatch({
             type: ADD_MESSAGE_SUCCESS,
@@ -65,7 +65,7 @@ export const deleteMessage = (id) => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.delete(`/api/messages/${id}`, options);
+        const response = await API.delete(`/api/messages/${id}`, options);
 
         dispatch({
             type: DELETE_MESSAGE_SUCCESS,
@@ -86,7 +86,7 @@ export const editMessage = (id, formData) => async (dispatch, getState) => {
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await axios.put(`/api/messages/${id}`, formData, options);
+        const response = await API.put(`/api/messages/${id}`, formData, options);
 
         dispatch({
             type: EDIT_MESSAGE_SUCCESS,

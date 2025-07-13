@@ -20,13 +20,13 @@ const passportLogin = new PassportLocalStrategy(
         try {
             const user = await User.findOne({ email: email.trim() });
             if (!user) {
-                return done(null, false, { message: 'Email does not exist.' });
+                return done(null, false, { message: 'Invalid email or password.' });
             }
 
             const isMatch = await user.comparePasswordAsync(password);
 
             if (!isMatch) {
-                return done(null, false, { message: 'Incorrect password.' });
+                return done(null, false, { message: 'Invalid email or password.' });
             }
 
             return done(null, user);

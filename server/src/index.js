@@ -1,6 +1,7 @@
 import 'dotenv/config.js';
 import express, { Router } from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 // import https from 'https';
 import { readFileSync } from 'fs';
 import { resolve, join, dirname } from 'path';
@@ -20,6 +21,16 @@ const app = express();
 const router = Router();
 
 console.log('🚀 Server is starting...');
+
+// CORS Middleware
+app.use(
+    cors({
+        origin: ['http://localhost:3000', 'https://localhost:3000'],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    }),
+);
 
 // Bodyparser Middleware
 app.use(express.json());

@@ -8,22 +8,22 @@ import apiRoutes from './api/index.js';
 import products from './data/product.js';
 const router = Router();
 
-router.use('/', localLoginRoutes);
-router.use('/', localRegisterRoutes);
-router.use('/', localLogoutRoutes);
+router.use('/auth', localLoginRoutes);
+router.use('/auth', localRegisterRoutes);
+router.use('/auth', localLogoutRoutes);
 // router.use('/auth', googleAuthRoutes);
 // router.use('/auth', facebookAuthRoutes);
 router.use('/api', apiRoutes);
 
-router.get('data/products', (req, res) => {
+router.get('/data/products', (req, res) => {
     res.json(products);
 });
-
-// fallback 404
-router.use('/api', (req, res) => res.status(404).json('No route for this path'));
 
 router.get('/', (req, res) => {
     res.status(200).send('<h1>Server của bạn đang chạyyyy!</h1><p>Đây là trang chủ.</p>');
 });
+
+// fallback 404 - phải đặt cuối cùng
+router.use('*', (req, res) => res.status(404).json('No route for this path'));
 
 export default router;

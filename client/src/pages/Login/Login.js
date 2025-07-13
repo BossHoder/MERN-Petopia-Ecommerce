@@ -36,7 +36,7 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
                         Home page
                     </Link>
                 </p>
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} noValidate>
                     <h2>Log in with social media</h2>
                     <a className="fb btn" href={FACEBOOK_AUTH_LINK}>
                         <span className="login-text">
@@ -48,9 +48,6 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
                             <i className="fa fa-google fa-fw" /> Login with Google
                         </span>
                     </a>
-                    <h2>Login with email address</h2>
-                    <p className="logins">Admin: email0@email.com 123456789</p>
-                    <p className="logins">User: email1@email.com 123456789</p>
                     <div>
                         <input
                             placeholder="Email address"

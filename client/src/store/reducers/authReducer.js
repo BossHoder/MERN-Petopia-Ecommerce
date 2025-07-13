@@ -67,6 +67,16 @@ export default function (state = initialState, { type, payload }) {
                 appLoaded: true,
             };
         case LOGOUT_SUCCESS:
+            localStorage.removeItem('token');
+            return {
+                ...state,
+                token: null,
+                me: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: null,
+                appLoaded: true,
+            };
         case LOGIN_WITH_EMAIL_FAIL:
             localStorage.removeItem('token');
             return {
@@ -75,7 +85,19 @@ export default function (state = initialState, { type, payload }) {
                 me: null,
                 isAuthenticated: false,
                 isLoading: false,
-                error: null, //payload message ovde i razdvoj logout i fail
+                error: payload.error,
+                appLoaded: true,
+            };
+        case LOGIN_WITH_OAUTH_FAIL:
+            localStorage.removeItem('token');
+            return {
+                ...state,
+                token: null,
+                me: null,
+                isAuthenticated: false,
+                isLoading: false,
+                error: payload.error,
+                appLoaded: true,
             };
         default:
             return state;
