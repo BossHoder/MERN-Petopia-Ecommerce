@@ -35,18 +35,12 @@ import './services/localStrategy.js';
 import './models/User.js';
 import './models/Product.js';
 
-import sampleProducts from './data/Products.js';
-
 const isProduction = process.env.NODE_ENV === 'production';
 
-// DB Config
 const dbConnection = isProduction ? process.env.MONGO_URI_PROD : process.env.MONGO_URI_DEV;
 
-// Connect to MongoDB
 connectDB();
-// seedDb(); // Tạm thời comment out để tránh lỗi
 
-// Use Routes
 app.use('/', routes);
 app.use('/public/images', express.static(join(__dirname, '../public/images')));
 
@@ -71,9 +65,6 @@ if (isProduction) {
   app.listen(port, () => console.log(`Server started on port ${port}`));
 } else {
   const port = process.env.PORT || 5000;
-  app.get("/data/products", (req, res) => {
-    res.json(products);
-  });
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
   });

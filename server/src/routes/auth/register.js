@@ -1,17 +1,10 @@
 import { Router } from 'express';
 
-import requireLocalAuth from '../middleware/requireLocalAuth.js';
-import userService from '../services/userService.js';
-import { validateUserRegistration } from '../validations/userValidation.js';
-import { createErrorDto, createSuccessDto } from '../dto/index.js';
+import userService from '../../services/userService.js';
+import { validateUserRegistration } from '../../validations/userValidation.js';
+import { createErrorDto, createSuccessDto } from '../../dto/index.js';
 
 const router = Router();
-
-router.post('/login', requireLocalAuth, (req, res) => {
-  const token = req.user.generateJWT();
-  const me = req.user.toJSON();
-  res.json({ token, me });
-});
 
 router.post('/register', async (req, res) => {
 try {
@@ -48,12 +41,6 @@ try {
     ));
   }
 
-});
-
-// logout
-router.get('/logout', (req, res) => {
-  req.logout();
-  res.send(false);
 });
 
 export default router;
