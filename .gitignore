@@ -16,3 +16,7 @@ server/docker/mongo-data/*
 
 server/INDEX_OPTIMIZATION_SUMMARY.md
 server/MONGODB_OPTIMIZATION.md
+
+# ignore github prompts
+.github/prompts/prompt.prompt.md
+
