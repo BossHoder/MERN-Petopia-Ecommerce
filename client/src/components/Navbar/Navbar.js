@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 
 import { logOutUser } from '../../store/actions/authActions';
+import { getAvatarUrl } from '../../utils/helpers';
 import './styles.css';
 
 const Navbar = ({ auth, logOutUser, history }) => {
@@ -14,16 +15,13 @@ const Navbar = ({ auth, logOutUser, history }) => {
 
     return (
         <nav className="navbar">
-            <h2 className="logo">MERN Boilerplate</h2>
+            <h2 className="logo">PETOPIA</h2>
             <ul className="nav-links flex-1">
                 <li className="nav-item">
                     <Link to="/">Home</Link>
                 </li>
                 {auth.isAuthenticated ? (
                     <>
-                        <li className="nav-item">
-                            <Link to="/users">Users</Link>
-                        </li>
                         <li className="nav-item">
                             <Link to={`/${auth.me.username}`}>Profile</Link>
                         </li>
@@ -33,7 +31,7 @@ const Navbar = ({ auth, logOutUser, history }) => {
                             </li>
                         )}
                         <li className="flex-1" />
-                        <img className="avatar" src={auth.me.avatar} />
+                        <img className="avatar" src={getAvatarUrl(auth.me.avatar)} />
                         <li className="nav-item" onClick={onLogOut}>
                             <a href="#">Log out</a>
                         </li>

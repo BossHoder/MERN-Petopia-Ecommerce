@@ -73,9 +73,12 @@ class UserService {
     // Update user profile
     async updateProfile(userId, updateData) {
         try {
+            console.log('UserService.updateProfile called with:', { userId, updateData });
+
             // Validate update data
             const validation = userHelper.validateProfileData(updateData);
             if (!validation.isValid) {
+                console.log('Validation failed:', validation.errors);
                 return {
                     success: false,
                     errors: validation.errors,
@@ -87,23 +90,27 @@ class UserService {
                 await userHelper.updateLastLogin(userId);
             }
 
+            console.log('Updating user with data:', updateData);
             const user = await User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true }).populate(
                 'wishlist',
                 'name price images',
             );
 
             if (!user) {
+                console.log('User not found for ID:', userId);
                 return {
                     success: false,
                     error: 'User not found',
                 };
             }
 
+            console.log('User updated successfully:', user);
             return {
                 success: true,
                 user: profileDto(user),
             };
         } catch (error) {
+            console.error('UserService.updateProfile error:', error);
             return {
                 success: false,
                 error: error.message,

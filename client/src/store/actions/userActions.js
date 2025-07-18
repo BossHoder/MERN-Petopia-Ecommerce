@@ -21,19 +21,58 @@ export const editUser = (id, formData, history) => async (dispatch, getState) =>
     });
     try {
         const options = attachTokenToHeaders(getState);
+
+        // For FormData, we need to set the Content-Type to multipart/form-data
+        // and remove the default Content-Type header to let browser set it automatically
+        if (formData instanceof FormData) {
+            options.headers = {
+                ...options.headers,
+            };
+            // Remove Content-Type to let browser set multipart/form-data with boundary
+            delete options.headers['Content-Type'];
+
+            // Set timeout for file uploads
+            options.timeout = 60000; // 60 seconds for file uploads
+        }
+
+        console.log('Sending editUser request:', { id, formData, options });
         const response = await API.put(`/api/users/${id}`, formData, options);
+        console.log('editUser response:', response.data);
 
         dispatch({
             type: EDIT_USER_SUCCESS,
             payload: { user: response.data.user },
         });
+
+        // Show success message
+        console.log('Profile updated successfully!');
+
         // edited him self, reload me
         if (getState().auth.me?.id === response.data.user.id) dispatch(loadMe());
-        history.push(`/${response.data.user.username}`);
+
+        // Only redirect if username changed
+        if (getState().auth.me?.username !== response.data.user.username) {
+            history.push(`/${response.data.user.username}`);
+        }
     } catch (err) {
+        console.error('editUser error:', err);
+        console.error('Error response:', err?.response?.data);
+
+        let errorMessage = 'Network error occurred';
+
+        if (err.code === 'ECONNABORTED') {
+            errorMessage = 'Request timeout. Please check your connection and try again.';
+        } else if (err?.response?.data?.message) {
+            errorMessage = err.response.data.message;
+        } else if (err.message) {
+            errorMessage = err.message;
+        }
+
         dispatch({
             type: EDIT_USER_FAIL,
-            payload: { error: err?.response?.data.message || err.message },
+            payload: {
+                error: errorMessage,
+            },
         });
     }
 };

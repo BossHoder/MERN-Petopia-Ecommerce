@@ -1,34 +1,10 @@
 import { Router } from 'express';
-import multer from 'multer';
-import { resolve } from 'path';
-
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
+import requireAdmin from '../../middleware/requireAdmin.js';
 import userController from '../../controllers/userController.js';
-// import { seedDb } from '../../utils/seed';
+import upload from '../../utils/uploadConfig.js';
 
 const router = Router();
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, resolve(__dirname, '../../../public/images'));
-    },
-    filename: function (req, file, cb) {
-        const fileName = file.originalname.toLowerCase().split(' ').join('-');
-        cb(null, `avatar-${Date.now()}-${fileName}`);
-    },
-});
-
-const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg') {
-            cb(null, true);
-        } else {
-            cb(null, false);
-            return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
-        }
-    },
-});
 
 //`checkit`, which is probably the option I'd suggest if  `validatem`
 
@@ -36,11 +12,24 @@ router.put('/:id', [requireJwtAuth, upload.single('avatar')], userController.upd
 
 router.get('/reseed', userController.reseedDatabase);
 
+// Development only - promote current user to admin
+router.post('/promote-admin', requireJwtAuth, (req, res) => {
+    if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ message: 'Not allowed in production' });
+    }
+
+    req.user.role = 'ADMIN';
+    req.user
+        .save()
+        .then(() => res.json({ message: 'User promoted to admin', user: req.user }))
+        .catch((err) => res.status(500).json({ message: err.message }));
+});
+
 router.get('/me', requireJwtAuth, userController.getCurrentUser);
 
 router.get('/:username', requireJwtAuth, userController.getUserByUsername);
 
-router.get('/', requireJwtAuth, userController.getUsers);
+router.get('/', [requireJwtAuth, requireAdmin], userController.getUsers);
 
 router.delete('/:id', requireJwtAuth, userController.deleteUser);
 

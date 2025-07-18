@@ -30,6 +30,24 @@ export const formatTimeAgo = (date) => {
     return formatDate(date);
 };
 
+// Avatar URL utility
+export const getAvatarUrl = (avatarPath) => {
+    if (!avatarPath) return '/public/images/avatar0.jpg'; // default avatar
+
+    // If already a full URL, return as is
+    if (avatarPath.startsWith('http')) return avatarPath;
+
+    // If starts with /public or /uploads, prepend base URL
+    if (avatarPath.startsWith('/public') || avatarPath.startsWith('/uploads')) {
+        const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        return `${baseUrl}${avatarPath}`;
+    }
+
+    // If just filename, assume it's in public/images (for backward compatibility)
+    const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    return `${baseUrl}/public/images/${avatarPath}`;
+};
+
 // String utilities
 export const truncateText = (text, maxLength = 100) => {
     if (text.length <= maxLength) return text;

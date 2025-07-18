@@ -3,7 +3,7 @@ import express, { Router } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 // import https from 'https';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, mkdirSync } from 'fs';
 import { resolve, join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
@@ -28,13 +28,13 @@ app.use(
         origin: ['http://localhost:3000', 'https://localhost:3000'],
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
     }),
 );
 
 // Bodyparser Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(passport.initialize());
 import './services/jwtStrategy.js';
@@ -52,12 +52,46 @@ const dbConnection = isProduction ? process.env.MONGO_URI_PROD : process.env.MON
 
 connectDB();
 
+// SIMPLE STATIC FILE SERVING - MOVE TO TOP
+app.use('/public', express.static(join(__dirname, '../public')));
+
+console.log('📁 Static files served from:', join(__dirname, '../public'));
+console.log('🔗 Access via: http://localhost:5000/public/images/filename');
+
+// Routes come after static files
 app.use('/', routes);
-app.use('/public/images', express.static(join(__dirname, '../public/images')));
+
+// Debug static paths
+console.log('Public images path:', join(__dirname, '../public/images'));
+
+console.log('Files in public/images:');
+try {
+    const files = readdirSync(join(__dirname, '../public/images'));
+    console.log(files);
+} catch (err) {
+    console.error('Error reading public/images:', err.message);
+}
 
 // Debug: Show all available routes
 app.get('/debug/routes', (req, res) => {
     res.json(all_routes(app));
+});
+
+// Debug: Check static files
+app.get('/debug/static', (req, res) => {
+    const publicDir = join(__dirname, '../public/images');
+    try {
+        const files = readdirSync(publicDir);
+        res.json({
+            publicDir,
+            files: files.map((file) => ({
+                name: file,
+                url: `${req.protocol}://${req.get('host')}/public/images/${file}`,
+            })),
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Serve static assets if in production

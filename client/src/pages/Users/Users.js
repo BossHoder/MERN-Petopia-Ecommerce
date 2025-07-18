@@ -2,81 +2,81 @@ import React, { useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 
-import { getUsers } from '../../store/actions/usersActions';
 import Layout from '../../layout/Layout';
 import Loader from '../../components/Loader/Loader';
-import requireAuth from '../../hoc/requireAuth';
+import requireAdmin from '../../hoc/requireAdmin';
+import { getUsers } from '../../store/actions/usersActions';
 
 import './styles.css';
 
-const Users = ({ getUsers, users: { users, isLoading } }) => {
+const Users = ({ getUsers, users: { users, isLoading, error } }) => {
     useEffect(() => {
         getUsers();
-    }, []);
+    }, [getUsers]);
+
+    if (isLoading) {
+        return (
+            <Layout>
+                <Loader />
+            </Layout>
+        );
+    }
 
     return (
         <Layout>
-            <div className="users">
-                <h1>Users page</h1>
+            <div className="users-page">
+                <h1>Users Management</h1>
                 <p>
-                    This is the Users page. Here are listed all of the users of the app. Click the
-                    avatar or the username link to go to user's profile. Only authenticated users
-                    can see this page.
+                    <Link className="bold" to="/admin">
+                        ← Back to Admin Dashboard
+                    </Link>
                 </p>
-                <div className="list">
-                    {isLoading ? (
-                        <Loader />
-                    ) : (
-                        <>
-                            {users.map((user, index) => {
-                                return (
-                                    <div key={index} className="profile">
-                                        <Link to={`/${user.username}`}>
-                                            <img src={user.avatar} className="avatar" />
-                                        </Link>
-                                        <div className="info-container">
-                                            <div>
-                                                <span className="label">Provider: </span>
-                                                <span className="info">{user.provider}</span>
-                                            </div>
-                                            <div>
-                                                <span className="label">Role: </span>
-                                                <span className="info">{user.role}</span>
-                                            </div>
-                                            <div>
-                                                <span className="label">Name: </span>
-                                                <span className="info">{user.name}</span>
-                                            </div>
-                                            <div>
-                                                <span className="label">Username: </span>
-                                                <Link
-                                                    to={`/${user.username}`}
-                                                    className="info bold profile-link"
-                                                >
-                                                    {user.username}
-                                                </Link>
-                                            </div>
-                                            <div>
-                                                <span className="label">Email: </span>
-                                                <span className="info">{user.email}</span>
-                                            </div>
-                                            <div>
-                                                <span className="label">Joined: </span>
-                                                <span className="info">
-                                                    {moment(user.createdAt).format(
-                                                        'dddd, MMMM Do YYYY, H:mm:ss',
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
+
+                {error && <div className="error-message">Error loading users: {error}</div>}
+
+                {users && users.length > 0 ? (
+                    <div className="users-list">
+                        <h2>All Users ({users.length})</h2>
+                        <div className="users-grid">
+                            {users.map((user) => (
+                                <div key={user._id} className="user-card">
+                                    <div className="user-avatar">
+                                        <img
+                                            src={user.avatar || '/images/avatar0.jpg'}
+                                            alt={user.name}
+                                            onError={(e) => {
+                                                e.target.src = '/images/avatar0.jpg';
+                                            }}
+                                        />
                                     </div>
-                                );
-                            })}
-                        </>
-                    )}
-                </div>
+                                    <div className="user-info">
+                                        <h3>
+                                            <Link to={`/${user.username}`}>{user.name}</Link>
+                                        </h3>
+                                        <p className="username">@{user.username}</p>
+                                        <p className="email">{user.email}</p>
+                                        <p className={`role ${user.role?.toLowerCase()}`}>
+                                            {user.role || 'USER'}
+                                        </p>
+                                        {user.createdAt && (
+                                            <p className="joined">
+                                                Joined:{' '}
+                                                {new Date(user.createdAt).toLocaleDateString()}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    !isLoading && (
+                        <div className="no-users">
+                            <p>No users found.</p>
+                        </div>
+                    )
+                )}
             </div>
         </Layout>
     );
@@ -86,4 +86,4 @@ const mapStateToProps = (state) => ({
     users: state.users,
 });
 
-export default compose(requireAuth, connect(mapStateToProps, { getUsers }))(Users);
+export default compose(connect(mapStateToProps, { getUsers }), requireAdmin)(Users);

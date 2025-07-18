@@ -11,6 +11,7 @@ import Layout from '../../layout/Layout';
 import Loader from '../../components/Loader/Loader';
 import requireAuth from '../../hoc/requireAuth';
 import { profileSchema } from './validation';
+import { getAvatarUrl } from '../../utils/helpers';
 
 import './styles.css';
 
@@ -47,22 +48,46 @@ const Profile = ({
     const [isEdit, setIsEdit] = useState(false);
     const [image, setImage] = useState(null);
     const [avatar, setAvatar] = useState(null);
+    const [isMounted, setIsMounted] = useState(true);
     const retryCount = useRef(0);
     const matchUsername = match.params.username;
 
     useEffect(() => {
         getProfile(matchUsername, history);
+
+        // Cleanup function to prevent memory leaks
+        return () => {
+            setIsMounted(false);
+        };
     }, [matchUsername]);
 
     // if changed his own username reload me, done in userActions
 
     const onChange = (event) => {
-        formik.setFieldValue('image', event.currentTarget.files[0]);
-        setImage(URL.createObjectURL(event.target.files[0]));
-        setAvatar(event.target.files[0]);
+        const file = event.currentTarget.files[0];
+
+        if (!file) return;
+
+        // Check file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+        }
+
+        // Check file type
+        if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
+            alert('Only PNG, JPG and JPEG files are allowed');
+            return;
+        }
+
+        formik.setFieldValue('image', file);
+        setImage(URL.createObjectURL(file));
+        setAvatar(file);
     };
 
     const handleClickEdit = () => {
+        if (!profile || !profile.id) return;
+
         retryCount.current = 0;
         setIsEdit((oldIsEdit) => !oldIsEdit);
         setImage(null);
@@ -85,16 +110,53 @@ const Profile = ({
             password: '',
         },
         validationSchema: profileSchema,
-        onSubmit: (values) => {
-            const formData = new FormData();
-            formData.append('avatar', avatar);
-            formData.append('name', values.name);
-            formData.append('username', values.username);
-            if (profile.provider === 'email') {
-                formData.append('password', values.password);
+        onSubmit: async (values) => {
+            if (!profile || !profile.id) {
+                console.error('No profile data available');
+                return;
             }
-            editUser(values.id, formData, history);
-            //setIsEdit(false);
+
+            try {
+                const formData = new FormData();
+
+                // Only append avatar if a new one was selected
+                if (avatar) {
+                    formData.append('avatar', avatar);
+                }
+
+                formData.append('name', values.name || '');
+                formData.append('username', values.username || '');
+
+                // Only append password for email providers and if password is provided
+                if (
+                    profile.provider === 'email' &&
+                    values.password &&
+                    values.password.trim() !== ''
+                ) {
+                    formData.append('password', values.password);
+                }
+
+                console.log('Submitting form with data:', {
+                    id: values.id,
+                    name: values.name,
+                    username: values.username,
+                    hasAvatar: !!avatar,
+                    provider: profile.provider,
+                });
+
+                await editUser(values.id, formData, history);
+
+                // Reset form state and reload profile after successful update
+                if (isMounted) {
+                    setIsEdit(false);
+                    setImage(null);
+                    setAvatar(null);
+                    // Reload profile to get updated avatar
+                    await getProfile(profile.id);
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+            }
         },
     });
 
@@ -106,11 +168,20 @@ const Profile = ({
                     This is the profile page. User can edit his own profile and Admin can edit any
                     user's profile. Only authenticated users can see this page.
                 </p>
-                {isLoading ? (
+                {isLoading || !profile || !profile.id ? (
                     <Loader />
                 ) : (
                     <div className="profile-info">
-                        <img src={image ? image : profile.avatar} className="avatar" />
+                        <img
+                            src={image ? image : getAvatarUrl(profile.avatar)}
+                            className="avatar"
+                            alt="User avatar"
+                            onError={(e) => {
+                                console.error('Avatar failed to load:', e.target.src);
+                                console.log('Profile avatar path:', profile.avatar);
+                                console.log('Generated URL:', getAvatarUrl(profile.avatar));
+                            }}
+                        />
                         <div className="info-container">
                             <div>
                                 <span className="label">Provider: </span>

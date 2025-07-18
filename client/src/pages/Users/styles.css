@@ -1,43 +1,145 @@
-.users {
-    min-height: 100%;
-}
-.users .profile {
-    display: flex;
-    padding: 20px 0;
-    border-bottom: 1px solid black;
-}
-.users .profile:last-child {
-    border-bottom: 0;
+.users-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.users .avatar {
-    width: 150px;
-    height: 150px;
-    align-self: center;
-    margin-right: 20px;
+.users-page h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+.users-page h2 {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.error-message {
+    background-color: #fee;
+    color: #c33;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid #c33;
+}
+
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.user-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.user-avatar {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.user-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #f0f0f0;
 }
 
-.users .label {
-    font-size: 18px;
+.user-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.user-info h3 a {
+    color: #333;
+    text-decoration: none;
+}
+
+.user-info h3 a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.username {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+.email {
+    color: #777;
+    font-size: 0.85rem;
+    margin: 5px 0;
+}
+
+.role {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
     font-weight: bold;
-    margin-right: 10px;
+    text-transform: uppercase;
+    margin: 5px 0;
 }
 
-.users .info {
-    font-size: 18px;
+.role.admin {
+    background-color: #dc3545;
+    color: white;
 }
 
-.users .info-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.role.user {
+    background-color: #28a745;
+    color: white;
 }
 
-.users .list {
-    min-height: 100%;
+.joined {
+    color: #888;
+    font-size: 0.8rem;
+    margin: 5px 0 0 0;
 }
 
-.users .profile-link {
-    color: rgb(0, 0, 238);
+.no-users {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.bold {
+    font-weight: bold;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.bold:hover {
+    text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .users-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .users-page {
+        padding: 15px;
+    }
+
+    .users-page h1 {
+        font-size: 2rem;
+    }
 }

@@ -1,5 +1,6 @@
 import User, { hashPassword } from '../models/User.js';
 import UserService from '../services/userService.js';
+import { existsSync } from 'fs';
 
 // ===========================================
 // USER CONTROLLER
@@ -10,53 +11,102 @@ class UserController {
     // Update user profile
     async updateProfile(req, res, next) {
         try {
+            console.log('updateProfile called with:', {
+                params: req.params,
+                body: req.body,
+                file: req.file
+                    ? {
+                          filename: req.file.filename,
+                          size: req.file.size,
+                          mimetype: req.file.mimetype,
+                          originalname: req.file.originalname,
+                      }
+                    : null,
+                user: req.user ? { id: req.user.id, role: req.user.role } : null,
+            });
+
             const tempUser = await User.findById(req.params.id);
             if (!tempUser) {
+                console.log('User not found:', req.params.id);
                 return res.status(404).json({ message: 'No such user.' });
             }
 
             if (!(tempUser.id === req.user.id || req.user.role === 'ADMIN')) {
+                console.log('Insufficient privileges:', {
+                    tempUserId: tempUser.id,
+                    currentUserId: req.user.id,
+                    role: req.user.role,
+                });
                 return res.status(403).json({
                     message: 'You do not have privileges to edit this user.',
                 });
             }
 
             // Prepare update data
-            const updateData = {
-                name: req.body.name,
-                username: req.body.username,
-            };
+            const updateData = {};
 
-            // Handle avatar upload
+            if (req.body.name && req.body.name.trim() !== '') {
+                updateData.name = req.body.name.trim();
+            }
+
+            if (req.body.username && req.body.username.trim() !== '') {
+                updateData.username = req.body.username.trim();
+            } // Handle avatar upload
             if (req.file) {
-                updateData.avatar = req.file.filename;
+                console.log('🔥 AVATAR UPLOAD DETECTED');
+                console.log('📸 Full file object:', JSON.stringify(req.file, null, 2));
+                console.log('📁 File path:', req.file.path);
+                console.log('📄 File size:', req.file.size);
+                console.log('📄 File exists at path:', existsSync(req.file.path));
+
+                // Store the path for public/images (simple solution)
+                updateData.avatar = `/public/images/${req.file.filename}`;
+                console.log('💾 Avatar saved to database as:', updateData.avatar);
+            } else {
+                console.log('❌ No file received in req.file');
             }
 
             // Handle password update for email users only
-            if (req.user.provider === 'email' && req.body.password && req.body.password !== '') {
-                updateData.password = await hashPassword(req.body.password);
+            if (tempUser.provider === 'email' && req.body.password && req.body.password.trim() !== '') {
+                updateData.password = await hashPassword(req.body.password.trim());
+                console.log('Password updated for email user');
             }
 
             // Check username uniqueness
-            if (req.body.username) {
-                const existingUser = await User.findOne({ username: req.body.username });
+            if (req.body.username && req.body.username.trim() !== '') {
+                const existingUser = await User.findOne({ username: req.body.username.trim() });
                 if (existingUser && existingUser.id !== tempUser.id) {
+                    console.log('Username already taken:', req.body.username);
                     return res.status(400).json({ message: 'Username already taken.' });
                 }
             }
+
+            console.log('Update data prepared:', updateData);
 
             // Use UserService to update profile
             const result = await UserService.updateProfile(req.params.id, updateData);
 
             if (!result.success) {
+                console.log('UserService update failed:', result);
                 return res.status(400).json({
                     message: result.error || result.errors?.join(', '),
                 });
             }
 
+            console.log('Profile updated successfully:', result.user);
             res.status(200).json({ user: result.user });
         } catch (err) {
             console.error('Error updating user profile:', err);
+
+            // Handle specific multer errors
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                return res.status(400).json({ message: 'File too large. Maximum size is 5MB.' });
+            }
+
+            if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+                return res.status(400).json({ message: 'Too many files or unexpected field name.' });
+            }
+
             res.status(500).json({ message: 'Something went wrong.' });
         }
     }
