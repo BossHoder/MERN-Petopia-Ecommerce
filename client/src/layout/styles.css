@@ -4,3 +4,18 @@
     /* border: 1px solid green; */
     min-height: calc(100% - 131px);
 }
+
+.language-selector-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .language-selector-container {
+        justify-content: center;
+        padding: 0.5rem;
+    }
+}

@@ -10,9 +10,12 @@ import _ from 'lodash';
 import { loginUserWithEmail } from '../../store/actions/authActions';
 import { FACEBOOK_AUTH_LINK, GOOGLE_AUTH_LINK } from '../../constants';
 import { loginSchema } from './validation';
+import { useI18n } from '../../hooks/useI18n';
 import './styles.css';
 
 const Login = ({ auth, history, loginUserWithEmail }) => {
+    const { t } = useI18n();
+
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -29,28 +32,28 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
     return (
         <div className="login">
             <div className="container">
-                <h1>Log in page</h1>
+                <h1>{t('auth.login.title')}</h1>
                 <p>
-                    back to{' '}
+                    {t('common.backTo')}{' '}
                     <Link className="bold" to="/">
-                        Home page
+                        {t('navigation.home')}
                     </Link>
                 </p>
                 <form onSubmit={formik.handleSubmit} noValidate>
-                    <h2>Log in with social media</h2>
+                    <h2>{t('auth.login.socialLogin')}</h2>
                     <a className="fb btn" href={FACEBOOK_AUTH_LINK}>
                         <span className="login-text">
-                            <i className="fa fa-facebook fa-fw" /> Login with Facebook
+                            <i className="fa fa-facebook fa-fw" /> {t('auth.login.facebook')}
                         </span>
                     </a>
                     <a className="google btn" href={GOOGLE_AUTH_LINK}>
                         <span className="login-text">
-                            <i className="fa fa-google fa-fw" /> Login with Google
+                            <i className="fa fa-google fa-fw" /> {t('auth.login.google')}
                         </span>
                     </a>
                     <div>
                         <input
-                            placeholder="Email address"
+                            placeholder={t('auth.login.email')}
                             name="email"
                             className="text"
                             type="text"
@@ -62,7 +65,7 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
                             <p className="error">{formik.errors.email}</p>
                         ) : null}
                         <input
-                            placeholder="Password"
+                            placeholder={t('auth.login.password')}
                             name="password"
                             type="password"
                             className="text"
@@ -81,13 +84,13 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
                             disabled={auth.isLoading || !formik.isValid}
                             type="submit"
                         >
-                            Log in now
+                            {t('auth.login.submit')}
                         </button>
                     </div>
                     <div>
-                        Don't have an account?{' '}
+                        {t('auth.login.noAccount')}{' '}
                         <Link className="bold" to="/register">
-                            Register
+                            {t('navigation.register')}
                         </Link>
                     </div>
                 </form>

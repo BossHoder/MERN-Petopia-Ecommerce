@@ -4,6 +4,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
 
+// Import i18n configuration
+import './i18n/i18n';
+
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Home from './pages/Home/Home';

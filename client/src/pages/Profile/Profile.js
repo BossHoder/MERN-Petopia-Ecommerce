@@ -12,6 +12,7 @@ import Loader from '../../components/Loader/Loader';
 import requireAuth from '../../hoc/requireAuth';
 import { profileSchema } from './validation';
 import { getAvatarUrl } from '../../utils/helpers';
+import { useI18n } from '../../hooks/useI18n';
 
 import './styles.css';
 
@@ -45,6 +46,7 @@ const Profile = ({
     history,
     match,
 }) => {
+    const { t } = useI18n();
     const [isEdit, setIsEdit] = useState(false);
     const [image, setImage] = useState(null);
     const [avatar, setAvatar] = useState(null);
@@ -163,11 +165,8 @@ const Profile = ({
     return (
         <Layout>
             <div className="profile">
-                <h1>Profile page</h1>
-                <p>
-                    This is the profile page. User can edit his own profile and Admin can edit any
-                    user's profile. Only authenticated users can see this page.
-                </p>
+                <h1>{t('profile.title')}</h1>
+                <p>{t('profile.description')}</p>
                 {isLoading || !profile || !profile.id ? (
                     <Loader />
                 ) : (
@@ -184,19 +183,19 @@ const Profile = ({
                         />
                         <div className="info-container">
                             <div>
-                                <span className="label">Provider: </span>
+                                <span className="label">{t('profile.provider')}: </span>
                                 <span className="info">{profile.provider}</span>
                             </div>
                             <div>
-                                <span className="label">Role: </span>
+                                <span className="label">{t('profile.role')}: </span>
                                 <span className="info">{profile.role}</span>
                             </div>
                             <div>
-                                <span className="label">Name: </span>
+                                <span className="label">{t('profile.name')}: </span>
                                 <span className="info">{profile.name}</span>
                             </div>
                             <div>
-                                <span className="label">Username: </span>
+                                <span className="label">{t('profile.username')}: </span>
                                 <span className="info">{profile.username}</span>
                             </div>
                             <div>
@@ -250,9 +249,9 @@ const Profile = ({
                             </div>
                             <input name="id" type="hidden" value={formik.values.id} />
                             <div className="input-div">
-                                <label>Name:</label>
+                                <label>{t('profile.name')}:</label>
                                 <input
-                                    placeholder="Name"
+                                    placeholder={t('profile.name')}
                                     name="name"
                                     className=""
                                     type="text"
@@ -265,9 +264,9 @@ const Profile = ({
                                 ) : null}
                             </div>
                             <div className="input-div">
-                                <label>Username:</label>
+                                <label>{t('profile.username')}:</label>
                                 <input
-                                    placeholder="Username"
+                                    placeholder={t('profile.username')}
                                     name="username"
                                     className=""
                                     type="text"
@@ -281,9 +280,9 @@ const Profile = ({
                             </div>
                             {profile.provider === 'email' && (
                                 <div className="input-div">
-                                    <label>Password:</label>
+                                    <label>{t('profile.password')}:</label>
                                     <input
-                                        placeholder="Password"
+                                        placeholder={t('profile.password')}
                                         name="password"
                                         className=""
                                         type="password"
@@ -297,14 +296,14 @@ const Profile = ({
                                 </div>
                             )}
                             <button type="submit" className="btn">
-                                Save
+                                {t('common.save')}
                             </button>
                             <button
                                 onClick={() => handleDeleteUser(profile.id, history)}
                                 type="button"
                                 className="btn"
                             >
-                                Delete profile
+                                {t('profile.deleteProfile')}
                             </button>
                         </form>
                     </div>

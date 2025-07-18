@@ -1,0 +1,108 @@
+{
+    "app": {
+        "title": "Petopia Thương mại điện tử",
+        "subtitle": "Cửa hàng thú cưng đáng tin cậy của bạn"
+    },
+    "navigation": {
+        "home": "Trang chủ",
+        "products": "Sản phẩm",
+        "categories": "Danh mục",
+        "about": "Giới thiệu",
+        "contact": "Liên hệ",
+        "cart": "Giỏ hàng",
+        "account": "Tài khoản",
+        "login": "Đăng nhập",
+        "register": "Đăng ký",
+        "logout": "Đăng xuất"
+    },
+    "footer": {
+        "copyright": "@nemanjam 2020",
+        "description": "Cửa hàng thú cưng tuyệt vời cho tất cả những người bạn lông lá của bạn"
+    },
+    "common": {
+        "welcome": "Chào mừng",
+        "loading": "Đang tải...",
+        "error": "Có lỗi xảy ra",
+        "success": "Thành công",
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "edit": "Chỉnh sửa",
+        "add": "Thêm",
+        "search": "Tìm kiếm",
+        "filter": "Lọc",
+        "sort": "Sắp xếp",
+        "language": "Ngôn ngữ",
+        "backTo": "quay lại",
+        "notFound": "404 - Không tìm thấy trang",
+        "goBackTo": "Quay lại"
+    },
+    "products": {
+        "title": "Sản phẩm",
+        "addToCart": "Thêm vào giỏ hàng",
+        "outOfStock": "Hết hàng",
+        "price": "Giá",
+        "description": "Mô tả",
+        "category": "Danh mục",
+        "brand": "Thương hiệu",
+        "rating": "Đánh giá"
+    },
+    "cart": {
+        "title": "Giỏ hàng",
+        "empty": "Giỏ hàng của bạn đang trống",
+        "quantity": "Số lượng",
+        "total": "Tổng cộng",
+        "checkout": "Thanh toán",
+        "remove": "Xóa"
+    },
+    "auth": {
+        "login": {
+            "title": "Trang đăng nhập",
+            "socialLogin": "Đăng nhập bằng mạng xã hội",
+            "facebook": "Đăng nhập bằng Facebook",
+            "google": "Đăng nhập bằng Google",
+            "email": "Địa chỉ email",
+            "password": "Mật khẩu",
+            "submit": "Đăng nhập ngay",
+            "noAccount": "Chưa có tài khoản?"
+        },
+        "register": {
+            "title": "Trang đăng ký",
+            "subtitle": "Tạo tài khoản mới",
+            "name": "Tên",
+            "username": "Tên đăng nhập",
+            "email": "Địa chỉ email",
+            "password": "Mật khẩu",
+            "submit": "Đăng ký ngay",
+            "hasAccount": "Đã có tài khoản?"
+        }
+    },
+    "profile": {
+        "title": "Trang hồ sơ",
+        "description": "Đây là trang hồ sơ. Người dùng có thể chỉnh sửa hồ sơ của mình và Admin có thể chỉnh sửa hồ sơ của bất kỳ người dùng nào. Chỉ người dùng đã xác thực mới có thể xem trang này.",
+        "provider": "Nhà cung cấp",
+        "role": "Vai trò",
+        "name": "Tên",
+        "username": "Tên đăng nhập",
+        "password": "Mật khẩu",
+        "deleteProfile": "Xóa hồ sơ"
+    },
+    "users": {
+        "title": "Quản lý người dùng",
+        "backToAdmin": "Quay lại bảng điều khiển Admin",
+        "errorLoading": "Lỗi khi tải danh sách người dùng",
+        "allUsers": "Tất cả người dùng",
+        "joined": "Tham gia",
+        "noUsers": "Không tìm thấy người dùng nào."
+    },
+    "admin": {
+        "title": "Bảng điều khiển Admin",
+        "description": "Đây là trang Admin. Chỉ Admin mới có thể truy cập trang này. Quay lại"
+    },
+    "messages": {
+        "title": "Tin nhắn",
+        "writeMessage": "Viết tin nhắn",
+        "placeholder": "Viết tin nhắn",
+        "addMessage": "Thêm tin nhắn"
+    }
+}

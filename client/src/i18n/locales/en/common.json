@@ -1,0 +1,109 @@
+{
+    "app": {
+        "title": "Petopia E-commerce",
+        "subtitle": "Your trusted pet store"
+    },
+    "navigation": {
+        "home": "Home",
+        "products": "Products",
+        "categories": "Categories",
+        "about": "About",
+        "contact": "Contact",
+        "cart": "Cart",
+        "account": "Account",
+        "login": "Login",
+        "register": "Register",
+        "logout": "Logout"
+    },
+    "footer": {
+        "copyright": "@nemanjam 2020",
+        "description": "Amazing pet store for all your furry friends"
+    },
+    "common": {
+        "welcome": "Welcome",
+        "loading": "Loading...",
+        "error": "Error occurred",
+        "success": "Success",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "language": "Language",
+        "backTo": "back to",
+        "notFound": "404 - Page Not Found",
+        "goBackTo": "Go back to"
+    },
+    "products": {
+        "title": "Products",
+        "addToCart": "Add to Cart",
+        "outOfStock": "Out of Stock",
+        "price": "Price",
+        "description": "Description",
+        "category": "Category",
+        "brand": "Brand",
+        "rating": "Rating"
+    },
+    "cart": {
+        "title": "Shopping Cart",
+        "empty": "Your cart is empty",
+        "quantity": "Quantity",
+        "total": "Total",
+        "checkout": "Checkout",
+        "remove": "Remove"
+    },
+    "auth": {
+        "login": {
+            "title": "Log in page",
+            "socialLogin": "Log in with social media",
+            "facebook": "Login with Facebook",
+            "google": "Login with Google",
+            "email": "Email address",
+            "password": "Password",
+            "submit": "Log in now",
+            "noAccount": "Don't have an account?"
+        },
+        "register": {
+            "title": "Register page",
+            "subtitle": "Create new account",
+            "name": "Name",
+            "username": "Username",
+            "email": "Email address",
+            "password": "Password",
+            "submit": "Sign up now",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign In"
+        }
+    },
+    "profile": {
+        "title": "Profile page",
+        "description": "This is the profile page. User can edit his own profile and Admin can edit any user's profile. Only authenticated users can see this page.",
+        "provider": "Provider",
+        "role": "Role",
+        "name": "Name",
+        "username": "Username",
+        "password": "Password",
+        "deleteProfile": "Delete profile"
+    },
+    "users": {
+        "title": "Users Management",
+        "backToAdmin": "Back to Admin Dashboard",
+        "errorLoading": "Error loading users",
+        "allUsers": "All Users",
+        "joined": "Joined",
+        "noUsers": "No users found."
+    },
+    "admin": {
+        "title": "Admin dashboard",
+        "description": "This is the Admin page. Only the Admin can access this page. Return back to"
+    },
+    "messages": {
+        "title": "Messages",
+        "writeMessage": "Write a message",
+        "placeholder": "Write a message",
+        "addMessage": "Add Message"
+    }
+}

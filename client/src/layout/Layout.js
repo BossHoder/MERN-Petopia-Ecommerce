@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
+import LanguageSelector from '../components/LanguageSelector';
 import './styles.css';
 
 const Layout = ({ children }) => {
     return (
         <>
             <Navbar />
+            <div className="language-selector-container">
+                <LanguageSelector />
+            </div>
             <div className="container">{children}</div>
             <Footer />
         </>

@@ -1,12 +1,16 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import './styles.css';
 
 const Footer = () => {
+    const { t } = useTranslation();
+
     return (
         <div className="footer">
             <div className="footer-content">
-                <span className="username">@nemanjam 2020</span>
+                <span className="username">{t('footer.copyright')}</span>
+                <span className="description">{t('footer.description')}</span>
                 <iframe
                     src="https://ghbtns.com/github-btn.html?user=nemanjam&repo=mern-boilerplate&type=star&count=true&size=large"
                     frameBorder="0"

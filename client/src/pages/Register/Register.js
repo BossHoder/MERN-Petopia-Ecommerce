@@ -9,9 +9,12 @@ import { useFormik } from 'formik';
 
 import { registerUserWithEmail } from '../../store/actions/registerActions';
 import { registerSchema } from './validation';
+import { useI18n } from '../../hooks/useI18n';
 import './styles.css';
 
 const Register = ({ auth, register: { isLoading, error }, history, registerUserWithEmail }) => {
+    const { t } = useI18n();
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -30,18 +33,18 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
     return (
         <div className="register">
             <div className="container">
-                <h1>Register page</h1>
+                <h1>{t('auth.register.title')}</h1>
                 <p>
-                    back to{' '}
+                    {t('common.backTo')}{' '}
                     <Link className="bold" to="/">
-                        Home page
+                        {t('navigation.home')}
                     </Link>
                 </p>
                 <form onSubmit={formik.handleSubmit} noValidate>
-                    <h2>Create new account</h2>
+                    <h2>{t('auth.register.subtitle')}</h2>
                     <div>
                         <input
-                            placeholder="Name"
+                            placeholder={t('auth.register.name')}
                             name="name"
                             className=""
                             type="text"
@@ -53,7 +56,7 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
                             <p className="error">{formik.errors.name}</p>
                         ) : null}
                         <input
-                            placeholder="Username"
+                            placeholder={t('auth.register.username')}
                             name="username"
                             className=""
                             type="text"
@@ -65,7 +68,7 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
                             <p className="error">{formik.errors.username}</p>
                         ) : null}
                         <input
-                            placeholder="Email address"
+                            placeholder={t('auth.register.email')}
                             name="email"
                             className=""
                             type="text"
@@ -77,7 +80,7 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
                             <p className="error">{formik.errors.email}</p>
                         ) : null}
                         <input
-                            placeholder="Password"
+                            placeholder={t('auth.register.password')}
                             name="password"
                             className=""
                             type="password"
@@ -96,13 +99,13 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
                             type="submit"
                             disabled={isLoading || !formik.isValid}
                         >
-                            Sign up now
+                            {t('auth.register.submit')}
                         </button>
                     </div>
                     <div>
-                        Have an account?{' '}
+                        {t('auth.register.hasAccount')}{' '}
                         <Link className="bold" to="/login">
-                            Log In
+                            {t('navigation.login')}
                         </Link>
                     </div>
                 </form>

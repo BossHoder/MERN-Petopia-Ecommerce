@@ -7,10 +7,12 @@ import Layout from '../../layout/Layout';
 import Loader from '../../components/Loader/Loader';
 import requireAdmin from '../../hoc/requireAdmin';
 import { getUsers } from '../../store/actions/usersActions';
+import { useI18n } from '../../hooks/useI18n';
 
 import './styles.css';
 
 const Users = ({ getUsers, users: { users, isLoading, error } }) => {
+    const { t } = useI18n();
     useEffect(() => {
         getUsers();
     }, [getUsers]);
@@ -26,18 +28,24 @@ const Users = ({ getUsers, users: { users, isLoading, error } }) => {
     return (
         <Layout>
             <div className="users-page">
-                <h1>Users Management</h1>
+                <h1>{t('users.title')}</h1>
                 <p>
                     <Link className="bold" to="/admin">
-                        ← Back to Admin Dashboard
+                        ← {t('users.backToAdmin')}
                     </Link>
                 </p>
 
-                {error && <div className="error-message">Error loading users: {error}</div>}
+                {error && (
+                    <div className="error-message">
+                        {t('users.errorLoading')}: {error}
+                    </div>
+                )}
 
                 {users && users.length > 0 ? (
                     <div className="users-list">
-                        <h2>All Users ({users.length})</h2>
+                        <h2>
+                            {t('users.allUsers')} ({users.length})
+                        </h2>
                         <div className="users-grid">
                             {users.map((user) => (
                                 <div key={user._id} className="user-card">
@@ -61,7 +69,7 @@ const Users = ({ getUsers, users: { users, isLoading, error } }) => {
                                         </p>
                                         {user.createdAt && (
                                             <p className="joined">
-                                                Joined:{' '}
+                                                {t('users.joined')}:{' '}
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </p>
                                         )}
@@ -73,7 +81,7 @@ const Users = ({ getUsers, users: { users, isLoading, error } }) => {
                 ) : (
                     !isLoading && (
                         <div className="no-users">
-                            <p>No users found.</p>
+                            <p>{t('users.noUsers')}</p>
                         </div>
                     )
                 )}
