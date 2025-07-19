@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, withRouter, Redirect } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
 import { useFormik } from 'formik';
 
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -13,8 +12,9 @@ import { loginSchema } from './validation';
 import { useI18n } from '../../hooks/useI18n';
 import './styles.css';
 
-const Login = ({ auth, history, loginUserWithEmail }) => {
+const Login = ({ auth, loginUserWithEmail }) => {
     const { t } = useI18n();
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -23,11 +23,11 @@ const Login = ({ auth, history, loginUserWithEmail }) => {
         },
         validationSchema: loginSchema,
         onSubmit: (values) => {
-            loginUserWithEmail(values, history);
+            loginUserWithEmail(values, navigate);
         },
     });
 
-    if (auth.isAuthenticated) return <Redirect to="/" />;
+    if (auth.isAuthenticated) return <Navigate to="/" replace />;
 
     return (
         <div className="login">
@@ -104,4 +104,4 @@ const mapStateToProps = (state) => ({
     errors: state.errors,
 });
 
-export default compose(withRouter, connect(mapStateToProps, { loginUserWithEmail }))(Login);
+export default connect(mapStateToProps, { loginUserWithEmail })(Login);

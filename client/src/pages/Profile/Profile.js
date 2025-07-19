@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import moment from 'moment';
-import { withRouter } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { getProfile, editUser, deleteUser } from '../../store/actions/userActions';
 import { loadMe } from '../../store/actions/authActions';
@@ -43,25 +42,24 @@ const Profile = ({
     editUser,
     deleteUser,
     loadMe,
-    history,
-    match,
 }) => {
     const { t } = useI18n();
+    const navigate = useNavigate();
+    const { username: matchUsername } = useParams();
     const [isEdit, setIsEdit] = useState(false);
     const [image, setImage] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const [isMounted, setIsMounted] = useState(true);
     const retryCount = useRef(0);
-    const matchUsername = match.params.username;
 
     useEffect(() => {
-        getProfile(matchUsername, history);
+        getProfile(matchUsername, navigate);
 
         // Cleanup function to prevent memory leaks
         return () => {
             setIsMounted(false);
         };
-    }, [matchUsername]);
+    }, [matchUsername, getProfile, navigate]);
 
     // if changed his own username reload me, done in userActions
 
@@ -99,8 +97,8 @@ const Profile = ({
         formik.setFieldValue('username', profile.username);
     };
 
-    const handleDeleteUser = (id, history) => {
-        deleteUser(id, history);
+    const handleDeleteUser = (id) => {
+        deleteUser(id, navigate);
     };
 
     const formik = useFormik({
@@ -146,7 +144,7 @@ const Profile = ({
                     provider: profile.provider,
                 });
 
-                await editUser(values.id, formData, history);
+                await editUser(values.id, formData, navigate);
 
                 // Reset form state and reload profile after successful update
                 if (isMounted) {
@@ -299,7 +297,7 @@ const Profile = ({
                                 {t('common.save')}
                             </button>
                             <button
-                                onClick={() => handleDeleteUser(profile.id, history)}
+                                onClick={() => handleDeleteUser(profile.id)}
                                 type="button"
                                 className="btn"
                             >
@@ -318,8 +316,6 @@ const mapStateToProps = (state) => ({
     auth: state.auth,
 });
 
-export default compose(
-    requireAuth,
-    withRouter,
-    connect(mapStateToProps, { getProfile, editUser, deleteUser, loadMe }),
-)(Profile);
+export default requireAuth(
+    connect(mapStateToProps, { getProfile, editUser, deleteUser, loadMe })(Profile),
+);

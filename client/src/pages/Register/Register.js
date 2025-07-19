@@ -1,9 +1,7 @@
 import React from 'react';
-import { Link, withRouter, Redirect } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 
-import { compose } from 'redux';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import { useFormik } from 'formik';
 
@@ -12,8 +10,9 @@ import { registerSchema } from './validation';
 import { useI18n } from '../../hooks/useI18n';
 import './styles.css';
 
-const Register = ({ auth, register: { isLoading, error }, history, registerUserWithEmail }) => {
+const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail }) => {
     const { t } = useI18n();
+    const navigate = useNavigate();
 
     const formik = useFormik({
         initialValues: {
@@ -24,11 +23,11 @@ const Register = ({ auth, register: { isLoading, error }, history, registerUserW
         },
         validationSchema: registerSchema,
         onSubmit: (values) => {
-            registerUserWithEmail(values, history);
+            registerUserWithEmail(values, navigate);
         },
     });
 
-    if (auth.isAuthenticated) return <Redirect to="/" />;
+    if (auth.isAuthenticated) return <Navigate to="/" replace />;
 
     return (
         <div className="register">
@@ -119,4 +118,4 @@ const mapStateToProps = (state) => ({
     register: state.register,
 });
 
-export default compose(withRouter, connect(mapStateToProps, { registerUserWithEmail }))(Register);
+export default connect(mapStateToProps, { registerUserWithEmail })(Register);

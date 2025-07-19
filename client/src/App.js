@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Cookies from 'js-cookie';
@@ -41,16 +41,16 @@ const App = ({ logInUserWithOauth, auth, loadMe }) => {
     return (
         <>
             {auth.appLoaded ? (
-                <Switch>
-                    <Route path="/login" component={Login} />
-                    <Route path="/register" component={Register} />
-                    <Route path="/users" component={Users} />
-                    <Route path="/notfound" component={NotFound} />
-                    <Route path="/admin" component={Admin} />
-                    <Route exact path="/:username" component={Profile} />
-                    <Route exact path="/" component={Home} />
-                    <Route component={NotFound} />
-                </Switch>
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/users" element={<Users />} />
+                    <Route path="/notfound" element={<NotFound />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/:username" element={<Profile />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
             ) : (
                 <Loader />
             )}
