@@ -311,3 +311,31 @@ export const validateProductData = (productData) => {
         errors,
     };
 };
+
+export const productHelper = {
+    // Generate URL-friendly slug from product name
+    generateSlug: (name) => {
+        return name
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Remove special characters
+            .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+            .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    },
+
+    // Calculate discount percentage
+    calculateDiscount: (originalPrice, salePrice) => {
+        if (!salePrice || salePrice >= originalPrice) return 0;
+        return Math.round(((originalPrice - salePrice) / originalPrice) * 100);
+    },
+
+    // Check if product is in stock
+    isInStock: (stockQuantity) => {
+        return stockQuantity > 0;
+    },
+
+    // Check if product is low stock
+    isLowStock: (stockQuantity, threshold = 10) => {
+        return stockQuantity <= threshold && stockQuantity > 0;
+    },
+};
