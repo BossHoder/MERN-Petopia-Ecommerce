@@ -1,8 +1,7 @@
 import Product from '../models/Product.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
 import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
-import { responseHelper } from '../helpers/responseHelper.js';
-import { productHelper } from '../helpers/productHelper.js';
+import { productHelper, responseHelper } from '../helpers/productHelper.js';
 
 class ProductController {
     async getAllProducts(req, res) {

@@ -4,6 +4,7 @@
 // This file contains utility functions for product operations
 
 import Product from '../models/Product.js';
+import { successResponse, errorResponse } from './responseHelper.js';
 
 // Generate unique slug from product name
 export const generateSlug = (name) => {
@@ -337,5 +338,53 @@ export const productHelper = {
     // Check if product is low stock
     isLowStock: (stockQuantity, threshold = 10) => {
         return stockQuantity <= threshold && stockQuantity > 0;
+    },
+
+    formatPrice: (price, currency = 'USD') => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currency,
+        }).format(price);
+    },
+
+    //auto generate SKU
+    generateSku: (name, category) => {
+        const nameCode = name
+            .split(' ')
+            .slice(0, 2)
+            .map((word) => word.substring(0, 3).toUpperCase())
+            .join('');
+
+        const categoryCode = category.substring(0, 3).toUpperCase();
+        const timestamp = Date.now().toString().slice(-4);
+
+        return `${categoryCode}-${nameCode}-${timestamp}`;
+    },
+};
+
+// Response helpers wrapper for easier use
+export const responseHelper = {
+    success: (res, data, message = 'Success', statusCode = 200) => {
+        return successResponse(res, data, message, statusCode);
+    },
+
+    created: (res, data, message = 'Created successfully') => {
+        return successResponse(res, data, message, 201);
+    },
+
+    validationError: (res, message) => {
+        return errorResponse(res, message, 400);
+    },
+
+    badRequest: (res, message) => {
+        return errorResponse(res, message, 400);
+    },
+
+    notFound: (res, message) => {
+        return errorResponse(res, message, 404);
+    },
+
+    serverError: (res, message) => {
+        return errorResponse(res, message, 500);
     },
 };
