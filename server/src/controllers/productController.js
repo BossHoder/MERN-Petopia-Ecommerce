@@ -1,6 +1,6 @@
 import Product from '../models/Product.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
-import { createProductSchema, updateProductSchema, getProductsQuerySchema } from '../validations/productValidation.js';
+import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
 import { responseHelper } from '../helpers/responseHelper.js';
 import { productHelper } from '../helpers/productHelper.js';
 
@@ -9,7 +9,7 @@ class ProductController {
         try {
             console.log('getAllProducts called with query:', req.query);
 
-            const { error, value } = getProductsQuerySchema.validate(req.query);
+            const { error, value } = productQuerySchema.validate(req.query);
             if (error) {
                 return responseHelper.validationError(res, error.details[0].message);
             }
@@ -17,8 +17,8 @@ class ProductController {
             const {
                 page = 1,
                 limit = 12,
-                sortBy = 'createdAt',
-                sortOrder = 'desc',
+                sort: sortBy = 'createdAt',
+                order: sortOrder = 'desc',
                 category,
                 brand,
                 minPrice,
@@ -47,7 +47,7 @@ class ProductController {
                     { name: { $regex: search, $options: 'i' } },
                     { description: { $regex: search, $options: 'i' } },
                     { brand: { $regex: search, $options: 'i' } },
-                    { tags: { $in: [search] } },
+                    { tags: { $in: [new RegExp(search, 'i')] } },
                 ];
             }
 
@@ -59,7 +59,7 @@ class ProductController {
             // Execute query with population
             const [products, totalProducts] = await Promise.all([
                 Product.find(filter)
-                    .populate('category', 'name', 'slug')
+                    .populate('category', 'name slug')
                     .sort(sort)
                     .skip(skip)
                     .limit(parseInt(limit))
@@ -69,7 +69,7 @@ class ProductController {
             // Calculate pagination metadata
             const totalPages = Math.ceil(totalProducts / limit);
             const hasNextPage = page < totalPages;
-            const hasPreviousPage = page > 1;
+            const hasPrevPage = page > 1;
             return responseHelper.success(res, {
                 products: productsDto(products),
                 pagination: {
@@ -78,9 +78,9 @@ class ProductController {
                     totalProducts,
                     limit,
                     hasNextPage,
-                    hasPreviousPage,
+                    hasPrevPage,
                 },
-                filter: {
+                filters: {
                     category,
                     brand,
                     minPrice,
