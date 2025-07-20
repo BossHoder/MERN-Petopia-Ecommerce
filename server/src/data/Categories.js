@@ -159,6 +159,109 @@ const sampleCategories = [
         isPublished: true,
         sortOrder: 16,
     },
+
+    // MISSING DOG CATEGORIES
+    {
+        name: 'Dog Crates, Beds & Houses',
+        slug: 'dog-crates-beds-houses',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/dog-crates-beds-houses-icon.png',
+        description: 'Comfortable crates, beds, houses and sleeping solutions for dogs',
+        isPublished: true,
+        sortOrder: 17,
+    },
+    {
+        name: 'Dog Food Bowls & Waterers',
+        slug: 'dog-food-bowls-waterers',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/dog-food-bowls-waterers-icon.png',
+        description: 'Food bowls, water dispensers and feeding accessories for dogs',
+        isPublished: true,
+        sortOrder: 18,
+    },
+    {
+        name: 'Dog Shampoos & Grooming Products',
+        slug: 'dog-shampoos-grooming-products',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/dog-shampoos-grooming-products-icon.png',
+        description: 'Shampoos, conditioners, brushes and grooming supplies for dogs',
+        isPublished: true,
+        sortOrder: 19,
+    },
+
+    // MISSING CAT CATEGORIES
+    {
+        name: 'Cat Dry Food & Kibble',
+        slug: 'cat-dry-food-kibble',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-dry-food-kibble-icon.png',
+        description: 'Premium dry kibble and crunchy food for cats',
+        isPublished: true,
+        sortOrder: 20,
+    },
+    {
+        name: 'Cat Wet Food & Pate',
+        slug: 'cat-wet-food-pate',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-wet-food-pate-icon.png',
+        description: 'Delicious wet food, pate and canned meals for cats',
+        isPublished: true,
+        sortOrder: 21,
+    },
+    {
+        name: 'Cat Catnip & Snacks',
+        slug: 'cat-catnip-snacks',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-catnip-snacks-icon.png',
+        description: 'Catnip, treats and healthy snacks for cats',
+        isPublished: true,
+        sortOrder: 22,
+    },
+    {
+        name: 'Cat Toys & Teasers',
+        slug: 'cat-toys-teasers',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-toys-teasers-icon.png',
+        description: 'Interactive toys, teasers and play accessories for cats',
+        isPublished: true,
+        sortOrder: 23,
+    },
+    {
+        name: 'Cat Scratching Posts & Cat Trees',
+        slug: 'cat-scratching-posts-cat-trees',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-scratching-posts-cat-trees-icon.png',
+        description: 'Scratching posts, cat trees and climbing structures',
+        isPublished: true,
+        sortOrder: 24,
+    },
+    {
+        name: 'Cat Litter & Litter Boxes',
+        slug: 'cat-litter-litter-boxes',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-litter-litter-boxes-icon.png',
+        description: 'Cat litter, litter boxes and waste management supplies',
+        isPublished: true,
+        sortOrder: 25,
+    },
+    {
+        name: 'Cat Carriers & Travel Bags',
+        slug: 'cat-carriers-travel-bags',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-carriers-travel-bags-icon.png',
+        description: 'Safe and comfortable carriers for cat travel',
+        isPublished: true,
+        sortOrder: 26,
+    },
+    {
+        name: 'Cat Crates, Beds & Houses',
+        slug: 'cat-crates-beds-houses',
+        parentCategory: null, // Will be populated by seed script
+        iconUrl: 'https://example.com/icons/cat-crates-beds-houses-icon.png',
+        description: 'Comfortable beds, houses and resting places for cats',
+        isPublished: true,
+        sortOrder: 27,
+    },
 ];
 
 export default sampleCategories;

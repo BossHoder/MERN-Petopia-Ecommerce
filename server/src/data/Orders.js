@@ -13,9 +13,16 @@ const sampleOrders = [
             },
         ],
         shippingAddress: {
+            fullName: 'Nguyễn Văn Admin',
             address: '123 Nguyen Trai, Q1, HCM',
+            city: 'Hồ Chí Minh',
+            district: 'Quận 1',
+            ward: 'Phường Bến Nghé',
             phone: '0123456789',
         },
+        shippingPrice: 5.0,
+        taxPrice: 0,
+        discount: 0,
         totalAmount: 49.48,
         paymentMethod: 'bank_transfer',
         paymentResult: {

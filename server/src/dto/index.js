@@ -27,6 +27,9 @@ export * from './couponDto.js';
 // Notification DTOs
 export * from './notificationDto.js';
 
+// Review DTOs
+export * from './reviewDto.js';
+
 // Common DTO utilities
 export const createPaginationDto = (data, pagination) => {
     return {

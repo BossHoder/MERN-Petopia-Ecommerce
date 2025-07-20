@@ -1,4 +1,7 @@
 import Product from '../models/Product.js';
+import Category from '../models/Category.js';
+import User from '../models/User.js';
+import Review from '../models/Review.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
 import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
 import { productHelper, responseHelper } from '../helpers/productHelper.js';

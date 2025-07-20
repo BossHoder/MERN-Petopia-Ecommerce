@@ -7,6 +7,9 @@ import seedParentCategories from './parentCategorySeeder.js';
 import seedOrders from './orderSeeder.js';
 import seedCarts from './cartSeeder.js';
 import seedPaymentMethods from './paymentSeeder.js';
+import seedCoupons from './couponSeeder.js';
+import seedNotifications from './notificationSeeder.js';
+import seedReviews from './reviewSeeder.js';
 
 const runSeeders = async () => {
     try {
@@ -34,13 +37,25 @@ const runSeeders = async () => {
         console.log('\n👥 Step 4: Users');
         await seedUsers();
 
-        // Step 5: Seed carts (depends on users and products)
-        console.log('\n🛒 Step 5: Carts');
+        // Step 5: Seed coupons (independent)
+        console.log('\n🎫 Step 5: Coupons');
+        await seedCoupons();
+
+        // Step 6: Seed carts (depends on users and products)
+        console.log('\n🛒 Step 6: Carts');
         await seedCarts();
 
-        // Step 6: Seed orders (depends on users and products)
-        console.log('\n📋 Step 6: Orders');
+        // Step 7: Seed orders (depends on users and products)
+        console.log('\n📋 Step 7: Orders');
         await seedOrders();
+
+        // Step 8: Seed reviews (depends on users and products)
+        console.log('\n⭐ Step 8: Reviews');
+        await seedReviews();
+
+        // Step 9: Seed notifications (depends on users)
+        console.log('\n🔔 Step 9: Notifications');
+        await seedNotifications();
 
         console.log('\n🎉 Database seeding completed successfully!');
         console.log('\n📊 Summary:');
@@ -48,8 +63,11 @@ const runSeeders = async () => {
         console.log(`   • Categories: ${Object.keys(categoryMap).length}`);
         console.log(`   • Products: Seeded with category mappings`);
         console.log(`   • Users: Seeded`);
+        console.log(`   • Coupons: Seeded`);
         console.log(`   • Carts: Seeded`);
         console.log(`   • Orders: Seeded`);
+        console.log(`   • Reviews: Seeded`);
+        console.log(`   • Notifications: Seeded`);
         console.log(`   • Payment Methods: Seeded`);
     } catch (error) {
         console.error('❌ Error during seeding:', error);
