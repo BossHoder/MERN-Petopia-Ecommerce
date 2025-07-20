@@ -289,8 +289,14 @@ class ProductController {
             const { categorySlug } = req.params;
             const { page = 1, limit = 12, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
 
+            // Find category by slug first
+            const category = await Category.findOne({ slug: categorySlug, isPublished: true });
+            if (!category) {
+                return responseHelper.notFound(res, 'Category not found');
+            }
+
             const filter = {
-                category: categorySlug,
+                category: category._id, // Use ObjectId instead of slug
                 isPublished: true,
             };
 
@@ -312,6 +318,11 @@ class ProductController {
             const totalPages = Math.ceil(totalProducts / limit);
 
             return responseHelper.success(res, {
+                category: {
+                    name: category.name,
+                    slug: category.slug,
+                    description: category.description,
+                },
                 products: productsDto(products),
                 pagination: {
                     currentPage: page,
