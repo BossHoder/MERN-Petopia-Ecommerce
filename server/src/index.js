@@ -99,19 +99,12 @@ if (isProduction) {
     // Set static folder - serve React build files
     app.use(express.static(join(__dirname, '../../client/build')));
 
-    // Serve React app for any non-API routes
+    // IMPORTANT: Catch-all handler for React Router (must be LAST)
     app.get('*', (req, res) => {
-        // Skip API routes
-        if (req.path.startsWith('/api') || req.path.startsWith('/auth') || req.path.startsWith('/data')) {
-            return res.status(404).json({ message: 'API route not found' });
-        }
-
-        // Serve React index.html for all other routes
+        // Serve React index.html for all routes not handled above
         res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html'));
     });
-}
-
-// Port configuration - let Heroku assign port automatically
+} // Port configuration - let Heroku assign port automatically
 const port = process.env.PORT || (isProduction ? 80 : 5000);
 
 app.listen(port, '0.0.0.0', () => {

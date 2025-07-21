@@ -25,10 +25,9 @@ router.get('/health', (req, res) => {
         status: 'OK',
         message: 'Server is running',
         timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || 'development',
     });
 });
 
-// fallback 404 for API routes only - phải đặt cuối cùng
-router.use('*', (req, res) => res.status(404).json({ message: 'API route not found' }));
-
+// Note: No catch-all route here - let Express handle it in main app
 export default router;
