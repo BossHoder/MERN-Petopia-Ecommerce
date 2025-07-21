@@ -53,9 +53,6 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                     {/* Header */}
                     <div className="auth-header">
                         <h1 className="auth-title">Đăng ký</h1>
-                        <p className="auth-subtitle">
-                            Tạo tài khoản mới để trải nghiệm mua sắm tuyệt vời cùng thú cưng.
-                        </p>
                     </div>
 
                     <form onSubmit={formik.handleSubmit} noValidate className="auth-form">

@@ -52,15 +52,11 @@ const Login = ({ auth, loginUserWithEmail }) => {
                     {/* Header */}
                     <div className="auth-header">
                         <h1 className="auth-title">Đăng nhập</h1>
-                        <p className="auth-subtitle">
-                            Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục.
-                        </p>
                     </div>
 
                     <form onSubmit={formik.handleSubmit} noValidate className="auth-form">
                         {/* Social Login */}
                         <div className="social-login">
-                            <p className="social-title">Đăng nhập nhanh với</p>
                             <div className="social-buttons">
                                 <a className="social-btn facebook-btn" href={FACEBOOK_AUTH_LINK}>
                                     <svg
