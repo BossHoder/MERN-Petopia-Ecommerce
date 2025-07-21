@@ -96,13 +96,19 @@ app.get('/debug/static', (req, res) => {
 
 // Serve static assets if in production
 if (isProduction) {
-    // Set static folder
-    // nginx will handle this
-    // app.use(express.static(join(__dirname, '../../client/build')));
-    // app.get('*', (req, res) => {
-    //   // index is in /server/src so 2 folders up
-    //   res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html'));
-    // });
+    // Set static folder - serve React build files
+    app.use(express.static(join(__dirname, '../../client/build')));
+
+    // Serve React app for any non-API routes
+    app.get('*', (req, res) => {
+        // Skip API routes
+        if (req.path.startsWith('/api') || req.path.startsWith('/auth') || req.path.startsWith('/data')) {
+            return res.status(404).json({ message: 'API route not found' });
+        }
+
+        // Serve React index.html for all other routes
+        res.sendFile(resolve(__dirname, '../..', 'client', 'build', 'index.html'));
+    });
 }
 
 // Port configuration - let Heroku assign port automatically

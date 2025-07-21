@@ -19,11 +19,16 @@ router.get('/data/products', (req, res) => {
     res.json(products);
 });
 
-router.get('/', (req, res) => {
-    res.status(200).send('<h1>Server của bạn đang chạyyyy!</h1><p>Đây là trang chủ.</p>');
+// Health check endpoint
+router.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        message: 'Server is running',
+        timestamp: new Date().toISOString(),
+    });
 });
 
-// fallback 404 - phải đặt cuối cùng
-router.use('*', (req, res) => res.status(404).json('No route for this path'));
+// fallback 404 for API routes only - phải đặt cuối cùng
+router.use('*', (req, res) => res.status(404).json({ message: 'API route not found' }));
 
 export default router;
