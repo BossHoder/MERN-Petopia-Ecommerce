@@ -39,13 +39,62 @@
     },
     "products": {
         "title": "Products",
+        "bestsellers": "Best Sellers",
+        "featured": "Featured Products",
+        "viewAll": "View All Products",
+        "error": "Unable to load products. Please try again later.",
         "addToCart": "Add to Cart",
         "outOfStock": "Out of Stock",
+        "lowStock": "Only a few items left",
         "price": "Price",
         "description": "Description",
         "category": "Category",
         "brand": "Brand",
         "rating": "Rating"
+    },
+    "categories": {
+        "title": "Product Categories",
+        "products": "products",
+        "error": "Unable to load categories. Please try again later."
+    },
+    "hero": {
+        "title": "Everything Your Pet Needs - Just One Click Away!",
+        "subtitle": "Discover thousands of high-quality products for your beloved pets. From nutritious food to fun toys.",
+        "cta": "Shop Now"
+    },
+    "brandPromise": {
+        "title": "Why Choose Petopia?",
+        "subtitle": "Committed to bringing you and your pets the best shopping experience",
+        "safety": {
+            "title": "Safe & Quality",
+            "desc": "All products are rigorously quality tested"
+        },
+        "delivery": {
+            "title": "Fast Delivery",
+            "desc": "Nationwide delivery in 1-3 days"
+        },
+        "support": {
+            "title": "24/7 Support",
+            "desc": "Customer care team always ready to help"
+        },
+        "reviews": {
+            "title": "Positive Reviews",
+            "desc": "Thousands of satisfied and trusting customers"
+        }
+    },
+    "newsletter": {
+        "title": "Subscribe to Newsletter",
+        "description": "Get the latest promotions and pet care tips",
+        "placeholder": "Enter your email...",
+        "subscribe": "Subscribe",
+        "submitting": "Sending...",
+        "success": "Thank you for subscribing!"
+    },
+    "validation": {
+        "email": {
+            "required": "Email is required",
+            "invalid": "Invalid email"
+        }
     },
     "cart": {
         "title": "Shopping Cart",

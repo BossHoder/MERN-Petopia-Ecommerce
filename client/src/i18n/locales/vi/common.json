@@ -39,13 +39,62 @@
     },
     "products": {
         "title": "Sản phẩm",
+        "bestsellers": "Sản Phẩm Bán Chạy",
+        "featured": "Sản Phẩm Nổi Bật",
+        "viewAll": "Xem Tất Cả Sản Phẩm",
+        "error": "Không thể tải sản phẩm. Vui lòng thử lại sau.",
         "addToCart": "Thêm vào giỏ hàng",
         "outOfStock": "Hết hàng",
+        "lowStock": "Chỉ còn lại ít sản phẩm",
         "price": "Giá",
         "description": "Mô tả",
         "category": "Danh mục",
         "brand": "Thương hiệu",
         "rating": "Đánh giá"
+    },
+    "categories": {
+        "title": "Danh Mục Sản Phẩm",
+        "products": "sản phẩm",
+        "error": "Không thể tải danh mục. Vui lòng thử lại sau."
+    },
+    "hero": {
+        "title": "Mọi Thứ Thú Cưng Cần - Chỉ Một Cú Click!",
+        "subtitle": "Khám phá hàng ngàn sản phẩm chất lượng cao cho boss cưng của bạn. Từ thức ăn dinh dưỡng đến đồ chơi vui nhộn.",
+        "cta": "Mua Sắm Ngay"
+    },
+    "brandPromise": {
+        "title": "Tại Sao Chọn Petopia?",
+        "subtitle": "Cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn và thú cưng",
+        "safety": {
+            "title": "An Toàn & Chất Lượng",
+            "desc": "Tất cả sản phẩm được kiểm tra chất lượng nghiêm ngặt"
+        },
+        "delivery": {
+            "title": "Giao Hàng Nhanh",
+            "desc": "Giao hàng toàn quốc trong 1-3 ngày"
+        },
+        "support": {
+            "title": "Hỗ Trợ 24/7",
+            "desc": "Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ"
+        },
+        "reviews": {
+            "title": "Đánh Giá Tích Cực",
+            "desc": "Hàng ngàn khách hàng hài lòng và tin tưởng"
+        }
+    },
+    "newsletter": {
+        "title": "Đăng Ký Nhận Tin",
+        "description": "Nhận thông tin khuyến mãi và tips chăm sóc thú cưng mới nhất",
+        "placeholder": "Nhập email của bạn...",
+        "subscribe": "Đăng Ký",
+        "submitting": "Đang gửi...",
+        "success": "Cảm ơn bạn đã đăng ký!"
+    },
+    "validation": {
+        "email": {
+            "required": "Email là bắt buộc",
+            "invalid": "Email không hợp lệ"
+        }
     },
     "cart": {
         "title": "Giỏ hàng",

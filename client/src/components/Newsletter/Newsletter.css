@@ -1,0 +1,132 @@
+/* Newsletter Component Styles */
+.newsletter {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+}
+
+.newsletter-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.newsletter-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+}
+
+.newsletter-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-family: 'Poppins', 'Arial', sans-serif;
+}
+
+.newsletter-description {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.newsletter-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+.newsletter-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: white;
+    color: #1f2937;
+}
+
+.newsletter-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.newsletter-button {
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.newsletter-button:hover:not(:disabled) {
+    background: #111827;
+}
+
+.newsletter-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.newsletter-success {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 32px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.success-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    color: #10b981;
+}
+
+.error-message {
+    color: #fecaca;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .newsletter {
+        padding: 60px 0;
+    }
+
+    .newsletter-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+    }
+
+    .newsletter-title {
+        font-size: 2rem;
+    }
+
+    .form-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .newsletter-button {
+        width: 100%;
+    }
+}

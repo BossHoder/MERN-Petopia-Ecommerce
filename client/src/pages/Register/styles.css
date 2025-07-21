@@ -1,14 +1,19 @@
-.register {
-    display: flex;
-    justify-content: center;
+/* Import shared auth styles from Login */
+@import '../Login/styles.css';
+
+/* Register specific adjustments */
+.auth-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.register .container {
-    max-width: 400px;
-    flex: 1;
+/* Additional spacing for register form with more fields */
+.auth-card {
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
-.register .submit {
-    background-color: gray;
-    color: white;
+@media (max-width: 640px) {
+    .auth-card {
+        max-height: 95vh;
+    }
 }

@@ -1,0 +1,89 @@
+/* BrandPromise Component Styles */
+.brand-promise {
+    padding: 80px 0;
+    background: white;
+}
+
+.brand-promise-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.brand-promise-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.brand-promise-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    font-family: 'Poppins', 'Arial', sans-serif;
+}
+
+.brand-promise-subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.brand-promise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 32px;
+}
+
+.promise-card {
+    text-align: center;
+    padding: 32px 24px;
+    border-radius: 12px;
+    background: #f9fafb;
+    transition: transform 0.3s ease;
+}
+
+.promise-card:hover {
+    transform: translateY(-4px);
+}
+
+.promise-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.promise-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 12px;
+    font-family: 'Poppins', 'Arial', sans-serif;
+}
+
+.promise-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .brand-promise {
+        padding: 60px 0;
+    }
+
+    .brand-promise-title {
+        font-size: 2rem;
+    }
+
+    .brand-promise-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+    }
+
+    .promise-card {
+        padding: 24px 16px;
+    }
+}
