@@ -12,7 +12,7 @@ const Footer = () => {
                 <span className="username">{t('footer.copyright')}</span>
                 <span className="description">{t('footer.description')}</span>
                 <iframe
-                    src="https://ghbtns.com/github-btn.html?user=nemanjam&repo=mern-boilerplate&type=star&count=true&size=large"
+                    src="https://ghbtns.com/github-btn.html?user=BossHoder&repo=MERN-Petopia-Ecommerce&type=star&count=true&size=large"
                     frameBorder="0"
                     scrolling="0"
                     width="160px"
