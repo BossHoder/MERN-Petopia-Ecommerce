@@ -62,7 +62,11 @@ export const loginUserWithEmail = (formData, history) => async (dispatch, getSta
         // Lưu token vào localStorage
         localStorage.setItem('token', response.data.token);
 
-        history.push('/');
+        // Load user data sau khi login thành công
+        dispatch(loadMe());
+
+        // Navigate với React Router v6
+        history('/');
     } catch (err) {
         dispatch({
             type: LOGIN_WITH_EMAIL_FAIL,

@@ -1,18 +1,20 @@
 import React from 'react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
 import { useFormik } from 'formik';
 
 import { registerUserWithEmail } from '../../store/actions/registerActions';
-import { registerSchema } from './validation';
+import { getRegisterSchema } from './validation';
 import { useI18n } from '../../hooks/useI18n';
-import './styles.css';
 
-const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail }) => {
+const Register = ({ auth, register, registerUserWithEmail }) => {
     const { t } = useI18n();
     const navigate = useNavigate();
+
+    const [error, setError] = React.useState(null);
+    const isLoading = auth?.isLoading || false;
 
     const formik = useFormik({
         initialValues: {
@@ -21,18 +23,21 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
             email: '',
             password: '',
         },
-        validationSchema: registerSchema,
-        onSubmit: (values) => {
-            registerUserWithEmail(values, navigate);
+        validationSchema: getRegisterSchema(t),
+        onSubmit: async (values) => {
+            setError(null);
+            try {
+                await registerUserWithEmail(values);
+                navigate('/'); // or wherever you want to redirect
+            } catch (err) {
+                setError(err.message || t('auth.register.error'));
+            }
         },
     });
-
-    if (auth.isAuthenticated) return <Navigate to="/" replace />;
 
     return (
         <div className="auth-page">
             <div className="auth-container">
-                {/* Back to Home Link */}
                 <div className="auth-back">
                     <Link to="/" className="back-link">
                         <svg
@@ -45,21 +50,17 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                         >
                             <polyline points="15,18 9,12 15,6"></polyline>
                         </svg>
-                        Về Trang chủ
+                        {t('navigation.home')}
                     </Link>
                 </div>
-
                 <div className="auth-card">
-                    {/* Header */}
                     <div className="auth-header">
-                        <h1 className="auth-title">Đăng ký</h1>
+                        <h1 className="auth-title">{t('auth.register.title')}</h1>
                     </div>
-
                     <form onSubmit={formik.handleSubmit} noValidate className="auth-form">
-                        {/* Form Fields */}
                         <div className="form-group">
                             <label htmlFor="name" className="form-label">
-                                Họ và tên
+                                {t('auth.register.name')}
                             </label>
                             <input
                                 id="name"
@@ -68,7 +69,7 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 className={`form-input ${
                                     formik.touched.name && formik.errors.name ? 'error' : ''
                                 }`}
-                                placeholder="Nhập họ và tên của bạn"
+                                placeholder={t('auth.register.namePlaceholder')}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.name}
@@ -77,10 +78,9 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 <p className="error-message">{formik.errors.name}</p>
                             )}
                         </div>
-
                         <div className="form-group">
                             <label htmlFor="username" className="form-label">
-                                Tên đăng nhập
+                                {t('auth.register.username')}
                             </label>
                             <input
                                 id="username"
@@ -89,7 +89,7 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 className={`form-input ${
                                     formik.touched.username && formik.errors.username ? 'error' : ''
                                 }`}
-                                placeholder="Chọn tên đăng nhập duy nhất"
+                                placeholder={t('auth.register.usernamePlaceholder')}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.username}
@@ -98,10 +98,9 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 <p className="error-message">{formik.errors.username}</p>
                             )}
                         </div>
-
                         <div className="form-group">
                             <label htmlFor="email" className="form-label">
-                                Email
+                                {t('auth.register.email')}
                             </label>
                             <input
                                 id="email"
@@ -110,7 +109,7 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 className={`form-input ${
                                     formik.touched.email && formik.errors.email ? 'error' : ''
                                 }`}
-                                placeholder="Nhập địa chỉ email của bạn"
+                                placeholder={t('auth.register.emailPlaceholder')}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.email}
@@ -119,10 +118,9 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 <p className="error-message">{formik.errors.email}</p>
                             )}
                         </div>
-
                         <div className="form-group">
                             <label htmlFor="password" className="form-label">
-                                Mật khẩu
+                                {t('auth.register.password')}
                             </label>
                             <input
                                 id="password"
@@ -131,7 +129,7 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 className={`form-input ${
                                     formik.touched.password && formik.errors.password ? 'error' : ''
                                 }`}
-                                placeholder="Tạo mật khẩu mạnh"
+                                placeholder={t('auth.register.passwordPlaceholder')}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.password}
@@ -140,8 +138,6 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 <p className="error-message">{formik.errors.password}</p>
                             )}
                         </div>
-
-                        {/* Register Error */}
                         {error && (
                             <div className="auth-error">
                                 <svg
@@ -159,8 +155,6 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                 {error}
                             </div>
                         )}
-
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             className={`auth-submit-btn ${isLoading ? 'loading' : ''}`}
@@ -179,19 +173,17 @@ const Register = ({ auth, register: { isLoading, error }, registerUserWithEmail 
                                     >
                                         <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c.93 0 1.82.14 2.66.4" />
                                     </svg>
-                                    Đang tạo tài khoản...
+                                    {t('auth.register.submitting', 'Đang tạo tài khoản...')}
                                 </>
                             ) : (
-                                'Tạo tài khoản'
+                                t('auth.register.submit')
                             )}
                         </button>
-
-                        {/* Footer */}
                         <div className="auth-footer">
                             <p>
-                                Đã có tài khoản?{' '}
+                                {t('auth.register.hasAccount')}{' '}
                                 <Link to="/login" className="auth-link">
-                                    Đăng nhập ngay
+                                    {t('auth.login.title')}
                                 </Link>
                             </p>
                         </div>

@@ -102,7 +102,6 @@ const Profile = ({
     };
 
     const formik = useFormik({
-        enableReinitialize: true,
         initialValues: {
             id: '',
             name: '',
@@ -120,13 +119,13 @@ const Profile = ({
                 const formData = new FormData();
 
                 // Only append avatar if a new one was selected
+                // Only append avatar if a new one was selected
                 if (avatar) {
                     formData.append('avatar', avatar);
                 }
 
                 formData.append('name', values.name || '');
                 formData.append('username', values.username || '');
-
                 // Only append password for email providers and if password is provided
                 if (
                     profile.provider === 'email' &&

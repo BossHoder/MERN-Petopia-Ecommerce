@@ -55,9 +55,7 @@ const CategoryCards = () => {
     return (
         <section className="category-cards">
             <div className="category-cards-container">
-                <h2 className="category-cards-title">
-                    {t('categories.title', 'Danh Mục Sản Phẩm')}
-                </h2>
+                <h2 className="category-cards-title">{t('categories.title')}</h2>
 
                 <div className="category-cards-grid">
                     {featuredCategories.map((category) => (
@@ -70,12 +68,12 @@ const CategoryCards = () => {
                                 <div className="category-icon">
                                     {getCategoryIcon(category.slug)}
                                 </div>
-                                <h3 className="category-name">{category.name}</h3>
-                                <p className="category-description">{category.description}</p>
+                                <h3 className="category-name">
+                                    {t(`categoriesList.${category.slug}`, category.name)}
+                                </h3>
                                 {category.productCount > 0 && (
                                     <span className="category-count">
-                                        {category.productCount}{' '}
-                                        {t('categories.products', 'sản phẩm')}
+                                        {category.productCount} {t('categories.products')}
                                     </span>
                                 )}
                             </div>
