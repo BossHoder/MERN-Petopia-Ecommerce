@@ -1,111 +1,127 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
-import { logout } from '../../store/actions/authActions';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logOutUser } from '../../store/actions/authActions';
+import { useI18n } from '../../hooks/useI18n';
 import LanguageSelector from '../LanguageSelector';
-import SearchBox from '../SearchBox';
+import SearchBox from '../SearchBox/SearchBox';
 import './styles.css';
 
 const AppNavbar = () => {
-    const { t } = useTranslation('common');
+    const { t } = useI18n('common');
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { isAuthenticated, user } = useSelector((state) => state.auth);
-    const { cartItems } = useSelector((state) => state.cart);
+    const { cartItems = [] } = useSelector((state) => state.cart);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logOutUser(navigate));
+        setDropdownOpen(false);
     };
+
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const authLinks = (
         <>
-            {user && user.role === 'admin' && (
-                <LinkContainer to="/admin">
-                    <Nav.Link>{t('navbar.admin')}</Nav.Link>
-                </LinkContainer>
+            {user?.role === 'admin' && (
+                <Link to="/admin" className="nav-link">
+                    {t('navigation.admin')}
+                </Link>
             )}
-            <LinkContainer to="/cart">
-                <Nav.Link>
-                    <i className="fas fa-shopping-cart"></i>
-                    {cartItems.length > 0 && (
-                        <span className="badge badge-pill badge-danger">
-                            {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                        </span>
-                    )}
-                </Nav.Link>
-            </LinkContainer>
-
-            <NavDropdown
-                title={
-                    <img
-                        src={user?.avatar || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
-                        alt="User Avatar"
-                        className="avatar"
-                    />
-                }
-                id="user-menu-dropdown"
-                align="end"
-                className="avatar-dropdown"
-            >
-                <LinkContainer to="/profile">
-                    <NavDropdown.Item>{t('navbar.profile')}</NavDropdown.Item>
-                </LinkContainer>
-                <LinkContainer to="/coupons">
-                    <NavDropdown.Item>{t('navbar.coupons')}</NavDropdown.Item>
-                </LinkContainer>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout}>
-                    <i className="fas fa-sign-out-alt me-2"></i>
-                    {t('navbar.logout')}
-                </NavDropdown.Item>
-            </NavDropdown>
+            <Link to="/cart" className="nav-link cart-icon">
+                <i className="fas fa-shopping-cart"></i>
+                {cartItems.length > 0 && (
+                    <span className="badge">
+                        {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                    </span>
+                )}
+            </Link>
+            <div className="avatar-container" ref={dropdownRef}>
+                <img
+                    src={user?.avatar || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
+                    alt="User Avatar"
+                    className="avatar"
+                    onClick={toggleDropdown}
+                />
+                {dropdownOpen && (
+                    <div className="avatar-dropdown-menu">
+                        <Link
+                            to="/profile"
+                            className="dropdown-item"
+                            onClick={() => setDropdownOpen(false)}
+                        >
+                            {t('navigation.profile')}
+                        </Link>
+                        <Link
+                            to="/coupons"
+                            className="dropdown-item"
+                            onClick={() => setDropdownOpen(false)}
+                        >
+                            {t('navigation.coupons')}
+                        </Link>
+                        <div className="dropdown-divider"></div>
+                        <button onClick={handleLogout} className="dropdown-item">
+                            <i className="fas fa-sign-out-alt me-2"></i>
+                            {t('navigation.logout')}
+                        </button>
+                    </div>
+                )}
+            </div>
         </>
     );
 
     const guestLinks = (
         <>
-            <LinkContainer to="/login">
-                <Nav.Link>{t('navbar.login')}</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/register">
-                <Nav.Link>{t('navbar.register')}</Nav.Link>
-            </LinkContainer>
+            <Link to="/login" className="nav-link">
+                {t('navigation.login')}
+            </Link>
+            <Link to="/register" className="nav-link">
+                {t('navigation.register')}
+            </Link>
         </>
     );
 
     return (
-        <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
-            <Container>
-                <LinkContainer to="/">
-                    <Navbar.Brand>
-                        <img
-                            src="/logo.png"
-                            alt="Petopia"
-                            height="30"
-                            className="d-inline-block align-top"
-                        />{' '}
-                        Petopia
-                    </Navbar.Brand>
-                </LinkContainer>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mx-auto">
+        <nav className="navbar-main">
+            <div className="navbar-container">
+                <div className="navbar-left">
+                    <Link to="/" className="navbar-logo">
+                        <img src="/logo192.png" alt="Petopia" height="30" />
+                        <span>Petopia</span>
+                    </Link>
+                    <div className="navbar-links">
+                        <Link to="/" className="nav-link">
+                            {t('navigation.home')}
+                        </Link>
+                        <Link to="/products" className="nav-link">
+                            {t('navigation.products')}
+                        </Link>
+                    </div>
+                </div>
+                <div className="navbar-right">
+                    <div className="navbar-search">
                         <SearchBox />
-                    </Nav>
-                    <Nav className="align-items-center">
-                        <LinkContainer to="/">
-                            <Nav.Link>{t('navbar.home')}</Nav.Link>
-                        </LinkContainer>
-                        <LinkContainer to="/products">
-                            <Nav.Link>{t('navbar.products')}</Nav.Link>
-                        </LinkContainer>
-                        {isAuthenticated ? authLinks : guestLinks}
-                        <LanguageSelector />
-                    </Nav>
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+                    </div>
+                    <LanguageSelector />
+                    {isAuthenticated ? authLinks : guestLinks}
+                </div>
+            </div>
+        </nav>
     );
 };
 
