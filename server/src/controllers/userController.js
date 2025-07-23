@@ -1,6 +1,7 @@
 import User, { hashPassword } from '../models/User.js';
 import UserService from '../services/userService.js';
 import { existsSync } from 'fs';
+// import { addressDto, addressesDto } from '../dto/addressDto.js'; // Tạm thời bỏ qua
 
 // ===========================================
 // USER CONTROLLER
@@ -8,6 +9,27 @@ import { existsSync } from 'fs';
 // This controller handles HTTP requests and responses for user-related operations
 
 class UserController {
+    constructor() {
+        this.updateProfile = this.updateProfile.bind(this);
+        this.getCurrentUser = this.getCurrentUser.bind(this);
+        this.getUserByUsername = this.getUserByUsername.bind(this);
+        this.getUsers = this.getUsers.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+        this.addToWishlist = this.addToWishlist.bind(this);
+        this.removeFromWishlist = this.removeFromWishlist.bind(this);
+        this.getWishlist = this.getWishlist.bind(this);
+        this.getAddresses = this.getAddresses.bind(this);
+        this.addAddress = this.addAddress.bind(this);
+        this.updateAddress = this.updateAddress.bind(this);
+        this.removeAddress = this.removeAddress.bind(this);
+        this.setDefaultAddress = this.setDefaultAddress.bind(this);
+        this.getUserStats = this.getUserStats.bind(this);
+        this.updatePreferences = this.updatePreferences.bind(this);
+        this.getUserActivity = this.getUserActivity.bind(this);
+        this.bulkUpdateUsers = this.bulkUpdateUsers.bind(this);
+        this.reseedDatabase = this.reseedDatabase.bind(this);
+    }
+
     // Update user profile
     async updateProfile(req, res, next) {
         try {
@@ -276,6 +298,40 @@ class UserController {
     // ADDRESS METHODS
     // ===========================================
 
+    // GET all addresses for a user
+    async getAddresses(req, res) {
+        try {
+            const { id: paramId } = req.params;
+
+            console.log('--- DEBUGGING /api/users/:id/addresses ---');
+            console.log('ID from Token (req.user.id):', req.user.id, `(Type: ${typeof req.user.id})`);
+            console.log('ID from URL (paramId):', paramId, `(Type: ${typeof paramId})`);
+
+            if (req.user.id.toString() !== paramId.toString() && req.user.role !== 'ADMIN') {
+                console.log('PERMISSION DENIED: IDs do not match.');
+                return res.status(403).json({ message: 'Forbidden: You can only view your own addresses.' });
+            }
+            console.log('PERMISSION GRANTED.');
+
+            const user = await User.findById(paramId).select('addresses');
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Addresses fetched successfully',
+                data: {
+                    addresses: user.addresses,
+                },
+            });
+        } catch (error) {
+            console.error('Error in getAddresses:', error);
+            res.status(500).json({ message: 'Server error while fetching addresses' });
+        }
+    }
+
     // Add new address
     async addAddress(req, res) {
         try {
@@ -472,7 +528,13 @@ class UserController {
 
     // Check if user has permission to access resource
     _checkUserPermission(req) {
-        return req.user.id === req.params.id || req.user.role === 'ADMIN';
+        console.log('--- DEBUGGING _checkUserPermission ---');
+        console.log('ID from Token (req.user.id):', req.user.id, `(Type: ${typeof req.user.id})`);
+        console.log('ID from URL (req.params.id):', req.params.id, `(Type: ${typeof req.params.id})`);
+
+        const hasPermission = req.user.id.toString() === req.params.id.toString() || req.user.role === 'ADMIN';
+        console.log('Permission result:', hasPermission);
+        return hasPermission;
     }
 
     // Check if user is admin

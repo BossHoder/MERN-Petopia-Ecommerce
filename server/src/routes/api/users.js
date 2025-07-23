@@ -6,13 +6,11 @@ import upload from '../../utils/uploadConfig.js';
 
 const router = Router();
 
-//`checkit`, which is probably the option I'd suggest if  `validatem`
+// Các route cụ thể nên được đặt trước các route có tham số động như /:id hay /:username
 
-router.put('/:id', [requireJwtAuth, upload.single('avatar')], userController.updateProfile);
-
+// Route đặc biệt
 router.get('/reseed', userController.reseedDatabase);
-
-// Development only - promote current user to admin
+router.get('/me', requireJwtAuth, userController.getCurrentUser);
 router.post('/promote-admin', requireJwtAuth, (req, res) => {
     if (process.env.NODE_ENV === 'production') {
         return res.status(403).json({ message: 'Not allowed in production' });
@@ -24,58 +22,29 @@ router.post('/promote-admin', requireJwtAuth, (req, res) => {
         .then(() => res.json({ message: 'User promoted to admin', user: req.user }))
         .catch((err) => res.status(500).json({ message: err.message }));
 });
+router.put('/bulk-update', requireJwtAuth, userController.bulkUpdateUsers);
 
-router.get('/me', requireJwtAuth, userController.getCurrentUser);
-
-router.get('/:username', requireJwtAuth, userController.getUserByUsername);
-
-router.get('/', [requireJwtAuth, requireAdmin], userController.getUsers);
-
-router.delete('/:id', requireJwtAuth, userController.deleteUser);
-
-// ===========================================
-// WISHLIST ENDPOINTS
-// ===========================================
-
-// Add item to wishlist
-router.post('/:id/wishlist', requireJwtAuth, userController.addToWishlist);
-
-// Remove item from wishlist
-router.delete('/:id/wishlist/:productId', requireJwtAuth, userController.removeFromWishlist);
-
-// Get user's wishlist
-router.get('/:id/wishlist', requireJwtAuth, userController.getWishlist);
-
-// ===========================================
-// ADDRESS ENDPOINTS
-// ===========================================
-
-// Add new address
+// Routes cho ADDRESSES (có /:id/)
+router.get('/:id/addresses', requireJwtAuth, userController.getAddresses);
 router.post('/:id/addresses', requireJwtAuth, userController.addAddress);
-
-// Update address
 router.put('/:id/addresses/:addressId', requireJwtAuth, userController.updateAddress);
-
-// Remove address
 router.delete('/:id/addresses/:addressId', requireJwtAuth, userController.removeAddress);
-
-// Set default address
 router.put('/:id/addresses/:addressId/default', requireJwtAuth, userController.setDefaultAddress);
 
-// ===========================================
-// USER STATS & ADMIN ENDPOINTS
-// ===========================================
+// Routes cho WISHLIST (có /:id/)
+router.post('/:id/wishlist', requireJwtAuth, userController.addToWishlist);
+router.delete('/:id/wishlist/:productId', requireJwtAuth, userController.removeFromWishlist);
+router.get('/:id/wishlist', requireJwtAuth, userController.getWishlist);
 
-// Get user statistics
+// Routes cho STATS & PREFERENCES (có /:id/)
 router.get('/:id/stats', requireJwtAuth, userController.getUserStats);
-
-// Update user preferences
 router.put('/:id/preferences', requireJwtAuth, userController.updatePreferences);
-
-// Admin: Get user activity
 router.get('/:id/activity', requireJwtAuth, userController.getUserActivity);
 
-// Admin: Bulk update users
-router.put('/bulk-update', requireJwtAuth, userController.bulkUpdateUsers);
+// Các route chung chung nên đặt cuối cùng
+router.get('/', [requireJwtAuth, requireAdmin], userController.getUsers);
+router.get('/:username', requireJwtAuth, userController.getUserByUsername); // Route này sẽ không bắt các route có /addresses nữa
+router.put('/:id', [requireJwtAuth, upload.single('avatar')], userController.updateProfile);
+router.delete('/:id', requireJwtAuth, userController.deleteUser);
 
 export default router;
