@@ -15,9 +15,11 @@ const createOrder = asyncHandler(async (req, res) => {
     const order = new Order({
         user: req.user.id,
         orderItems: orderItems.map((item) => ({
-            ...item,
-            product: item._id,
-            _id: undefined, // Remove original _id from cart item
+            name: item.product.name,
+            quantity: item.quantity,
+            image: item.product.images && item.product.images.length > 0 ? item.product.images[0] : '/placeholder.jpg',
+            price: item.price,
+            product: item.product._id, // Sửa ở đây
         })),
         shippingAddress,
         paymentMethod,
@@ -27,12 +29,21 @@ const createOrder = asyncHandler(async (req, res) => {
         totalPrice,
     });
 
-    const createdOrder = await order.save();
-
-    res.status(201).json({
-        success: true,
-        data: createdOrder,
-    });
+    try {
+        const createdOrder = await order.save();
+        res.status(201).json({
+            success: true,
+            data: createdOrder,
+        });
+    } catch (error) {
+        // Log the full validation error to the backend console
+        console.error('Error saving order:', error);
+        res.status(400).json({
+            message: 'Error creating order. Check server logs for details.',
+            error: error.message,
+            details: error.errors,
+        });
+    }
 });
 
 // @desc    Get logged in user's orders

@@ -225,7 +225,7 @@ reviewSchema.methods.updateStatus = function (status, moderationNotes = '') {
 // STATIC METHODS
 // ===========================================
 // Get reviews for a product with pagination
-reviewSchema.statics.getProductReviews = function (productId, options = {}) {
+reviewSchema.statics.getProductReviews = async function (productIdentifier, options = {}) {
     const {
         page = 1,
         limit = 10,
@@ -235,8 +235,22 @@ reviewSchema.statics.getProductReviews = function (productId, options = {}) {
         verifiedOnly = false,
     } = options;
 
+    // Find the product by ID or slug to get its ObjectId
+    const Product = mongoose.model('Product');
+    const product = await Product.findOne({
+        $or: [
+            { _id: productIdentifier.match(/^[0-9a-fA-F]{24}$/) ? productIdentifier : null },
+            { slug: productIdentifier },
+        ],
+    }).lean();
+
+    // If product doesn't exist, return empty array
+    if (!product) {
+        return [];
+    }
+
     const query = {
-        product: productId,
+        product: product._id, // Use the ObjectId of the found product
         status: 'approved',
         isVisible: true,
     };

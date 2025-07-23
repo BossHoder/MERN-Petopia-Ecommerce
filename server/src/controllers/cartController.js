@@ -25,38 +25,69 @@ const getCart = asyncHandler(async (req, res) => {
 // @route   POST /api/cart
 // @access  Private
 const addItemToCart = asyncHandler(async (req, res) => {
-    const { productId, quantity } = req.body;
+    const { productId: productIdentifier, quantity } = req.body; // Rename for clarity
     const userId = req.user.id;
 
-    const product = await Product.findById(productId);
+    // Validate quantity
+    if (quantity <= 0) {
+        res.status(400);
+        throw new Error('Quantity must be a positive number.');
+    }
+
+    // Find product by ID or Slug
+    const product = await Product.findOne({
+        $or: [
+            { _id: productIdentifier.match(/^[0-9a-fA-F]{24}$/) ? productIdentifier : null },
+            { slug: productIdentifier },
+        ],
+    });
+
     if (!product) {
         res.status(404);
         throw new Error('Product not found');
     }
 
+    if (product.stockQuantity < quantity) {
+        res.status(400);
+        throw new Error('Not enough product in stock');
+    }
+
     let cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
+        // If no cart, create a new one
         cart = await Cart.create({
             user: userId,
-            items: [{ product: productId, quantity, price: product.price }],
+            items: [{ product: product._id, quantity, price: product.price }],
         });
     } else {
-        const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+        // If cart exists, find the item using the product's actual ObjectId
+        const itemIndex = cart.items.findIndex((item) => item.product.toString() === product._id.toString());
 
         if (itemIndex > -1) {
-            cart.items[itemIndex].quantity += quantity;
+            // If item exists, update quantity
+            const newQuantity = cart.items[itemIndex].quantity + quantity;
+            if (product.stockQuantity < newQuantity) {
+                res.status(400);
+                throw new Error('Not enough product in stock for the updated quantity');
+            }
+            cart.items[itemIndex].quantity = newQuantity;
         } else {
-            cart.items.push({ product: productId, quantity, price: product.price });
+            // If item does not exist, add it
+            cart.items.push({ product: product._id, quantity, price: product.price });
         }
         await cart.save();
     }
 
-    // Populate product details for the response
-    await cart.populate('items.product', 'name price image');
+    // Always populate product details before sending the response
+    await cart.populate({
+        path: 'items.product',
+        select: 'name images price stockQuantity',
+    });
 
     res.status(201).json({
         success: true,
+        message: 'Product added to cart successfully.',
         data: cart,
     });
 });

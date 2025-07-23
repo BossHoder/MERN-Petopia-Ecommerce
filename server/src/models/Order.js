@@ -14,10 +14,10 @@ const OrderItemSchema = new Schema({
 });
 
 const ShippingAddressSchema = new Schema({
-    address: { type: String, required: true },
-    city: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true },
+    address: { type: String },
+    city: { type: String },
+    postalCode: { type: String },
+    country: { type: String },
 });
 
 const PaymentResultSchema = new Schema({
@@ -33,6 +33,10 @@ const OrderSchema = new Schema(
             type: Schema.Types.ObjectId,
             required: true,
             ref: 'User',
+        },
+        orderNumber: {
+            type: String,
+            unique: true,
         },
         orderItems: [OrderItemSchema],
         shippingAddress: ShippingAddressSchema,
@@ -82,6 +86,17 @@ const OrderSchema = new Schema(
         timestamps: true,
     },
 );
+
+// Pre-save hook to generate a unique order number
+OrderSchema.pre('save', async function (next) {
+    if (this.isNew && !this.orderNumber) {
+        const lastOrder = await this.constructor.findOne({}, {}, { sort: { createdAt: -1 } });
+        const lastOrderNumber = lastOrder && lastOrder.orderNumber ? parseInt(lastOrder.orderNumber.slice(1)) : 0;
+        const newOrderNumber = lastOrderNumber + 1;
+        this.orderNumber = 'D' + String(newOrderNumber).padStart(6, '0');
+    }
+    next();
+});
 
 const Order = mongoose.model('Order', OrderSchema);
 

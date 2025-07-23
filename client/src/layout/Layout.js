@@ -10,9 +10,6 @@ const Layout = ({ children }) => {
     return (
         <>
             <Navbar />
-            <div className="language-selector-container">
-                <LanguageSelector />
-            </div>
             <div className="container">{children}</div>
             <Footer />
         </>

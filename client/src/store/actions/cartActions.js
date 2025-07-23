@@ -22,21 +22,27 @@ export const getCart = () => async (dispatch, getState) => {
 
 // Add item to cart
 export const addToCart = (productId, quantity) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: types.CART_LOADING });
+    // Trả về một Promise để có thể .then() trong component
+    return new Promise(async (resolve, reject) => {
+        try {
+            dispatch({ type: types.CART_LOADING });
 
-        const { data } = await api.post('/api/cart', { productId, quantity });
+            const { data } = await api.post('/api/cart', { productId, quantity });
 
-        dispatch({
-            type: types.ADD_TO_CART_SUCCESS,
-            payload: data.data,
-        });
-    } catch (error) {
-        dispatch({
-            type: types.ADD_TO_CART_FAIL,
-            payload: error.response?.data?.message || error.message,
-        });
-    }
+            dispatch({
+                type: types.ADD_TO_CART_SUCCESS,
+                payload: data.data,
+            });
+            resolve(); // Resolve khi thành công
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            dispatch({
+                type: types.ADD_TO_CART_FAIL,
+                payload: errorMessage,
+            });
+            reject(errorMessage); // Reject khi có lỗi
+        }
+    });
 };
 
 // Remove item from cart

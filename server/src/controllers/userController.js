@@ -321,15 +321,9 @@ class UserController {
         try {
             const { id: paramId } = req.params;
 
-            console.log('--- DEBUGGING /api/users/:id/addresses ---');
-            console.log('ID from Token (req.user.id):', req.user.id, `(Type: ${typeof req.user.id})`);
-            console.log('ID from URL (paramId):', paramId, `(Type: ${typeof paramId})`);
-
             if (req.user.id.toString() !== paramId.toString() && req.user.role !== 'ADMIN') {
-                console.log('PERMISSION DENIED: IDs do not match.');
                 return res.status(403).json({ message: 'Forbidden: You can only view your own addresses.' });
             }
-            console.log('PERMISSION GRANTED.');
 
             const user = await User.findById(paramId).select('addresses');
 
@@ -546,12 +540,7 @@ class UserController {
 
     // Check if user has permission to access resource
     _checkUserPermission(req) {
-        console.log('--- DEBUGGING _checkUserPermission ---');
-        console.log('ID from Token (req.user.id):', req.user.id, `(Type: ${typeof req.user.id})`);
-        console.log('ID from URL (req.params.id):', req.params.id, `(Type: ${typeof req.params.id})`);
-
         const hasPermission = req.user.id.toString() === req.params.id.toString() || req.user.role === 'ADMIN';
-        console.log('Permission result:', hasPermission);
         return hasPermission;
     }
 

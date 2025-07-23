@@ -5,7 +5,7 @@ import { createOrder } from '../../store/actions/orderActions';
 import { getAddresses, addAddress } from '../../store/actions/addressActions';
 import { ORDER_CREATE_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
-import Message from '../../components/Message/Message';
+import Notification from '../../components/Notification/Notification'; // Sửa import
 import './Checkout.css';
 
 const Checkout = () => {
@@ -21,9 +21,9 @@ const Checkout = () => {
         country: 'Vietnam',
     });
 
-    const { userInfo } = useSelector((state) => state.auth);
+    const { me: userInfo } = useSelector((state) => state.auth); // Sửa cho nhất quán
     const { items: cartItems } = useSelector((state) => state.cart);
-    const { addresses, loading: addressLoading } = useSelector((state) => state.addresses);
+    const { addresses, loading: addressLoading } = useSelector((state) => state.address); // Sửa từ addresses thành address
     const {
         order,
         success,
@@ -37,16 +37,28 @@ const Checkout = () => {
     const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
     useEffect(() => {
+        // Nếu không có thông tin user, chuyển đến trang đăng nhập
         if (!userInfo) {
             navigate('/login?redirect=/checkout');
-        } else {
-            dispatch(getAddresses());
-            if (success) {
-                dispatch({ type: ORDER_CREATE_RESET });
-                navigate(`/order/${order._id}`);
-            }
+            return;
         }
-    }, [navigate, userInfo, dispatch, success, order]);
+
+        // Nếu tạo đơn hàng thành công, reset state và chuyển đến trang chi tiết đơn hàng
+        if (success) {
+            dispatch({ type: ORDER_CREATE_RESET });
+            navigate(`/order/${order._id}`);
+            return;
+        }
+
+        // Nếu giỏ hàng rỗng, không cho ở lại trang checkout, chuyển về trang chủ
+        if (cartItems.length === 0 && !orderLoading) {
+            navigate('/');
+            return;
+        }
+
+        // Lấy danh sách địa chỉ đã lưu
+        dispatch(getAddresses());
+    }, [navigate, userInfo, dispatch, success, order, cartItems, orderLoading]);
 
     const handleAddressChange = (e) => {
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
@@ -68,6 +80,10 @@ const Checkout = () => {
     };
 
     const placeOrderHandler = () => {
+        if (cartItems.length === 0) {
+            alert('Your cart is empty. Cannot place order.');
+            return;
+        }
         dispatch(
             createOrder({
                 orderItems: cartItems,
@@ -85,14 +101,12 @@ const Checkout = () => {
         <div className="checkout-container">
             <h1>Checkout</h1>
             {orderLoading && <Loader />}
-            {error && <Message type="error">{error}</Message>}
-
+            {error && <Notification type="error">{error}</Notification>} {/* Sửa component */}
             <div className="checkout-steps">
                 <div className={step >= 1 ? 'step active' : 'step'}>Shipping</div>
                 <div className={step >= 2 ? 'step active' : 'step'}>Payment</div>
                 <div className={step >= 3 ? 'step active' : 'step'}>Place Order</div>
             </div>
-
             <div className="checkout-content">
                 <div className="checkout-form">
                     {step === 1 && (

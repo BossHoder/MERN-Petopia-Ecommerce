@@ -100,9 +100,11 @@ export const getProductById = (id) => async (dispatch) => {
             },
         });
     } catch (error) {
+        const errorMessage =
+            error.response?.data?.message || 'Failed to fetch product. Please try again.';
         dispatch({
             type: GET_PRODUCT_BY_ID_FAIL,
-            payload: error.response?.data?.message || 'Failed to fetch product',
+            payload: errorMessage,
         });
     }
 };

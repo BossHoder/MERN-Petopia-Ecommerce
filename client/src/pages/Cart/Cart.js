@@ -10,7 +10,7 @@ const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { userInfo } = useSelector((state) => state.auth);
+    const { me: userInfo } = useSelector((state) => state.auth); // Sửa từ userInfo thành me
     const { items, loading, error } = useSelector((state) => state.cart);
 
     useEffect(() => {

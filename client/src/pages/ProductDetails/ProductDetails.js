@@ -6,7 +6,7 @@ import { getProductReviews, addProductReview } from '../../store/actions/reviewA
 import { addToCart } from '../../store/actions/cartActions';
 import { ADD_REVIEW_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
-import Message from '../../components/Message/Message';
+import Notification from '../../components/Notification/Notification';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
@@ -18,6 +18,10 @@ const ProductDetails = () => {
     const [rating, setRating] = useState(0);
     const [title, setTitle] = useState('');
     const [comment, setComment] = useState('');
+
+    // State for cart feedback
+    const [addToCartSuccess, setAddToCartSuccess] = useState(false);
+    const [addToCartError, setAddToCartError] = useState('');
 
     // Selectors for various parts of the state
     const { userInfo } = useSelector((state) => state.auth);
@@ -50,8 +54,20 @@ const ProductDetails = () => {
     }, [dispatch, productId, reviewSuccess]);
 
     const addToCartHandler = () => {
-        dispatch(addToCart(productId, quantity));
-        alert('Product added to cart!');
+        setAddToCartError('');
+        setAddToCartSuccess(false);
+        // Dispatch the action and handle success/error
+        dispatch(addToCart(productId, quantity))
+            .then(() => {
+                setAddToCartSuccess(true);
+                // Hide the success message after 3 seconds
+                setTimeout(() => setAddToCartSuccess(false), 3000);
+            })
+            .catch((err) => {
+                setAddToCartError(err);
+                // Hide the error message after 3 seconds
+                setTimeout(() => setAddToCartError(''), 3000);
+            });
     };
 
     const submitReviewHandler = (e) => {
@@ -64,7 +80,7 @@ const ProductDetails = () => {
             {productLoading ? (
                 <Loader />
             ) : productError ? (
-                <Message type="error">{productError}</Message>
+                <Notification type="error">{productError}</Notification>
             ) : (
                 product && (
                     <>
@@ -122,6 +138,14 @@ const ProductDetails = () => {
                                 >
                                     Add To Cart
                                 </button>
+                                {addToCartSuccess && (
+                                    <Notification type="success">
+                                        Product added to cart!
+                                    </Notification>
+                                )}
+                                {addToCartError && (
+                                    <Notification type="error">{addToCartError}</Notification>
+                                )}
                             </div>
                         </div>
 
@@ -131,9 +155,9 @@ const ProductDetails = () => {
                             {reviewsLoading ? (
                                 <Loader />
                             ) : reviewsError ? (
-                                <Message type="error">{reviewsError}</Message>
+                                <Notification type="error">{reviewsError}</Notification>
                             ) : reviews.length === 0 ? (
-                                <Message>No reviews yet.</Message>
+                                <Notification>No reviews yet.</Notification>
                             ) : (
                                 <ul className="reviews-list">
                                     {reviews.map((review) => (
@@ -158,7 +182,9 @@ const ProductDetails = () => {
                             <div className="add-review-form">
                                 <h3>Write a Customer Review</h3>
                                 {reviewAddLoading && <Loader />}
-                                {reviewAddError && <Message type="error">{reviewAddError}</Message>}
+                                {reviewAddError && (
+                                    <Notification type="error">{reviewAddError}</Notification>
+                                )}
                                 {userInfo ? (
                                     <form onSubmit={submitReviewHandler}>
                                         <div className="form-group">
@@ -199,9 +225,9 @@ const ProductDetails = () => {
                                         </button>
                                     </form>
                                 ) : (
-                                    <Message>
+                                    <Notification>
                                         Please <Link to="/login">sign in</Link> to write a review.
-                                    </Message>
+                                    </Notification>
                                 )}
                             </div>
                         </div>

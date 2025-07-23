@@ -3,13 +3,23 @@ import * as types from '../types';
 
 // Get user addresses
 export const getAddresses = () => async (dispatch, getState) => {
+    const {
+        auth: { me },
+    } = getState();
+
+    // Do not proceed if user info is not available yet
+    if (!me || !me._id) {
+        // Optionally, dispatch a specific failure action or just return
+        dispatch({
+            type: types.GET_ADDRESSES_FAILURE,
+            payload: 'User not authenticated. Cannot fetch addresses.',
+        });
+        return;
+    }
+
     try {
         dispatch({ type: types.GET_ADDRESSES_LOADING });
-        const {
-            auth: {
-                me: { _id: userId },
-            },
-        } = getState();
+        const userId = me._id;
 
         const { data } = await api.get(`/api/users/${userId}/addresses`);
 

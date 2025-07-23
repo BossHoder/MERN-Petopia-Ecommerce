@@ -111,7 +111,6 @@ class ProductController {
                 isPublished: true,
             })
                 .populate('category', 'name slug')
-                .populate('reviews.user', 'name avatar')
                 .lean();
 
             if (!product) {
