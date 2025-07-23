@@ -3,6 +3,7 @@ import { Router } from 'express';
 import userService from '../../services/userService.js';
 import { validateUserRegistration } from '../../validations/userValidation.js';
 import { createErrorDto, createSuccessDto } from '../../dto/index.js';
+import { ERROR_MESSAGES } from '../../constants/errorMessages.js';
 
 const router = Router();
 
@@ -19,13 +20,15 @@ router.post('/register', async (req, res) => {
         });
 
         if (!result.success) {
-            return res.status(422).json(createErrorDto(result.error || 'Registration failed', 'REGISTRATION_ERROR'));
+            return res
+                .status(422)
+                .json(createErrorDto(result.error || ERROR_MESSAGES.REGISTRATION_FAILED, 'REGISTRATION_ERROR'));
         }
 
-        res.status(201).json(createSuccessDto({ user: result.user }, 'User registered successfully'));
+        res.status(201).json(createSuccessDto({ user: result.user }, ERROR_MESSAGES.USER_REGISTERED_SUCCESSFULLY));
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json(createErrorDto('Internal server error', 'INTERNAL_SERVER_ERROR'));
+        res.status(500).json(createErrorDto(ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 'INTERNAL_SERVER_ERROR'));
     }
 });
 

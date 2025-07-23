@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 /**
  * Category validation schemas
@@ -6,9 +7,9 @@ import Joi from 'joi';
 
 export const createCategorySchema = Joi.object({
     name: Joi.string().trim().min(2).max(100).required().messages({
-        'string.min': 'Category name must be at least 2 characters',
-        'string.max': 'Category name cannot exceed 100 characters',
-        'any.required': 'Category name is required',
+        'string.min': ERROR_MESSAGES.CATEGORY_NAME_MIN,
+        'string.max': ERROR_MESSAGES.CATEGORY_NAME_MAX,
+        'any.required': ERROR_MESSAGES.CATEGORY_NAME_REQUIRED,
     }),
 
     slug: Joi.string()
@@ -19,20 +20,20 @@ export const createCategorySchema = Joi.object({
         .max(100)
         .optional()
         .messages({
-            'string.pattern.base': 'Slug can only contain lowercase letters, numbers, and hyphens',
+            'string.pattern.base': ERROR_MESSAGES.SLUG_PATTERN,
         }),
 
     parentCategory: Joi.string().trim().required().messages({
-        'any.required': 'Parent category is required',
+        'any.required': ERROR_MESSAGES.PARENT_CATEGORY_REQUIRED,
     }),
 
     iconUrl: Joi.string().trim().uri().required().messages({
-        'string.uri': 'Icon URL must be a valid URL',
-        'any.required': 'Icon URL is required',
+        'string.uri': ERROR_MESSAGES.ICON_URL_INVALID,
+        'any.required': ERROR_MESSAGES.ICON_URL_REQUIRED,
     }),
 
     description: Joi.string().trim().max(500).optional().allow('').messages({
-        'string.max': 'Description cannot exceed 500 characters',
+        'string.max': ERROR_MESSAGES.DESCRIPTION_MAX,
     }),
 
     isPublished: Joi.boolean().default(true),

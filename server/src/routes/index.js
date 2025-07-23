@@ -6,6 +6,7 @@ import googleAuthRoutes from './auth/googleAuth.js';
 import facebookAuthRoutes from './auth/facebookAuth.js';
 import apiRoutes from './api/index.js';
 import products from './data/product.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 const router = Router();
 
 router.use('/auth', localLoginRoutes);
@@ -23,7 +24,7 @@ router.get('/data/products', (req, res) => {
 router.get('/health', (req, res) => {
     res.status(200).json({
         status: 'OK',
-        message: 'Server is running',
+        message: ERROR_MESSAGES.SERVER_RUNNING,
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development',
     });

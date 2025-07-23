@@ -1,6 +1,14 @@
 import User, { hashPassword } from '../models/User.js';
 import UserService from '../services/userService.js';
 import { existsSync } from 'fs';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+import {
+    successResponse,
+    errorResponse,
+    notFoundResponse,
+    validationErrorResponse,
+    forbiddenResponse,
+} from '../helpers/responseHelper.js';
 // import { addressDto, addressesDto } from '../dto/addressDto.js'; // Tạm thời bỏ qua
 
 // ===========================================
@@ -51,7 +59,7 @@ class UserController {
             const tempUser = await User.findById(req.params.id);
             if (!tempUser) {
                 console.log('User not found:', req.params.id);
-                return res.status(404).json({ message: 'No such user.' });
+                return notFoundResponse(res, ERROR_MESSAGES.USER_NOT_FOUND);
             }
 
             if (!(tempUser.id === req.user.id || req.user.role === 'ADMIN')) {
@@ -60,9 +68,7 @@ class UserController {
                     currentUserId: req.user.id,
                     role: req.user.role,
                 });
-                return res.status(403).json({
-                    message: 'You do not have privileges to edit this user.',
-                });
+                return forbiddenResponse(res, ERROR_MESSAGES.FORBIDDEN);
             }
 
             // Prepare update data
@@ -100,7 +106,7 @@ class UserController {
                 const existingUser = await User.findOne({ username: req.body.username.trim() });
                 if (existingUser && existingUser.id !== tempUser.id) {
                     console.log('Username already taken:', req.body.username);
-                    return res.status(400).json({ message: 'Username already taken.' });
+                    return validationErrorResponse(res, 'Username already taken.');
                 }
             }
 
@@ -111,26 +117,24 @@ class UserController {
 
             if (!result.success) {
                 console.log('UserService update failed:', result);
-                return res.status(400).json({
-                    message: result.error || result.errors?.join(', '),
-                });
+                return validationErrorResponse(res, result.error || result.errors?.join(', '));
             }
 
             console.log('Profile updated successfully:', result.user);
-            res.status(200).json({ user: result.user });
+            return successResponse(res, { user: result.user });
         } catch (err) {
             console.error('Error updating user profile:', err);
 
             // Handle specific multer errors
             if (err.code === 'LIMIT_FILE_SIZE') {
-                return res.status(400).json({ message: 'File too large. Maximum size is 5MB.' });
+                return validationErrorResponse(res, 'File too large. Maximum size is 5MB.');
             }
 
             if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-                return res.status(400).json({ message: 'Too many files or unexpected field name.' });
+                return validationErrorResponse(res, 'Too many files or unexpected field name.');
             }
 
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -141,13 +145,13 @@ class UserController {
             const result = await UserService.getUser(req.user.id, false);
 
             if (!result.success) {
-                return res.status(404).json({ message: result.error });
+                return notFoundResponse(res, result.error);
             }
 
-            res.json({ user: result.user });
+            return successResponse(res, { user: result.user });
         } catch (err) {
             console.error('Error getting current user profile:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -157,13 +161,13 @@ class UserController {
             const result = await UserService.getUser(req.user.id, false);
 
             if (!result.success) {
-                return res.status(404).json({ message: result.error });
+                return notFoundResponse(res, result.error);
             }
 
-            res.json({ me: result.user });
+            return successResponse(res, { me: result.user });
         } catch (err) {
             console.error('Error getting current user:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -173,13 +177,13 @@ class UserController {
             const result = await UserService.getUser(req.params.username, true);
 
             if (!result.success) {
-                return res.status(404).json({ message: result.error });
+                return notFoundResponse(res, result.error);
             }
 
-            res.json({ user: result.user });
+            return successResponse(res, { user: result.user });
         } catch (err) {
             console.error('Error getting user by username:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -207,16 +211,16 @@ class UserController {
             }
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.json({
+            return successResponse(res, {
                 users: result.users,
                 pagination: result.pagination,
             });
         } catch (err) {
             console.error('Error getting users:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -225,26 +229,24 @@ class UserController {
         try {
             const tempUser = await User.findById(req.params.id);
             if (!tempUser) {
-                return res.status(404).json({ message: 'No such user.' });
+                return notFoundResponse(res, ERROR_MESSAGES.USER_NOT_FOUND);
             }
 
             if (!(tempUser.id === req.user.id || req.user.role === 'ADMIN')) {
-                return res.status(403).json({
-                    message: 'You do not have privileges to delete that user.',
-                });
+                return forbiddenResponse(res, ERROR_MESSAGES.FORBIDDEN);
             }
 
             // Use UserService to delete user
             const result = await UserService.deleteUser(req.params.id);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json({ message: result.message });
+            return successResponse(res, { message: result.message });
         } catch (err) {
             console.error('Error deleting user:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -256,19 +258,19 @@ class UserController {
     async addToWishlist(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.addToWishlist(req.params.id, req.body.productId);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error adding to wishlist:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -276,19 +278,19 @@ class UserController {
     async removeFromWishlist(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.removeFromWishlist(req.params.id, req.params.productId);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error removing from wishlist:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -296,19 +298,19 @@ class UserController {
     async getWishlist(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.getWishlist(req.params.id);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error getting wishlist:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -322,16 +324,16 @@ class UserController {
             const { id: paramId } = req.params;
 
             if (req.user.id.toString() !== paramId.toString() && req.user.role !== 'ADMIN') {
-                return res.status(403).json({ message: 'Forbidden: You can only view your own addresses.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.FORBIDDEN);
             }
 
             const user = await User.findById(paramId).select('addresses');
 
             if (!user) {
-                return res.status(404).json({ message: 'User not found' });
+                return notFoundResponse(res, ERROR_MESSAGES.USER_NOT_FOUND);
             }
 
-            res.status(200).json({
+            return successResponse(res, {
                 success: true,
                 message: 'Addresses fetched successfully',
                 data: {
@@ -340,7 +342,7 @@ class UserController {
             });
         } catch (error) {
             console.error('Error in getAddresses:', error);
-            res.status(500).json({ message: 'Server error while fetching addresses' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, error.message);
         }
     }
 
@@ -348,19 +350,19 @@ class UserController {
     async addAddress(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.addAddress(req.params.id, req.body);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(201).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error adding address:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -368,19 +370,19 @@ class UserController {
     async updateAddress(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.updateAddress(req.params.id, req.params.addressId, req.body);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error updating address:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -388,19 +390,19 @@ class UserController {
     async removeAddress(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.removeAddress(req.params.id, req.params.addressId);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error removing address:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -408,19 +410,19 @@ class UserController {
     async setDefaultAddress(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.setDefaultAddress(req.params.id, req.params.addressId);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error setting default address:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -432,19 +434,19 @@ class UserController {
     async getUserStats(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.getUserStats(req.params.id);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error getting user stats:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -452,19 +454,19 @@ class UserController {
     async updatePreferences(req, res) {
         try {
             if (!this._checkUserPermission(req)) {
-                return res.status(403).json({ message: 'Access denied.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.ACCESS_DENIED);
             }
 
             const result = await UserService.updatePreferences(req.params.id, req.body);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error updating preferences:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -472,7 +474,7 @@ class UserController {
     async getUserActivity(req, res) {
         try {
             if (!this._checkAdminPermission(req)) {
-                return res.status(403).json({ message: 'Admin access required.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.FORBIDDEN);
             }
 
             const options = {
@@ -485,13 +487,13 @@ class UserController {
             const result = await UserService.getUserActivity(req.params.id, options);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error getting user activity:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -499,19 +501,19 @@ class UserController {
     async bulkUpdateUsers(req, res) {
         try {
             if (!this._checkAdminPermission(req)) {
-                return res.status(403).json({ message: 'Admin access required.' });
+                return forbiddenResponse(res, ERROR_MESSAGES.FORBIDDEN);
             }
 
             const result = await UserService.bulkUpdateUsers(req.body.updates);
 
             if (!result.success) {
-                return res.status(400).json({ message: result.error });
+                return validationErrorResponse(res, result.error);
             }
 
-            res.status(200).json(result);
+            return successResponse(res, result);
         } catch (err) {
             console.error('Error bulk updating users:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 
@@ -520,17 +522,15 @@ class UserController {
         try {
             // Only allow in development environment
             if (process.env.NODE_ENV === 'production') {
-                return res.status(403).json({
-                    message: 'Database reseed is not allowed in production.',
-                });
+                return forbiddenResponse(res, 'Database reseed is not allowed in production.');
             }
 
-            res.json({
+            return successResponse(res, {
                 message: 'Database reseed functionality temporarily disabled.',
             });
         } catch (err) {
             console.error('Error reseeding database:', err);
-            res.status(500).json({ message: 'Something went wrong.' });
+            return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
         }
     }
 

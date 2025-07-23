@@ -3,6 +3,7 @@ import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
 import Review from '../models/Review.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
 import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
 import { productHelper, responseHelper } from '../helpers/productHelper.js';
@@ -95,7 +96,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in getAllProducts:', error);
-            return responseHelper.serverError(res, 'Failed to fetch products');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -114,7 +115,7 @@ class ProductController {
                 .lean();
 
             if (!product) {
-                return responseHelper.notFound(res, 'Product not found');
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
             }
 
             // Increment view count (fire and forget)
@@ -136,7 +137,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in getProductById:', error);
-            return responseHelper.serverError(res, 'Failed to fetch product');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -159,13 +160,13 @@ class ProductController {
             // Check for duplicate SKU
             const existingSku = await Product.findOne({ sku: value.sku });
             if (existingSku) {
-                return responseHelper.badRequest(res, 'SKU already exists');
+                return responseHelper.badRequest(res, ERROR_MESSAGES.SKU_EXISTS);
             }
 
             // Check for duplicate slug
             const existingSlug = await Product.findOne({ slug: value.slug });
             if (existingSlug) {
-                return responseHelper.badRequest(res, 'Slug already exists');
+                return responseHelper.badRequest(res, ERROR_MESSAGES.SLUG_EXISTS);
             }
 
             // Create product
@@ -181,7 +182,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in createProduct:', error);
-            return responseHelper.serverError(res, 'Failed to create product');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -200,14 +201,14 @@ class ProductController {
             // Check if product exists
             const existingProduct = await Product.findById(id);
             if (!existingProduct) {
-                return responseHelper.notFound(res, 'Product not found');
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
             }
 
             // Check for duplicate SKU (if updating SKU)
             if (value.sku && value.sku !== existingProduct.sku) {
                 const existingSku = await Product.findOne({ sku: value.sku, _id: { $ne: id } });
                 if (existingSku) {
-                    return responseHelper.badRequest(res, 'SKU already exists');
+                    return responseHelper.badRequest(res, ERROR_MESSAGES.SKU_EXISTS);
                 }
             }
 
@@ -215,7 +216,7 @@ class ProductController {
             if (value.slug && value.slug !== existingProduct.slug) {
                 const existingSlug = await Product.findOne({ slug: value.slug, _id: { $ne: id } });
                 if (existingSlug) {
-                    return responseHelper.badRequest(res, 'Slug already exists');
+                    return responseHelper.badRequest(res, ERROR_MESSAGES.SLUG_EXISTS);
                 }
             }
 
@@ -233,7 +234,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in updateProduct:', error);
-            return responseHelper.serverError(res, 'Failed to update product');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -245,7 +246,7 @@ class ProductController {
 
             const product = await Product.findById(id);
             if (!product) {
-                return responseHelper.notFound(res, 'Product not found');
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
             }
 
             await Product.findByIdAndDelete(id);
@@ -255,7 +256,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in deleteProduct:', error);
-            return responseHelper.serverError(res, 'Failed to delete product');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -279,7 +280,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in getFeaturedProducts:', error);
-            return responseHelper.serverError(res, 'Failed to fetch featured products');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -292,7 +293,7 @@ class ProductController {
             // Find category by slug first
             const category = await Category.findOne({ slug: categorySlug, isPublished: true });
             if (!category) {
-                return responseHelper.notFound(res, 'Category not found');
+                return responseHelper.notFound(res, ERROR_MESSAGES.CATEGORY_NOT_FOUND);
             }
 
             const filter = {
@@ -335,7 +336,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in getProductsByCategory:', error);
-            return responseHelper.serverError(res, 'Failed to fetch products by category');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -348,13 +349,13 @@ class ProductController {
         try {
             const product = await Product.findById(productId);
             if (!product) {
-                return responseHelper.notFound(res, 'Product not found');
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
             }
 
             // Check if user has already reviewed this product
             const alreadyReviewed = await Review.findOne({ product: productId, user: userId });
             if (alreadyReviewed) {
-                return responseHelper.badRequest(res, 'You have already reviewed this product');
+                return responseHelper.badRequest(res, ERROR_MESSAGES.ALREADY_REVIEWED);
             }
 
             // Check if user has purchased this product
@@ -380,7 +381,7 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error in createProductReview:', error);
-            return responseHelper.serverError(res, 'Failed to add review');
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
 }

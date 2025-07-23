@@ -5,6 +5,7 @@
 
 import Order from '../models/Order.js';
 import User from '../models/User.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 // Generate unique order number
 export const generateOrderNumber = () => {
@@ -84,7 +85,7 @@ export const updateOrderStatus = async (orderId, newStatus, comment = '', change
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error(ERROR_MESSAGES.ORDER_NOT_FOUND);
         }
 
         // Validate status transition
@@ -130,11 +131,11 @@ export const cancelOrder = async (orderId, reason = '', cancelledBy = null) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error(ERROR_MESSAGES.ORDER_NOT_FOUND);
         }
 
         if (!order.canBeCancelled) {
-            throw new Error('Order cannot be cancelled at this stage');
+            throw new Error(ERROR_MESSAGES.ORDER_CANNOT_BE_CANCELLED);
         }
 
         order.status = 'cancelled';
@@ -165,11 +166,11 @@ export const processRefund = async (orderId, refundData) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error(ERROR_MESSAGES.ORDER_NOT_FOUND);
         }
 
         if (!order.canBeRefunded) {
-            throw new Error('Order cannot be refunded');
+            throw new Error(ERROR_MESSAGES.ORDER_CANNOT_BE_REFUNDED);
         }
 
         const { amount, reason, method = 'original_payment', processedBy } = refundData;
@@ -209,7 +210,7 @@ export const addTrackingInfo = async (orderId, trackingData) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error(ERROR_MESSAGES.ORDER_NOT_FOUND);
         }
 
         const { shippingCompany, trackingNumber, estimatedDelivery } = trackingData;
@@ -360,7 +361,7 @@ export const addInternalNote = async (orderId, note, addedBy) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error(ERROR_MESSAGES.ORDER_NOT_FOUND);
         }
 
         order.internalNotes.push({
@@ -388,26 +389,26 @@ export const validateOrderData = (orderData) => {
     const errors = [];
 
     if (!orderData.username) {
-        errors.push('User ID is required');
+        errors.push(ERROR_MESSAGES.USER_ID_REQUIRED);
     }
 
     if (!orderData.items || orderData.items.length === 0) {
-        errors.push('Order must have at least one item');
+        errors.push(ERROR_MESSAGES.ORDER_MUST_HAVE_AT_LEAST_ONE_ITEM);
     }
 
     if (!orderData.shippingAddress) {
-        errors.push('Shipping address is required');
+        errors.push(ERROR_MESSAGES.SHIPPING_ADDRESS_REQUIRED);
     } else {
         const requiredFields = ['fullName', 'phoneNumber', 'address', 'city', 'district'];
         for (const field of requiredFields) {
             if (!orderData.shippingAddress[field]) {
-                errors.push(`Shipping address ${field} is required`);
+                errors.push(`${ERROR_MESSAGES.SHIPPING_ADDRESS_FIELD_REQUIRED} ${field}`);
             }
         }
     }
 
     if (!orderData.paymentMethod) {
-        errors.push('Payment method is required');
+        errors.push(ERROR_MESSAGES.PAYMENT_METHOD_REQUIRED);
     }
 
     return {

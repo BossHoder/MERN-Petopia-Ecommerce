@@ -5,12 +5,13 @@
 
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 // Get or create cart for user/session
 export const getOrCreateCart = async (userId = null, sessionId = null) => {
     try {
         if (!userId && !sessionId) {
-            throw new Error('Either userId or sessionId is required');
+            throw new Error(ERROR_MESSAGES.CART_USER_OR_SESSION_REQUIRED);
         }
 
         const cart = await Cart.findByUserOrSession(userId, sessionId);
@@ -32,17 +33,17 @@ export const addItemToCart = async (cartId, productId, quantity = 1, variantId =
     try {
         const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         const product = await Product.findById(productId);
         if (!product) {
-            throw new Error('Product not found');
+            throw new Error(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
         }
 
         // Check if product is published and in stock
         if (!product.isPublished) {
-            throw new Error('Product is not available');
+            throw new Error(ERROR_MESSAGES.PRODUCT_NOT_AVAILABLE);
         }
 
         // Check stock availability
@@ -99,7 +100,7 @@ export const removeItemFromCart = async (cartId, productId, variantId = null) =>
     try {
         const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         await cart.removeItem(productId, variantId);
@@ -123,7 +124,7 @@ export const updateCartItemQuantity = async (cartId, productId, quantity, varian
     try {
         const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         if (quantity <= 0) {
@@ -133,7 +134,7 @@ export const updateCartItemQuantity = async (cartId, productId, quantity, varian
         // Check stock availability
         const product = await Product.findById(productId);
         if (!product) {
-            throw new Error('Product not found');
+            throw new Error(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
         }
 
         const availableStock = variantId
@@ -165,7 +166,7 @@ export const applyCouponToCart = async (cartId, couponCode) => {
     try {
         const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         // Import coupon helper to validate coupon
@@ -199,7 +200,7 @@ export const removeCouponFromCart = async (cartId) => {
     try {
         const cart = await Cart.findById(cartId);
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         cart.appliedCoupon = null;
@@ -251,15 +252,15 @@ export const validateCartForCheckout = async (cartId) => {
     try {
         const cart = await Cart.findById(cartId).populate('items.productId');
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         if (cart.isEmpty()) {
-            throw new Error('Cart is empty');
+            throw new Error(ERROR_MESSAGES.CART_EMPTY);
         }
 
         if (cart.isExpired) {
-            throw new Error('Cart has expired');
+            throw new Error(ERROR_MESSAGES.CART_EXPIRED);
         }
 
         const validationErrors = [];
@@ -316,7 +317,7 @@ export const getCartSummary = async (cartId) => {
             'name images price salePrice stockQuantity',
         );
         if (!cart) {
-            throw new Error('Cart not found');
+            throw new Error(ERROR_MESSAGES.CART_NOT_FOUND);
         }
 
         return {

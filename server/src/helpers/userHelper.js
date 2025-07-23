@@ -4,6 +4,7 @@
 // This file contains utility functions for user operations
 
 import User from '../models/User.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 // Validate email format
 export const isValidEmail = (email) => {
@@ -37,7 +38,7 @@ export const addAddress = async (userId, addressData) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         // Validate address data
@@ -73,12 +74,12 @@ export const updateAddress = async (userId, addressId, addressData) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         const address = user.addresses.id(addressId);
         if (!address) {
-            throw new Error('Address not found');
+            throw new Error(ERROR_MESSAGES.ADDRESS_NOT_FOUND);
         }
 
         Object.assign(address, addressData);
@@ -101,12 +102,12 @@ export const removeAddress = async (userId, addressId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         const address = user.addresses.id(addressId);
         if (!address) {
-            throw new Error('Address not found');
+            throw new Error(ERROR_MESSAGES.ADDRESS_NOT_FOUND);
         }
 
         const wasDefault = address.isDefault;
@@ -136,7 +137,7 @@ export const setDefaultAddress = async (userId, addressId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         // Remove default from all addresses
@@ -147,7 +148,7 @@ export const setDefaultAddress = async (userId, addressId) => {
         // Set new default
         const targetAddress = user.addresses.id(addressId);
         if (!targetAddress) {
-            throw new Error('Address not found');
+            throw new Error(ERROR_MESSAGES.ADDRESS_NOT_FOUND);
         }
 
         targetAddress.isDefault = true;
@@ -170,7 +171,7 @@ export const addToWishlist = async (userId, productId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         if (!user.wishlist.includes(productId)) {
@@ -195,7 +196,7 @@ export const removeFromWishlist = async (userId, productId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         user.wishlist.pull(productId);
@@ -218,7 +219,7 @@ export const updatePreferences = async (userId, preferences) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         user.preferences = { ...user.preferences, ...preferences };
@@ -329,7 +330,7 @@ export const getUserWishlist = async (userId) => {
         });
 
         if (!user) {
-            throw new Error('User not found');
+            throw new Error(ERROR_MESSAGES.USER_NOT_FOUND);
         }
 
         return {
@@ -349,11 +350,11 @@ export const validateProfileData = (profileData) => {
     const errors = [];
 
     if (profileData.email && !isValidEmail(profileData.email)) {
-        errors.push('Invalid email format');
+        errors.push(ERROR_MESSAGES.INVALID_EMAIL_FORMAT);
     }
 
     if (profileData.phoneNumber && !isValidPhoneNumber(profileData.phoneNumber)) {
-        errors.push('Invalid phone number format');
+        errors.push(ERROR_MESSAGES.INVALID_PHONE_NUMBER_FORMAT);
     }
 
     if (profileData.dateOfBirth) {
@@ -362,16 +363,16 @@ export const validateProfileData = (profileData) => {
         const age = today.getFullYear() - birthDate.getFullYear();
 
         if (age < 13) {
-            errors.push('User must be at least 13 years old');
+            errors.push(ERROR_MESSAGES.USER_MUST_BE_AT_LEAST_13_YEARS_OLD);
         }
 
         if (age > 120) {
-            errors.push('Invalid birth date');
+            errors.push(ERROR_MESSAGES.INVALID_BIRTH_DATE);
         }
     }
 
     if (profileData.name && profileData.name.trim().length < 2) {
-        errors.push('Name must be at least 2 characters long');
+        errors.push(ERROR_MESSAGES.NAME_MUST_BE_AT_LEAST_2_CHARACTERS_LONG);
     }
 
     return {

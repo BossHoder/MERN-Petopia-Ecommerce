@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 export const validateUser = (user) => {
     const schema = Joi.object({

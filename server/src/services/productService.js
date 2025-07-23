@@ -6,6 +6,7 @@
 import Product from '../models/Product.js';
 import * as productHelper from '../helpers/productHelper.js';
 import { productDto, productCardDto, productSearchDto } from '../dto/productDto.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 class ProductService {
     // Create new product
@@ -55,7 +56,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found',
+                    error: ERROR_MESSAGES.PRODUCT_NOT_FOUND,
                 };
             }
 
@@ -93,7 +94,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found',
+                    error: ERROR_MESSAGES.PRODUCT_NOT_FOUND,
                 };
             }
 
@@ -116,7 +117,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found',
+                    error: ERROR_MESSAGES.PRODUCT_NOT_FOUND,
                 };
             }
 
@@ -251,7 +252,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found',
+                    error: ERROR_MESSAGES.PRODUCT_NOT_FOUND,
                 };
             }
 
@@ -337,7 +338,7 @@ class ProductService {
             if (!product) {
                 return {
                     success: false,
-                    error: 'Product not found',
+                    error: ERROR_MESSAGES.PRODUCT_NOT_FOUND,
                 };
             }
 

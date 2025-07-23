@@ -3,6 +3,7 @@ import multer from 'multer';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync, mkdirSync } from 'fs';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -60,7 +61,7 @@ const upload = multer({
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error(`Invalid file type: ${file.mimetype}. Only JPG, PNG, WebP allowed.`));
+            cb(new Error(ERROR_MESSAGES.INVALID_FILE_TYPE));
         }
     },
 });

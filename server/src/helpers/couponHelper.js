@@ -4,6 +4,7 @@
 // This file contains utility functions for coupon operations
 
 import Coupon from '../models/Coupon.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 // Generate random coupon code
 export const generateCouponCode = (length = 8) => {
@@ -32,7 +33,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (!coupon) {
             return {
                 isValid: false,
-                message: 'Coupon not found or inactive',
+                message: ERROR_MESSAGES.COUPON_NOT_FOUND,
             };
         }
 
@@ -40,7 +41,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (!coupon.isValid) {
             return {
                 isValid: false,
-                message: 'Coupon is expired or has reached usage limit',
+                message: ERROR_MESSAGES.COUPON_INVALID,
             };
         }
 
@@ -48,7 +49,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         if (!coupon.canBeUsedBy(userId)) {
             return {
                 isValid: false,
-                message: 'You have already used this coupon maximum times',
+                message: ERROR_MESSAGES.COUPON_MAX_USAGE,
             };
         }
 
@@ -98,7 +99,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
         console.error('Error validating coupon:', error);
         return {
             isValid: false,
-            message: 'Error validating coupon',
+            message: ERROR_MESSAGES.COUPON_VALIDATION_ERROR,
         };
     }
 };
@@ -216,7 +217,7 @@ export const applyCouponToOrder = async (couponCode, userId, orderValue, cartIte
         console.error('Error applying coupon:', error);
         return {
             isValid: false,
-            message: 'Error applying coupon',
+            message: ERROR_MESSAGES.COUPON_APPLY_ERROR,
         };
     }
 };

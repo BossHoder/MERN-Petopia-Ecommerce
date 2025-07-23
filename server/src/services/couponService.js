@@ -6,6 +6,7 @@
 import Coupon from '../models/Coupon.js';
 import { validateCouponForOrder, generateCouponCode } from '../helpers/couponHelper.js';
 import { createCouponDto, couponAdminDto, couponListDto } from '../dto/couponDto.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 class CouponService {
     // Create new coupon
@@ -17,7 +18,7 @@ class CouponService {
             // Check if coupon code already exists
             const existingCoupon = await Coupon.findOne({ code: dto.code });
             if (existingCoupon) {
-                throw new Error('Coupon code already exists');
+                throw new Error(ERROR_MESSAGES.COUPON_INVALID);
             }
 
             // Create coupon
@@ -79,7 +80,7 @@ class CouponService {
                 .populate('excludeCategories', 'name slug');
 
             if (!coupon) {
-                throw new Error('Coupon not found');
+                throw new Error(ERROR_MESSAGES.COUPON_NOT_FOUND);
             }
 
             return {
@@ -100,7 +101,7 @@ class CouponService {
         try {
             const coupon = await Coupon.findById(couponId);
             if (!coupon) {
-                throw new Error('Coupon not found');
+                throw new Error(ERROR_MESSAGES.COUPON_NOT_FOUND);
             }
 
             // Update coupon fields
@@ -131,7 +132,7 @@ class CouponService {
         try {
             const coupon = await Coupon.findById(couponId);
             if (!coupon) {
-                throw new Error('Coupon not found');
+                throw new Error(ERROR_MESSAGES.COUPON_NOT_FOUND);
             }
 
             await coupon.deleteOne();
@@ -197,7 +198,7 @@ class CouponService {
         try {
             const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
             if (!coupon) {
-                throw new Error('Coupon not found');
+                throw new Error(ERROR_MESSAGES.COUPON_NOT_FOUND);
             }
 
             const discountAmount = coupon.calculateDiscount(orderValue);
@@ -234,7 +235,7 @@ class CouponService {
             }
 
             if (!isUnique) {
-                throw new Error('Unable to generate unique coupon code');
+                throw new Error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
             }
 
             return {

@@ -1,5 +1,13 @@
 import Order from '../models/Order.js';
 import { asyncHandler } from '../middleware/asyncHandler.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+import {
+    successResponse,
+    errorResponse,
+    notFoundResponse,
+    validationErrorResponse,
+    createdResponse,
+} from '../helpers/responseHelper.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -8,8 +16,7 @@ const createOrder = asyncHandler(async (req, res) => {
     const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
-        res.status(400);
-        throw new Error('No order items');
+        return validationErrorResponse(res, ERROR_MESSAGES.NO_ORDER_ITEMS);
     }
 
     const order = new Order({
@@ -31,18 +38,11 @@ const createOrder = asyncHandler(async (req, res) => {
 
     try {
         const createdOrder = await order.save();
-        res.status(201).json({
-            success: true,
-            data: createdOrder,
-        });
+        return createdResponse(res, createdOrder);
     } catch (error) {
         // Log the full validation error to the backend console
         console.error('Error saving order:', error);
-        res.status(400).json({
-            message: 'Error creating order. Check server logs for details.',
-            error: error.message,
-            details: error.errors,
-        });
+        return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 400, error.message);
     }
 });
 
@@ -51,10 +51,7 @@ const createOrder = asyncHandler(async (req, res) => {
 // @access  Private
 const getMyOrders = asyncHandler(async (req, res) => {
     const orders = await Order.find({ user: req.user.id });
-    res.status(200).json({
-        success: true,
-        data: orders,
-    });
+    return successResponse(res, orders);
 });
 
 // @desc    Get order by ID
@@ -66,16 +63,11 @@ const getOrderById = asyncHandler(async (req, res) => {
     if (order) {
         // Ensure only the user who placed the order or an admin can view it
         if (order.user._id.toString() !== req.user.id && req.user.role !== 'ADMIN') {
-            res.status(403);
-            throw new Error('Not authorized to view this order');
+            return errorResponse(res, ERROR_MESSAGES.FORBIDDEN, 403);
         }
-        res.status(200).json({
-            success: true,
-            data: order,
-        });
+        return successResponse(res, order);
     } else {
-        res.status(404);
-        throw new Error('Order not found');
+        return notFoundResponse(res, ERROR_MESSAGES.ORDER_NOT_FOUND);
     }
 });
 
@@ -98,13 +90,9 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 
         const updatedOrder = await order.save();
 
-        res.status(200).json({
-            success: true,
-            data: updatedOrder,
-        });
+        return successResponse(res, updatedOrder);
     } else {
-        res.status(404);
-        throw new Error('Order not found');
+        return notFoundResponse(res, ERROR_MESSAGES.ORDER_NOT_FOUND);
     }
 });
 
@@ -120,13 +108,9 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 
         const updatedOrder = await order.save();
 
-        res.status(200).json({
-            success: true,
-            data: updatedOrder,
-        });
+        return successResponse(res, updatedOrder);
     } else {
-        res.status(404);
-        throw new Error('Order not found');
+        return notFoundResponse(res, ERROR_MESSAGES.ORDER_NOT_FOUND);
     }
 });
 

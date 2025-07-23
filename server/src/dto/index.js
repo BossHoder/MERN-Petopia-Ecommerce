@@ -3,6 +3,8 @@
 // ===========================================
 // Central export file for all Data Transfer Objects
 
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+
 // Product DTOs
 export * from './productDto.js';
 
@@ -66,7 +68,7 @@ export const createErrorDto = (message, code, details = null) => {
     };
 };
 
-export const createSuccessDto = (data, message = 'Success') => {
+export const createSuccessDto = (data, message = ERROR_MESSAGES.SUCCESS) => {
     return {
         success: true,
         message,
@@ -168,7 +170,7 @@ export const validateDto = (dto, schema) => {
 export const createValidationErrorDto = (errors) => {
     return {
         success: false,
-        message: 'Validation failed',
+        message: ERROR_MESSAGES.VALIDATION_ERROR,
         errors: errors.map((error) => ({
             field: error.field || 'unknown',
             message: error.message || 'Invalid value',

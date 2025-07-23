@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 /**
  * Order validation schemas
@@ -6,7 +7,7 @@ import Joi from 'joi';
 
 export const createOrderSchema = Joi.object({
     username: Joi.string().trim().required().messages({
-        'any.required': 'User ID is required',
+        'any.required': ERROR_MESSAGES.USER_ID_REQUIRED,
     }),
 
     items: Joi.array()
@@ -23,8 +24,8 @@ export const createOrderSchema = Joi.object({
         .min(1)
         .required()
         .messages({
-            'array.min': 'Order must have at least one item',
-            'any.required': 'Order items are required',
+            'array.min': ERROR_MESSAGES.ORDER_MUST_HAVE_AT_LEAST_ONE_ITEM,
+            'any.required': ERROR_MESSAGES.ORDER_ITEMS_REQUIRED,
         }),
 
     shippingAddress: Joi.object({
@@ -38,8 +39,8 @@ export const createOrderSchema = Joi.object({
     }).required(),
 
     paymentMethod: Joi.string().valid('cod', 'credit_card', 'bank_transfer', 'momo', 'zalopay').required().messages({
-        'any.required': 'Payment method is required',
-        'any.only': 'Invalid payment method',
+        'any.required': ERROR_MESSAGES.PAYMENT_METHOD_REQUIRED,
+        'any.only': ERROR_MESSAGES.INVALID_PAYMENT_METHOD,
     }),
 
     appliedCoupon: Joi.object({
@@ -56,8 +57,8 @@ export const updateOrderStatusSchema = Joi.object({
         .valid('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded')
         .required()
         .messages({
-            'any.required': 'Order status is required',
-            'any.only': 'Invalid order status',
+            'any.required': ERROR_MESSAGES.ORDER_STATUS_REQUIRED,
+            'any.only': ERROR_MESSAGES.INVALID_ORDER_STATUS,
         }),
 
     comment: Joi.string().trim().max(500).optional(),
@@ -67,9 +68,9 @@ export const updateOrderStatusSchema = Joi.object({
 
 export const cancelOrderSchema = Joi.object({
     reason: Joi.string().trim().min(5).max(500).required().messages({
-        'string.min': 'Cancellation reason must be at least 5 characters',
-        'string.max': 'Cancellation reason cannot exceed 500 characters',
-        'any.required': 'Cancellation reason is required',
+        'string.min': ERROR_MESSAGES.CANCELLATION_REASON_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.CANCELLATION_REASON_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.CANCELLATION_REASON_REQUIRED,
     }),
 
     cancelledBy: Joi.string().trim().optional(),
@@ -77,18 +78,18 @@ export const cancelOrderSchema = Joi.object({
 
 export const refundOrderSchema = Joi.object({
     amount: Joi.number().positive().required().messages({
-        'number.positive': 'Refund amount must be positive',
-        'any.required': 'Refund amount is required',
+        'number.positive': ERROR_MESSAGES.REFUND_AMOUNT_MUST_BE_POSITIVE,
+        'any.required': ERROR_MESSAGES.REFUND_AMOUNT_REQUIRED,
     }),
 
     reason: Joi.string().trim().min(5).max(500).required().messages({
-        'string.min': 'Refund reason must be at least 5 characters',
-        'string.max': 'Refund reason cannot exceed 500 characters',
-        'any.required': 'Refund reason is required',
+        'string.min': ERROR_MESSAGES.REFUND_REASON_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.REFUND_REASON_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.REFUND_REASON_REQUIRED,
     }),
 
     method: Joi.string().valid('original_payment', 'bank_transfer', 'cash').default('original_payment').messages({
-        'any.only': 'Invalid refund method',
+        'any.only': ERROR_MESSAGES.INVALID_REFUND_METHOD,
     }),
 
     processedBy: Joi.string().trim().required(),
@@ -96,27 +97,27 @@ export const refundOrderSchema = Joi.object({
 
 export const trackingInfoSchema = Joi.object({
     shippingCompany: Joi.string().trim().min(2).max(100).required().messages({
-        'string.min': 'Shipping company name must be at least 2 characters',
-        'string.max': 'Shipping company name cannot exceed 100 characters',
-        'any.required': 'Shipping company is required',
+        'string.min': ERROR_MESSAGES.SHIPPING_COMPANY_NAME_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.SHIPPING_COMPANY_NAME_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.SHIPPING_COMPANY_REQUIRED,
     }),
 
     trackingNumber: Joi.string().trim().min(5).max(100).required().messages({
-        'string.min': 'Tracking number must be at least 5 characters',
-        'string.max': 'Tracking number cannot exceed 100 characters',
-        'any.required': 'Tracking number is required',
+        'string.min': ERROR_MESSAGES.TRACKING_NUMBER_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.TRACKING_NUMBER_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.TRACKING_NUMBER_REQUIRED,
     }),
 
     estimatedDelivery: Joi.date().greater('now').optional().messages({
-        'date.greater': 'Estimated delivery date must be in the future',
+        'date.greater': ERROR_MESSAGES.ESTIMATED_DELIVERY_DATE_MUST_BE_IN_FUTURE,
     }),
 });
 
 export const internalNoteSchema = Joi.object({
     note: Joi.string().trim().min(5).max(1000).required().messages({
-        'string.min': 'Note must be at least 5 characters',
-        'string.max': 'Note cannot exceed 1000 characters',
-        'any.required': 'Note is required',
+        'string.min': ERROR_MESSAGES.NOTE_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.NOTE_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.NOTE_REQUIRED,
     }),
 
     addedBy: Joi.string().trim().required(),

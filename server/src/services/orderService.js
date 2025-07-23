@@ -8,6 +8,7 @@ import * as orderHelper from '../helpers/orderHelper.js';
 import { orderDto, ordersDto, orderListDto, adminOrderDto, customerOrderDto } from '../dto/orderDto.js';
 import userService from './userService.js';
 import productService from './productService.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 class OrderService {
     // Create new order
@@ -59,7 +60,7 @@ class OrderService {
             if (!order) {
                 return {
                     success: false,
-                    error: 'Order not found',
+                    error: ERROR_MESSAGES.ORDER_NOT_FOUND,
                 };
             }
 
@@ -88,7 +89,7 @@ class OrderService {
             if (!order) {
                 return {
                     success: false,
-                    error: 'Order not found',
+                    error: ERROR_MESSAGES.ORDER_NOT_FOUND,
                 };
             }
 

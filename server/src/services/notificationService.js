@@ -21,6 +21,7 @@ import {
     notificationSummaryDto,
     notificationAdminDto,
 } from '../dto/notificationDto.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 class NotificationService {
     // Get notifications for user
@@ -87,7 +88,7 @@ class NotificationService {
             });
 
             if (!notification) {
-                throw new Error('Notification not found');
+                throw new Error(ERROR_MESSAGES.NOTIFICATION_NOT_FOUND);
             }
 
             await notification.markAsRead();
@@ -132,7 +133,7 @@ class NotificationService {
             });
 
             if (!notification) {
-                throw new Error('Notification not found');
+                throw new Error(ERROR_MESSAGES.NOTIFICATION_NOT_FOUND);
             }
 
             await notification.deleteOne();

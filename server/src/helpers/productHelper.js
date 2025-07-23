@@ -5,6 +5,7 @@
 
 import Product from '../models/Product.js';
 import { successResponse, errorResponse } from './responseHelper.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 // Generate unique slug from product name
 export const generateSlug = (name) => {
@@ -65,13 +66,13 @@ export const updateStock = async (productId, variantId = null, quantity) => {
     try {
         const product = await Product.findById(productId);
         if (!product) {
-            throw new Error('Product not found');
+            throw new Error(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
         }
 
         if (variantId) {
             const variant = product.variants.find((v) => v.sku === variantId);
             if (!variant) {
-                throw new Error('Variant not found');
+                throw new Error(ERROR_MESSAGES.VARIANT_NOT_FOUND);
             }
             variant.stockQuantity -= quantity;
         } else {
@@ -96,13 +97,13 @@ export const restockProduct = async (productId, variantId = null, quantity) => {
     try {
         const product = await Product.findById(productId);
         if (!product) {
-            throw new Error('Product not found');
+            throw new Error(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
         }
 
         if (variantId) {
             const variant = product.variants.find((v) => v.sku === variantId);
             if (!variant) {
-                throw new Error('Variant not found');
+                throw new Error(ERROR_MESSAGES.VARIANT_NOT_FOUND);
             }
             variant.stockQuantity += quantity;
         } else {
@@ -284,27 +285,27 @@ export const validateProductData = (productData) => {
     const errors = [];
 
     if (!productData.name || productData.name.trim().length < 2) {
-        errors.push('Product name must be at least 2 characters long');
+        errors.push(ERROR_MESSAGES.PRODUCT_NAME_TOO_SHORT);
     }
 
     if (!productData.price || productData.price <= 0) {
-        errors.push('Product price must be greater than 0');
+        errors.push(ERROR_MESSAGES.PRODUCT_PRICE_INVALID);
     }
 
     if (productData.salePrice && productData.salePrice >= productData.price) {
-        errors.push('Sale price must be less than regular price');
+        errors.push(ERROR_MESSAGES.PRODUCT_SALE_PRICE_INVALID);
     }
 
     if (!productData.category) {
-        errors.push('Product category is required');
+        errors.push(ERROR_MESSAGES.PRODUCT_CATEGORY_REQUIRED);
     }
 
     if (!productData.images || productData.images.length === 0) {
-        errors.push('At least one product image is required');
+        errors.push(ERROR_MESSAGES.PRODUCT_IMAGES_REQUIRED);
     }
 
     if (productData.stockQuantity < 0) {
-        errors.push('Stock quantity cannot be negative');
+        errors.push(ERROR_MESSAGES.PRODUCT_STOCK_QUANTITY_INVALID);
     }
 
     return {
@@ -364,11 +365,11 @@ export const productHelper = {
 
 // Response helpers wrapper for easier use
 export const responseHelper = {
-    success: (res, data, message = 'Success', statusCode = 200) => {
+    success: (res, data, message = ERROR_MESSAGES.SUCCESS, statusCode = 200) => {
         return successResponse(res, data, message, statusCode);
     },
 
-    created: (res, data, message = 'Created successfully') => {
+    created: (res, data, message = ERROR_MESSAGES.CREATED_SUCCESSFULLY) => {
         return successResponse(res, data, message, 201);
     },
 

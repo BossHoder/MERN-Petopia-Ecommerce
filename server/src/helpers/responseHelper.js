@@ -2,6 +2,8 @@
  * Standardized API response helpers
  */
 
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+
 /**
  * Success response
  * @param {Object} res - Express response object
@@ -25,7 +27,7 @@ export const successResponse = (res, data = null, message = 'Success', statusCod
  * @param {number} statusCode - HTTP status code
  * @param {Object} errors - Detailed errors
  */
-export const errorResponse = (res, message = 'Something went wrong', statusCode = 500, errors = null) => {
+export const errorResponse = (res, message = ERROR_MESSAGES.INTERNAL_SERVER_ERROR, statusCode = 500, errors = null) => {
     return res.status(statusCode).json({
         success: false,
         message,
@@ -70,7 +72,7 @@ export const validationErrorResponse = (res, error) => {
         message: detail.message,
     }));
 
-    return errorResponse(res, 'Validation failed', 400, errors);
+    return errorResponse(res, ERROR_MESSAGES.VALIDATION_ERROR, 400, errors);
 };
 
 /**
@@ -79,7 +81,7 @@ export const validationErrorResponse = (res, error) => {
  * @param {string} resource - Resource name
  */
 export const notFoundResponse = (res, resource = 'Resource') => {
-    return errorResponse(res, `${resource} not found`, 404);
+    return errorResponse(res, ERROR_MESSAGES.NOT_FOUND, 404);
 };
 
 /**
@@ -87,7 +89,7 @@ export const notFoundResponse = (res, resource = 'Resource') => {
  * @param {Object} res - Express response object
  * @param {string} message - Custom message
  */
-export const unauthorizedResponse = (res, message = 'Unauthorized access') => {
+export const unauthorizedResponse = (res, message = ERROR_MESSAGES.UNAUTHORIZED) => {
     return errorResponse(res, message, 401);
 };
 
@@ -96,7 +98,7 @@ export const unauthorizedResponse = (res, message = 'Unauthorized access') => {
  * @param {Object} res - Express response object
  * @param {string} message - Custom message
  */
-export const forbiddenResponse = (res, message = 'Access forbidden') => {
+export const forbiddenResponse = (res, message = ERROR_MESSAGES.FORBIDDEN) => {
     return errorResponse(res, message, 403);
 };
 
@@ -123,7 +125,7 @@ export const noContentResponse = (res) => {
  * @param {Object} res - Express response object
  * @param {string} message - Conflict message
  */
-export const conflictResponse = (res, message = 'Resource already exists') => {
+export const conflictResponse = (res, message = ERROR_MESSAGES.CONFLICT) => {
     return errorResponse(res, message, 409);
 };
 
@@ -141,7 +143,7 @@ export const tooManyRequestsResponse = (res, message = 'Too many requests') => {
  * @param {Object} res - Express response object
  * @param {string} message - Service message
  */
-export const serviceUnavailableResponse = (res, message = 'Service temporarily unavailable') => {
+export const serviceUnavailableResponse = (res, message = ERROR_MESSAGES.SERVICE_UNAVAILABLE) => {
     return errorResponse(res, message, 503);
 };
 

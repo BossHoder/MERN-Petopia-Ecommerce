@@ -1,6 +1,13 @@
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
 import { asyncHandler } from '../middleware/asyncHandler.js'; // Giả sử bạn có một middleware xử lý lỗi async
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+import {
+    successResponse,
+    errorResponse,
+    notFoundResponse,
+    validationErrorResponse,
+} from '../helpers/responseHelper.js';
 
 // @desc    Get user's cart
 // @route   GET /api/cart
@@ -9,16 +16,10 @@ const getCart = asyncHandler(async (req, res) => {
     const cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'name price image');
 
     if (!cart) {
-        return res.status(200).json({
-            message: 'Cart is empty',
-            data: { items: [], total: 0 },
-        });
+        return successResponse(res, { items: [], total: 0 }, 'Cart is empty');
     }
 
-    res.status(200).json({
-        success: true,
-        data: cart,
-    });
+    return successResponse(res, cart);
 });
 
 // @desc    Add item to cart
@@ -30,8 +31,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
 
     // Validate quantity
     if (quantity <= 0) {
-        res.status(400);
-        throw new Error('Quantity must be a positive number.');
+        return validationErrorResponse(res, ERROR_MESSAGES.QUANTITY_MUST_BE_POSITIVE);
     }
 
     // Find product by ID or Slug
@@ -43,13 +43,11 @@ const addItemToCart = asyncHandler(async (req, res) => {
     });
 
     if (!product) {
-        res.status(404);
-        throw new Error('Product not found');
+        return notFoundResponse(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
     }
 
     if (product.stockQuantity < quantity) {
-        res.status(400);
-        throw new Error('Not enough product in stock');
+        return validationErrorResponse(res, ERROR_MESSAGES.NOT_ENOUGH_STOCK);
     }
 
     let cart = await Cart.findOne({ user: userId });
@@ -68,8 +66,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
             // If item exists, update quantity
             const newQuantity = cart.items[itemIndex].quantity + quantity;
             if (product.stockQuantity < newQuantity) {
-                res.status(400);
-                throw new Error('Not enough product in stock for the updated quantity');
+                return validationErrorResponse(res, ERROR_MESSAGES.NOT_ENOUGH_STOCK);
             }
             cart.items[itemIndex].quantity = newQuantity;
         } else {
@@ -85,11 +82,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
         select: 'name images price stockQuantity',
     });
 
-    res.status(201).json({
-        success: true,
-        message: 'Product added to cart successfully.',
-        data: cart,
-    });
+    return successResponse(res, cart, 'Product added to cart successfully.');
 });
 
 // @desc    Remove item from cart
@@ -102,8 +95,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
     const cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
-        res.status(404);
-        throw new Error('Cart not found');
+        return notFoundResponse(res, ERROR_MESSAGES.CART_NOT_FOUND);
     }
 
     cart.items = cart.items.filter((item) => item.product.toString() !== productId);
@@ -111,10 +103,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
 
     await cart.populate('items.product', 'name price image');
 
-    res.status(200).json({
-        success: true,
-        data: cart,
-    });
+    return successResponse(res, cart);
 });
 
 // @desc    Update item quantity in cart
@@ -132,8 +121,7 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
     const cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
-        res.status(404);
-        throw new Error('Cart not found');
+        return notFoundResponse(res, ERROR_MESSAGES.CART_NOT_FOUND);
     }
 
     const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
@@ -142,13 +130,9 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
         cart.items[itemIndex].quantity = quantity;
         await cart.save();
         await cart.populate('items.product', 'name price image');
-        res.status(200).json({
-            success: true,
-            data: cart,
-        });
+        return successResponse(res, cart);
     } else {
-        res.status(404);
-        throw new Error('Item not found in cart');
+        return notFoundResponse(res, ERROR_MESSAGES.ITEM_NOT_FOUND_IN_CART);
     }
 });
 
@@ -163,15 +147,9 @@ const clearCart = asyncHandler(async (req, res) => {
     if (cart) {
         cart.items = [];
         await cart.save();
-        res.status(200).json({
-            success: true,
-            data: cart,
-        });
+        return successResponse(res, cart);
     } else {
-        res.status(200).json({
-            success: true,
-            data: { items: [], total: 0 },
-        });
+        return successResponse(res, { items: [], total: 0 });
     }
 });
 

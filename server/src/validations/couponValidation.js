@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 /**
  * Coupon validation schemas
@@ -13,21 +14,21 @@ export const createCouponSchema = Joi.object({
         .pattern(/^[A-Z0-9]+$/)
         .required()
         .messages({
-            'string.min': 'Coupon code must be at least 3 characters',
-            'string.max': 'Coupon code cannot exceed 20 characters',
-            'string.pattern.base': 'Coupon code can only contain uppercase letters and numbers',
-            'any.required': 'Coupon code is required',
+            'string.min': ERROR_MESSAGES.COUPON_CODE_MIN_LENGTH,
+            'string.max': ERROR_MESSAGES.COUPON_CODE_MAX_LENGTH,
+            'string.pattern.base': ERROR_MESSAGES.COUPON_CODE_PATTERN,
+            'any.required': ERROR_MESSAGES.COUPON_CODE_REQUIRED,
         }),
 
     description: Joi.string().trim().min(10).max(200).required().messages({
-        'string.min': 'Description must be at least 10 characters',
-        'string.max': 'Description cannot exceed 200 characters',
-        'any.required': 'Description is required',
+        'string.min': ERROR_MESSAGES.DESCRIPTION_MIN_LENGTH,
+        'string.max': ERROR_MESSAGES.DESCRIPTION_MAX_LENGTH,
+        'any.required': ERROR_MESSAGES.DESCRIPTION_REQUIRED,
     }),
 
     discountType: Joi.string().valid('percentage', 'fixed').required().messages({
-        'any.only': 'Discount type must be either percentage or fixed',
-        'any.required': 'Discount type is required',
+        'any.only': ERROR_MESSAGES.DISCOUNT_TYPE_INVALID,
+        'any.required': ERROR_MESSAGES.DISCOUNT_TYPE_REQUIRED,
     }),
 
     discountValue: Joi.number()
@@ -36,33 +37,33 @@ export const createCouponSchema = Joi.object({
         .when('discountType', {
             is: 'percentage',
             then: Joi.number().max(100).messages({
-                'number.max': 'Percentage discount cannot exceed 100%',
+                'number.max': ERROR_MESSAGES.PERCENTAGE_DISCOUNT_MAX,
             }),
         })
         .messages({
-            'number.positive': 'Discount value must be positive',
-            'any.required': 'Discount value is required',
+            'number.positive': ERROR_MESSAGES.DISCOUNT_VALUE_POSITIVE,
+            'any.required': ERROR_MESSAGES.DISCOUNT_VALUE_REQUIRED,
         }),
 
     usageLimit: Joi.number().integer().min(1).optional().messages({
-        'number.min': 'Usage limit must be at least 1',
+        'number.min': ERROR_MESSAGES.USAGE_LIMIT_MIN,
     }),
 
     minOrderAmount: Joi.number().min(0).optional().messages({
-        'number.min': 'Minimum order amount cannot be negative',
+        'number.min': ERROR_MESSAGES.MIN_ORDER_AMOUNT_NON_NEGATIVE,
     }),
 
     maxDiscountAmount: Joi.number().positive().optional().messages({
-        'number.positive': 'Maximum discount amount must be positive',
+        'number.positive': ERROR_MESSAGES.MAX_DISCOUNT_AMOUNT_POSITIVE,
     }),
 
     validFrom: Joi.date().default(Date.now).messages({
-        'date.base': 'Valid from date must be a valid date',
+        'date.base': ERROR_MESSAGES.VALID_FROM_DATE_INVALID,
     }),
 
     validUntil: Joi.date().greater(Joi.ref('validFrom')).required().messages({
-        'date.greater': 'Valid until date must be after valid from date',
-        'any.required': 'Valid until date is required',
+        'date.greater': ERROR_MESSAGES.VALID_UNTIL_DATE_AFTER_VALID_FROM,
+        'any.required': ERROR_MESSAGES.VALID_UNTIL_DATE_REQUIRED,
     }),
 
     isActive: Joi.boolean().default(true),
@@ -90,14 +91,14 @@ export const updateCouponSchema = createCouponSchema.fork(
 
 export const applyCouponSchema = Joi.object({
     code: Joi.string().trim().uppercase().required().messages({
-        'any.required': 'Coupon code is required',
+        'any.required': ERROR_MESSAGES.COUPON_CODE_REQUIRED,
     }),
 
     userId: Joi.string().trim().optional(),
 
     cartTotal: Joi.number().positive().required().messages({
-        'number.positive': 'Cart total must be positive',
-        'any.required': 'Cart total is required',
+        'number.positive': ERROR_MESSAGES.CART_TOTAL_POSITIVE,
+        'any.required': ERROR_MESSAGES.CART_TOTAL_REQUIRED,
     }),
 
     cartItems: Joi.array()
@@ -112,8 +113,8 @@ export const applyCouponSchema = Joi.object({
         .min(1)
         .required()
         .messages({
-            'array.min': 'Cart must have at least one item',
-            'any.required': 'Cart items are required',
+            'array.min': ERROR_MESSAGES.CART_ITEMS_MIN_ONE,
+            'any.required': ERROR_MESSAGES.CART_ITEMS_REQUIRED,
         }),
 });
 

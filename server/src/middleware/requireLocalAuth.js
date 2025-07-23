@@ -1,16 +1,11 @@
-import passport from 'passport';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+import { unauthorizedResponse } from '../helpers/responseHelper.js';
 
 const requireLocalAuth = (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            return res.status(422).send(info);
-        }
-        req.user = user;
-        next();
-    })(req, res, next);
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+        return unauthorizedResponse(res, ERROR_MESSAGES.UNAUTHORIZED);
+    }
+    next();
 };
 
 export default requireLocalAuth;

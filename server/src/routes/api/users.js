@@ -3,6 +3,7 @@ import requireJwtAuth from '../../middleware/requireJwtAuth.js';
 import requireAdmin from '../../middleware/requireAdmin.js';
 import userController from '../../controllers/userController.js';
 import upload from '../../utils/uploadConfig.js';
+import { ERROR_MESSAGES } from '../../constants/errorMessages.js';
 
 const router = Router();
 
@@ -15,14 +16,14 @@ router.get('/me/profile', requireJwtAuth, userController.getMyProfile);
 
 router.post('/promote-admin', requireJwtAuth, (req, res) => {
     if (process.env.NODE_ENV === 'production') {
-        return res.status(403).json({ message: 'Not allowed in production' });
+        return res.status(403).json({ message: ERROR_MESSAGES.FORBIDDEN });
     }
 
     req.user.role = 'ADMIN';
     req.user
         .save()
-        .then(() => res.json({ message: 'User promoted to admin', user: req.user }))
-        .catch((err) => res.status(500).json({ message: err.message }));
+        .then(() => res.json({ message: ERROR_MESSAGES.USER_PROMOTED_TO_ADMIN, user: req.user }))
+        .catch((err) => res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR }));
 });
 router.put('/bulk-update', requireJwtAuth, userController.bulkUpdateUsers);
 

@@ -1,8 +1,9 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 export const validateMessage = (message) => {
     const schema = Joi.object({
-        text: Joi.string().min(1).max(500).required(),
+        text: Joi.string().min(ERROR_MESSAGES.MESSAGE_TEXT_MIN).max(ERROR_MESSAGES.MESSAGE_TEXT_MAX).required(),
         user: Joi.string().trim().required(),
     });
 
@@ -11,7 +12,7 @@ export const validateMessage = (message) => {
 
 export const validateMessageUpdate = (message) => {
     const schema = Joi.object({
-        text: Joi.string().min(1).max(500),
+        text: Joi.string().min(ERROR_MESSAGES.MESSAGE_TEXT_MIN).max(ERROR_MESSAGES.MESSAGE_TEXT_MAX),
     });
 
     return schema.validate(message);

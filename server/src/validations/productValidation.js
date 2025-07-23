@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 /**
  * Product validation schemas
@@ -6,9 +7,9 @@ import Joi from 'joi';
 
 export const createProductSchema = Joi.object({
     name: Joi.string().trim().min(2).max(200).required().messages({
-        'string.min': 'Product name must be at least 2 characters',
-        'string.max': 'Product name cannot exceed 200 characters',
-        'any.required': 'Product name is required',
+        'string.min': ERROR_MESSAGES.PRODUCT_NAME_TOO_SHORT,
+        'string.max': ERROR_MESSAGES.PRODUCT_NAME_TOO_LONG,
+        'any.required': ERROR_MESSAGES.PRODUCT_NAME_REQUIRED,
     }),
 
     slug: Joi.string()
@@ -19,23 +20,23 @@ export const createProductSchema = Joi.object({
         .max(250)
         .optional()
         .messages({
-            'string.pattern.base': 'Slug can only contain lowercase letters, numbers, and hyphens',
+            'string.pattern.base': ERROR_MESSAGES.SLUG_INVALID,
         }),
 
     description: Joi.string().trim().min(10).max(2000).required().messages({
-        'string.min': 'Description must be at least 10 characters',
-        'string.max': 'Description cannot exceed 2000 characters',
-        'any.required': 'Product description is required',
+        'string.min': ERROR_MESSAGES.DESCRIPTION_TOO_SHORT,
+        'string.max': ERROR_MESSAGES.DESCRIPTION_TOO_LONG,
+        'any.required': ERROR_MESSAGES.DESCRIPTION_REQUIRED,
     }),
 
     price: Joi.number().positive().precision(2).required().messages({
-        'number.positive': 'Price must be a positive number',
-        'any.required': 'Price is required',
+        'number.positive': ERROR_MESSAGES.PRICE_MUST_BE_POSITIVE,
+        'any.required': ERROR_MESSAGES.PRICE_REQUIRED,
     }),
 
     salePrice: Joi.number().positive().precision(2).less(Joi.ref('price')).optional().messages({
-        'number.positive': 'Sale price must be a positive number',
-        'number.less': 'Sale price must be less than regular price',
+        'number.positive': ERROR_MESSAGES.SALE_PRICE_MUST_BE_POSITIVE,
+        'number.less': ERROR_MESSAGES.SALE_PRICE_MUST_BE_LESS_THAN_REGULAR_PRICE,
     }),
 
     sku: Joi.string()
@@ -46,21 +47,21 @@ export const createProductSchema = Joi.object({
         .max(50)
         .required()
         .messages({
-            'string.pattern.base': 'SKU can only contain uppercase letters, numbers, and hyphens',
-            'any.required': 'SKU is required',
+            'string.pattern.base': ERROR_MESSAGES.SKU_INVALID,
+            'any.required': ERROR_MESSAGES.SKU_REQUIRED,
         }),
 
     category: Joi.string().trim().lowercase().required().messages({
-        'any.required': 'Category is required',
+        'any.required': ERROR_MESSAGES.CATEGORY_REQUIRED,
     }),
 
     stockQuantity: Joi.number().integer().min(0).required().messages({
-        'number.min': 'Stock quantity cannot be negative',
-        'any.required': 'Stock quantity is required',
+        'number.min': ERROR_MESSAGES.STOCK_QUANTITY_CANNOT_BE_NEGATIVE,
+        'any.required': ERROR_MESSAGES.STOCK_QUANTITY_REQUIRED,
     }),
 
     lowStockThreshold: Joi.number().integer().min(0).default(10).messages({
-        'number.min': 'Low stock threshold cannot be negative',
+        'number.min': ERROR_MESSAGES.LOW_STOCK_THRESHOLD_CANNOT_BE_NEGATIVE,
     }),
 
     images: Joi.array()
@@ -69,19 +70,19 @@ export const createProductSchema = Joi.object({
                 .uri()
                 .pattern(/\.(jpg|jpeg|png|gif|webp)$/i)
                 .messages({
-                    'string.pattern.base': 'Image must be a valid image URL (jpg, jpeg, png, gif, webp)',
+                    'string.pattern.base': ERROR_MESSAGES.IMAGE_INVALID,
                 }),
         )
         .min(1)
         .max(10)
         .required()
         .messages({
-            'array.min': 'At least one image is required',
-            'array.max': 'Maximum 10 images allowed',
+            'array.min': ERROR_MESSAGES.AT_LEAST_ONE_IMAGE_REQUIRED,
+            'array.max': ERROR_MESSAGES.MAX_10_IMAGES_ALLOWED,
         }),
 
     brand: Joi.string().trim().min(2).max(100).required().messages({
-        'any.required': 'Brand is required',
+        'any.required': ERROR_MESSAGES.BRAND_REQUIRED,
     }),
 
     variants: Joi.array()

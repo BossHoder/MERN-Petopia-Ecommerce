@@ -6,6 +6,7 @@
 import User from '../models/User.js';
 import * as userHelper from '../helpers/userHelper.js';
 import { userDto, publicUserDto, profileDto } from '../dto/userDto.js';
+import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 
 class UserService {
     // Create new user
@@ -51,7 +52,7 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found',
+                    error: ERROR_MESSAGES.USER_NOT_FOUND,
                 };
             }
 
@@ -100,7 +101,7 @@ class UserService {
                 console.log('User not found for ID:', userId);
                 return {
                     success: false,
-                    error: 'User not found',
+                    error: ERROR_MESSAGES.USER_NOT_FOUND,
                 };
             }
 
@@ -125,7 +126,7 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found',
+                    error: ERROR_MESSAGES.USER_NOT_FOUND,
                 };
             }
 
@@ -373,7 +374,7 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found',
+                    error: ERROR_MESSAGES.USER_NOT_FOUND,
                 };
             }
 
@@ -435,7 +436,7 @@ class UserService {
             if (!user) {
                 return {
                     success: false,
-                    error: 'User not found',
+                    error: ERROR_MESSAGES.USER_NOT_FOUND,
                 };
             }
 
