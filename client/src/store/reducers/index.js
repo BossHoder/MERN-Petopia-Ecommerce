@@ -7,13 +7,30 @@ import usersReducer from './usersReducer';
 import messageReducer from './messageReducer';
 import productReducer from './productReducer';
 import categoryReducer from './categoryReducer';
+import cartReducer from './cartReducer';
+import {
+    orderCreateReducer,
+    orderDetailsReducer,
+    orderPayReducer,
+    orderListMyReducer,
+} from './orderReducer';
+import { addressReducer } from './addressReducer';
+import { reviewListReducer, reviewAddReducer } from './reviewReducer';
 
 export default combineReducers({
     auth: authReducer,
     register: registerReducer,
-    message: messageReducer,
     user: userReducer,
     users: usersReducer,
+    messages: messageReducer,
     products: productReducer,
     categories: categoryReducer,
+    cart: cartReducer,
+    orderCreate: orderCreateReducer,
+    orderDetails: orderDetailsReducer,
+    orderPay: orderPayReducer,
+    orderListMy: orderListMyReducer,
+    address: addressReducer,
+    reviewList: reviewListReducer,
+    reviewAdd: reviewAddReducer,
 });
