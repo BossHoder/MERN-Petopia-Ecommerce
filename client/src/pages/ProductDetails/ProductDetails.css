@@ -1,0 +1,125 @@
+.product-details-page {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.product-main-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.product-image-gallery {
+    grid-column: span 1;
+}
+
+.product-image-gallery img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-info-panel {
+    grid-column: span 1;
+}
+
+.product-info-panel h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.product-rating {
+    margin-bottom: 1rem;
+    color: #666;
+}
+.product-price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #f59e0b;
+    margin-bottom: 1.5rem;
+}
+.product-description {
+    line-height: 1.6;
+}
+
+.product-action-panel {
+    grid-column: span 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    align-self: start;
+}
+
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+.action-row:last-of-type {
+    border-bottom: none;
+}
+.action-row select {
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.product-reviews-section {
+    margin-top: 3rem;
+}
+.product-reviews-section h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+}
+
+.reviews-list {
+    list-style: none;
+    padding: 0;
+}
+
+.review-item {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+.review-item:last-child {
+    border-bottom: none;
+}
+.review-rating {
+    margin: 0.5rem 0;
+}
+
+.add-review-form {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
+}
+
+.add-review-form h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 992px) {
+    .product-main-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+    .product-action-panel {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-main-layout {
+        grid-template-columns: 1fr;
+    }
+    .product-action-panel {
+        grid-column: span 1;
+    }
+}

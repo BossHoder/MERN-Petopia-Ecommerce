@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom'; // Import Link
 import { getBestsellers } from '../../store/actions/productActions';
 import ProductCard from '../ProductCard/ProductCard';
 import Loader from '../Loader/Loader';
@@ -59,9 +60,9 @@ const BestsellerProducts = () => {
                 </div>
 
                 <div className="bestseller-footer">
-                    <button className="view-all-button">
+                    <Link to="/products" className="view-all-button">
                         {t('products.viewAll', 'Xem Tất Cả Sản Phẩm')}
-                    </button>
+                    </Link>
                 </div>
             </div>
         </section>
