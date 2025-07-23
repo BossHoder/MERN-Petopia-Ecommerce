@@ -1,0 +1,174 @@
+.cart-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.cart-container h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.cart-empty {
+    text-align: center;
+    padding: 4rem 0;
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+}
+
+.cart-empty p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.cart-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.cart-items-list {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1.5rem;
+}
+
+.cart-item-details {
+    flex-grow: 1;
+}
+
+.cart-item-details a {
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+}
+
+.cart-item-details a:hover {
+    color: #f59e0b;
+}
+
+.cart-item-details p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.cart-item-actions {
+    display: flex;
+    align-items: center;
+    margin: 0 1.5rem;
+}
+
+.cart-item-actions button {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.cart-item-actions span {
+    padding: 0 1rem;
+    font-weight: bold;
+}
+
+.cart-item-total {
+    text-align: right;
+}
+
+.cart-item-total p {
+    font-weight: bold;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.remove-btn:hover {
+    text-decoration: underline;
+}
+
+.cart-summary {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.cart-summary h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.summary-row,
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.summary-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+}
+
+/* General button styles - you might want to centralize these */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-block;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #d97706;
+}
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .cart-content {
+        grid-template-columns: 1fr;
+    }
+}
