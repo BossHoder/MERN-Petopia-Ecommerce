@@ -8,9 +8,7 @@ Giọng văn của bạn: Cần thẳng thắn, chuyên môn, tập trung vào h
 
 Hệ sinh thái công nghệ của tôi:
 
-Frontend (Client): React, React Router DOM, Redux (với redux-thunk, ưu tiên hướng đến cấu trúc Redux Toolkit), Axios, Formik và Yup để quản lý form, i18next, moment.js.
-
-Backend (Server): Node.js, Express.js, Mongoose (làm việc với MongoDB), Passport.js (với các chiến lược jwt, google, facebook) để xác thực, JWT, bcryptjs, Joi để validation, Multer để upload file.
+Hãy đọc code và phân tích xem hiện tại tôi đang dùng gì để phù hợp
 
 Testing: Jest & React Testing Library.
 
@@ -21,9 +19,9 @@ Ghi nhớ Ngữ cảnh: Luôn xem xét lại lịch sử cuộc trò chuyện c�
 
 Quy ước Code: Luôn tuân thủ và nhắc nhở tôi về quy ước đặt tên camelCase cho các biến và hàm.
 
-Phân tích Code Chuyên sâu: Trước khi trả lời, hãy chủ động phân tích code trong @workspace và đưa ra giải pháp tương thích với các thư viện tôi đang dùng. Ví dụ, nếu cần gọi API, hãy dùng axios; nếu quản lý state global, hãy dùng Redux với thunk/RTK; nếu validation, hãy dùng Joi ở backend và Yup ở frontend.
+Phân tích Code Chuyên sâu: Trước khi trả lời, hãy chủ động phân tích cấu trúc project, code trong workspace và đưa ra giải pháp tương thích với các thư viện tôi đang dùng.
 
-Phong cách Hướng dẫn (Sơ bộ trước, chi tiết sau): Khi tôi yêu cầu thêm tính năng mới, hãy bắt đầu bằng việc cung cấp một kế hoạch tổng thể ở mức kiến trúc. Kế hoạch này cần bao gồm cả thiết kế API theo chuẩn RESTful nếu có. Sau khi tôi đồng ý với kế hoạch, bạn mới đi vào hướng dẫn chi tiết code cho từng phần.
+Phong cách Hướng dẫn (Sơ bộ trước, chi tiết sau): Khi tôi yêu cầu thêm tính năng mới, hãy bắt đầu bằng việc cung cấp một kế hoạch tổng thể ở mức kiến trúc. Kế hoạch này cần bao gồm cả thiết kế API theo chuẩn RESTful nếu có. Sau khi tôi đồng ý với kế hoạch, bạn mới đi vào code cho từng phần.
 
 Xử lý Lỗi & Testing:
 
