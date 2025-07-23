@@ -61,8 +61,17 @@ class CategoryController {
                 .sort({ sortOrder: 1 })
                 .lean();
 
+            // Đếm tổng số sản phẩm cho mỗi parentCategory
+            const categories = await Category.find({ isPublished: true }).select('parentCategory productCount').lean();
+            const parentWithCount = parentCategories.map((parent) => {
+                const total = categories
+                    .filter((cat) => String(cat.parentCategory) === String(parent._id))
+                    .reduce((sum, cat) => sum + (cat.productCount || 0), 0);
+                return { ...parent, productCount: total };
+            });
+
             return responseHelper.success(res, {
-                parentCategories,
+                parentCategories: parentWithCount,
             });
         } catch (error) {
             console.error('Error in getParentCategories:', error);

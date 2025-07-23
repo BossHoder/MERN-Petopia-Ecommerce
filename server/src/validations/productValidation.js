@@ -132,6 +132,7 @@ export const productQuerySchema = Joi.object({
         .default('createdAt'),
     sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
     category: Joi.string().trim().optional(),
+    parentCategoryId: Joi.string().trim().optional(),
     brand: Joi.string().trim().optional(),
     minPrice: Joi.number().positive().optional(),
     maxPrice: Joi.number().positive().optional(),

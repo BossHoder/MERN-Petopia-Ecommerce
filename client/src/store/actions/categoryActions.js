@@ -7,6 +7,9 @@ import {
     GET_ALL_CATEGORIES_SUCCESS,
     GET_ALL_CATEGORIES_FAIL,
     CLEAR_CATEGORY_ERRORS,
+    GET_PARENT_CATEGORIES_LOADING,
+    GET_PARENT_CATEGORIES_SUCCESS,
+    GET_PARENT_CATEGORIES_FAIL,
 } from '../types';
 
 // Get featured categories for homepage
@@ -51,3 +54,20 @@ export const getAllCategories = () => async (dispatch) => {
 export const clearCategoryErrors = () => ({
     type: CLEAR_CATEGORY_ERRORS,
 });
+
+// Get all parent categories
+export const fetchParentCategories = () => async (dispatch) => {
+    try {
+        dispatch({ type: GET_PARENT_CATEGORIES_LOADING });
+        const response = await axios.get('/api/categories/parent-categories');
+        dispatch({
+            type: GET_PARENT_CATEGORIES_SUCCESS,
+            payload: response.data.data.parentCategories,
+        });
+    } catch (error) {
+        dispatch({
+            type: GET_PARENT_CATEGORIES_FAIL,
+            payload: error.response?.data?.message || 'Failed to fetch parent categories',
+        });
+    }
+};

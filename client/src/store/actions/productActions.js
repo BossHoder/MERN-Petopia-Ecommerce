@@ -109,6 +109,17 @@ export const getProductById = (id) => async (dispatch) => {
     }
 };
 
+export const fetchProductSuggestions = (keyword) => async (dispatch) => {
+    try {
+        const response = await axios.get(
+            `/api/products/suggest?keyword=${encodeURIComponent(keyword)}`,
+        );
+        return response.data.data.suggestions;
+    } catch (error) {
+        return [];
+    }
+};
+
 // Clear errors
 export const clearProductErrors = () => ({
     type: CLEAR_PRODUCT_ERRORS,

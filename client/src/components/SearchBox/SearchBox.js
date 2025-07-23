@@ -1,35 +1,59 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchProductSuggestions } from '../../store/actions/productActions';
 import { useNavigate } from 'react-router-dom';
 import './SearchBox.css';
-import { useI18n } from '../../hooks/useI18n';
 
 const SearchBox = () => {
-    const { t } = useI18n('common');
-    const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-        if (keyword.trim()) {
-            navigate(`/products?search=${keyword}`);
+    const handleChange = async (e) => {
+        const value = e.target.value;
+        setKeyword(value);
+        if (value.length > 1) {
+            const result = await dispatch(fetchProductSuggestions(value));
+            setSuggestions(result);
         } else {
-            navigate('/products');
+            setSuggestions([]);
+        }
+    };
+
+    const handleSelect = (suggestion) => {
+        setKeyword('');
+        setSuggestions([]);
+        // Điều hướng theo type
+        if (suggestion.type === 'product') {
+            navigate(`/product/${suggestion.slug}`);
+        } else if (suggestion.type === 'category') {
+            navigate(
+                `/category/${suggestion.parentCategory?.slug || 'unknown'}/${suggestion.slug}`,
+            );
+        } else if (suggestion.type === 'parentCategory') {
+            navigate(`/category/${suggestion.slug}`);
         }
     };
 
     return (
-        <form onSubmit={submitHandler} className="search-box">
+        <div className="search-box">
             <input
-                type="text"
-                name="q"
-                onChange={(e) => setKeyword(e.target.value)}
-                placeholder={t('common.searchProducts')}
-                className="search-input"
+                value={keyword}
+                onChange={handleChange}
+                placeholder="Tìm kiếm sản phẩm, danh mục..."
+                autoComplete="off"
             />
-            <button type="submit" className="search-button">
-                {t('common.search')}
-            </button>
-        </form>
+            {suggestions.length > 0 && (
+                <ul className="suggestion-list">
+                    {suggestions.map((s) => (
+                        <li key={s.id} onClick={() => handleSelect(s)}>
+                            {s.label} <span className="type">{s.type}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
 };
 

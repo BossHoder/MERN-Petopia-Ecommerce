@@ -1,26 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { getAllCategories } from '../../store/actions/categoryActions';
+import { getAllCategories, fetchParentCategories } from '../../store/actions/categoryActions';
 import './Sidebar.css';
-
-const kebabToCamel = (s) => s.replace(/-./g, (x) => x[1].toUpperCase());
 
 const Sidebar = ({ onFilterChange }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { categories, loading } = useSelector((state) => state.categories);
+    const { categories, categoriesLoading, parentCategories, parentCategoriesLoading } =
+        useSelector((state) => state.categories);
 
+    const [selectedParent, setSelectedParent] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [localFilters, setLocalFilters] = useState({
-        category: '',
-        brand: '',
         minPrice: '',
         maxPrice: '',
     });
 
     useEffect(() => {
+        dispatch(fetchParentCategories());
         dispatch(getAllCategories());
     }, [dispatch]);
+
+    const handleParentClick = (parentId) => {
+        setSelectedParent(parentId);
+        setSelectedCategory('');
+        onFilterChange({ parentCategoryId: parentId, category: '', ...localFilters });
+    };
+
+    const handleCategoryClick = (categoryId) => {
+        setSelectedCategory(categoryId);
+        onFilterChange({ parentCategoryId: selectedParent, category: categoryId, ...localFilters });
+    };
 
     const handleChange = (e) => {
         setLocalFilters({
@@ -30,24 +41,79 @@ const Sidebar = ({ onFilterChange }) => {
     };
 
     const handleApplyFilters = () => {
-        onFilterChange(localFilters);
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: selectedCategory,
+            ...localFilters,
+        });
     };
 
     return (
         <aside className="products-sidebar">
             <div className="filter-group">
                 <h3>{t('sidebar.categories', 'Categories')}</h3>
-                {loading ? (
+                {parentCategoriesLoading ? (
                     <p>{t('common.loading', 'Loading...')}</p>
                 ) : (
-                    <select name="category" value={localFilters.category} onChange={handleChange}>
-                        <option value="">{t('sidebar.all', 'All')}</option>
-                        {categories.map((cat) => (
-                            <option key={cat._id} value={cat._id}>
-                                {t(`categoriesList.${kebabToCamel(cat.slug)}`, cat.name)}
-                            </option>
+                    <ul className="parent-category-list">
+                        {parentCategories.map((parent) => (
+                            <li
+                                key={parent._id}
+                                className={selectedParent === parent._id ? 'active' : ''}
+                            >
+                                <button
+                                    className="parent-category-btn"
+                                    onClick={() => handleParentClick(parent._id)}
+                                    aria-expanded={selectedParent === parent._id}
+                                >
+                                    {/* Icon nếu có */}
+                                    {parent.iconUrl && (
+                                        <img
+                                            src={parent.iconUrl}
+                                            alt=""
+                                            className="category-icon"
+                                        />
+                                    )}
+                                    {parent.name}
+                                    <span className="count">{parent.productCount}</span>
+                                    <span className="arrow">
+                                        {selectedParent === parent._id ? '▼' : '▶'}
+                                    </span>
+                                </button>
+                                <ul
+                                    className={`category-list${
+                                        selectedParent === parent._id ? ' expanded' : ''
+                                    }`}
+                                >
+                                    {categories
+                                        .filter(
+                                            (cat) =>
+                                                String(
+                                                    cat.parentCategory?._id || cat.parentCategory,
+                                                ) === String(parent._id),
+                                        )
+                                        .map((cat) => (
+                                            <li
+                                                key={cat._id}
+                                                className={
+                                                    selectedCategory === cat._id ? 'active' : ''
+                                                }
+                                            >
+                                                <button
+                                                    className="category-btn"
+                                                    onClick={() => handleCategoryClick(cat._id)}
+                                                >
+                                                    {cat.name}
+                                                    <span className="count">
+                                                        {cat.productCount}
+                                                    </span>
+                                                </button>
+                                            </li>
+                                        ))}
+                                </ul>
+                            </li>
                         ))}
-                    </select>
+                    </ul>
                 )}
             </div>
 
@@ -68,8 +134,6 @@ const Sidebar = ({ onFilterChange }) => {
                     onChange={handleChange}
                 />
             </div>
-
-            {/* Thêm các bộ lọc khác ở đây, ví dụ: brand, ratings... */}
 
             <button className="btn btn-primary" onClick={handleApplyFilters}>
                 {t('sidebar.applyFilters', 'Apply Filters')}

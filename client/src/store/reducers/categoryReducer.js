@@ -6,6 +6,9 @@ import {
     GET_ALL_CATEGORIES_SUCCESS,
     GET_ALL_CATEGORIES_FAIL,
     CLEAR_CATEGORY_ERRORS,
+    GET_PARENT_CATEGORIES_LOADING,
+    GET_PARENT_CATEGORIES_SUCCESS,
+    GET_PARENT_CATEGORIES_FAIL,
 } from '../types';
 
 const initialState = {
@@ -16,6 +19,10 @@ const initialState = {
     // All categories
     categories: [],
     categoriesLoading: false,
+
+    // Parent categories
+    parentCategories: [],
+    parentCategoriesLoading: false,
 
     // Errors
     error: null,
@@ -73,6 +80,26 @@ const categoryReducer = (state = initialState, action) => {
             return {
                 ...state,
                 error: null,
+            };
+
+        case GET_PARENT_CATEGORIES_LOADING:
+            return {
+                ...state,
+                parentCategoriesLoading: true,
+                error: null,
+            };
+        case GET_PARENT_CATEGORIES_SUCCESS:
+            return {
+                ...state,
+                parentCategories: action.payload,
+                parentCategoriesLoading: false,
+                error: null,
+            };
+        case GET_PARENT_CATEGORIES_FAIL:
+            return {
+                ...state,
+                parentCategoriesLoading: false,
+                error: action.payload,
             };
 
         default:

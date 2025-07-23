@@ -191,6 +191,8 @@ class ProductController {
             // Create product
             const product = new Product(value);
             await product.save();
+            // Cập nhật productCount cho category
+            await Category.updateAllProductCounts();
 
             // Populate and return
             const populatedProduct = await Product.findById(product._id).populate('category', 'name slug').lean();
@@ -246,6 +248,8 @@ class ProductController {
             })
                 .populate('category', 'name slug')
                 .lean();
+            // Cập nhật productCount cho category
+            await Category.updateAllProductCounts();
 
             return responseHelper.success(res, {
                 message: 'Product updated successfully',
@@ -269,6 +273,8 @@ class ProductController {
             }
 
             await Product.findByIdAndDelete(id);
+            // Cập nhật productCount cho category
+            await Category.updateAllProductCounts();
 
             return responseHelper.success(res, {
                 message: 'Product deleted successfully',

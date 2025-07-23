@@ -145,9 +145,8 @@ categorySchema.statics.findByParent = function (parentCategory) {
 categorySchema.statics.updateAllProductCounts = async function () {
     const categories = await this.find();
     const Product = mongoose.model('Product');
-
     for (const category of categories) {
-        const count = await Product.countDocuments({ category: category.slug });
+        const count = await Product.countDocuments({ category: category._id });
         await this.updateOne({ _id: category._id }, { productCount: count });
     }
 };
