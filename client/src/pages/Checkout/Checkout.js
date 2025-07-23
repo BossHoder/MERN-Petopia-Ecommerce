@@ -1,0 +1,228 @@
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { createOrder } from '../../store/actions/orderActions';
+import { getAddresses, addAddress } from '../../store/actions/addressActions';
+import { ORDER_CREATE_RESET } from '../../store/types';
+import Loader from '../../components/Loader/Loader';
+import Message from '../../components/Message/Message';
+import './Checkout.css';
+
+const Checkout = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [step, setStep] = useState(1);
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [shippingAddress, setShippingAddress] = useState({
+        address: '',
+        city: '',
+        postalCode: '',
+        country: 'Vietnam',
+    });
+
+    const { userInfo } = useSelector((state) => state.auth);
+    const { items: cartItems } = useSelector((state) => state.cart);
+    const { addresses, loading: addressLoading } = useSelector((state) => state.addresses);
+    const {
+        order,
+        success,
+        error,
+        loading: orderLoading,
+    } = useSelector((state) => state.orderCreate);
+
+    const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shippingPrice = itemsPrice > 100 ? 0 : 10; // Giả lập
+    const taxPrice = 0.1 * itemsPrice; // Giả lập 10%
+    const totalPrice = itemsPrice + shippingPrice + taxPrice;
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/login?redirect=/checkout');
+        } else {
+            dispatch(getAddresses());
+            if (success) {
+                dispatch({ type: ORDER_CREATE_RESET });
+                navigate(`/order/${order._id}`);
+            }
+        }
+    }, [navigate, userInfo, dispatch, success, order]);
+
+    const handleAddressChange = (e) => {
+        setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
+    };
+
+    const handleSelectSavedAddress = (addr) => {
+        setShippingAddress(addr);
+    };
+
+    const submitAddressHandler = (e) => {
+        e.preventDefault();
+        // Có thể thêm action `addAddress` ở đây nếu muốn lưu địa chỉ mới
+        setStep(2);
+    };
+
+    const submitPaymentHandler = (e) => {
+        e.preventDefault();
+        setStep(3);
+    };
+
+    const placeOrderHandler = () => {
+        dispatch(
+            createOrder({
+                orderItems: cartItems,
+                shippingAddress,
+                paymentMethod,
+                itemsPrice,
+                shippingPrice,
+                taxPrice,
+                totalPrice,
+            }),
+        );
+    };
+
+    return (
+        <div className="checkout-container">
+            <h1>Checkout</h1>
+            {orderLoading && <Loader />}
+            {error && <Message type="error">{error}</Message>}
+
+            <div className="checkout-steps">
+                <div className={step >= 1 ? 'step active' : 'step'}>Shipping</div>
+                <div className={step >= 2 ? 'step active' : 'step'}>Payment</div>
+                <div className={step >= 3 ? 'step active' : 'step'}>Place Order</div>
+            </div>
+
+            <div className="checkout-content">
+                <div className="checkout-form">
+                    {step === 1 && (
+                        <div>
+                            <h2>Shipping Address</h2>
+                            {addressLoading && <Loader />}
+                            {addresses && addresses.length > 0 && (
+                                <div className="saved-addresses">
+                                    <h3>Select a saved address:</h3>
+                                    {addresses.map((addr) => (
+                                        <div
+                                            key={addr._id}
+                                            className="saved-address"
+                                            onClick={() => handleSelectSavedAddress(addr)}
+                                        >
+                                            {addr.address}, {addr.city}, {addr.postalCode}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <form onSubmit={submitAddressHandler}>
+                                <div className="form-group">
+                                    <label>Address</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={shippingAddress.address}
+                                        onChange={handleAddressChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>City</label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={shippingAddress.city}
+                                        onChange={handleAddressChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Postal Code</label>
+                                    <input
+                                        type="text"
+                                        name="postalCode"
+                                        value={shippingAddress.postalCode}
+                                        onChange={handleAddressChange}
+                                        required
+                                    />
+                                </div>
+                                <button type="submit" className="btn btn-primary">
+                                    Continue
+                                </button>
+                            </form>
+                        </div>
+                    )}
+
+                    {step === 2 && (
+                        <div>
+                            <h2>Payment Method</h2>
+                            <form onSubmit={submitPaymentHandler}>
+                                <div className="form-group">
+                                    <input
+                                        type="radio"
+                                        id="cod"
+                                        name="paymentMethod"
+                                        value="COD"
+                                        checked={paymentMethod === 'COD'}
+                                        onChange={(e) => setPaymentMethod(e.target.value)}
+                                    />
+                                    <label htmlFor="cod">Cash on Delivery (COD)</label>
+                                </div>
+                                <div className="form-group">
+                                    <input
+                                        type="radio"
+                                        id="paypal"
+                                        name="paymentMethod"
+                                        value="PayPal"
+                                        checked={paymentMethod === 'PayPal'}
+                                        onChange={(e) => setPaymentMethod(e.target.value)}
+                                    />
+                                    <label htmlFor="paypal">PayPal or Credit Card</label>
+                                </div>
+                                <button type="submit" className="btn btn-primary">
+                                    Continue
+                                </button>
+                            </form>
+                        </div>
+                    )}
+
+                    {step === 3 && (
+                        <div>
+                            <h2>Confirm Order</h2>
+                            <p>
+                                You are about to place the following order. Please review and
+                                confirm.
+                            </p>
+                            <button
+                                onClick={placeOrderHandler}
+                                className="btn btn-primary btn-block"
+                            >
+                                Place Order
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <div className="checkout-summary">
+                    <h2>Order Summary</h2>
+                    <div className="summary-row">
+                        <span>Items:</span>
+                        <span>${itemsPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="summary-row">
+                        <span>Shipping:</span>
+                        <span>${shippingPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="summary-row">
+                        <span>Tax:</span>
+                        <span>${taxPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="summary-total">
+                        <span>Total:</span>
+                        <span>${totalPrice.toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Checkout;

@@ -1,0 +1,118 @@
+.checkout-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.checkout-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.step {
+    color: #666;
+    padding: 0 1rem;
+    position: relative;
+}
+
+.step.active {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.step:not(:last-child)::after {
+    content: '>';
+    position: absolute;
+    right: -15px;
+    color: #ccc;
+}
+
+.checkout-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.checkout-form h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.saved-addresses {
+    margin-bottom: 2rem;
+}
+
+.saved-address {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.saved-address:hover {
+    border-color: #f59e0b;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input[type='text'],
+.form-group input[type='radio'] + label {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.form-group input[type='radio'] {
+    margin-right: 0.5rem;
+}
+
+.checkout-summary {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.checkout-summary h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-summary .summary-row,
+.checkout-summary .summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.checkout-summary .summary-total {
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .checkout-content {
+        grid-template-columns: 1fr;
+    }
+}
