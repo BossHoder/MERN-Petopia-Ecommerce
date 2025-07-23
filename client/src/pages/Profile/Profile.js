@@ -25,14 +25,14 @@ const Profile = () => {
     const { t } = useTranslation('common');
 
     // Lấy state từ Redux
-    const { me: userInfo } = useSelector((state) => state.auth);
+    const { me: userInfo, isLoading } = useSelector((state) => state.auth);
     const { profile, loading: profileLoading } = useSelector((state) => state.user);
     // Các state khác cho order và address sẽ do component con tự quản lý
 
     useEffect(() => {
-        if (!userInfo) {
+        if (userInfo === null && !isLoading) {
             navigate('/login');
-        } else {
+        } else if (userInfo) {
             // Nếu có username trên URL, đó là xem profile của người khác
             if (paramUsername) {
                 // Chỉ admin mới có quyền xem profile người khác
@@ -47,7 +47,11 @@ const Profile = () => {
                 dispatch(getProfile(null, navigate)); // Truyền null hoặc undefined
             }
         }
-    }, [dispatch, navigate, userInfo, paramUsername]);
+    }, [dispatch, navigate, userInfo, paramUsername, isLoading]);
+
+    if (userInfo === null && isLoading) {
+        return <Loader />;
+    }
 
     const renderContent = () => {
         switch (activeTab) {

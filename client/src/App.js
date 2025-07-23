@@ -21,8 +21,25 @@ import Products from './pages/Products/Products'; // Import Products
 import ProductDetails from './pages/ProductDetails/ProductDetails'; // Import ProductDetails
 
 import Loader from './components/Loader/Loader';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { logInUserWithOauth, loadMe } from './store/actions/authActions';
+
+function ToastDispatcher() {
+    const queue = useSelector((state) => state.toast.queue);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        if (queue.length > 0) {
+            const { message, type } = queue[0];
+            toast[type || 'info'](message);
+            setTimeout(() => {
+                dispatch({ type: 'REMOVE_TOAST' });
+            }, 100);
+        }
+    }, [queue, dispatch]);
+    return null;
+}
 
 const App = () => {
     const dispatch = useDispatch();
@@ -44,6 +61,7 @@ const App = () => {
 
     return (
         <>
+            <ToastDispatcher />
             {appLoaded ? (
                 <Layout>
                     <Routes>
@@ -62,6 +80,18 @@ const App = () => {
                         <Route path="/" element={<Home />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="colored"
+                    />
                 </Layout>
             ) : (
                 <Loader />

@@ -1,6 +1,6 @@
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
-import { asyncHandler } from '../middleware/asyncHandler.js'; // Giả sử bạn có một middleware xử lý lỗi async
+import asyncHandler from '../middleware/asyncHandler.js'; // Giả sử bạn có một middleware xử lý lỗi async
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import {
     successResponse,

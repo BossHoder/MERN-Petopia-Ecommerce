@@ -3,6 +3,7 @@ import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
 import Review from '../models/Review.js';
+import ParentCategory from '../models/parentCategory.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
 import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
@@ -24,6 +25,7 @@ class ProductController {
                 sortBy = 'createdAt',
                 sortOrder = 'desc',
                 category,
+                parentCategoryId,
                 brand,
                 minPrice,
                 maxPrice,
@@ -35,6 +37,11 @@ class ProductController {
 
             const filter = { isPublished };
             if (category) filter.category = category;
+            if (parentCategoryId) {
+                // Lấy tất cả category thuộc parentCategory
+                const categories = await Category.find({ parentCategory: parentCategoryId }).select('_id');
+                filter.category = { $in: categories.map((c) => c._id) };
+            }
             if (brand) filter.brand = { $regex: brand, $options: 'i' };
             if (inStock !== undefined) filter.stockQuantity = inStock ? { $gt: 0 } : { $eq: 0 };
             if (isFeatured !== undefined) filter.isFeatured = isFeatured;
@@ -47,11 +54,18 @@ class ProductController {
             }
 
             if (search) {
+                // Tìm category và parentCategory match keyword
+                const categories = await Category.find({ name: { $regex: search, $options: 'i' } }).select('_id');
+                const parentCategories = await ParentCategory.find({ name: { $regex: search, $options: 'i' } }).select(
+                    '_id',
+                );
                 filter.$or = [
                     { name: { $regex: search, $options: 'i' } },
                     { description: { $regex: search, $options: 'i' } },
                     { brand: { $regex: search, $options: 'i' } },
                     { tags: { $in: [new RegExp(search, 'i')] } },
+                    { category: { $in: categories.map((c) => c._id) } },
+                    { parentCategory: { $in: parentCategories.map((pc) => pc._id) } },
                 ];
             }
 
@@ -63,7 +77,11 @@ class ProductController {
             // Execute query with population
             const [products, totalProducts] = await Promise.all([
                 Product.find(filter)
-                    .populate('category', 'name slug')
+                    .populate({
+                        path: 'category',
+                        select: 'name slug parentCategory',
+                        populate: { path: 'parentCategory', select: 'name slug' },
+                    })
                     .sort(sort)
                     .skip(skip)
                     .limit(parseInt(limit))
@@ -86,6 +104,7 @@ class ProductController {
                 },
                 filters: {
                     category,
+                    parentCategoryId,
                     brand,
                     minPrice,
                     maxPrice,

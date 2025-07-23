@@ -20,7 +20,5 @@
         "format:root": "npx prettier --write \"package.json\" \"*.json\" \".vscode/*.json\""
     },
     "author": "Theanhdola",
-    "license": "MIT",
-    "dependencies": {},
-    "devDependencies": {}
+    "license": "MIT"
 }

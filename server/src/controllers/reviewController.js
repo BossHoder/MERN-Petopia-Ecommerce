@@ -1,6 +1,6 @@
 import Review from '../models/Review.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
-import { asyncHandler } from '../middleware/asyncHandler.js';
+import asyncHandler from '../middleware/asyncHandler.js';
 import { successResponse, errorResponse } from '../helpers/responseHelper.js';
 
 // @desc    Get reviews for a product

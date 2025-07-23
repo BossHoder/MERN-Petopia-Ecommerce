@@ -1,5 +1,4 @@
 import API from '../../services/api';
-
 import { attachTokenToHeaders } from './authActions';
 import {
     GET_MESSAGES_LOADING,
@@ -16,6 +15,22 @@ import {
     EDIT_MESSAGE_FAIL,
     CLEAR_MESSAGE_ERROR,
 } from '../types';
+import errorCodeMap from '../../constants/errorCodeMap';
+import i18n from '../../i18n/i18n';
+
+const mapErrorToMessage = (error) => {
+    // Ưu tiên code lỗi backend, nếu không có thì dùng message
+    const code = error?.response?.data?.code || error?.code;
+    const backendMsg = error?.response?.data?.message;
+    if (code && errorCodeMap[code]) {
+        return i18n.t(errorCodeMap[code]);
+    }
+    if (backendMsg && errorCodeMap[backendMsg]) {
+        return i18n.t(errorCodeMap[backendMsg]);
+    }
+    // fallback: dùng message backend hoặc message mặc định
+    return backendMsg || error.message || i18n.t('errors.internal');
+};
 
 export const getMessages = () => async (dispatch, getState) => {
     dispatch({
@@ -24,7 +39,6 @@ export const getMessages = () => async (dispatch, getState) => {
     try {
         const options = attachTokenToHeaders(getState);
         const response = await API.get('/api/messages', options);
-
         dispatch({
             type: GET_MESSAGES_SUCCESS,
             payload: { messages: response.data.messages },
@@ -32,7 +46,7 @@ export const getMessages = () => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: GET_MESSAGES_FAIL,
-            payload: { error: err?.response?.data.message || err.message },
+            payload: { error: mapErrorToMessage(err) },
         });
     }
 };
@@ -45,7 +59,6 @@ export const addMessage = (formData) => async (dispatch, getState) => {
     try {
         const options = attachTokenToHeaders(getState);
         const response = await API.post('/api/messages', formData, options);
-
         dispatch({
             type: ADD_MESSAGE_SUCCESS,
             payload: { message: response.data.message },
@@ -53,7 +66,7 @@ export const addMessage = (formData) => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: ADD_MESSAGE_FAIL,
-            payload: { error: err?.response?.data.message || err.message },
+            payload: { error: mapErrorToMessage(err) },
         });
     }
 };
@@ -66,7 +79,6 @@ export const deleteMessage = (id) => async (dispatch, getState) => {
     try {
         const options = attachTokenToHeaders(getState);
         const response = await API.delete(`/api/messages/${id}`, options);
-
         dispatch({
             type: DELETE_MESSAGE_SUCCESS,
             payload: { message: response.data.message },
@@ -74,7 +86,7 @@ export const deleteMessage = (id) => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: DELETE_MESSAGE_FAIL,
-            payload: { error: err?.response?.data.message || err.message },
+            payload: { error: mapErrorToMessage(err) },
         });
     }
 };
@@ -87,7 +99,6 @@ export const editMessage = (id, formData) => async (dispatch, getState) => {
     try {
         const options = attachTokenToHeaders(getState);
         const response = await API.put(`/api/messages/${id}`, formData, options);
-
         dispatch({
             type: EDIT_MESSAGE_SUCCESS,
             payload: { message: response.data.message },
@@ -95,7 +106,7 @@ export const editMessage = (id, formData) => async (dispatch, getState) => {
     } catch (err) {
         dispatch({
             type: EDIT_MESSAGE_FAIL,
-            payload: { error: err?.response?.data.message || err.message, id },
+            payload: { error: mapErrorToMessage(err), id },
         });
     }
 };

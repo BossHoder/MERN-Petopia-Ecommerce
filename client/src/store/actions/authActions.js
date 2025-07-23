@@ -16,6 +16,14 @@ import {
     RESEED_DATABASE_SUCCESS,
     RESEED_DATABASE_FAIL,
 } from '../types';
+// import { toast } from 'react-toastify';
+
+// Toast helper (simple, có thể thay bằng Notification component toàn cục nếu có)
+const showToast = (msg, type = 'success') => {
+    if (window && window.alert) {
+        window.alert(msg); // Thay bằng hệ thống toast thực tế nếu có
+    }
+};
 
 export const loadMe = () => async (dispatch, getState) => {
     const state = getState();
@@ -66,11 +74,22 @@ export const loginUserWithEmail = (formData, history) => async (dispatch, getSta
         dispatch(loadMe());
 
         // Navigate với React Router v6
+        dispatch({
+            type: 'SHOW_TOAST',
+            payload: { message: 'Đăng nhập thành công!', type: 'success' },
+        });
         history('/');
     } catch (err) {
         dispatch({
             type: LOGIN_WITH_EMAIL_FAIL,
             payload: { error: err?.response?.data?.message || err.message },
+        });
+        dispatch({
+            type: 'SHOW_TOAST',
+            payload: {
+                message: err?.response?.data?.message || err.message || 'Đăng nhập thất bại!',
+                type: 'error',
+            },
         });
     }
 };

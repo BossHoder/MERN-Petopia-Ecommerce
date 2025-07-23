@@ -584,5 +584,26 @@
         "writeMessage": "Write a message",
         "placeholder": "Write a message",
         "addMessage": "Add Message"
+    },
+    "errors": {
+        "validation": "Invalid data. Please check your input.",
+        "productNotFound": "Product not found.",
+        "cartNotFound": "Cart not found.",
+        "orderNotFound": "Order not found.",
+        "userNotFound": "User not found.",
+        "categoryNotFound": "Category not found.",
+        "couponNotFound": "Coupon not found.",
+        "unauthorized": "You need to log in.",
+        "forbidden": "You do not have permission to perform this action.",
+        "internal": "An internal error occurred. Please try again later.",
+        "notEnoughStock": "Not enough product in stock.",
+        "alreadyReviewed": "You have already reviewed this product.",
+        "skuExists": "SKU already exists.",
+        "slugExists": "Slug already exists.",
+        "couponInvalid": "Coupon is invalid or expired.",
+        "accessDenied": "Access denied.",
+        "addressNotFound": "Address not found.",
+        "tooManyRequests": "Too many requests. Please try again later.",
+        "serviceUnavailable": "Service temporarily unavailable. Please try again later."
     }
 }

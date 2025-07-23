@@ -1,5 +1,5 @@
 import Order from '../models/Order.js';
-import { asyncHandler } from '../middleware/asyncHandler.js';
+import asyncHandler from '../middleware/asyncHandler.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import {
     successResponse,

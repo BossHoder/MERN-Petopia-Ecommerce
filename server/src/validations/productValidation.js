@@ -118,6 +118,7 @@ export const createProductSchema = Joi.object({
 
     isPublished: Joi.boolean().default(true),
 });
+
 export const updateProductSchema = createProductSchema.fork(
     ['name', 'description', 'price', 'sku', 'category', 'stockQuantity', 'images', 'brand'],
     (schema) => schema.optional(),
@@ -147,8 +148,4 @@ export const validateProduct = (product) => {
 
 export const validateProductUpdate = (product) => {
     return updateProductSchema.validate(product);
-};
-
-export const validateProductQuery = (query) => {
-    return productQuerySchema.validate(query);
 };
