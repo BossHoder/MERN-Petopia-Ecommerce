@@ -15,7 +15,7 @@ import {
 
 import { logOutUser, loadMe } from './authActions';
 
-export const editUser = (id, formData, history) => async (dispatch, getState) => {
+export const editUser = (id, formData, navigate) => async (dispatch, getState) => {
     dispatch({
         type: EDIT_USER_LOADING,
     });
@@ -52,7 +52,7 @@ export const editUser = (id, formData, history) => async (dispatch, getState) =>
 
         // Only redirect if username changed
         if (getState().auth.me?.username !== response.data.user.username) {
-            history.push(`/${response.data.user.username}`);
+            navigate(`/${response.data.user.username}`);
         }
     } catch (err) {
         console.error('editUser error:', err);
@@ -77,7 +77,7 @@ export const editUser = (id, formData, history) => async (dispatch, getState) =>
     }
 };
 
-export const getProfile = (username, history) => async (dispatch, getState) => {
+export const getProfile = (username, navigate) => async (dispatch, getState) => {
     dispatch({
         type: GET_PROFILE_LOADING,
     });
@@ -91,7 +91,7 @@ export const getProfile = (username, history) => async (dispatch, getState) => {
         });
     } catch (err) {
         if (err?.response?.status === 404) {
-            history.push('/notfound');
+            navigate('/notfound');
         }
         dispatch({
             type: GET_PROFILE_FAIL,
@@ -100,7 +100,7 @@ export const getProfile = (username, history) => async (dispatch, getState) => {
     }
 };
 
-export const deleteUser = (id, history) => async (dispatch, getState) => {
+export const deleteUser = (id, navigate) => async (dispatch, getState) => {
     dispatch({
         type: DELETE_USER_LOADING,
         payload: { id },
@@ -111,9 +111,9 @@ export const deleteUser = (id, history) => async (dispatch, getState) => {
 
         //logout only if he deleted himself
         if (getState().auth.me.id === response.data.user.id) {
-            dispatch(logOutUser(id, history));
+            dispatch(logOutUser(id, navigate));
         }
-        history.push('/users');
+        navigate('/users');
         dispatch({
             type: DELETE_USER_SUCCESS,
             payload: { message: response.data.user },

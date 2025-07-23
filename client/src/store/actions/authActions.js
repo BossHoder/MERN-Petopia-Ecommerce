@@ -99,17 +99,30 @@ export const logInUserWithOauth = (token) => async (dispatch, getState) => {
 };
 
 // Log user out
-export const logOutUser = (history) => async (dispatch) => {
+export const logOutUser = (navigate) => async (dispatch) => {
     try {
+        // Xóa token khỏi localStorage
+        localStorage.removeItem('token');
+
+        // Xóa cookie (nếu có)
         deleteAllCookies();
-        //just to log user logut on the server
+
+        // Gọi API để server ghi nhận logout (không bắt buộc, nhưng tốt cho việc tracking)
         await API.get('/auth/logout');
 
         dispatch({
             type: LOGOUT_SUCCESS,
         });
-        if (history) history.push('/');
-    } catch (err) {}
+
+        // Điều hướng về trang chủ
+        if (navigate) {
+            navigate('/');
+        }
+    } catch (err) {
+        // Thường thì không cần xử lý lỗi ở đây vì logout nên thành công
+        // Nếu có lỗi, chỉ cần log ra console
+        console.error('Logout failed:', err);
+    }
 };
 
 export const reseedDatabase = () => async (dispatch, getState) => {
