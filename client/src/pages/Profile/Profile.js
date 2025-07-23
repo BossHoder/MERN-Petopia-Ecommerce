@@ -1,320 +1,422 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { connect } from 'react-redux';
-import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import moment from 'moment';
-import { useNavigate, useParams } from 'react-router-dom';
 
-import { getProfile, editUser, deleteUser } from '../../store/actions/userActions';
-import { loadMe } from '../../store/actions/authActions';
-import Layout from '../../layout/Layout';
+import { getProfile, editUser } from '../../store/actions/userActions';
+import { listMyOrders } from '../../store/actions/orderActions';
+import {
+    getAddresses,
+    addAddress,
+    deleteAddress,
+    setDefaultAddress,
+} from '../../store/actions/addressActions';
 import Loader from '../../components/Loader/Loader';
-import requireAuth from '../../hoc/requireAuth';
-import { profileSchema } from './validation';
 import { getAvatarUrl } from '../../utils/helpers';
-import { useI18n } from '../../hooks/useI18n';
 
-import './styles.css';
+import './Profile.css'; // Sử dụng CSS mới
 
-//// nema password za oauth usere ni na klijentu ni serveru
-// validacija na serveru i error handilng na clientu
-// css i html
-//// delete user i logika da ne brise seedovane
-//// admin ruta i hoc
-// error handling login register posto je zajednicki loading i error
-//// mongo atlas i heroku deploy package json i promenljive env i config
-//// avatar staza u bazu samo fajl
-//// gitignore za placeholder avatar
-//// delete profile ruta
-
-// hendlovanje staza za slike, default avatar za izbrisane sa heroku
-// readme
-//// posle edit user treba redirect na novi username url
-
-// fore
-// za facebook more https apsolutni callback url
-// FACEBOOK_CALLBACK_URL=https://mern-boilerplate-demo.herokuapp.com/auth/facebook/callback
-// da bi prihvatio fb domen mora dole da se poklapa sa siteurl
-
-const Profile = ({
-    getProfile,
-    user: { profile, isLoading, error },
-    auth: { me },
-    editUser,
-    deleteUser,
-    loadMe,
-}) => {
-    const { t } = useI18n();
+const Profile = () => {
+    const [activeTab, setActiveTab] = useState('profile');
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { username: matchUsername } = useParams();
-    const [isEdit, setIsEdit] = useState(false);
-    const [image, setImage] = useState(null);
-    const [avatar, setAvatar] = useState(null);
-    const [isMounted, setIsMounted] = useState(true);
-    const retryCount = useRef(0);
+    const { username: paramUsername } = useParams();
+
+    // Lấy state từ Redux
+    const { me: userInfo } = useSelector((state) => state.auth);
+    const { profile, loading: profileLoading } = useSelector((state) => state.user);
+    // Các state khác cho order và address sẽ do component con tự quản lý
 
     useEffect(() => {
-        getProfile(matchUsername, navigate);
-
-        // Cleanup function to prevent memory leaks
-        return () => {
-            setIsMounted(false);
-        };
-    }, [matchUsername, getProfile, navigate]);
-
-    // if changed his own username reload me, done in userActions
-
-    const onChange = (event) => {
-        const file = event.currentTarget.files[0];
-
-        if (!file) return;
-
-        // Check file size (5MB limit)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File size must be less than 5MB');
-            return;
-        }
-
-        // Check file type
-        if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-            alert('Only PNG, JPG and JPEG files are allowed');
-            return;
-        }
-
-        formik.setFieldValue('image', file);
-        setImage(URL.createObjectURL(file));
-        setAvatar(file);
-    };
-
-    const handleClickEdit = () => {
-        if (!profile || !profile.id) return;
-
-        retryCount.current = 0;
-        setIsEdit((oldIsEdit) => !oldIsEdit);
-        setImage(null);
-        setAvatar(null);
-        formik.setFieldValue('id', profile.id);
-        formik.setFieldValue('name', profile.name);
-        formik.setFieldValue('username', profile.username);
-    };
-
-    const handleDeleteUser = (id) => {
-        deleteUser(id, navigate);
-    };
-
-    const formik = useFormik({
-        initialValues: {
-            id: '',
-            name: '',
-            username: '',
-            password: '',
-        },
-        validationSchema: profileSchema,
-        onSubmit: async (values) => {
-            if (!profile || !profile.id) {
-                console.error('No profile data available');
-                return;
+        if (!userInfo) {
+            navigate('/login');
+        } else {
+            if (userInfo.username === paramUsername || userInfo.role === 'ADMIN') {
+                dispatch(getProfile(paramUsername, navigate));
+            } else {
+                navigate('/');
             }
+        }
+    }, [dispatch, navigate, userInfo, paramUsername]);
 
-            try {
-                const formData = new FormData();
-
-                // Only append avatar if a new one was selected
-                // Only append avatar if a new one was selected
-                if (avatar) {
-                    formData.append('avatar', avatar);
-                }
-
-                formData.append('name', values.name || '');
-                formData.append('username', values.username || '');
-                // Only append password for email providers and if password is provided
-                if (
-                    profile.provider === 'email' &&
-                    values.password &&
-                    values.password.trim() !== ''
-                ) {
-                    formData.append('password', values.password);
-                }
-
-                console.log('Submitting form with data:', {
-                    id: values.id,
-                    name: values.name,
-                    username: values.username,
-                    hasAvatar: !!avatar,
-                    provider: profile.provider,
-                });
-
-                await editUser(values.id, formData, navigate);
-
-                // Reset form state and reload profile after successful update
-                if (isMounted) {
-                    setIsEdit(false);
-                    setImage(null);
-                    setAvatar(null);
-                    // Reload profile to get updated avatar
-                    await getProfile(profile.id);
-                }
-            } catch (error) {
-                console.error('Form submission error:', error);
-            }
-        },
-    });
+    const renderContent = () => {
+        switch (activeTab) {
+            case 'orders':
+                return <OrderHistory />;
+            case 'addresses':
+                return <AddressBook />;
+            case 'profile':
+            default:
+                return <ProfileSettings profile={profile} loading={profileLoading} />;
+        }
+    };
 
     return (
-        <Layout>
-            <div className="profile">
-                <h1>{t('profile.title')}</h1>
-                <p>{t('profile.description')}</p>
-                {isLoading || !profile || !profile.id ? (
-                    <Loader />
-                ) : (
-                    <div className="profile-info">
-                        <img
-                            src={image ? image : getAvatarUrl(profile.avatar)}
-                            className="avatar"
-                            alt="User avatar"
-                            onError={(e) => {
-                                console.error('Avatar failed to load:', e.target.src);
-                                console.log('Profile avatar path:', profile.avatar);
-                                console.log('Generated URL:', getAvatarUrl(profile.avatar));
-                            }}
-                        />
-                        <div className="info-container">
-                            <div>
-                                <span className="label">{t('profile.provider')}: </span>
-                                <span className="info">{profile.provider}</span>
-                            </div>
-                            <div>
-                                <span className="label">{t('profile.role')}: </span>
-                                <span className="info">{profile.role}</span>
-                            </div>
-                            <div>
-                                <span className="label">{t('profile.name')}: </span>
-                                <span className="info">{profile.name}</span>
-                            </div>
-                            <div>
-                                <span className="label">{t('profile.username')}: </span>
-                                <span className="info">{profile.username}</span>
-                            </div>
-                            <div>
-                                <span className="label">Email: </span>
-                                <span className="info">{profile.email}</span>
-                            </div>
-                            <div>
-                                <span className="label">Joined: </span>
-                                <span className="info">
-                                    {moment(profile.createdAt).format(
-                                        'dddd, MMMM Do YYYY, H:mm:ss',
-                                    )}
-                                </span>
-                            </div>
-                            <div>
-                                <button
-                                    className="btn"
-                                    type="button"
-                                    onClick={handleClickEdit}
-                                    disabled={
-                                        !(me?.username === profile.username || me?.role === 'ADMIN')
-                                    }
-                                >
-                                    {isEdit ? 'Cancel' : 'Edit'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {error && <p className="error">{error}</p>}
-
-                {isEdit && (
-                    <div className="form">
-                        <form onSubmit={formik.handleSubmit}>
-                            <div>
-                                <label>Avatar:</label>
-                                <input name="image" type="file" onChange={onChange} />
-                                {image && (
-                                    <button
-                                        className="btn"
-                                        onClick={() => {
-                                            setImage(null);
-                                            setAvatar(null);
-                                        }}
-                                        type="button"
-                                    >
-                                        Remove Image
-                                    </button>
-                                )}
-                            </div>
-                            <input name="id" type="hidden" value={formik.values.id} />
-                            <div className="input-div">
-                                <label>{t('profile.name')}:</label>
-                                <input
-                                    placeholder={t('profile.name')}
-                                    name="name"
-                                    className=""
-                                    type="text"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.name}
-                                />
-                                {formik.touched.name && formik.errors.name ? (
-                                    <p className="error">{formik.errors.name}</p>
-                                ) : null}
-                            </div>
-                            <div className="input-div">
-                                <label>{t('profile.username')}:</label>
-                                <input
-                                    placeholder={t('profile.username')}
-                                    name="username"
-                                    className=""
-                                    type="text"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.username}
-                                />
-                                {formik.touched.username && formik.errors.username ? (
-                                    <p className="error">{formik.errors.username}</p>
-                                ) : null}
-                            </div>
-                            {profile.provider === 'email' && (
-                                <div className="input-div">
-                                    <label>{t('profile.password')}:</label>
-                                    <input
-                                        placeholder={t('profile.password')}
-                                        name="password"
-                                        className=""
-                                        type="password"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.password}
-                                    />
-                                    {formik.touched.password && formik.errors.password ? (
-                                        <p className="error">{formik.errors.password}</p>
-                                    ) : null}
-                                </div>
-                            )}
-                            <button type="submit" className="btn">
-                                {t('common.save')}
-                            </button>
-                            <button
-                                onClick={() => handleDeleteUser(profile.id)}
-                                type="button"
-                                className="btn"
-                            >
-                                {t('profile.deleteProfile')}
-                            </button>
-                        </form>
-                    </div>
-                )}
+        <div className="profile-container">
+            <div className="profile-sidebar">
+                <ul className="profile-tabs">
+                    <li
+                        className={activeTab === 'profile' ? 'active' : ''}
+                        onClick={() => setActiveTab('profile')}
+                    >
+                        Profile Settings
+                    </li>
+                    <li
+                        className={activeTab === 'orders' ? 'active' : ''}
+                        onClick={() => setActiveTab('orders')}
+                    >
+                        Order History
+                    </li>
+                    <li
+                        className={activeTab === 'addresses' ? 'active' : ''}
+                        onClick={() => setActiveTab('addresses')}
+                    >
+                        Address Book
+                    </li>
+                </ul>
             </div>
-        </Layout>
+            <div className="profile-content">{renderContent()}</div>
+        </div>
     );
 };
 
-const mapStateToProps = (state) => ({
-    user: state.user,
-    auth: state.auth,
-});
+// --- Sub-components for each tab ---
 
-export default requireAuth(
-    connect(mapStateToProps, { getProfile, editUser, deleteUser, loadMe })(Profile),
-);
+const ProfileSettings = ({ profile, loading }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [isEdit, setIsEdit] = useState(false);
+    const [avatar, setAvatar] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState('');
+
+    const [formData, setFormData] = useState({
+        name: '',
+        username: '',
+        password: '',
+    });
+
+    useEffect(() => {
+        if (profile) {
+            setFormData({
+                name: profile.name,
+                username: profile.username,
+                password: '',
+            });
+            setAvatarPreview(getAvatarUrl(profile.avatar));
+        }
+    }, [profile]);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setAvatar(file);
+            setAvatarPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const data = new FormData();
+        data.append('name', formData.name);
+        data.append('username', formData.username);
+        if (formData.password) {
+            data.append('password', formData.password);
+        }
+        if (avatar) {
+            data.append('avatar', avatar);
+        }
+
+        dispatch(editUser(profile._id, data, navigate));
+        setIsEdit(false);
+    };
+
+    return loading ? (
+        <Loader />
+    ) : (
+        <div>
+            <h2>Profile Settings</h2>
+            <div className="profile-settings-info">
+                <img
+                    src={avatarPreview}
+                    alt="avatar"
+                    style={{
+                        width: '100px',
+                        height: '100px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                    }}
+                />
+                {!isEdit ? (
+                    <div>
+                        <p>
+                            <strong>Name:</strong> {profile?.name}
+                        </p>
+                        <p>
+                            <strong>Username:</strong> {profile?.username}
+                        </p>
+                        <p>
+                            <strong>Email:</strong> {profile?.email}
+                        </p>
+                        <p>
+                            <strong>Joined:</strong> {moment(profile?.createdAt).format('LL')}
+                        </p>
+                        <button className="btn btn-primary" onClick={() => setIsEdit(true)}>
+                            Edit Profile
+                        </button>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="profile-edit-form">
+                        <div className="form-group">
+                            <label>Avatar</label>
+                            <input type="file" onChange={handleAvatarChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Name</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Username</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        {profile?.provider === 'email' && (
+                            <div className="form-group">
+                                <label>New Password</label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="Leave blank to keep the same"
+                                />
+                            </div>
+                        )}
+                        <div className="form-actions">
+                            <button type="submit" className="btn btn-primary">
+                                Save Changes
+                            </button>
+                            <button type="button" className="btn" onClick={() => setIsEdit(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const OrderHistory = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const orderListMy = useSelector((state) => state.orderListMy);
+    const { loading, error, orders } = orderListMy;
+
+    useEffect(() => {
+        dispatch(listMyOrders());
+    }, [dispatch]);
+
+    return (
+        <div>
+            <h2>My Orders</h2>
+            {loading ? (
+                <Loader />
+            ) : error ? (
+                <p className="error-message">{error}</p>
+            ) : (
+                <table className="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>DATE</th>
+                            <th>TOTAL</th>
+                            <th>PAID</th>
+                            <th>DELIVERED</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders && orders.length > 0 ? (
+                            orders.map((order) => (
+                                <tr key={order._id}>
+                                    <td>{order._id}</td>
+                                    <td>{moment(order.createdAt).format('YYYY-MM-DD')}</td>
+                                    <td>${order.totalPrice.toFixed(2)}</td>
+                                    <td>
+                                        {order.isPaid ? (
+                                            moment(order.paidAt).format('YYYY-MM-DD')
+                                        ) : (
+                                            <i
+                                                className="fas fa-times"
+                                                style={{ color: 'red' }}
+                                            ></i>
+                                        )}
+                                    </td>
+                                    <td>
+                                        {order.isDelivered ? (
+                                            moment(order.deliveredAt).format('YYYY-MM-DD')
+                                        ) : (
+                                            <i
+                                                className="fas fa-times"
+                                                style={{ color: 'red' }}
+                                            ></i>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="btn btn-sm"
+                                            onClick={() => navigate(`/order/${order._id}`)}
+                                        >
+                                            Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6">You have no orders.</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            )}
+        </div>
+    );
+};
+
+const AddressBook = () => {
+    const dispatch = useDispatch();
+    const [isFormVisible, setIsFormVisible] = useState(false);
+    const [formData, setFormData] = useState({
+        address: '',
+        city: '',
+        postalCode: '',
+        country: '',
+    });
+
+    const { addresses, loading, error } = useSelector((state) => state.address);
+
+    useEffect(() => {
+        dispatch(getAddresses());
+    }, [dispatch]);
+
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(addAddress(formData));
+        setIsFormVisible(false);
+        setFormData({ address: '', city: '', postalCode: '', country: '' });
+    };
+
+    const handleDelete = (addressId) => {
+        if (window.confirm('Are you sure you want to delete this address?')) {
+            dispatch(deleteAddress(addressId));
+        }
+    };
+
+    const handleSetDefault = (addressId) => {
+        dispatch(setDefaultAddress(addressId));
+    };
+
+    return (
+        <div>
+            <h2>Address Book</h2>
+            {loading && <Loader />}
+            {error && <p className="error-message">{error}</p>}
+
+            <button className="btn btn-primary" onClick={() => setIsFormVisible(!isFormVisible)}>
+                {isFormVisible ? 'Cancel' : 'Add New Address'}
+            </button>
+
+            {isFormVisible && (
+                <form onSubmit={handleSubmit} className="address-form">
+                    {/* Các input cho address, city, postalCode, country */}
+                    <div className="form-group">
+                        <label>Address</label>
+                        <input
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>City</label>
+                        <input name="city" value={formData.city} onChange={handleChange} required />
+                    </div>
+                    <div className="form-group">
+                        <label>Postal Code</label>
+                        <input
+                            name="postalCode"
+                            value={formData.postalCode}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Country</label>
+                        <input
+                            name="country"
+                            value={formData.country}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn">
+                        Save Address
+                    </button>
+                </form>
+            )}
+
+            <div className="address-list">
+                {addresses &&
+                    addresses.map((addr) => (
+                        <div
+                            key={addr._id}
+                            className={`address-card ${addr.isDefault ? 'default' : ''}`}
+                        >
+                            <p>{addr.address}</p>
+                            <p>
+                                {addr.city}, {addr.postalCode}
+                            </p>
+                            <p>{addr.country}</p>
+                            {addr.isDefault && <span className="default-badge">Default</span>}
+                            <div className="address-actions">
+                                {!addr.isDefault && (
+                                    <button
+                                        className="btn btn-sm"
+                                        onClick={() => handleSetDefault(addr._id)}
+                                    >
+                                        Set as Default
+                                    </button>
+                                )}
+                                <button
+                                    className="btn btn-sm btn-danger"
+                                    onClick={() => handleDelete(addr._id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+            </div>
+        </div>
+    );
+};
+
+export default Profile;
