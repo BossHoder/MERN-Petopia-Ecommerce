@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { getAllCategories } from '../../store/actions/categoryActions';
 import './Sidebar.css';
 
+const kebabToCamel = (s) => s.replace(/-./g, (x) => x[1].toUpperCase());
+
 const Sidebar = ({ onFilterChange }) => {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const { categories, loading } = useSelector((state) => state.categories);
 
@@ -40,7 +44,7 @@ const Sidebar = ({ onFilterChange }) => {
                         <option value="">All</option>
                         {categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
-                                {cat.name}
+                                {t(`categoriesList.${kebabToCamel(cat.slug)}`, cat.name)}
                             </option>
                         ))}
                     </select>

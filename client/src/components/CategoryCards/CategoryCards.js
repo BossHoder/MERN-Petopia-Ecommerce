@@ -6,6 +6,8 @@ import { getFeaturedCategories } from '../../store/actions/categoryActions';
 import Loader from '../Loader/Loader';
 import './CategoryCards.css';
 
+const kebabToCamel = (str) => str.replace(/-./g, (m) => m.toUpperCase()[1]);
+
 const CategoryCards = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -69,7 +71,10 @@ const CategoryCards = () => {
                                     {getCategoryIcon(category.slug)}
                                 </div>
                                 <h3 className="category-name">
-                                    {t(`categoriesList.${category.slug}`, category.name)}
+                                    {t(
+                                        `categoriesList.${kebabToCamel(category.slug)}`,
+                                        category.name,
+                                    )}
                                 </h3>
                                 {category.productCount > 0 && (
                                     <span className="category-count">

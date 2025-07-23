@@ -13,7 +13,8 @@
         "account": "Account",
         "login": "Login",
         "register": "Register",
-        "logout": "Logout"
+        "logout": "Logout",
+        "coupons": "Coupons"
     },
     "footer": {
         "copyright": "@theanhdola 2025",
@@ -30,6 +31,7 @@
         "edit": "Edit",
         "add": "Add",
         "search": "Search",
+        "searchProducts": "Search products...",
         "filter": "Filter",
         "sort": "Sort",
         "language": "Language",

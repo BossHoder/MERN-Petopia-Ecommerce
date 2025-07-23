@@ -13,7 +13,8 @@
         "account": "Tài khoản",
         "login": "Đăng nhập",
         "register": "Đăng ký",
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "coupons": "Mã khuyến mãi"
     },
     "footer": {
         "copyright": "@theanhdola 2025",
@@ -30,6 +31,7 @@
         "edit": "Chỉnh sửa",
         "add": "Thêm",
         "search": "Tìm kiếm",
+        "searchProducts": "Tìm kiếm sản phẩm...",
         "filter": "Lọc",
         "sort": "Sắp xếp",
         "language": "Ngôn ngữ",

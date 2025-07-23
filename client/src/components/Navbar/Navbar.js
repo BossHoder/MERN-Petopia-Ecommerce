@@ -1,168 +1,112 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-
-import { logOutUser } from '../../store/actions/authActions';
-import { getAvatarUrl } from '../../utils/helpers';
-import { useI18n } from '../../hooks/useI18n';
-import LanguageSelector from '../LanguageSelector/LanguageSelector';
-import SearchBox from '../SearchBox/SearchBox'; // Import SearchBox
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import { logout } from '../../store/actions/authActions';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../LanguageSelector';
+import SearchBox from '../SearchBox';
 import './styles.css';
 
-const Navbar = () => {
-    const { t } = useI18n();
-    const navigate = useNavigate();
-    const location = useLocation();
+const AppNavbar = () => {
+    const { t } = useTranslation('common');
     const dispatch = useDispatch();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const { cartItems } = useSelector((state) => state.cart);
 
-    const { isAuthenticated, me } = useSelector((state) => state.auth);
-    const { items: cartItems } = useSelector((state) => state.cart);
-
-    const onLogOut = (event) => {
-        event.preventDefault();
-        dispatch(logOutUser(navigate));
+    const handleLogout = () => {
+        dispatch(logout());
     };
 
-    const navigationItems = [
-        { key: 'shop', path: '/products', label: 'Cửa hàng' }, // Changed to /products
-        { key: 'dogs', path: '/products?category=dogs', label: 'Dành cho Chó' },
-        { key: 'cats', path: '/products?category=cats', label: 'Dành cho Mèo' },
-        { key: 'about', path: '/about', label: 'Về chúng tôi' },
-    ];
+    const authLinks = (
+        <>
+            {user && user.role === 'admin' && (
+                <LinkContainer to="/admin">
+                    <Nav.Link>{t('navbar.admin')}</Nav.Link>
+                </LinkContainer>
+            )}
+            <LinkContainer to="/cart">
+                <Nav.Link>
+                    <i className="fas fa-shopping-cart"></i>
+                    {cartItems.length > 0 && (
+                        <span className="badge badge-pill badge-danger">
+                            {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                        </span>
+                    )}
+                </Nav.Link>
+            </LinkContainer>
 
-    const isActive = (path) => location.pathname === path;
+            <NavDropdown
+                title={
+                    <img
+                        src={user?.avatar || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
+                        alt="User Avatar"
+                        className="avatar"
+                    />
+                }
+                id="user-menu-dropdown"
+                align="end"
+                className="avatar-dropdown"
+            >
+                <LinkContainer to="/profile">
+                    <NavDropdown.Item>{t('navbar.profile')}</NavDropdown.Item>
+                </LinkContainer>
+                <LinkContainer to="/coupons">
+                    <NavDropdown.Item>{t('navbar.coupons')}</NavDropdown.Item>
+                </LinkContainer>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>
+                    <i className="fas fa-sign-out-alt me-2"></i>
+                    {t('navbar.logout')}
+                </NavDropdown.Item>
+            </NavDropdown>
+        </>
+    );
+
+    const guestLinks = (
+        <>
+            <LinkContainer to="/login">
+                <Nav.Link>{t('navbar.login')}</Nav.Link>
+            </LinkContainer>
+            <LinkContainer to="/register">
+                <Nav.Link>{t('navbar.register')}</Nav.Link>
+            </LinkContainer>
+        </>
+    );
 
     return (
-        <nav className="navbar">
-            <div className="navbar-container">
-                <div className="navbar-content">
-                    {/* Logo */}
-                    <Link to="/" className="navbar-logo">
-                        <h1 className="logo-text">PETOPIA</h1>
-                    </Link>
-
-                    {/* Desktop Navigation */}
-                    <div className="navbar-nav desktop-nav">
-                        {navigationItems.map((item) => (
-                            <Link
-                                key={item.key}
-                                to={item.path}
-                                className={`nav-link ${
-                                    isActive(item.path) ? 'nav-link-active' : ''
-                                }`}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
-                    </div>
-
-                    {/* Right Section */}
-                    <div className="navbar-actions">
-                        {/* Search Box */}
+        <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
+            <Container>
+                <LinkContainer to="/">
+                    <Navbar.Brand>
+                        <img
+                            src="/logo.png"
+                            alt="Petopia"
+                            height="30"
+                            className="d-inline-block align-top"
+                        />{' '}
+                        Petopia
+                    </Navbar.Brand>
+                </LinkContainer>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="mx-auto">
                         <SearchBox />
-
-                        {/* Language Selector */}
+                    </Nav>
+                    <Nav className="align-items-center">
+                        <LinkContainer to="/">
+                            <Nav.Link>{t('navbar.home')}</Nav.Link>
+                        </LinkContainer>
+                        <LinkContainer to="/products">
+                            <Nav.Link>{t('navbar.products')}</Nav.Link>
+                        </LinkContainer>
+                        {isAuthenticated ? authLinks : guestLinks}
                         <LanguageSelector />
-
-                        {isAuthenticated ? (
-                            <>
-                                {/* User Menu */}
-                                <div className="user-menu">
-                                    <Link to="/profile" className="nav-icon-btn">
-                                        <img
-                                            className="avatar"
-                                            src={getAvatarUrl(me.avatar)}
-                                            alt="Avatar"
-                                        />
-                                    </Link>
-                                    {me?.role === 'ADMIN' && (
-                                        <Link to="/admin" className="nav-link admin-link">
-                                            Admin
-                                        </Link>
-                                    )}
-                                    <button onClick={onLogOut} className="nav-link logout-btn">
-                                        {t('navigation.logout')}
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <Link to="/login" className="nav-link login-btn">
-                                Đăng nhập
-                            </Link>
-                        )}
-
-                        {/* Shopping Cart */}
-                        <Link to="/cart" className="nav-icon-btn cart-btn">
-                            <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
-                                <path d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z"></path>
-                                <path d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z"></path>
-                                <path d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"></path>
-                            </svg>
-                            {cartItems.length > 0 && (
-                                <span className="cart-count">
-                                    {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* Mobile Menu Button */}
-                        <button
-                            className="mobile-menu-btn"
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        >
-                            <svg
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                            >
-                                <line x1="3" y1="6" x2="21" y2="6"></line>
-                                <line x1="3" y1="12" x2="21" y2="12"></line>
-                                <line x1="3" y1="18" x2="21" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                {/* Mobile Navigation */}
-                {isMobileMenuOpen && (
-                    <div className="mobile-nav">
-                        {navigationItems.map((item) => (
-                            <Link
-                                key={item.key}
-                                to={item.path}
-                                className={`mobile-nav-link ${
-                                    isActive(item.path) ? 'mobile-nav-link-active' : ''
-                                }`}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
-                        {!isAuthenticated && (
-                            <Link
-                                to="/login"
-                                className="mobile-nav-link"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                Đăng nhập
-                            </Link>
-                        )}
-                    </div>
-                )}
-            </div>
-        </nav>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
     );
 };
 
-export default Navbar;
+export default AppNavbar;
