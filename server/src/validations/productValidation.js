@@ -125,10 +125,10 @@ export const updateProductSchema = createProductSchema.fork(
 export const productQuerySchema = Joi.object({
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
-    sort: Joi.string()
+    sortBy: Joi.string()
         .valid('name', 'price', 'createdAt', 'ratings', 'stockQuantity', 'salesCount', 'viewCount')
         .default('createdAt'),
-    order: Joi.string().valid('asc', 'desc').default('desc'),
+    sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
     category: Joi.string().trim().optional(),
     brand: Joi.string().trim().optional(),
     minPrice: Joi.number().positive().optional(),

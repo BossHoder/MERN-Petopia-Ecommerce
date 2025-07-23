@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 import User from '../models/User.js';
@@ -19,8 +20,8 @@ class ProductController {
             const {
                 page = 1,
                 limit = 12,
-                sort: sortBy = 'createdAt',
-                order: sortOrder = 'desc',
+                sortBy = 'createdAt',
+                sortOrder = 'desc',
                 category,
                 brand,
                 minPrice,
@@ -336,6 +337,51 @@ class ProductController {
         } catch (error) {
             console.error('Error in getProductsByCategory:', error);
             return responseHelper.serverError(res, 'Failed to fetch products by category');
+        }
+    }
+
+    // Create a new review for a product
+    async createProductReview(req, res, next) {
+        const { rating, title, comment } = req.body;
+        const { id: productId } = req.params;
+        const userId = req.user.id;
+
+        try {
+            const product = await Product.findById(productId);
+            if (!product) {
+                return responseHelper.notFound(res, 'Product not found');
+            }
+
+            // Check if user has already reviewed this product
+            const alreadyReviewed = await Review.findOne({ product: productId, user: userId });
+            if (alreadyReviewed) {
+                return responseHelper.badRequest(res, 'You have already reviewed this product');
+            }
+
+            // Check if user has purchased this product
+            const userOrders = await mongoose.model('Order').find({ user: userId });
+            const hasPurchased = userOrders.some(
+                (order) => order.orderItems.some((item) => item.product.toString() === productId) && order.isPaid,
+            );
+
+            const review = new Review({
+                product: productId,
+                user: userId,
+                rating,
+                title,
+                comment,
+                verifiedPurchase: hasPurchased,
+            });
+
+            await review.save();
+
+            return responseHelper.created(res, {
+                message: 'Review added successfully',
+                review,
+            });
+        } catch (error) {
+            console.error('Error in createProductReview:', error);
+            return responseHelper.serverError(res, 'Failed to add review');
         }
     }
 }

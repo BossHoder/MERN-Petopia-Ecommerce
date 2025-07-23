@@ -12,6 +12,7 @@ router.get('/', ProductController.getAllProducts);
 router.get('/featured', ProductController.getFeaturedProducts);
 router.get('/category/:categorySlug', ProductController.getProductsByCategory);
 router.get('/:id', ProductController.getProductById);
+router.post('/:id/reviews', requireJwtAuth, ProductController.createProductReview);
 
 // ===========================================
 // ADMIN ROUTES

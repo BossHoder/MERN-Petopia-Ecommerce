@@ -201,43 +201,8 @@ const productSchema = new mongoose.Schema(
 );
 
 // ===========================================
-// REVIEW SCHEMA (embedded in products)
+// REVIEW SCHEMA (embedded in products) - REMOVED FOR SEPARATE REVIEW MODEL
 // ===========================================
-// Schema for customer reviews of products
-const reviewsSchema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        rating: {
-            type: Number,
-            required: true,
-            min: 1,
-            max: 5,
-        },
-        comment: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-        },
-    },
-    { timestamps: true },
-);
-
-productSchema.add({
-    reviews: [reviewsSchema],
-    numReviews: {
-        type: Number,
-        default: 0,
-    },
-});
 
 // ===========================================
 // OPTIMIZED INDEXES FOR SMALL SCALE (1000 users)
@@ -257,12 +222,12 @@ productSchema.index({ name: 'text', description: 'text' }); // Search functional
 // ===========================================
 // VIRTUAL FIELDS (calculated fields)
 // ===========================================
-// Calculate average rating from all reviews
-productSchema.virtual('averageRating').get(function () {
-    if (this.reviews.length === 0) return 0;
-    const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / this.reviews.length) * 10) / 10;
-});
+// REMOVED - This should be based on the separate Review model
+// productSchema.virtual('averageRating').get(function () {
+//     if (this.reviews.length === 0) return 0;
+//     const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+//     return Math.round((sum / this.reviews.length) * 10) / 10;
+// });
 
 // Get final price (sale price if available, otherwise regular price)
 productSchema.virtual('discountedPrice').get(function () {
@@ -277,15 +242,15 @@ productSchema.virtual('isOnSale').get(function () {
 // ===========================================
 // MIDDLEWARE (runs before saving)
 // ===========================================
-// Auto-update ratings and review count when reviews change
-productSchema.pre('save', function (next) {
-    if (this.reviews && this.reviews.length > 0) {
-        this.numReviews = this.reviews.length;
-        const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-        this.ratings = Math.round((sum / this.reviews.length) * 10) / 10;
-    }
-    next();
-});
+// REMOVED - This logic is now in the Review model post-save hook
+// productSchema.pre('save', function (next) {
+//     if (this.reviews && this.reviews.length > 0) {
+//         this.numReviews = this.reviews.length;
+//         const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
+//         this.ratings = Math.round((sum / this.reviews.length) * 10) / 10;
+//     }
+//     next();
+// });
 
 // ===========================================
 // STATIC METHODS (actions on Product model)
