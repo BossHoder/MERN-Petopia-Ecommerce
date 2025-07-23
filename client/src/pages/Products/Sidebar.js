@@ -36,12 +36,12 @@ const Sidebar = ({ onFilterChange }) => {
     return (
         <aside className="products-sidebar">
             <div className="filter-group">
-                <h3>Categories</h3>
+                <h3>{t('sidebar.categories', 'Categories')}</h3>
                 {loading ? (
-                    <p>Loading...</p>
+                    <p>{t('common.loading', 'Loading...')}</p>
                 ) : (
                     <select name="category" value={localFilters.category} onChange={handleChange}>
-                        <option value="">All</option>
+                        <option value="">{t('sidebar.all', 'All')}</option>
                         {categories.map((cat) => (
                             <option key={cat._id} value={cat._id}>
                                 {t(`categoriesList.${kebabToCamel(cat.slug)}`, cat.name)}
@@ -52,18 +52,18 @@ const Sidebar = ({ onFilterChange }) => {
             </div>
 
             <div className="filter-group">
-                <h3>Price Range</h3>
+                <h3>{t('sidebar.priceRange', 'Price Range')}</h3>
                 <input
                     type="number"
                     name="minPrice"
-                    placeholder="Min"
+                    placeholder={t('sidebar.min', 'Min')}
                     value={localFilters.minPrice}
                     onChange={handleChange}
                 />
                 <input
                     type="number"
                     name="maxPrice"
-                    placeholder="Max"
+                    placeholder={t('sidebar.max', 'Max')}
                     value={localFilters.maxPrice}
                     onChange={handleChange}
                 />
@@ -72,7 +72,7 @@ const Sidebar = ({ onFilterChange }) => {
             {/* Thêm các bộ lọc khác ở đây, ví dụ: brand, ratings... */}
 
             <button className="btn btn-primary" onClick={handleApplyFilters}>
-                Apply Filters
+                {t('sidebar.applyFilters', 'Apply Filters')}
             </button>
         </aside>
     );

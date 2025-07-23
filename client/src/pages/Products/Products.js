@@ -7,11 +7,13 @@ import ProductCard from '../../components/ProductCard/ProductCard';
 import Sidebar from './Sidebar'; // Component con cho bộ lọc
 import Pagination from './Pagination'; // Component con cho phân trang
 import './Products.css';
+import { useTranslation } from 'react-i18next';
 
 const Products = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
 
     const { products, pagination, productsLoading, error } = useSelector((state) => state.products);
 
@@ -52,7 +54,7 @@ const Products = () => {
             <Sidebar onFilterChange={handleFilterChange} />
             <div className="products-main-content">
                 <div className="products-header">
-                    <h1>Our Products</h1>
+                    <h1>{t('products.title', 'Our Products')}</h1>
                     {/* Component sắp xếp có thể thêm vào đây */}
                 </div>
                 {productsLoading ? (

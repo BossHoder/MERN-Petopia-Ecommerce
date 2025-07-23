@@ -6,11 +6,13 @@ import { getAddresses, addAddress } from '../../store/actions/addressActions';
 import { ORDER_CREATE_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
 import Notification from '../../components/Notification/Notification'; // Sửa import
+import { useTranslation } from 'react-i18next';
 import './Checkout.css';
 
 const Checkout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
 
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('COD');
@@ -99,23 +101,34 @@ const Checkout = () => {
 
     return (
         <div className="checkout-container">
-            <h1>Checkout</h1>
+            <h1>{t('checkout.title', 'Checkout')}</h1>
             {orderLoading && <Loader />}
             {error && <Notification type="error">{error}</Notification>} {/* Sửa component */}
             <div className="checkout-steps">
-                <div className={step >= 1 ? 'step active' : 'step'}>Shipping</div>
-                <div className={step >= 2 ? 'step active' : 'step'}>Payment</div>
-                <div className={step >= 3 ? 'step active' : 'step'}>Place Order</div>
+                <div className={step >= 1 ? 'step active' : 'step'}>
+                    {t('checkout.steps.shipping', 'Shipping')}
+                </div>
+                <div className={step >= 2 ? 'step active' : 'step'}>
+                    {t('checkout.steps.payment', 'Payment')}
+                </div>
+                <div className={step >= 3 ? 'step active' : 'step'}>
+                    {t('checkout.steps.placeOrder', 'Place Order')}
+                </div>
             </div>
             <div className="checkout-content">
                 <div className="checkout-form">
                     {step === 1 && (
                         <div>
-                            <h2>Shipping Address</h2>
+                            <h2>{t('checkout.shippingAddress', 'Shipping Address')}</h2>
                             {addressLoading && <Loader />}
                             {addresses && addresses.length > 0 && (
                                 <div className="saved-addresses">
-                                    <h3>Select a saved address:</h3>
+                                    <h3>
+                                        {t(
+                                            'checkout.selectSavedAddress',
+                                            'Select a saved address:',
+                                        )}
+                                    </h3>
                                     {addresses.map((addr) => (
                                         <div
                                             key={addr._id}
@@ -129,7 +142,7 @@ const Checkout = () => {
                             )}
                             <form onSubmit={submitAddressHandler}>
                                 <div className="form-group">
-                                    <label>Address</label>
+                                    <label>{t('checkout.address', 'Address')}</label>
                                     <input
                                         type="text"
                                         name="address"
@@ -139,7 +152,7 @@ const Checkout = () => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>City</label>
+                                    <label>{t('checkout.city', 'City')}</label>
                                     <input
                                         type="text"
                                         name="city"
@@ -149,7 +162,7 @@ const Checkout = () => {
                                     />
                                 </div>
                                 <div className="form-group">
-                                    <label>Postal Code</label>
+                                    <label>{t('checkout.postalCode', 'Postal Code')}</label>
                                     <input
                                         type="text"
                                         name="postalCode"
@@ -159,7 +172,7 @@ const Checkout = () => {
                                     />
                                 </div>
                                 <button type="submit" className="btn btn-primary">
-                                    Continue
+                                    {t('checkout.continue', 'Continue')}
                                 </button>
                             </form>
                         </div>
@@ -167,7 +180,7 @@ const Checkout = () => {
 
                     {step === 2 && (
                         <div>
-                            <h2>Payment Method</h2>
+                            <h2>{t('checkout.paymentMethod', 'Payment Method')}</h2>
                             <form onSubmit={submitPaymentHandler}>
                                 <div className="form-group">
                                     <input
@@ -178,7 +191,9 @@ const Checkout = () => {
                                         checked={paymentMethod === 'COD'}
                                         onChange={(e) => setPaymentMethod(e.target.value)}
                                     />
-                                    <label htmlFor="cod">Cash on Delivery (COD)</label>
+                                    <label htmlFor="cod">
+                                        {t('checkout.cod', 'Cash on Delivery (COD)')}
+                                    </label>
                                 </div>
                                 <div className="form-group">
                                     <input
@@ -189,10 +204,12 @@ const Checkout = () => {
                                         checked={paymentMethod === 'PayPal'}
                                         onChange={(e) => setPaymentMethod(e.target.value)}
                                     />
-                                    <label htmlFor="paypal">PayPal or Credit Card</label>
+                                    <label htmlFor="paypal">
+                                        {t('checkout.paypal', 'PayPal or Credit Card')}
+                                    </label>
                                 </div>
                                 <button type="submit" className="btn btn-primary">
-                                    Continue
+                                    {t('checkout.continue', 'Continue')}
                                 </button>
                             </form>
                         </div>
@@ -200,37 +217,39 @@ const Checkout = () => {
 
                     {step === 3 && (
                         <div>
-                            <h2>Confirm Order</h2>
+                            <h2>{t('checkout.confirmOrder', 'Confirm Order')}</h2>
                             <p>
-                                You are about to place the following order. Please review and
-                                confirm.
+                                {t(
+                                    'checkout.confirmMessage',
+                                    'You are about to place the following order. Please review and confirm.',
+                                )}
                             </p>
                             <button
                                 onClick={placeOrderHandler}
                                 className="btn btn-primary btn-block"
                             >
-                                Place Order
+                                {t('checkout.steps.placeOrder', 'Place Order')}
                             </button>
                         </div>
                     )}
                 </div>
 
                 <div className="checkout-summary">
-                    <h2>Order Summary</h2>
+                    <h2>{t('cart.summaryTitle', 'Order Summary')}</h2>
                     <div className="summary-row">
-                        <span>Items:</span>
+                        <span>{t('checkout.summary.items', 'Items')}:</span>
                         <span>${itemsPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
-                        <span>Shipping:</span>
+                        <span>{t('checkout.summary.shipping', 'Shipping')}:</span>
                         <span>${shippingPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
-                        <span>Tax:</span>
+                        <span>{t('checkout.summary.tax', 'Tax')}:</span>
                         <span>${taxPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-total">
-                        <span>Total:</span>
+                        <span>{t('cart.total', 'Total')}:</span>
                         <span>${totalPrice.toFixed(2)}</span>
                     </div>
                 </div>

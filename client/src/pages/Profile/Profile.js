@@ -15,12 +15,14 @@ import Loader from '../../components/Loader/Loader';
 import { getAvatarUrl } from '../../utils/helpers';
 
 import './Profile.css'; // Sử dụng CSS mới
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { username: paramUsername } = useParams();
+    const { t } = useTranslation('common');
 
     // Lấy state từ Redux
     const { me: userInfo } = useSelector((state) => state.auth);
@@ -67,19 +69,19 @@ const Profile = () => {
                         className={activeTab === 'profile' ? 'active' : ''}
                         onClick={() => setActiveTab('profile')}
                     >
-                        Profile Settings
+                        {t('profile.tabs.settings', 'Profile Settings')}
                     </li>
                     <li
                         className={activeTab === 'orders' ? 'active' : ''}
                         onClick={() => setActiveTab('orders')}
                     >
-                        Order History
+                        {t('profile.tabs.orders', 'Order History')}
                     </li>
                     <li
                         className={activeTab === 'addresses' ? 'active' : ''}
                         onClick={() => setActiveTab('addresses')}
                     >
-                        Address Book
+                        {t('profile.tabs.addresses', 'Address Book')}
                     </li>
                 </ul>
             </div>
@@ -93,6 +95,7 @@ const Profile = () => {
 const ProfileSettings = ({ profile, loading }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
     const [isEdit, setIsEdit] = useState(false);
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState('');
@@ -146,7 +149,7 @@ const ProfileSettings = ({ profile, loading }) => {
         <Loader />
     ) : (
         <div>
-            <h2>Profile Settings</h2>
+            <h2>{t('profile.tabs.settings', 'Profile Settings')}</h2>
             <div className="profile-settings-info">
                 <img
                     src={avatarPreview}
@@ -161,29 +164,31 @@ const ProfileSettings = ({ profile, loading }) => {
                 {!isEdit ? (
                     <div>
                         <p>
-                            <strong>Name:</strong> {profile?.name}
+                            <strong>{t('profile.fields.name', 'Name')}:</strong> {profile?.name}
                         </p>
                         <p>
-                            <strong>Username:</strong> {profile?.username}
+                            <strong>{t('profile.fields.username', 'Username')}:</strong>{' '}
+                            {profile?.username}
                         </p>
                         <p>
-                            <strong>Email:</strong> {profile?.email}
+                            <strong>{t('profile.fields.email', 'Email')}:</strong> {profile?.email}
                         </p>
                         <p>
-                            <strong>Joined:</strong> {moment(profile?.createdAt).format('LL')}
+                            <strong>{t('profile.fields.joined', 'Joined')}:</strong>{' '}
+                            {moment(profile?.createdAt).format('LL')}
                         </p>
                         <button className="btn btn-primary" onClick={() => setIsEdit(true)}>
-                            Edit Profile
+                            {t('profile.editProfile', 'Edit Profile')}
                         </button>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="profile-edit-form">
                         <div className="form-group">
-                            <label>Avatar</label>
+                            <label>{t('profile.fields.avatar', 'Avatar')}</label>
                             <input type="file" onChange={handleAvatarChange} />
                         </div>
                         <div className="form-group">
-                            <label>Name</label>
+                            <label>{t('profile.fields.name', 'Name')}</label>
                             <input
                                 type="text"
                                 name="name"
@@ -192,7 +197,7 @@ const ProfileSettings = ({ profile, loading }) => {
                             />
                         </div>
                         <div className="form-group">
-                            <label>Username</label>
+                            <label>{t('profile.fields.username', 'Username')}</label>
                             <input
                                 type="text"
                                 name="username"
@@ -202,22 +207,25 @@ const ProfileSettings = ({ profile, loading }) => {
                         </div>
                         {profile?.provider === 'email' && (
                             <div className="form-group">
-                                <label>New Password</label>
+                                <label>{t('profile.fields.newPassword', 'New Password')}</label>
                                 <input
                                     type="password"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    placeholder="Leave blank to keep the same"
+                                    placeholder={t(
+                                        'profile.passwordPlaceholder',
+                                        'Leave blank to keep the same',
+                                    )}
                                 />
                             </div>
                         )}
                         <div className="form-actions">
                             <button type="submit" className="btn btn-primary">
-                                Save Changes
+                                {t('profile.saveChanges', 'Save Changes')}
                             </button>
                             <button type="button" className="btn" onClick={() => setIsEdit(false)}>
-                                Cancel
+                                {t('common.cancel', 'Cancel')}
                             </button>
                         </div>
                     </form>
@@ -230,6 +238,7 @@ const ProfileSettings = ({ profile, loading }) => {
 const OrderHistory = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
 
     const orderListMy = useSelector((state) => state.orderListMy);
     const { loading, error, orders } = orderListMy;
@@ -240,7 +249,7 @@ const OrderHistory = () => {
 
     return (
         <div>
-            <h2>My Orders</h2>
+            <h2>{t('profile.tabs.orders', 'My Orders')}</h2>
             {loading ? (
                 <Loader />
             ) : error ? (
@@ -249,11 +258,11 @@ const OrderHistory = () => {
                 <table className="orders-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>DATE</th>
-                            <th>TOTAL</th>
-                            <th>PAID</th>
-                            <th>DELIVERED</th>
+                            <th>{t('profile.orders.id', 'ID')}</th>
+                            <th>{t('profile.orders.date', 'DATE')}</th>
+                            <th>{t('profile.orders.total', 'TOTAL')}</th>
+                            <th>{t('profile.orders.paid', 'PAID')}</th>
+                            <th>{t('profile.orders.delivered', 'DELIVERED')}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -289,14 +298,16 @@ const OrderHistory = () => {
                                             className="btn btn-sm"
                                             onClick={() => navigate(`/order/${order._id}`)}
                                         >
-                                            Details
+                                            {t('profile.orders.details', 'Details')}
                                         </button>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6">You have no orders.</td>
+                                <td colSpan="6">
+                                    {t('profile.orders.noOrders', 'You have no orders.')}
+                                </td>
                             </tr>
                         )}
                     </tbody>
@@ -308,6 +319,7 @@ const OrderHistory = () => {
 
 const AddressBook = () => {
     const dispatch = useDispatch();
+    const { t } = useTranslation('common');
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [formData, setFormData] = useState({
         address: '',
@@ -332,7 +344,14 @@ const AddressBook = () => {
     };
 
     const handleDelete = (addressId) => {
-        if (window.confirm('Are you sure you want to delete this address?')) {
+        if (
+            window.confirm(
+                t(
+                    'profile.addresses.deleteConfirm',
+                    'Are you sure you want to delete this address?',
+                ),
+            )
+        ) {
             dispatch(deleteAddress(addressId));
         }
     };
@@ -343,19 +362,21 @@ const AddressBook = () => {
 
     return (
         <div>
-            <h2>Address Book</h2>
+            <h2>{t('profile.tabs.addresses', 'Address Book')}</h2>
             {loading && <Loader />}
             {error && <p className="error-message">{error}</p>}
 
             <button className="btn btn-primary" onClick={() => setIsFormVisible(!isFormVisible)}>
-                {isFormVisible ? 'Cancel' : 'Add New Address'}
+                {isFormVisible
+                    ? t('common.cancel', 'Cancel')
+                    : t('profile.addresses.addNew', 'Add New Address')}
             </button>
 
             {isFormVisible && (
                 <form onSubmit={handleSubmit} className="address-form">
                     {/* Các input cho address, city, postalCode, country */}
                     <div className="form-group">
-                        <label>Address</label>
+                        <label>{t('profile.addresses.address', 'Address')}</label>
                         <input
                             name="address"
                             value={formData.address}
@@ -364,11 +385,11 @@ const AddressBook = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label>City</label>
+                        <label>{t('profile.addresses.city', 'City')}</label>
                         <input name="city" value={formData.city} onChange={handleChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Postal Code</label>
+                        <label>{t('profile.addresses.postalCode', 'Postal Code')}</label>
                         <input
                             name="postalCode"
                             value={formData.postalCode}
@@ -377,7 +398,7 @@ const AddressBook = () => {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Country</label>
+                        <label>{t('profile.addresses.country', 'Country')}</label>
                         <input
                             name="country"
                             value={formData.country}
@@ -386,7 +407,7 @@ const AddressBook = () => {
                         />
                     </div>
                     <button type="submit" className="btn">
-                        Save Address
+                        {t('profile.addresses.save', 'Save Address')}
                     </button>
                 </form>
             )}
@@ -403,21 +424,25 @@ const AddressBook = () => {
                                 {addr.city}, {addr.postalCode}
                             </p>
                             <p>{addr.country}</p>
-                            {addr.isDefault && <span className="default-badge">Default</span>}
+                            {addr.isDefault && (
+                                <span className="default-badge">
+                                    {t('profile.addresses.default', 'Default')}
+                                </span>
+                            )}
                             <div className="address-actions">
                                 {!addr.isDefault && (
                                     <button
                                         className="btn btn-sm"
                                         onClick={() => handleSetDefault(addr._id)}
                                     >
-                                        Set as Default
+                                        {t('profile.addresses.setAsDefault', 'Set as Default')}
                                     </button>
                                 )}
                                 <button
                                     className="btn btn-sm btn-danger"
                                     onClick={() => handleDelete(addr._id)}
                                 >
-                                    Delete
+                                    {t('common.delete', 'Delete')}
                                 </button>
                             </div>
                         </div>

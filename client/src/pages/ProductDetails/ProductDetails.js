@@ -7,11 +7,13 @@ import { addToCart } from '../../store/actions/cartActions';
 import { ADD_REVIEW_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
 import Notification from '../../components/Notification/Notification';
+import { useTranslation } from 'react-i18next';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
     const { id: productId } = useParams();
     const dispatch = useDispatch();
+    const { t } = useTranslation('common');
 
     // State for cart quantity and review form
     const [quantity, setQuantity] = useState(1);
@@ -95,7 +97,9 @@ const ProductDetails = () => {
                                 <h1>{product.name}</h1>
                                 <div className="product-rating">
                                     <span>
-                                        {product.ratings} stars ({product.numReviews} reviews)
+                                        {product.ratings} {t('productDetails.stars', 'stars')} (
+                                        {product.numReviews}{' '}
+                                        {t('productDetails.reviews', 'reviews')})
                                     </span>
                                 </div>
                                 <p className="product-price">${product.price.toFixed(2)}</p>
@@ -104,17 +108,20 @@ const ProductDetails = () => {
                             {/* Action Panel */}
                             <div className="product-action-panel">
                                 <div className="action-row">
-                                    <span>Price:</span> <strong>${product.price.toFixed(2)}</strong>
+                                    <span>{t('productDetails.price', 'Price')}:</span>{' '}
+                                    <strong>${product.price.toFixed(2)}</strong>
                                 </div>
                                 <div className="action-row">
-                                    <span>Status:</span>{' '}
+                                    <span>{t('productDetails.status', 'Status')}:</span>{' '}
                                     <span>
-                                        {product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
+                                        {product.stockQuantity > 0
+                                            ? t('productDetails.inStock', 'In Stock')
+                                            : t('productDetails.outOfStock', 'Out of Stock')}
                                     </span>
                                 </div>
                                 {product.stockQuantity > 0 && (
                                     <div className="action-row">
-                                        <span>Qty:</span>
+                                        <span>{t('productDetails.qty', 'Qty')}:</span>
                                         <select
                                             value={quantity}
                                             onChange={(e) => setQuantity(Number(e.target.value))}
@@ -136,11 +143,14 @@ const ProductDetails = () => {
                                     onClick={addToCartHandler}
                                     disabled={product.stockQuantity === 0}
                                 >
-                                    Add To Cart
+                                    {t('productDetails.addToCart', 'Add To Cart')}
                                 </button>
                                 {addToCartSuccess && (
                                     <Notification type="success">
-                                        Product added to cart!
+                                        {t(
+                                            'productDetails.addToCartSuccess',
+                                            'Product added to cart!',
+                                        )}
                                     </Notification>
                                 )}
                                 {addToCartError && (
@@ -151,27 +161,29 @@ const ProductDetails = () => {
 
                         {/* --- Product Reviews Section --- */}
                         <div className="product-reviews-section">
-                            <h2>Reviews</h2>
+                            <h2>{t('productDetails.reviewsTitle', 'Reviews')}</h2>
                             {reviewsLoading ? (
                                 <Loader />
                             ) : reviewsError ? (
                                 <Notification type="error">{reviewsError}</Notification>
                             ) : reviews.length === 0 ? (
-                                <Notification>No reviews yet.</Notification>
+                                <Notification>
+                                    {t('productDetails.noReviews', 'No reviews yet.')}
+                                </Notification>
                             ) : (
                                 <ul className="reviews-list">
                                     {reviews.map((review) => (
                                         <li key={review._id} className="review-item">
                                             <strong>{review.user.name}</strong>
                                             <div className="review-rating">
-                                                {review.rating} stars
+                                                {review.rating} {t('productDetails.stars', 'stars')}
                                             </div>
                                             <p>
                                                 <strong>{review.title}</strong>
                                             </p>
                                             <p>{review.comment}</p>
                                             <small>
-                                                Reviewed on{' '}
+                                                {t('productDetails.reviewedOn', 'Reviewed on')}{' '}
                                                 {new Date(review.createdAt).toLocaleDateString()}
                                             </small>
                                         </li>
@@ -180,7 +192,12 @@ const ProductDetails = () => {
                             )}
 
                             <div className="add-review-form">
-                                <h3>Write a Customer Review</h3>
+                                <h3>
+                                    {t(
+                                        'productDetails.writeReviewTitle',
+                                        'Write a Customer Review',
+                                    )}
+                                </h3>
                                 {reviewAddLoading && <Loader />}
                                 {reviewAddError && (
                                     <Notification type="error">{reviewAddError}</Notification>
@@ -188,22 +205,40 @@ const ProductDetails = () => {
                                 {userInfo ? (
                                     <form onSubmit={submitReviewHandler}>
                                         <div className="form-group">
-                                            <label>Rating</label>
+                                            <label>{t('productDetails.rating', 'Rating')}</label>
                                             <select
                                                 value={rating}
                                                 onChange={(e) => setRating(Number(e.target.value))}
                                                 required
                                             >
-                                                <option value="">Select...</option>
-                                                <option value="1">1 - Poor</option>
-                                                <option value="2">2 - Fair</option>
-                                                <option value="3">3 - Good</option>
-                                                <option value="4">4 - Very Good</option>
-                                                <option value="5">5 - Excellent</option>
+                                                <option value="">
+                                                    {t('productDetails.select', 'Select...')}
+                                                </option>
+                                                <option value="1">
+                                                    {t('productDetails.ratings.poor', '1 - Poor')}
+                                                </option>
+                                                <option value="2">
+                                                    {t('productDetails.ratings.fair', '2 - Fair')}
+                                                </option>
+                                                <option value="3">
+                                                    {t('productDetails.ratings.good', '3 - Good')}
+                                                </option>
+                                                <option value="4">
+                                                    {t(
+                                                        'productDetails.ratings.veryGood',
+                                                        '4 - Very Good',
+                                                    )}
+                                                </option>
+                                                <option value="5">
+                                                    {t(
+                                                        'productDetails.ratings.excellent',
+                                                        '5 - Excellent',
+                                                    )}
+                                                </option>
                                             </select>
                                         </div>
                                         <div className="form-group">
-                                            <label>Title</label>
+                                            <label>{t('productDetails.titleLabel', 'Title')}</label>
                                             <input
                                                 type="text"
                                                 value={title}
@@ -212,7 +247,9 @@ const ProductDetails = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>Comment</label>
+                                            <label>
+                                                {t('productDetails.commentLabel', 'Comment')}
+                                            </label>
                                             <textarea
                                                 rows="4"
                                                 value={comment}
@@ -221,12 +258,17 @@ const ProductDetails = () => {
                                             ></textarea>
                                         </div>
                                         <button type="submit" className="btn btn-primary">
-                                            Submit Review
+                                            {t('productDetails.submitReview', 'Submit Review')}
                                         </button>
                                     </form>
                                 ) : (
                                     <Notification>
-                                        Please <Link to="/login">sign in</Link> to write a review.
+                                        {t('productDetails.signInToReview', 'Please')}{' '}
+                                        <Link to="/login">{t('navigation.login', 'sign in')}</Link>{' '}
+                                        {t(
+                                            'productDetails.signInToReviewSuffix',
+                                            'to write a review.',
+                                        )}
                                     </Notification>
                                 )}
                             </div>

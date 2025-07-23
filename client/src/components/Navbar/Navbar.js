@@ -36,64 +36,57 @@ const AppNavbar = () => {
         };
     }, []);
 
-    const authLinks = (
-        <>
-            {user?.role === 'admin' && (
-                <Link to="/admin" className="nav-link">
-                    {t('navigation.admin')}
-                </Link>
+    const renderDropdownMenu = () => (
+        <div className="avatar-dropdown-menu">
+            {isAuthenticated ? (
+                <>
+                    {user?.role === 'admin' && (
+                        <Link
+                            to="/admin"
+                            className="dropdown-item"
+                            onClick={() => setDropdownOpen(false)}
+                        >
+                            <i className="fas fa-user-shield"></i> {t('navigation.admin')}
+                        </Link>
+                    )}
+                    <Link
+                        to="/profile"
+                        className="dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                    >
+                        <i className="fas fa-user-circle"></i> {t('navigation.profile')}
+                    </Link>
+                    <Link
+                        to="/coupons"
+                        className="dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                    >
+                        <i className="fas fa-tags"></i> {t('navigation.coupons')}
+                    </Link>
+                    <div className="dropdown-divider"></div>
+                    <button onClick={handleLogout} className="dropdown-item">
+                        <i className="fas fa-sign-out-alt"></i> {t('navigation.logout')}
+                    </button>
+                </>
+            ) : (
+                <>
+                    <Link
+                        to="/login"
+                        className="dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                    >
+                        <i className="fas fa-sign-in-alt"></i> {t('navigation.login')}
+                    </Link>
+                    <Link
+                        to="/register"
+                        className="dropdown-item"
+                        onClick={() => setDropdownOpen(false)}
+                    >
+                        <i className="fas fa-user-plus"></i> {t('navigation.register')}
+                    </Link>
+                </>
             )}
-            <Link to="/cart" className="nav-link cart-icon">
-                <i className="fas fa-shopping-cart"></i>
-                {cartItems.length > 0 && (
-                    <span className="badge">
-                        {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                    </span>
-                )}
-            </Link>
-            <div className="avatar-container" ref={dropdownRef}>
-                <img
-                    src={user?.avatar || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
-                    alt="User Avatar"
-                    className="avatar"
-                    onClick={toggleDropdown}
-                />
-                {dropdownOpen && (
-                    <div className="avatar-dropdown-menu">
-                        <Link
-                            to="/profile"
-                            className="dropdown-item"
-                            onClick={() => setDropdownOpen(false)}
-                        >
-                            {t('navigation.profile')}
-                        </Link>
-                        <Link
-                            to="/coupons"
-                            className="dropdown-item"
-                            onClick={() => setDropdownOpen(false)}
-                        >
-                            {t('navigation.coupons')}
-                        </Link>
-                        <div className="dropdown-divider"></div>
-                        <button onClick={handleLogout} className="dropdown-item">
-                            <i className="fas fa-sign-out-alt me-2"></i>
-                            {t('navigation.logout')}
-                        </button>
-                    </div>
-                )}
-            </div>
-        </>
-    );
-
-    const guestLinks = (
-        <>
-            <Link to="/login" className="nav-link">
-                {t('navigation.login')}
-            </Link>
-            <Link to="/register" className="nav-link">
-                {t('navigation.register')}
-            </Link>
-        </>
+        </div>
     );
 
     return (
@@ -118,7 +111,32 @@ const AppNavbar = () => {
                         <SearchBox />
                     </div>
                     <LanguageSelector />
-                    {isAuthenticated ? authLinks : guestLinks}
+                    <Link to="/cart" className="nav-link cart-icon">
+                        <i className="fas fa-shopping-cart"></i>
+                        {cartItems.length > 0 && (
+                            <span className="badge">
+                                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                            </span>
+                        )}
+                    </Link>
+                    <div className="avatar-container" ref={dropdownRef}>
+                        {isAuthenticated ? (
+                            <img
+                                src={
+                                    user?.avatar ||
+                                    'https://i.pravatar.cc/150?u=a042581f4e29026704d'
+                                }
+                                alt="User Avatar"
+                                className="avatar"
+                                onClick={toggleDropdown}
+                            />
+                        ) : (
+                            <div className="avatar-placeholder" onClick={toggleDropdown}>
+                                <i className="fas fa-user"></i>
+                            </div>
+                        )}
+                        {dropdownOpen && renderDropdownMenu()}
+                    </div>
                 </div>
             </div>
         </nav>

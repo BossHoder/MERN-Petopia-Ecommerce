@@ -14,11 +14,37 @@
         "login": "Đăng nhập",
         "register": "Đăng ký",
         "logout": "Đăng xuất",
-        "coupons": "Mã khuyến mãi"
+        "coupons": "Mã khuyến mãi",
+        "profile": "Hồ sơ",
+        "admin": "Quản trị"
     },
     "footer": {
-        "copyright": "@theanhdola 2025",
-        "description": "Cửa hàng thú cưng tuyệt vời cho mọi người bạn bốn chân"
+        "description": "Mang đến những sản phẩm chất lượng cao và dịch vụ tốt nhất cho thú cưng yêu quý của bạn. Hạnh phúc của boss cưng là ưu tiên hàng đầu của chúng tôi.",
+        "quickLinks": {
+            "title": "Liên kết nhanh",
+            "shop": "Cửa hàng",
+            "forDogs": "Dành cho chó",
+            "forCats": "Dành cho mèo",
+            "toysAndFood": "Đồ chơi & Thức ăn",
+            "aboutUs": "Về chúng tôi"
+        },
+        "customerService": {
+            "title": "Hỗ trợ khách hàng",
+            "contact": "Liên hệ",
+            "shippingPolicy": "Chính sách giao hàng",
+            "returns": "Đổi trả hàng",
+            "faq": "Câu hỏi thường gặp",
+            "supportCenter": "Trung tâm hỗ trợ"
+        },
+        "contactInfo": {
+            "title": "Thông tin liên hệ",
+            "address": "123 Đường ABC, Quận XYZ, TP.HCM",
+            "phone": "(028) 1234 5678",
+            "email": "support@petopia.vn"
+        },
+        "copyright": "© {{year}} PETOPIA. Tất cả quyền được bảo lưu.",
+        "privacyPolicy": "Chính sách bảo mật",
+        "termsOfUse": "Điều khoản sử dụng"
     },
     "common": {
         "welcome": "Chào mừng",
@@ -339,9 +365,9 @@
         "error": "Không thể tải danh mục. Vui lòng thử lại sau."
     },
     "hero": {
-        "title": "Mọi Thứ Thú Cưng Cần - Chỉ Một Cú Click!",
-        "subtitle": "Khám phá hàng ngàn sản phẩm chất lượng cao cho boss cưng của bạn. Từ thức ăn dinh dưỡng đến đồ chơi vui nhộn.",
-        "cta": "Mua Sắm Ngay"
+        "title": "Khoảnh Khắc Vui Vẻ, Trọn Vẹn Yêu Thương",
+        "subtitle": "Khám phá đồ chơi, thức ăn và phụ kiện an toàn, mang lại niềm vui cho cả nhà!",
+        "cta": "Khám Phá Ngay"
     },
     "brandPromise": {
         "title": "Tại Sao Chọn Petopia?",
@@ -379,11 +405,135 @@
     },
     "cart": {
         "title": "Giỏ hàng",
-        "empty": "Giỏ hàng của bạn đang trống",
-        "quantity": "Số lượng",
+        "empty": "Giỏ hàng của bạn đang trống.",
+        "goShopping": "Đi mua sắm",
+        "price": "Giá",
+        "remove": "Xóa",
+        "summaryTitle": "Tóm tắt đơn hàng",
+        "subtotal": "Tổng phụ",
+        "items": "sản phẩm",
         "total": "Tổng cộng",
-        "checkout": "Thanh toán",
-        "remove": "Xóa"
+        "checkout": "Tiến hành thanh toán"
+    },
+    "checkout": {
+        "title": "Thanh toán",
+        "steps": {
+            "shipping": "Giao hàng",
+            "payment": "Thanh toán",
+            "placeOrder": "Đặt hàng"
+        },
+        "shippingAddress": "Địa chỉ giao hàng",
+        "selectSavedAddress": "Chọn một địa chỉ đã lưu:",
+        "address": "Địa chỉ",
+        "city": "Thành phố",
+        "postalCode": "Mã bưu điện",
+        "continue": "Tiếp tục",
+        "paymentMethod": "Phương thức thanh toán",
+        "cod": "Thanh toán khi nhận hàng (COD)",
+        "paypal": "PayPal hoặc Thẻ tín dụng",
+        "confirmOrder": "Xác nhận đơn hàng",
+        "confirmMessage": "Bạn sắp đặt đơn hàng sau. Vui lòng xem lại và xác nhận.",
+        "summary": {
+            "items": "Sản phẩm",
+            "shipping": "Vận chuyển",
+            "tax": "Thuế"
+        }
+    },
+    "orderDetails": {
+        "title": "Đơn hàng #",
+        "shipping": "Giao hàng",
+        "name": "Tên",
+        "email": "Email",
+        "address": "Địa chỉ",
+        "deliveredOn": "Đã giao vào",
+        "notDelivered": "Chưa giao hàng",
+        "paymentMethod": "Phương thức thanh toán",
+        "method": "Phương thức",
+        "paidOn": "Đã thanh toán vào",
+        "notPaid": "Chưa thanh toán",
+        "orderItems": "Các mặt hàng",
+        "orderSummary": "Tóm tắt đơn hàng",
+        "summary": {
+            "items": "Sản phẩm",
+            "shipping": "Vận chuyển",
+            "tax": "Thuế",
+            "total": "Tổng cộng"
+        }
+    },
+    "productDetails": {
+        "stars": "sao",
+        "reviews": "đánh giá",
+        "price": "Giá",
+        "status": "Trạng thái",
+        "inStock": "Còn hàng",
+        "outOfStock": "Hết hàng",
+        "qty": "Số lượng",
+        "addToCart": "Thêm vào giỏ",
+        "addToCartSuccess": "Sản phẩm đã được thêm vào giỏ hàng!",
+        "reviewsTitle": "Đánh giá",
+        "noReviews": "Chưa có đánh giá nào.",
+        "reviewedOn": "Đã đánh giá vào",
+        "writeReviewTitle": "Viết đánh giá của khách hàng",
+        "rating": "Xếp hạng",
+        "select": "Chọn...",
+        "ratings": {
+            "poor": "1 - Tệ",
+            "fair": "2 - Tạm được",
+            "good": "3 - Tốt",
+            "veryGood": "4 - Rất tốt",
+            "excellent": "5 - Tuyệt vời"
+        },
+        "titleLabel": "Tiêu đề",
+        "commentLabel": "Bình luận",
+        "submitReview": "Gửi đánh giá",
+        "signInToReview": "Vui lòng",
+        "signInToReviewSuffix": "để viết đánh giá."
+    },
+    "sidebar": {
+        "categories": "Danh mục",
+        "all": "Tất cả",
+        "priceRange": "Khoảng giá",
+        "min": "Tối thiểu",
+        "max": "Tối đa",
+        "applyFilters": "Áp dụng bộ lọc"
+    },
+    "profile": {
+        "tabs": {
+            "settings": "Cài đặt hồ sơ",
+            "orders": "Lịch sử đơn hàng",
+            "addresses": "Sổ địa chỉ"
+        },
+        "fields": {
+            "name": "Tên",
+            "username": "Tên đăng nhập",
+            "email": "Email",
+            "joined": "Đã tham gia",
+            "avatar": "Ảnh đại diện",
+            "newPassword": "Mật khẩu mới"
+        },
+        "passwordPlaceholder": "Để trống để giữ nguyên",
+        "editProfile": "Chỉnh sửa hồ sơ",
+        "saveChanges": "Lưu thay đổi",
+        "orders": {
+            "id": "MÃ ĐH",
+            "date": "NGÀY",
+            "total": "TỔNG TIỀN",
+            "paid": "ĐÃ TRẢ",
+            "delivered": "ĐÃ GIAO",
+            "details": "Chi tiết",
+            "noOrders": "Bạn chưa có đơn hàng nào."
+        },
+        "addresses": {
+            "addNew": "Thêm địa chỉ mới",
+            "address": "Địa chỉ",
+            "city": "Thành phố",
+            "postalCode": "Mã bưu điện",
+            "country": "Quốc gia",
+            "save": "Lưu địa chỉ",
+            "deleteConfirm": "Bạn có chắc chắn muốn xóa địa chỉ này không?",
+            "default": "Mặc định",
+            "setAsDefault": "Đặt làm mặc định"
+        }
     },
     "auth": {
         "login": {
@@ -435,7 +585,11 @@
     },
     "admin": {
         "title": "Bảng điều khiển Admin",
-        "description": "Đây là trang Admin. Chỉ Admin mới có thể truy cập trang này. Quay lại"
+        "manageUsers": "Quản lý Người dùng",
+        "manageProducts": "Quản lý Sản phẩm",
+        "manageCategories": "Quản lý Danh mục",
+        "manageOrders": "Quản lý Đơn hàng",
+        "manageCoupons": "Quản lý Mã giảm giá"
     },
     "messages": {
         "title": "Tin nhắn",

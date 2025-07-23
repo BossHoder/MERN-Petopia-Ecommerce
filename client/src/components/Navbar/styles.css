@@ -93,6 +93,22 @@
     object-fit: cover;
 }
 
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    cursor: pointer;
+}
+
+.avatar-placeholder i {
+    font-size: 22px;
+    color: #4b5563;
+}
+
 .avatar-dropdown-menu {
     position: absolute;
     top: calc(100% + 10px);

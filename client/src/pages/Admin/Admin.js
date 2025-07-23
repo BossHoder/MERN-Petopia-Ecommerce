@@ -14,19 +14,21 @@ const Admin = () => {
                 <h1>{t('admin.title')}</h1>
                 <ul className="admin-menu">
                     <li>
-                        <Link to="/users">{t('admin.manageUsers')}</Link>
+                        <Link to="/users">{t('admin.manageUsers', 'Manage Users')}</Link>
                     </li>
                     <li>
-                        <Link to="/products">{t('admin.manageProducts')}</Link>
+                        <Link to="/products">{t('admin.manageProducts', 'Manage Products')}</Link>
                     </li>
                     <li>
-                        <Link to="/categories">{t('admin.manageCategories')}</Link>
+                        <Link to="/categories">
+                            {t('admin.manageCategories', 'Manage Categories')}
+                        </Link>
                     </li>
                     <li>
-                        <Link to="/orders">{t('admin.manageOrders')}</Link>
+                        <Link to="/orders">{t('admin.manageOrders', 'Manage Orders')}</Link>
                     </li>
                     <li>
-                        <Link to="/coupons">{t('admin.manageCoupons')}</Link>
+                        <Link to="/coupons">{t('admin.manageCoupons', 'Manage Coupons')}</Link>
                     </li>
                 </ul>
             </div>

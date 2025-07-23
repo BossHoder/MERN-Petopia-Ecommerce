@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './styles.css';
 
 const Footer = () => {
+    const { t } = useTranslation('common');
     const currentYear = new Date().getFullYear();
 
     return (
@@ -13,11 +15,7 @@ const Footer = () => {
                     {/* Company Info */}
                     <div className="footer-section">
                         <h3 className="footer-logo">PETOPIA</h3>
-                        <p className="footer-description">
-                            Mang đến những sản phẩm chất lượng cao và dịch vụ tốt nhất cho thú cưng
-                            yêu quý của bạn. Hạnh phúc của boss cưng là ưu tiên hàng đầu của chúng
-                            tôi.
-                        </p>
+                        <p className="footer-description">{t('footer.description')}</p>
                         <div className="social-links">
                             <a href="#" className="social-link" aria-label="Facebook">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -39,51 +37,51 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div className="footer-section">
-                        <h4 className="footer-title">Liên kết nhanh</h4>
+                        <h4 className="footer-title">{t('footer.quickLinks.title')}</h4>
                         <div className="footer-links">
                             <Link to="/shop" className="footer-link">
-                                Cửa hàng
+                                {t('footer.quickLinks.shop')}
                             </Link>
                             <Link to="/dogs" className="footer-link">
-                                Dành cho chó
+                                {t('footer.quickLinks.forDogs')}
                             </Link>
                             <Link to="/cats" className="footer-link">
-                                Dành cho mèo
+                                {t('footer.quickLinks.forCats')}
                             </Link>
                             <Link to="/toys-food" className="footer-link">
-                                Đồ chơi & Thức ăn
+                                {t('footer.quickLinks.toysAndFood')}
                             </Link>
                             <Link to="/about" className="footer-link">
-                                Về chúng tôi
+                                {t('footer.quickLinks.aboutUs')}
                             </Link>
                         </div>
                     </div>
 
                     {/* Customer Service */}
                     <div className="footer-section">
-                        <h4 className="footer-title">Hỗ trợ khách hàng</h4>
+                        <h4 className="footer-title">{t('footer.customerService.title')}</h4>
                         <div className="footer-links">
                             <Link to="/contact" className="footer-link">
-                                Liên hệ
+                                {t('footer.customerService.contact')}
                             </Link>
                             <Link to="/shipping" className="footer-link">
-                                Chính sách giao hàng
+                                {t('footer.customerService.shippingPolicy')}
                             </Link>
                             <Link to="/returns" className="footer-link">
-                                Đổi trả hàng
+                                {t('footer.customerService.returns')}
                             </Link>
                             <Link to="/faq" className="footer-link">
-                                Câu hỏi thường gặp
+                                {t('footer.customerService.faq')}
                             </Link>
                             <Link to="/support" className="footer-link">
-                                Trung tâm hỗ trợ
+                                {t('footer.customerService.supportCenter')}
                             </Link>
                         </div>
                     </div>
 
                     {/* Contact Info */}
                     <div className="footer-section">
-                        <h4 className="footer-title">Thông tin liên hệ</h4>
+                        <h4 className="footer-title">{t('footer.contactInfo.title')}</h4>
                         <div className="contact-info">
                             <div className="contact-item">
                                 <svg
@@ -97,7 +95,7 @@ const Footer = () => {
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                     <circle cx="12" cy="10" r="3"></circle>
                                 </svg>
-                                <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
+                                <span>{t('footer.contactInfo.address')}</span>
                             </div>
                             <div className="contact-item">
                                 <svg
@@ -110,7 +108,7 @@ const Footer = () => {
                                 >
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                 </svg>
-                                <span>(028) 1234 5678</span>
+                                <span>{t('footer.contactInfo.phone')}</span>
                             </div>
                             <div className="contact-item">
                                 <svg
@@ -124,7 +122,7 @@ const Footer = () => {
                                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                     <polyline points="22,6 12,13 2,6"></polyline>
                                 </svg>
-                                <span>support@petopia.vn</span>
+                                <span>{t('footer.contactInfo.email')}</span>
                             </div>
                         </div>
                     </div>
@@ -133,15 +131,13 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="footer-bottom">
                     <div className="footer-bottom-content">
-                        <p className="copyright">
-                            © {currentYear} PETOPIA. Tất cả quyền được bảo lưu.
-                        </p>
+                        <p className="copyright">{t('footer.copyright', { year: currentYear })}</p>
                         <div className="footer-bottom-links">
                             <Link to="/privacy" className="footer-bottom-link">
-                                Chính sách bảo mật
+                                {t('footer.privacyPolicy')}
                             </Link>
                             <Link to="/terms" className="footer-bottom-link">
-                                Điều khoản sử dụng
+                                {t('footer.termsOfUse')}
                             </Link>
                         </div>
                     </div>

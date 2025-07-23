@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { getOrderDetails } from '../../store/actions/orderActions';
 import Loader from '../../components/Loader/Loader';
+import { useTranslation } from 'react-i18next';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
     const { id: orderId } = useParams();
     const dispatch = useDispatch();
+    const { t } = useTranslation('common');
 
     const { order, loading, error } = useSelector((state) => state.orderDetails);
 
@@ -24,49 +26,58 @@ const OrderDetails = () => {
         <p className="error-message">{error}</p>
     ) : (
         <div className="order-details-container">
-            <h1>Order #{order._id}</h1>
+            <h1>
+                {t('orderDetails.title', 'Order #')}
+                {order._id}
+            </h1>
             <div className="order-details-grid">
                 <div className="order-main-content">
                     <div className="order-section">
-                        <h2>Shipping</h2>
+                        <h2>{t('orderDetails.shipping', 'Shipping')}</h2>
                         <p>
-                            <strong>Name: </strong> {order.user.name}
+                            <strong>{t('orderDetails.name', 'Name')}: </strong> {order.user.name}
                         </p>
                         <p>
-                            <strong>Email: </strong>{' '}
+                            <strong>{t('orderDetails.email', 'Email')}: </strong>{' '}
                             <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
                         </p>
                         <p>
-                            <strong>Address: </strong>
+                            <strong>{t('orderDetails.address', 'Address')}: </strong>
                             {order.shippingAddress.address}, {order.shippingAddress.city},{' '}
                             {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                         </p>
                         {order.isDelivered ? (
                             <div className="alert alert-success">
-                                Delivered on {moment(order.deliveredAt).format('LLLL')}
+                                {t('orderDetails.deliveredOn', 'Delivered on')}{' '}
+                                {moment(order.deliveredAt).format('LLLL')}
                             </div>
                         ) : (
-                            <div className="alert alert-danger">Not Delivered</div>
+                            <div className="alert alert-danger">
+                                {t('orderDetails.notDelivered', 'Not Delivered')}
+                            </div>
                         )}
                     </div>
 
                     <div className="order-section">
-                        <h2>Payment Method</h2>
+                        <h2>{t('orderDetails.paymentMethod', 'Payment Method')}</h2>
                         <p>
-                            <strong>Method: </strong>
+                            <strong>{t('orderDetails.method', 'Method')}: </strong>
                             {order.paymentMethod}
                         </p>
                         {order.isPaid ? (
                             <div className="alert alert-success">
-                                Paid on {moment(order.paidAt).format('LLLL')}
+                                {t('orderDetails.paidOn', 'Paid on')}{' '}
+                                {moment(order.paidAt).format('LLLL')}
                             </div>
                         ) : (
-                            <div className="alert alert-danger">Not Paid</div>
+                            <div className="alert alert-danger">
+                                {t('orderDetails.notPaid', 'Not Paid')}
+                            </div>
                         )}
                     </div>
 
                     <div className="order-section">
-                        <h2>Order Items</h2>
+                        <h2>{t('orderDetails.orderItems', 'Order Items')}</h2>
                         <div className="order-items-list">
                             {order.orderItems.map((item, index) => (
                                 <div key={index} className="order-item">
@@ -87,22 +98,22 @@ const OrderDetails = () => {
                 </div>
 
                 <div className="order-summary-card">
-                    <h2>Order Summary</h2>
+                    <h2>{t('orderDetails.orderSummary', 'Order Summary')}</h2>
                     <ul className="summary-list">
                         <li>
-                            <span>Items</span>
+                            <span>{t('orderDetails.summary.items', 'Items')}</span>
                             <span>${order.itemsPrice.toFixed(2)}</span>
                         </li>
                         <li>
-                            <span>Shipping</span>
+                            <span>{t('orderDetails.summary.shipping', 'Shipping')}</span>
                             <span>${order.shippingPrice.toFixed(2)}</span>
                         </li>
                         <li>
-                            <span>Tax</span>
+                            <span>{t('orderDetails.summary.tax', 'Tax')}</span>
                             <span>${order.taxPrice.toFixed(2)}</span>
                         </li>
                         <li>
-                            <span>Total</span>
+                            <span>{t('orderDetails.summary.total', 'Total')}</span>
                             <span>${order.totalPrice.toFixed(2)}</span>
                         </li>
                     </ul>

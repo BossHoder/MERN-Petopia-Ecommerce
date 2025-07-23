@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getCart, removeFromCart, updateCartItemQuantity } from '../../store/actions/cartActions';
 import Loader from '../../components/Loader/Loader';
 import Message from '../../components/Message/Message';
+import { useTranslation } from 'react-i18next';
 import './Cart.css';
 
 const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { t } = useTranslation('common');
 
     const { me: userInfo } = useSelector((state) => state.auth); // Sửa từ userInfo thành me
     const { items, loading, error } = useSelector((state) => state.cart);
@@ -41,16 +43,16 @@ const Cart = () => {
 
     return (
         <div className="cart-container">
-            <h1>Shopping Cart</h1>
+            <h1>{t('cart.title', 'Shopping Cart')}</h1>
             {loading ? (
                 <Loader />
             ) : error ? (
                 <Message type="error">{error}</Message>
             ) : items.length === 0 ? (
                 <div className="cart-empty">
-                    <p>Your cart is empty.</p>
+                    <p>{t('cart.empty', 'Your cart is empty.')}</p>
                     <Link to="/" className="btn btn-primary">
-                        Go Shopping
+                        {t('cart.goShopping', 'Go Shopping')}
                     </Link>
                 </div>
             ) : (
@@ -67,7 +69,9 @@ const Cart = () => {
                                     <Link to={`/products/${item.product._id}`}>
                                         {item.product.name}
                                     </Link>
-                                    <p>Price: ${item.price.toFixed(2)}</p>
+                                    <p>
+                                        {t('cart.price', 'Price')}: ${item.price.toFixed(2)}
+                                    </p>
                                 </div>
                                 <div className="cart-item-actions">
                                     <button
@@ -98,7 +102,7 @@ const Cart = () => {
                                         className="remove-btn"
                                         onClick={() => handleRemoveItem(item.product._id)}
                                     >
-                                        Remove
+                                        {t('cart.remove', 'Remove')}
                                     </button>
                                 </div>
                             </div>
@@ -106,21 +110,22 @@ const Cart = () => {
                     </div>
 
                     <div className="cart-summary">
-                        <h2>Order Summary</h2>
+                        <h2>{t('cart.summaryTitle', 'Order Summary')}</h2>
                         <div className="summary-row">
                             <span>
-                                Subtotal ({items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
-                                items)
+                                {t('cart.subtotal', 'Subtotal')} (
+                                {items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
+                                {t('cart.items', 'items')})
                             </span>
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
                         {/* Logic for shipping, tax, etc. can be added here */}
                         <div className="summary-total">
-                            <span>Total</span>
+                            <span>{t('cart.total', 'Total')}</span>
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
                         <button className="btn btn-primary btn-block" onClick={handleCheckout}>
-                            Proceed to Checkout
+                            {t('cart.checkout', 'Proceed to Checkout')}
                         </button>
                     </div>
                 </div>

@@ -56,13 +56,10 @@ const Hero = () => {
             <div className="hero-container">
                 <div className="hero-content">
                     <div className="hero-text">
-                        <h1 className="hero-title">Khoảnh Khắc Vui Vẻ, Trọn Vẹn Yêu Thương</h1>
-                        <p className="hero-subtitle">
-                            Khám phá đồ chơi, thức ăn và phụ kiện an toàn, mang lại niềm vui cho cả
-                            nhà!
-                        </p>
+                        <h1 className="hero-title">{t('hero.title')}</h1>
+                        <p className="hero-subtitle">{t('hero.subtitle')}</p>
                         <button className="hero-cta-button" onClick={handleShopNow}>
-                            Khám Phá Ngay
+                            {t('hero.cta')}
                         </button>
                     </div>
 

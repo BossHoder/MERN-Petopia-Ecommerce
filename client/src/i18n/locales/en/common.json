@@ -14,11 +14,37 @@
         "login": "Login",
         "register": "Register",
         "logout": "Logout",
-        "coupons": "Coupons"
+        "coupons": "Coupons",
+        "profile": "Profile",
+        "admin": "Admin"
     },
     "footer": {
-        "copyright": "@theanhdola 2025",
-        "description": "Amazing pet store for all your furry friends"
+        "description": "Bringing high-quality products and the best services for your beloved pets. Your pet's happiness is our top priority.",
+        "quickLinks": {
+            "title": "Quick Links",
+            "shop": "Shop",
+            "forDogs": "For Dogs",
+            "forCats": "For Cats",
+            "toysAndFood": "Toys & Food",
+            "aboutUs": "About Us"
+        },
+        "customerService": {
+            "title": "Customer Service",
+            "contact": "Contact",
+            "shippingPolicy": "Shipping Policy",
+            "returns": "Returns",
+            "faq": "FAQ",
+            "supportCenter": "Support Center"
+        },
+        "contactInfo": {
+            "title": "Contact Info",
+            "address": "123 ABC Street, XYZ District, HCMC",
+            "phone": "(028) 1234 5678",
+            "email": "support@petopia.vn"
+        },
+        "copyright": "© {{year}} PETOPIA. All rights reserved.",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfUse": "Terms of Use"
     },
     "common": {
         "welcome": "Welcome",
@@ -318,9 +344,9 @@
         "error": "Unable to load categories. Please try again later."
     },
     "hero": {
-        "title": "Everything Your Pet Needs - Just One Click Away!",
-        "subtitle": "Discover thousands of high-quality products for your beloved pets. From nutritious food to fun toys.",
-        "cta": "Shop Now"
+        "title": "Happy Moments, Complete Love",
+        "subtitle": "Discover safe toys, food, and accessories that bring joy to the whole family!",
+        "cta": "Explore Now"
     },
     "brandPromise": {
         "title": "Why Choose Petopia?",
@@ -358,11 +384,135 @@
     },
     "cart": {
         "title": "Shopping Cart",
-        "empty": "Your cart is empty",
-        "quantity": "Quantity",
+        "empty": "Your cart is empty.",
+        "goShopping": "Go Shopping",
+        "price": "Price",
+        "remove": "Remove",
+        "summaryTitle": "Order Summary",
+        "subtotal": "Subtotal",
+        "items": "items",
         "total": "Total",
-        "checkout": "Checkout",
-        "remove": "Remove"
+        "checkout": "Proceed to Checkout"
+    },
+    "checkout": {
+        "title": "Checkout",
+        "steps": {
+            "shipping": "Shipping",
+            "payment": "Payment",
+            "placeOrder": "Place Order"
+        },
+        "shippingAddress": "Shipping Address",
+        "selectSavedAddress": "Select a saved address:",
+        "address": "Address",
+        "city": "City",
+        "postalCode": "Postal Code",
+        "continue": "Continue",
+        "paymentMethod": "Payment Method",
+        "cod": "Cash on Delivery (COD)",
+        "paypal": "PayPal or Credit Card",
+        "confirmOrder": "Confirm Order",
+        "confirmMessage": "You are about to place the following order. Please review and confirm.",
+        "summary": {
+            "items": "Items",
+            "shipping": "Shipping",
+            "tax": "Tax"
+        }
+    },
+    "orderDetails": {
+        "title": "Order #",
+        "shipping": "Shipping",
+        "name": "Name",
+        "email": "Email",
+        "address": "Address",
+        "deliveredOn": "Delivered on",
+        "notDelivered": "Not Delivered",
+        "paymentMethod": "Payment Method",
+        "method": "Method",
+        "paidOn": "Paid on",
+        "notPaid": "Not Paid",
+        "orderItems": "Order Items",
+        "orderSummary": "Order Summary",
+        "summary": {
+            "items": "Items",
+            "shipping": "Shipping",
+            "tax": "Tax",
+            "total": "Total"
+        }
+    },
+    "productDetails": {
+        "stars": "stars",
+        "reviews": "reviews",
+        "price": "Price",
+        "status": "Status",
+        "inStock": "In Stock",
+        "outOfStock": "Out of Stock",
+        "qty": "Qty",
+        "addToCart": "Add To Cart",
+        "addToCartSuccess": "Product added to cart!",
+        "reviewsTitle": "Reviews",
+        "noReviews": "No reviews yet.",
+        "reviewedOn": "Reviewed on",
+        "writeReviewTitle": "Write a Customer Review",
+        "rating": "Rating",
+        "select": "Select...",
+        "ratings": {
+            "poor": "1 - Poor",
+            "fair": "2 - Fair",
+            "good": "3 - Good",
+            "veryGood": "4 - Very Good",
+            "excellent": "5 - Excellent"
+        },
+        "titleLabel": "Title",
+        "commentLabel": "Comment",
+        "submitReview": "Submit Review",
+        "signInToReview": "Please",
+        "signInToReviewSuffix": "to write a review."
+    },
+    "sidebar": {
+        "categories": "Categories",
+        "all": "All",
+        "priceRange": "Price Range",
+        "min": "Min",
+        "max": "Max",
+        "applyFilters": "Apply Filters"
+    },
+    "profile": {
+        "tabs": {
+            "settings": "Profile Settings",
+            "orders": "Order History",
+            "addresses": "Address Book"
+        },
+        "fields": {
+            "name": "Name",
+            "username": "Username",
+            "email": "Email",
+            "joined": "Joined",
+            "avatar": "Avatar",
+            "newPassword": "New Password"
+        },
+        "passwordPlaceholder": "Leave blank to keep the same",
+        "editProfile": "Edit Profile",
+        "saveChanges": "Save Changes",
+        "orders": {
+            "id": "ID",
+            "date": "DATE",
+            "total": "TOTAL",
+            "paid": "PAID",
+            "delivered": "DELIVERED",
+            "details": "Details",
+            "noOrders": "You have no orders."
+        },
+        "addresses": {
+            "addNew": "Add New Address",
+            "address": "Address",
+            "city": "City",
+            "postalCode": "Postal Code",
+            "country": "Country",
+            "save": "Save Address",
+            "deleteConfirm": "Are you sure you want to delete this address?",
+            "default": "Default",
+            "setAsDefault": "Set as Default"
+        }
     },
     "auth": {
         "login": {
@@ -423,7 +573,11 @@
     },
     "admin": {
         "title": "Admin dashboard",
-        "description": "This is the Admin page. Only the Admin can access this page. Return back to"
+        "manageUsers": "Manage Users",
+        "manageProducts": "Manage Products",
+        "manageCategories": "Manage Categories",
+        "manageOrders": "Manage Orders",
+        "manageCoupons": "Manage Coupons"
     },
     "messages": {
         "title": "Messages",
