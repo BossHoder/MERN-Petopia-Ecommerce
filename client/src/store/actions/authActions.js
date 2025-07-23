@@ -107,21 +107,21 @@ export const logOutUser = (navigate) => async (dispatch) => {
         // Xóa cookie (nếu có)
         deleteAllCookies();
 
-        // Gọi API để server ghi nhận logout (không bắt buộc, nhưng tốt cho việc tracking)
+        // Gọi API để server ghi nhận logout
         await API.get('/auth/logout');
 
         dispatch({
             type: LOGOUT_SUCCESS,
         });
 
-        // Điều hướng về trang chủ
-        if (navigate) {
-            navigate('/');
-        }
+        // Chuyển hướng bằng cách tải lại trang để đảm bảo reset state
+        window.location.href = '/login';
     } catch (err) {
         // Thường thì không cần xử lý lỗi ở đây vì logout nên thành công
         // Nếu có lỗi, chỉ cần log ra console
         console.error('Logout failed:', err);
+        // Ngay cả khi API lỗi, vẫn cố gắng chuyển hướng người dùng
+        window.location.href = '/login';
     }
 };
 

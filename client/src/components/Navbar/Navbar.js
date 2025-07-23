@@ -69,7 +69,7 @@ const Navbar = () => {
                             <>
                                 {/* User Menu */}
                                 <div className="user-menu">
-                                    <Link to={`/${me.username}`} className="nav-icon-btn">
+                                    <Link to="/profile" className="nav-icon-btn">
                                         <img
                                             className="avatar"
                                             src={getAvatarUrl(me.avatar)}

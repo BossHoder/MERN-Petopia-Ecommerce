@@ -52,7 +52,12 @@ export const editUser = (id, formData, navigate) => async (dispatch, getState) =
 
         // Only redirect if username changed
         if (getState().auth.me?.username !== response.data.user.username) {
-            navigate(`/${response.data.user.username}`);
+            // Nếu username thay đổi, token cũ sẽ không còn hợp lệ
+            // Đăng xuất và điều hướng đến trang đăng nhập để người dùng đăng nhập lại
+            dispatch(logOutUser());
+        } else {
+            // Nếu không, chỉ cần load lại thông tin profile
+            dispatch(loadMe());
         }
     } catch (err) {
         console.error('editUser error:', err);
@@ -83,7 +88,9 @@ export const getProfile = (username, navigate) => async (dispatch, getState) => 
     });
     try {
         const options = attachTokenToHeaders(getState);
-        const response = await API.get(`/api/users/${username}`, options);
+        // Nếu có username, gọi API cũ. Nếu không, gọi API mới cho profile của "me"
+        const url = username ? `/api/users/${username}` : '/api/users/me/profile';
+        const response = await API.get(url, options);
 
         dispatch({
             type: GET_PROFILE_SUCCESS,

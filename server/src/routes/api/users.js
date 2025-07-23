@@ -11,6 +11,8 @@ const router = Router();
 // Route đặc biệt
 router.get('/reseed', userController.reseedDatabase);
 router.get('/me', requireJwtAuth, userController.getCurrentUser);
+router.get('/me/profile', requireJwtAuth, userController.getMyProfile);
+
 router.post('/promote-admin', requireJwtAuth, (req, res) => {
     if (process.env.NODE_ENV === 'production') {
         return res.status(403).json({ message: 'Not allowed in production' });

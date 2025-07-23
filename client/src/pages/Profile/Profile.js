@@ -31,10 +31,18 @@ const Profile = () => {
         if (!userInfo) {
             navigate('/login');
         } else {
-            if (userInfo.username === paramUsername || userInfo.role === 'ADMIN') {
-                dispatch(getProfile(paramUsername, navigate));
+            // Nếu có username trên URL, đó là xem profile của người khác
+            if (paramUsername) {
+                // Chỉ admin mới có quyền xem profile người khác
+                if (userInfo.username === paramUsername || userInfo.role === 'ADMIN') {
+                    dispatch(getProfile(paramUsername, navigate));
+                } else {
+                    // Nếu không phải admin và không phải profile của mình, về trang chủ
+                    navigate('/');
+                }
             } else {
-                navigate('/');
+                // Nếu không có username trên URL, đây là trang /profile của người dùng hiện tại
+                dispatch(getProfile(null, navigate)); // Truyền null hoặc undefined
             }
         }
     }, [dispatch, navigate, userInfo, paramUsername]);

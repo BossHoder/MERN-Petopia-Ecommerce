@@ -28,6 +28,7 @@ class UserController {
         this.getUserActivity = this.getUserActivity.bind(this);
         this.bulkUpdateUsers = this.bulkUpdateUsers.bind(this);
         this.reseedDatabase = this.reseedDatabase.bind(this);
+        this.getMyProfile = this.getMyProfile.bind(this);
     }
 
     // Update user profile
@@ -129,6 +130,23 @@ class UserController {
                 return res.status(400).json({ message: 'Too many files or unexpected field name.' });
             }
 
+            res.status(500).json({ message: 'Something went wrong.' });
+        }
+    }
+
+    // Get my profile
+    async getMyProfile(req, res) {
+        try {
+            // The user's ID is available from the JWT token via `req.user.id`
+            const result = await UserService.getUser(req.user.id, false);
+
+            if (!result.success) {
+                return res.status(404).json({ message: result.error });
+            }
+
+            res.json({ user: result.user });
+        } catch (err) {
+            console.error('Error getting current user profile:', err);
             res.status(500).json({ message: 'Something went wrong.' });
         }
     }
