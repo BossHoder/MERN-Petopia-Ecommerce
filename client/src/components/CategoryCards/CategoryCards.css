@@ -1,122 +1,107 @@
-/* CategoryCards Component Styles */
 .category-cards {
-    padding: 80px 0;
+    padding: 4rem 0;
     background: white;
 }
 
 .category-cards-container {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 2rem;
 }
 
 .category-cards-title {
-    font-size: 2.5rem;
+    font-size: 1.875rem;
     font-weight: 700;
-    text-align: center;
-    color: #1f2937;
-    margin-bottom: 48px;
-    font-family: 'Poppins', 'Arial', sans-serif;
+    margin-bottom: 1.5rem;
+    color: #1b120d;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+        sans-serif;
 }
 
 .category-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
 }
 
 .category-card-link {
     text-decoration: none;
     color: inherit;
-    display: block;
 }
 
 .category-card {
-    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center;
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
-    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-}
-
-.category-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    border-color: #f97316;
-}
-
-.category-icon {
-    font-size: 4rem;
-    margin-bottom: 16px;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
     transition: transform 0.3s ease;
 }
 
-.category-card:hover .category-icon {
-    transform: scale(1.1);
+.category-card:hover {
+    transform: scale(1.05);
+}
+
+.category-image {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.category-card:hover .category-image {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .category-name {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 8px;
-    font-family: 'Poppins', 'Arial', sans-serif;
-}
-
-.category-description {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin-bottom: 12px;
-    line-height: 1.5;
-}
-
-.category-count {
-    font-size: 0.75rem;
-    color: #f97316;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.category-error {
-    text-align: center;
-    color: #ef4444;
     font-size: 1.125rem;
-    padding: 40px 0;
+    font-weight: 600;
+    color: #1b120d;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+        sans-serif;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .category-cards {
-        padding: 60px 0;
+        padding: 3rem 0;
     }
 
-    .category-cards-title {
-        font-size: 2rem;
-        margin-bottom: 32px;
+    .category-cards-container {
+        padding: 0 1rem;
     }
 
     .category-cards-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
     }
 
-    .category-card {
-        padding: 24px;
+    .category-image {
+        width: 8rem;
+        height: 8rem;
     }
 
-    .category-icon {
-        font-size: 3rem;
+    .category-name {
+        font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
     .category-cards-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .category-image {
+        width: 6rem;
+        height: 6rem;
+    }
+
+    .category-name {
+        font-size: 0.875rem;
     }
 }

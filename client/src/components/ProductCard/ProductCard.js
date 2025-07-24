@@ -28,7 +28,6 @@ const ProductCard = ({ product }) => {
                 </span>,
             );
         }
-
         if (hasHalfStar) {
             stars.push(
                 <span key="half" className="star half">
@@ -36,7 +35,6 @@ const ProductCard = ({ product }) => {
                 </span>,
             );
         }
-
         const emptyStars = 5 - Math.ceil(rating);
         for (let i = 0; i < emptyStars; i++) {
             stars.push(
@@ -45,8 +43,13 @@ const ProductCard = ({ product }) => {
                 </span>,
             );
         }
-
         return stars;
+    };
+
+    const handleAddToWishlist = (e) => {
+        e.preventDefault();
+        // TODO: Implement wishlist logic
+        console.log('Added to wishlist:', product.name);
     };
 
     return (
@@ -59,72 +62,83 @@ const ProductCard = ({ product }) => {
                         className="product-image"
                         loading="lazy"
                     />
-                    {product.salePrice && (
-                        <div className="discount-badge">
-                            -
-                            {product.discount ||
-                                Math.round(
-                                    ((product.price - product.salePrice) / product.price) * 100,
-                                )}
-                            %
-                        </div>
-                    )}
-                    {!product.inStock && (
-                        <div className="out-of-stock-overlay">
-                            <span>{t('product.outOfStock', 'Hết hàng')}</span>
-                        </div>
-                    )}
+                    <button
+                        className="wishlist-btn"
+                        onClick={handleAddToWishlist}
+                        tabIndex={-1}
+                        aria-label="Add to wishlist"
+                    >
+                        {/* Heart SVG */}
+                        <svg
+                            className="wishlist-icon"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                    </button>
                 </div>
 
                 <div className="product-info">
                     <div className="product-category">
                         {product.category?.name || product.category || ''}
                     </div>
-
                     <h3 className="product-name">{product.name}</h3>
-
-                    <div className="product-brand">{product.brand}</div>
-
+                    {product.brand && <div className="product-brand">{product.brand}</div>}
                     <div className="product-rating">
                         <div className="stars">{renderStars(product.ratings || 0)}</div>
                         <span className="rating-text">({product.numReviews || 0})</span>
                     </div>
-
-                    <div className="product-pricing">
+                    <div className="product-price">
                         {product.salePrice ? (
                             <>
-                                <span className="sale-price">{formatPrice(product.salePrice)}</span>
+                                <span className="current-price">
+                                    {formatPrice(product.salePrice)}
+                                </span>
                                 <span className="original-price">{formatPrice(product.price)}</span>
                             </>
                         ) : (
-                            <span className="price">
+                            <span className="current-price">
                                 {formatPrice(product.finalPrice || product.price)}
                             </span>
                         )}
                     </div>
-
-                    {product.lowStock && product.inStock && (
-                        <div className="low-stock-warning">
-                            {t('product.lowStock', 'Chỉ còn lại ít sản phẩm')}
-                        </div>
-                    )}
                 </div>
             </Link>
-
-            <div className="product-actions">
-                <button
-                    className="add-to-cart-btn"
-                    disabled={!product.inStock}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        dispatch(addToCart(product.id, 1));
-                    }}
+            <button
+                className="add-to-cart-btn"
+                disabled={!product.inStock}
+                onClick={(e) => {
+                    e.preventDefault();
+                    dispatch(addToCart(product.id, 1));
+                }}
+            >
+                {/* Shopping cart SVG */}
+                <svg
+                    className="cart-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                 >
-                    {product.inStock
-                        ? t('product.addToCart', 'Thêm vào giỏ')
-                        : t('product.outOfStock', 'Hết hàng')}
-                </button>
-            </div>
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.59H6.5" />
+                </svg>
+                {product.inStock
+                    ? t('product.addToCart', 'Thêm vào giỏ')
+                    : t('product.outOfStock', 'Hết hàng')}
+            </button>
         </div>
     );
 };

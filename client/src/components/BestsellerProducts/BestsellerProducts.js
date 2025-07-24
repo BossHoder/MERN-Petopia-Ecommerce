@@ -13,7 +13,7 @@ const BestsellerProducts = () => {
     const { bestsellers, bestsellersLoading, error } = useSelector((state) => state.products);
 
     useEffect(() => {
-        dispatch(getBestsellers(8)); // Lấy 8 sản phẩm bán chạy
+        dispatch(getBestsellers(4)); // Lấy 4 sản phẩm bán chạy
     }, [dispatch]);
 
     if (bestsellersLoading) {
@@ -41,28 +41,12 @@ const BestsellerProducts = () => {
     return (
         <section className="bestseller-products" id="featured-products">
             <div className="bestseller-container">
-                <div className="bestseller-header">
-                    <h2 className="bestseller-title">
-                        {t('products.bestsellers', 'Sản Phẩm Bán Chạy')}
-                    </h2>
-                    <p className="bestseller-subtitle">
-                        {t(
-                            'products.bestsellers.subtitle',
-                            'Những sản phẩm được yêu thích nhất bởi các pet parents',
-                        )}
-                    </p>
-                </div>
+                <h2 className="bestseller-title">Bestsellers This Month</h2>
 
                 <div className="bestseller-grid">
                     {bestsellers.slice(0, 8).map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
-                </div>
-
-                <div className="bestseller-footer">
-                    <Link to="/products" className="view-all-button">
-                        {t('products.viewAll', 'Xem Tất Cả Sản Phẩm')}
-                    </Link>
                 </div>
             </div>
         </section>

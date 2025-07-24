@@ -57,32 +57,28 @@ const CategoryCards = () => {
     return (
         <section className="category-cards">
             <div className="category-cards-container">
-                <h2 className="category-cards-title">{t('categories.title')}</h2>
+                <h2 className="category-cards-title">Shop by Category</h2>
 
                 <div className="category-cards-grid">
                     {featuredCategories.map((category) => (
-                        <Link
+                        <a
                             key={category.id}
-                            to={`/category/${category.slug}`}
+                            href={'/category/' + category.slug}
                             className="category-card-link"
                         >
                             <div className="category-card">
-                                <div className="category-icon">
-                                    {getCategoryIcon(category.slug)}
-                                </div>
-                                <h3 className="category-name">
-                                    {t(
-                                        `categoriesList.${kebabToCamel(category.slug)}`,
-                                        category.name,
-                                    )}
-                                </h3>
-                                {category.productCount > 0 && (
-                                    <span className="category-count">
-                                        {category.productCount} {t('categories.products')}
-                                    </span>
-                                )}
+                                <div
+                                    className="category-image"
+                                    style={{
+                                        backgroundImage: `url(${
+                                            category.image ||
+                                            '/placeholder.svg?height=160&width=160'
+                                        })`,
+                                    }}
+                                />
+                                <p className="category-name">{category.name}</p>
                             </div>
-                        </Link>
+                        </a>
                     ))}
                 </div>
             </div>

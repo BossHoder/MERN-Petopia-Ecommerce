@@ -1,129 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Hero.css';
 
 const Hero = () => {
     const { t } = useTranslation();
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Hero images for carousel
-    const heroImages = [
-        {
-            src: 'https://images.pexels.com/photos/4498189/pexels-photo-4498189.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            alt: 'Happy pets with family',
-        },
-        {
-            src: 'https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            alt: 'Dog playing with toys',
-        },
-        {
-            src: 'https://images.pexels.com/photos/1056251/pexels-photo-1056251.jpeg?auto=compress&cs=tinysrgb&w=1200',
-            alt: 'Cat enjoying premium food',
-        },
-    ];
+    const handleSearch = (e) => {
+        e.preventDefault();
+        // TODO: Implement search logic or navigation
+        // For now, just log
+        console.log('Searching for:', searchQuery);
+    };
 
-    // Auto-slide functionality
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-        }, 7000);
-
-        return () => clearInterval(interval);
-    }, [heroImages.length]);
-
-    const handleShopNow = () => {
-        // Scroll to products section or navigate to shop
+    const scrollToProducts = () => {
         const productsSection = document.getElementById('featured-products');
         if (productsSection) {
             productsSection.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
-    const goToSlide = (index) => {
-        setCurrentSlide(index);
-    };
-
-    const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    };
-
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
-    };
-
     return (
         <section className="hero">
             <div className="hero-container">
                 <div className="hero-content">
-                    <div className="hero-text">
-                        <h1 className="hero-title">{t('hero.title')}</h1>
-                        <p className="hero-subtitle">{t('hero.subtitle')}</p>
-                        <button className="hero-cta-button" onClick={handleShopNow}>
-                            {t('hero.cta')}
-                        </button>
-                    </div>
+                    <h1 className="hero-title">
+                        {t('hero.title', 'Find everything your pet needs')}
+                    </h1>
+                    <p className="hero-subtitle">
+                        {t(
+                            'hero.subtitle',
+                            'Quality products, expert advice, and a community that loves pets as much as you do.',
+                        )}
+                    </p>
 
-                    <div className="hero-image-container">
-                        <div className="hero-image-wrapper">
-                            {/* Image Carousel */}
-                            <div className="hero-carousel">
-                                {heroImages.map((image, index) => (
-                                    <img
-                                        key={index}
-                                        src={image.src}
-                                        alt={image.alt}
-                                        className={`hero-image ${
-                                            index === currentSlide ? 'active' : ''
-                                        }`}
-                                    />
-                                ))}
-                            </div>
-
-                            {/* Navigation arrows */}
-                            <button className="carousel-btn carousel-btn-prev" onClick={prevSlide}>
+                    <form className="hero-search-form" onSubmit={handleSearch}>
+                        <div className="hero-search-container">
+                            <span className="hero-search-icon" aria-hidden="true">
+                                {/* Simple search icon SVG, no extra library */}
                                 <svg
                                     width="24"
                                     height="24"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    stroke="currentColor"
+                                    stroke="#9a664c"
                                     strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                 >
-                                    <polyline points="15,18 9,12 15,6"></polyline>
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
                                 </svg>
+                            </span>
+                            <input
+                                type="text"
+                                placeholder={t(
+                                    'hero.searchPlaceholder',
+                                    'Search for food, toys, treats...',
+                                )}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="hero-search-input"
+                            />
+                            <button type="submit" className="hero-search-btn">
+                                {t('hero.search', 'Search')}
                             </button>
-                            <button className="carousel-btn carousel-btn-next" onClick={nextSlide}>
-                                <svg
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                >
-                                    <polyline points="9,18 15,12 9,6"></polyline>
-                                </svg>
-                            </button>
-
-                            {/* Slide indicators */}
-                            <div className="carousel-indicators">
-                                {heroImages.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        className={`indicator ${
-                                            index === currentSlide ? 'active' : ''
-                                        }`}
-                                        onClick={() => goToSlide(index)}
-                                    />
-                                ))}
-                            </div>
                         </div>
-
-                        {/* Decorative elements */}
-                        <div className="hero-decoration hero-decoration-1"></div>
-                        <div className="hero-decoration hero-decoration-2"></div>
-                        <div className="hero-decoration hero-decoration-3"></div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </section>
