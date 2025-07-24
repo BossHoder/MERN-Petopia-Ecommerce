@@ -1,25 +1,31 @@
 import * as Yup from 'yup';
 
-// Sử dụng: getRegisterSchema(t) với t là hàm dịch từ useI18n
+// Register validation schema with confirm password
 export const getRegisterSchema = (t) => {
     return Yup.object({
         name: Yup.string()
-            .min(2, t('auth.register.validation.nameMin'))
-            .max(50, t('auth.register.validation.nameMax'))
-            .required(t('auth.register.validation.nameRequired')),
+            .min(2, 'Name must be at least 2 characters')
+            .max(50, 'Name must be at most 50 characters')
+            .required('Full name is required'),
         username: Yup.string()
-            .min(3, t('auth.register.validation.usernameMin'))
-            .max(30, t('auth.register.validation.usernameMax'))
-            .matches(/^[a-zA-Z0-9_]+$/, t('auth.register.validation.usernamePattern'))
-            .required(t('auth.register.validation.usernameRequired')),
+            .min(3, 'Username must be at least 3 characters')
+            .max(30, 'Username must be at most 30 characters')
+            .matches(
+                /^[a-zA-Z0-9_]+$/,
+                'Username can only contain letters, numbers, and underscores',
+            )
+            .required('Username is required'),
         email: Yup.string()
-            .email(t('auth.register.validation.emailInvalid'))
-            .min(5, t('auth.register.validation.emailMin'))
-            .max(255, t('auth.register.validation.emailMax'))
-            .required(t('auth.register.validation.emailRequired')),
+            .email('Invalid email address')
+            .min(5, 'Email must be at least 5 characters')
+            .max(255, 'Email must be at most 255 characters')
+            .required('Email address is required'),
         password: Yup.string()
-            .min(6, t('auth.register.validation.passwordMin'))
-            .max(255, t('auth.register.validation.passwordMax'))
-            .required(t('auth.register.validation.passwordRequired')),
+            .min(6, 'Password must be at least 6 characters')
+            .max(255, 'Password must be at most 255 characters')
+            .required('Password is required'),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Please confirm your password'),
     });
 };
