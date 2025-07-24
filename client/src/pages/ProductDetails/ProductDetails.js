@@ -145,14 +145,6 @@ const ProductDetails = () => {
                                 >
                                     {t('productDetails.addToCart', 'Add To Cart')}
                                 </button>
-                                {addToCartSuccess && (
-                                    <Notification type="success">
-                                        {t(
-                                            'productDetails.addToCartSuccess',
-                                            'Product added to cart!',
-                                        )}
-                                    </Notification>
-                                )}
                                 {addToCartError && (
                                     <Notification type="error">{addToCartError}</Notification>
                                 )}

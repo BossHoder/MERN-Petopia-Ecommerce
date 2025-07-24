@@ -45,7 +45,7 @@ export const loadMe = () => async (dispatch, getState) => {
 
         dispatch({
             type: ME_SUCCESS,
-            payload: { me: response.data.me },
+            payload: { me: response.data.data?.me },
         });
     } catch (err) {
         dispatch({

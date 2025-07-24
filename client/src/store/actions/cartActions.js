@@ -33,6 +33,10 @@ export const addToCart = (productId, quantity) => async (dispatch, getState) => 
                 type: types.ADD_TO_CART_SUCCESS,
                 payload: data.data,
             });
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: { message: 'Đã thêm vào giỏ hàng!', type: 'success' },
+            });
             resolve(); // Resolve khi thành công
         } catch (error) {
             const errorMessage = error.response?.data?.message || error.message;

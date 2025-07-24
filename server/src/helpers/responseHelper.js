@@ -67,11 +67,22 @@ export const paginatedResponse = (res, data, message = 'Success') => {
  * @param {Object} error - Joi validation error
  */
 export const validationErrorResponse = (res, error) => {
-    const errors = error.details.map((detail) => ({
-        field: detail.path.join('.'),
-        message: detail.message,
-    }));
-
+    // Nếu error là mảng, dùng luôn. Nếu là string/object, ép thành mảng.
+    let errors = [];
+    if (Array.isArray(error)) {
+        errors = error.map((msg) => (typeof msg === 'string' ? { message: msg } : msg));
+    } else if (error && error.details) {
+        errors = error.details.map((detail) => ({
+            field: detail.path.join('.'),
+            message: detail.message,
+        }));
+    } else if (typeof error === 'string') {
+        errors = [{ message: error }];
+    } else if (error) {
+        errors = [{ message: JSON.stringify(error) }];
+    } else {
+        errors = [{ message: 'Unknown validation error' }];
+    }
     return errorResponse(res, ERROR_MESSAGES.VALIDATION_ERROR, 400, errors);
 };
 

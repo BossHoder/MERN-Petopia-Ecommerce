@@ -333,13 +333,7 @@ class UserController {
                 return notFoundResponse(res, ERROR_MESSAGES.USER_NOT_FOUND);
             }
 
-            return successResponse(res, {
-                success: true,
-                message: 'Addresses fetched successfully',
-                data: {
-                    addresses: user.addresses,
-                },
-            });
+            return successResponse(res, { addresses: user.addresses }, 'Addresses fetched successfully');
         } catch (error) {
             console.error('Error in getAddresses:', error);
             return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, error.message);
@@ -359,7 +353,7 @@ class UserController {
                 return validationErrorResponse(res, result.error);
             }
 
-            return successResponse(res, result);
+            return successResponse(res, { addresses: result.addresses }, 'Address added successfully');
         } catch (err) {
             console.error('Error adding address:', err);
             return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
@@ -379,7 +373,7 @@ class UserController {
                 return validationErrorResponse(res, result.error);
             }
 
-            return successResponse(res, result);
+            return successResponse(res, { addresses: result.addresses }, 'Address updated successfully');
         } catch (err) {
             console.error('Error updating address:', err);
             return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
@@ -399,7 +393,7 @@ class UserController {
                 return validationErrorResponse(res, result.error);
             }
 
-            return successResponse(res, result);
+            return successResponse(res, { addresses: result.addresses }, 'Address removed successfully');
         } catch (err) {
             console.error('Error removing address:', err);
             return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);
@@ -419,7 +413,7 @@ class UserController {
                 return validationErrorResponse(res, result.error);
             }
 
-            return successResponse(res, result);
+            return successResponse(res, { addresses: result.addresses }, 'Default address set successfully');
         } catch (err) {
             console.error('Error setting default address:', err);
             return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500, err.message);

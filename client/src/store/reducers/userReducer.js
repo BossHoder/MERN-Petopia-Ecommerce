@@ -11,7 +11,7 @@ import {
 } from '../types';
 
 const initialState = {
-    profile: {},
+    profile: null,
     isLoading: false,
     error: null,
 };

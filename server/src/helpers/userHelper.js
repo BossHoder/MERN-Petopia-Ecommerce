@@ -42,7 +42,7 @@ export const addAddress = async (userId, addressData) => {
         }
 
         // Validate address data
-        const requiredFields = ['fullName', 'phoneNumber', 'address', 'city', 'district'];
+        const requiredFields = ['phoneNumber', 'address'];
         for (const field of requiredFields) {
             if (!addressData[field]) {
                 throw new Error(`${field} is required`);
@@ -59,7 +59,7 @@ export const addAddress = async (userId, addressData) => {
 
         return {
             success: true,
-            address: user.addresses[user.addresses.length - 1],
+            addresses: user.addresses,
         };
     } catch (error) {
         return {
@@ -87,7 +87,7 @@ export const updateAddress = async (userId, addressId, addressData) => {
 
         return {
             success: true,
-            address,
+            addresses: user.addresses,
         };
     } catch (error) {
         return {
@@ -122,7 +122,7 @@ export const removeAddress = async (userId, addressId) => {
 
         return {
             success: true,
-            message: 'Address removed successfully',
+            addresses: user.addresses,
         };
     } catch (error) {
         return {
@@ -156,7 +156,7 @@ export const setDefaultAddress = async (userId, addressId) => {
 
         return {
             success: true,
-            address: targetAddress,
+            addresses: user.addresses,
         };
     } catch (error) {
         return {

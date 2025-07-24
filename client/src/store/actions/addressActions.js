@@ -1,5 +1,6 @@
 import api from '../../services/api';
 import * as types from '../types';
+import { attachTokenToHeaders } from './authActions';
 
 // Get user addresses
 export const getAddresses = () => async (dispatch, getState) => {
@@ -8,7 +9,7 @@ export const getAddresses = () => async (dispatch, getState) => {
     } = getState();
 
     // Do not proceed if user info is not available yet
-    if (!me || !me._id) {
+    if (!me || !me.id) {
         // Optionally, dispatch a specific failure action or just return
         dispatch({
             type: types.GET_ADDRESSES_FAILURE,
@@ -19,9 +20,10 @@ export const getAddresses = () => async (dispatch, getState) => {
 
     try {
         dispatch({ type: types.GET_ADDRESSES_LOADING });
-        const userId = me._id;
+        const userId = me.id;
+        const options = attachTokenToHeaders(getState);
 
-        const { data } = await api.get(`/api/users/${userId}/addresses`);
+        const { data } = await api.get(`/api/users/${userId}/addresses`, options);
 
         dispatch({
             type: types.GET_ADDRESSES_SUCCESS,
@@ -39,11 +41,12 @@ export const getAddresses = () => async (dispatch, getState) => {
 export const addAddress = (addressData) => async (dispatch, getState) => {
     try {
         const {
-            auth: {
-                me: { _id: userId },
-            },
+            auth: { me },
         } = getState();
-        const { data } = await api.post(`/api/users/${userId}/addresses`, addressData);
+        const userId = me.id;
+        const options = attachTokenToHeaders(getState);
+
+        const { data } = await api.post(`/api/users/${userId}/addresses`, addressData, options);
 
         dispatch({
             type: types.ADD_ADDRESS_SUCCESS,
@@ -62,11 +65,16 @@ export const updateAddress = (addressId, addressData) => async (dispatch, getSta
     try {
         dispatch({ type: types.UPDATE_ADDRESS_REQUEST });
         const {
-            auth: {
-                me: { _id: userId },
-            },
+            auth: { me },
         } = getState();
-        const { data } = await api.put(`/api/users/${userId}/addresses/${addressId}`, addressData);
+        const userId = me.id;
+        const options = attachTokenToHeaders(getState);
+
+        const { data } = await api.put(
+            `/api/users/${userId}/addresses/${addressId}`,
+            addressData,
+            options,
+        );
 
         dispatch({
             type: types.UPDATE_ADDRESS_SUCCESS,
@@ -85,11 +93,12 @@ export const deleteAddress = (addressId) => async (dispatch, getState) => {
     try {
         dispatch({ type: types.DELETE_ADDRESS_REQUEST });
         const {
-            auth: {
-                me: { _id: userId },
-            },
+            auth: { me },
         } = getState();
-        const { data } = await api.delete(`/api/users/${userId}/addresses/${addressId}`);
+        const userId = me.id;
+        const options = attachTokenToHeaders(getState);
+
+        const { data } = await api.delete(`/api/users/${userId}/addresses/${addressId}`, options);
 
         dispatch({
             type: types.DELETE_ADDRESS_SUCCESS,
@@ -108,11 +117,16 @@ export const setDefaultAddress = (addressId) => async (dispatch, getState) => {
     try {
         dispatch({ type: types.SET_DEFAULT_ADDRESS_REQUEST });
         const {
-            auth: {
-                me: { _id: userId },
-            },
+            auth: { me },
         } = getState();
-        const { data } = await api.put(`/api/users/${userId}/addresses/${addressId}/default`);
+        const userId = me.id;
+        const options = attachTokenToHeaders(getState);
+
+        const { data } = await api.put(
+            `/api/users/${userId}/addresses/${addressId}/default`,
+            {},
+            options,
+        );
 
         dispatch({
             type: types.SET_DEFAULT_ADDRESS_SUCCESS,

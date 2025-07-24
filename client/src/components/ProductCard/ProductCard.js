@@ -2,9 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './ProductCard.css';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../store/actions/cartActions';
 
 const ProductCard = ({ product }) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('vi-VN', {
@@ -114,8 +117,7 @@ const ProductCard = ({ product }) => {
                     disabled={!product.inStock}
                     onClick={(e) => {
                         e.preventDefault();
-                        // TODO: Implement add to cart functionality
-                        console.log('Add to cart:', product.id);
+                        dispatch(addToCart(product.id, 1));
                     }}
                 >
                     {product.inStock

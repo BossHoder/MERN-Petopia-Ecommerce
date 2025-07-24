@@ -39,24 +39,24 @@ export const editUser = (id, formData, navigate) => async (dispatch, getState) =
         const response = await API.put(`/api/users/${id}`, formData, options);
         console.log('editUser response:', response.data);
 
+        // Lấy user từ response.data.data.user (theo chuẩn backend)
+        const updatedUser = response.data.data?.user || response.data.user;
+
         dispatch({
             type: EDIT_USER_SUCCESS,
-            payload: { user: response.data.user },
+            payload: { user: updatedUser },
         });
 
         // Show success message
         console.log('Profile updated successfully!');
 
         // edited him self, reload me
-        if (getState().auth.me?.id === response.data.user.id) dispatch(loadMe());
+        if (getState().auth.me?.id === updatedUser?.id) dispatch(loadMe());
 
         // Only redirect if username changed
-        if (getState().auth.me?.username !== response.data.user.username) {
-            // Nếu username thay đổi, token cũ sẽ không còn hợp lệ
-            // Đăng xuất và điều hướng đến trang đăng nhập để người dùng đăng nhập lại
+        if (getState().auth.me?.username !== updatedUser?.username) {
             dispatch(logOutUser());
         } else {
-            // Nếu không, chỉ cần load lại thông tin profile
             dispatch(loadMe());
         }
     } catch (err) {
@@ -94,7 +94,7 @@ export const getProfile = (username, navigate) => async (dispatch, getState) => 
 
         dispatch({
             type: GET_PROFILE_SUCCESS,
-            payload: { profile: response.data.user },
+            payload: { profile: response.data.data.user },
         });
     } catch (err) {
         if (err?.response?.status === 404) {

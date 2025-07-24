@@ -26,13 +26,12 @@ const addressSchema = new Schema({
     },
     fullName: {
         type: String,
-        required: true,
         trim: true,
     },
     phoneNumber: {
         type: String,
-        required: true,
         trim: true,
+        required: true,
     },
     address: {
         type: String,
@@ -41,17 +40,14 @@ const addressSchema = new Schema({
     },
     city: {
         type: String,
-        required: true,
         trim: true,
     },
     district: {
         type: String,
-        required: true,
         trim: true,
     },
     ward: {
         type: String,
-        required: true,
         trim: true,
     },
     isDefault: {

@@ -22,3 +22,4 @@ server/MONGODB_OPTIMIZATION.md
 .github/prompts/prompt2.prompt.md
 .cursor/rules/mern-petopia.mdc
 demo
+.augment/rules

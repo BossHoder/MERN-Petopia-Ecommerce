@@ -2,19 +2,34 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logOutUser } from '../../store/actions/authActions';
+import { getCart } from '../../store/actions/cartActions';
 import { useI18n } from '../../hooks/useI18n';
 import LanguageSelector from '../LanguageSelector';
 import SearchBox from '../SearchBox/SearchBox';
 import './styles.css';
+import { getAvatarUrl } from '../../utils/helpers';
 
 const AppNavbar = () => {
     const { t } = useI18n('common');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isAuthenticated, user } = useSelector((state) => state.auth);
-    const { cartItems = [] } = useSelector((state) => state.cart);
+    const { me } = useSelector((state) => state.auth);
+    // Sửa selector lấy đúng items từ state.cart
+    const cartItems = useSelector((state) => state.cart.items || []);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    // Tính tổng số lượng sản phẩm trong giỏ
+    const totalQuantity = cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
+
+    // Debug log
+    console.log('cartItems:', cartItems);
+    console.log('totalQuantity:', totalQuantity);
+
+    useEffect(() => {
+        dispatch(getCart());
+    }, [dispatch]);
 
     const handleLogout = () => {
         dispatch(logOutUser(navigate));
@@ -113,18 +128,15 @@ const AppNavbar = () => {
                     <LanguageSelector />
                     <Link to="/cart" className="nav-link cart-icon">
                         <i className="fas fa-shopping-cart"></i>
-                        {cartItems.length > 0 && (
-                            <span className="badge">
-                                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                            </span>
-                        )}
+                        {totalQuantity > 0 && <span className="badge">{totalQuantity}</span>}
                     </Link>
                     <div className="avatar-container" ref={dropdownRef}>
                         {isAuthenticated ? (
                             <img
                                 src={
-                                    user?.avatar ||
-                                    'https://i.pravatar.cc/150?u=a042581f4e29026704d'
+                                    me?.avatar
+                                        ? getAvatarUrl(me.avatar)
+                                        : 'https://i.pravatar.cc/150?u=a042581f4e29026704d'
                                 }
                                 alt="User Avatar"
                                 className="avatar"

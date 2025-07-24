@@ -13,6 +13,7 @@ import {
 } from '../../store/actions/addressActions';
 import Loader from '../../components/Loader/Loader';
 import { getAvatarUrl } from '../../utils/helpers';
+import { loadMe } from '../../store/actions/authActions';
 
 import './Profile.css'; // Sử dụng CSS mới
 import { useTranslation } from 'react-i18next';
@@ -103,6 +104,7 @@ const ProfileSettings = ({ profile, loading }) => {
     const [isEdit, setIsEdit] = useState(false);
     const [avatar, setAvatar] = useState(null);
     const [avatarPreview, setAvatarPreview] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -120,6 +122,20 @@ const ProfileSettings = ({ profile, loading }) => {
             setAvatarPreview(getAvatarUrl(profile.avatar));
         }
     }, [profile]);
+
+    // Khi update thành công, tự động tắt edit mode và dừng submitting
+    useEffect(() => {
+        if (isSubmitting && !loading && !isEdit) {
+            setIsSubmitting(false);
+        }
+        // Nếu vừa update xong, reload lại profile và đồng bộ avatar Navbar
+        if (isSubmitting && !loading) {
+            dispatch(getProfile(null, navigate));
+            dispatch(loadMe()); // Đồng bộ avatar Navbar
+            setIsEdit(false);
+            setIsSubmitting(false);
+        }
+    }, [loading, isSubmitting, isEdit, dispatch, navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -144,14 +160,15 @@ const ProfileSettings = ({ profile, loading }) => {
         if (avatar) {
             data.append('avatar', avatar);
         }
-
-        dispatch(editUser(profile._id, data, navigate));
-        setIsEdit(false);
+        setIsSubmitting(true);
+        dispatch(editUser(profile.id, data, navigate));
     };
 
-    return loading ? (
-        <Loader />
-    ) : (
+    if (loading || !profile || !profile.name) {
+        return <Loader />;
+    }
+
+    return (
         <div>
             <h2>{t('profile.tabs.settings', 'Profile Settings')}</h2>
             <div className="profile-settings-info">
@@ -326,10 +343,8 @@ const AddressBook = () => {
     const { t } = useTranslation('common');
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [formData, setFormData] = useState({
+        phoneNumber: '',
         address: '',
-        city: '',
-        postalCode: '',
-        country: '',
     });
 
     const { addresses, loading, error } = useSelector((state) => state.address);
@@ -342,9 +357,18 @@ const AddressBook = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Chỉ validate phoneNumber và address là bắt buộc
+        if (!formData.phoneNumber || !formData.address) {
+            alert('Vui lòng nhập đầy đủ SĐT và địa chỉ cụ thể!');
+            return;
+        }
+        console.log('addressData gửi lên:', formData); // Log dữ liệu gửi lên
         dispatch(addAddress(formData));
         setIsFormVisible(false);
-        setFormData({ address: '', city: '', postalCode: '', country: '' });
+        setFormData({
+            phoneNumber: '',
+            address: '',
+        });
     };
 
     const handleDelete = (addressId) => {
@@ -378,34 +402,20 @@ const AddressBook = () => {
 
             {isFormVisible && (
                 <form onSubmit={handleSubmit} className="address-form">
-                    {/* Các input cho address, city, postalCode, country */}
                     <div className="form-group">
-                        <label>{t('profile.addresses.address', 'Address')}</label>
+                        <label>{t('profile.addresses.phoneNumber', 'Phone Number')} *</label>
+                        <input
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{t('profile.addresses.address', 'Address')} *</label>
                         <input
                             name="address"
                             value={formData.address}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{t('profile.addresses.city', 'City')}</label>
-                        <input name="city" value={formData.city} onChange={handleChange} required />
-                    </div>
-                    <div className="form-group">
-                        <label>{t('profile.addresses.postalCode', 'Postal Code')}</label>
-                        <input
-                            name="postalCode"
-                            value={formData.postalCode}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{t('profile.addresses.country', 'Country')}</label>
-                        <input
-                            name="country"
-                            value={formData.country}
                             onChange={handleChange}
                             required
                         />
@@ -423,11 +433,8 @@ const AddressBook = () => {
                             key={addr._id}
                             className={`address-card ${addr.isDefault ? 'default' : ''}`}
                         >
-                            <p>{addr.address}</p>
-                            <p>
-                                {addr.city}, {addr.postalCode}
-                            </p>
-                            <p>{addr.country}</p>
+                            <p>Địa chỉ: {addr.address}</p>
+                            <p>Số điện thoại: {addr.phoneNumber}</p>
                             {addr.isDefault && (
                                 <span className="default-badge">
                                     {t('profile.addresses.default', 'Default')}

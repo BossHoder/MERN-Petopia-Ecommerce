@@ -12,16 +12,21 @@ const Cart = () => {
     const navigate = useNavigate();
     const { t } = useTranslation('common');
 
-    const { me: userInfo } = useSelector((state) => state.auth); // Sửa từ userInfo thành me
+    const { me: userInfo, appLoaded } = useSelector((state) => state.auth); // Lấy thêm appLoaded
     const { items, loading, error } = useSelector((state) => state.cart);
 
+    // Thêm log debug userInfo
+    console.log('userInfo in Cart:', userInfo, 'appLoaded:', appLoaded);
+
     useEffect(() => {
-        if (!userInfo) {
-            navigate('/login');
-        } else {
-            dispatch(getCart());
+        if (appLoaded) {
+            if (!userInfo) {
+                navigate('/login');
+            } else {
+                dispatch(getCart());
+            }
         }
-    }, [dispatch, navigate, userInfo]);
+    }, [dispatch, navigate, userInfo, appLoaded]);
 
     const handleQuantityChange = (productId, quantity) => {
         if (quantity <= 0) {
