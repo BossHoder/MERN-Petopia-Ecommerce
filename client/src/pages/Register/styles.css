@@ -104,7 +104,7 @@
 .register-card {
     background: white;
     border-radius: 1.5rem;
-    padding: 3rem;
+    padding: 0 1rem;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.05);
     max-height: 90vh;
     overflow-y: auto;
@@ -280,7 +280,6 @@
     }
 
     .register-card {
-        padding: 2rem;
         max-height: none;
     }
 }
@@ -304,7 +303,6 @@
     }
 
     .register-card {
-        padding: 1.5rem;
         border-radius: 1rem;
     }
 
