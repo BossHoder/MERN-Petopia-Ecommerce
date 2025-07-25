@@ -411,7 +411,7 @@
         "cod": "Cash on Delivery (COD)",
         "paypal": "PayPal or Credit Card",
         "confirmOrder": "Confirm Order",
-        "confirmMessage": "You are about to place the following order. Please review and confirm.",
+        "confirmMessage": "Confirm your order",
         "summary": {
             "items": "Items",
             "shipping": "Shipping",

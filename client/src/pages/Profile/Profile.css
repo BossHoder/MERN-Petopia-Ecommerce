@@ -89,6 +89,56 @@
 }
 
 /* Address Book Styles */
+.address-book {
+    position: relative;
+}
+
+.address-book-header {
+    margin-bottom: 2rem;
+}
+
+.checkout-context-banner {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1rem 0 2rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+}
+
+.checkout-context-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.checkout-context-icon {
+    font-size: 1.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.return-to-checkout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.return-to-checkout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
 .address-book-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -228,4 +278,63 @@
     .profile-container {
         grid-template-columns: 1fr;
     }
+
+    /* Mobile-responsive checkout context banner */
+    .checkout-context-banner {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        padding: 1.25rem;
+    }
+
+    .checkout-context-message {
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .checkout-context-icon {
+        font-size: 1.25rem;
+    }
+
+    .return-to-checkout-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .address-book-list {
+        grid-template-columns: 1fr;
+    }
+
+    .address-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .return-to-checkout-btn {
+        transition: none;
+    }
+
+    .return-to-checkout-btn:hover {
+        transform: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .checkout-context-banner {
+        border: 2px solid;
+    }
+
+    .return-to-checkout-btn {
+        border-width: 3px;
+    }
+}
+
+/* Focus styles for accessibility */
+.return-to-checkout-btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
 }

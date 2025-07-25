@@ -59,8 +59,17 @@ const Products = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const queryFilters = Object.fromEntries(params.entries());
+
+        // Ensure limit=4 is set if not present in URL
+        if (!queryFilters.limit) {
+            queryFilters.limit = '4';
+            // Update URL to include limit parameter
+            params.set('limit', '4');
+            navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+        }
+
         dispatch(getAllProducts(queryFilters));
-    }, [dispatch, location.search]);
+    }, [dispatch, location.search, navigate, location.pathname]);
 
     const handleFilterChange = (newFilters) => {
         const params = new URLSearchParams(location.search);
@@ -72,12 +81,20 @@ const Products = () => {
             }
         });
         params.set('page', '1');
+        // Ensure limit=4 is always set for consistent pagination
+        if (!params.has('limit')) {
+            params.set('limit', '4');
+        }
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
     const handlePageChange = (page) => {
         const params = new URLSearchParams(location.search);
         params.set('page', page);
+        // Ensure limit=4 is always set for consistent pagination
+        if (!params.has('limit')) {
+            params.set('limit', '4');
+        }
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
@@ -86,6 +103,10 @@ const Products = () => {
         const params = new URLSearchParams(location.search);
         params.set('sort', sort);
         params.set('page', '1');
+        // Ensure limit=4 is always set for consistent pagination
+        if (!params.has('limit')) {
+            params.set('limit', '4');
+        }
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
@@ -134,9 +155,9 @@ const Products = () => {
                                     Showing {(pagination.currentPage - 1) * pagination.limit + 1}-
                                     {Math.min(
                                         pagination.currentPage * pagination.limit,
-                                        pagination.total,
+                                        pagination.totalProducts,
                                     )}{' '}
-                                    of {pagination.total} results
+                                    of {pagination.totalProducts} results
                                 </p>
                             )}
                         </div>

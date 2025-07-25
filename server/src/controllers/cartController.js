@@ -13,7 +13,7 @@ import {
 // @route   GET /api/cart
 // @access  Private
 const getCart = asyncHandler(async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'name price image');
+    const cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'name price image slug');
 
     if (!cart) {
         return successResponse(res, { items: [], total: 0 }, 'Cart is empty');
@@ -79,7 +79,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
     // Always populate product details before sending the response
     await cart.populate({
         path: 'items.product',
-        select: 'name images price stockQuantity',
+        select: 'name images price stockQuantity slug',
     });
 
     return successResponse(res, cart, 'Product added to cart successfully.');
@@ -101,7 +101,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
     cart.items = cart.items.filter((item) => item.product.toString() !== productId);
     await cart.save();
 
-    await cart.populate('items.product', 'name price image');
+    await cart.populate('items.product', 'name price image slug');
 
     return successResponse(res, cart);
 });
@@ -129,7 +129,7 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
     if (itemIndex > -1) {
         cart.items[itemIndex].quantity = quantity;
         await cart.save();
-        await cart.populate('items.product', 'name price image');
+        await cart.populate('items.product', 'name price image slug');
         return successResponse(res, cart);
     } else {
         return notFoundResponse(res, ERROR_MESSAGES.ITEM_NOT_FOUND_IN_CART);

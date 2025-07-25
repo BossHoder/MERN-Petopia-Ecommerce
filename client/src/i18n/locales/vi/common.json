@@ -92,7 +92,7 @@
         "featured": "Sản Phẩm Nổi Bật",
         "viewAll": "Xem Tất Cả Sản Phẩm",
         "error": "Không thể tải sản phẩm. Vui lòng thử lại sau.",
-        "addToCart": "Thêm vào giỏ hàng",
+        "addToCart": "Thêm vào giỏ",
         "outOfStock": "Hết hàng",
         "lowStock": "Chỉ còn lại ít sản phẩm",
         "price": "Giá",
@@ -367,7 +367,9 @@
     "hero": {
         "title": "Khoảnh Khắc Vui Vẻ, Trọn Vẹn Yêu Thương",
         "subtitle": "Khám phá đồ chơi, thức ăn và phụ kiện an toàn, mang lại niềm vui cho cả nhà!",
-        "cta": "Khám Phá Ngay"
+        "cta": "Khám Phá Ngay",
+        "searchPlaceholder": "Tìm kiếm thức ăn, đồ chơi, quà thưởng...",
+        "search": "Tìm kiếm"
     },
     "brandPromise": {
         "title": "Tại Sao Chọn Petopia?",
@@ -432,7 +434,7 @@
         "cod": "Thanh toán khi nhận hàng (COD)",
         "paypal": "PayPal hoặc Thẻ tín dụng",
         "confirmOrder": "Xác nhận đơn hàng",
-        "confirmMessage": "Bạn sắp đặt đơn hàng sau. Vui lòng xem lại và xác nhận.",
+        "confirmMessage": "Xác nhận đặt đơn.",
         "summary": {
             "items": "Sản phẩm",
             "shipping": "Vận chuyển",

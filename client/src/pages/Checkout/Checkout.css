@@ -48,6 +48,41 @@
     margin-bottom: 2rem;
 }
 
+.saved-addresses h3 {
+    color: #374151;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f97316;
+}
+
+.no-addresses-message {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    text-align: center;
+    color: #92400e;
+}
+
+.no-addresses-message .icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.no-addresses-message .message {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.no-addresses-message .sub-message {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 .saved-address {
     padding: 1rem;
     border: 1px solid #ccc;

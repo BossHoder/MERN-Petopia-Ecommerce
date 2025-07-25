@@ -31,7 +31,12 @@ const addressSchema = new Schema({
     phoneNumber: {
         type: String,
         trim: true,
-        required: true,
+        validate: {
+            validator: function (v) {
+                return !v || /^[0-9]{10}$/.test(v);
+            },
+            message: 'Số điện thoại phải có 10 chữ số',
+        },
     },
     address: {
         type: String,
@@ -110,16 +115,6 @@ const userSchema = new Schema(
             type: String,
             maxlength: [500, 'Bio cannot exceed 500 characters'],
             trim: true,
-        },
-        phoneNumber: {
-            type: String,
-            trim: true,
-            validate: {
-                validator: function (v) {
-                    return !v || /^[0-9]{10,11}$/.test(v);
-                },
-                message: 'Phone number must be 10-11 digits',
-            },
         },
         dateOfBirth: {
             type: Date,

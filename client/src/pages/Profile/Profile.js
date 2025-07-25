@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import moment from 'moment';
 
 import { getProfile, editUser } from '../../store/actions/userActions';
@@ -22,6 +22,7 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const { username: paramUsername } = useParams();
     const { t } = useTranslation('common');
 
@@ -49,6 +50,14 @@ const Profile = () => {
         }
     }, [dispatch, navigate, userInfo, paramUsername]);
 
+    // Handle checkout redirection and auto-focus Address Book tab
+    useEffect(() => {
+        if (location.state?.fromCheckout && location.state?.focusTab) {
+            setActiveTab(location.state.focusTab);
+            // Removed the blue info toast - user will see the checkout context banner instead
+        }
+    }, [location.state, dispatch, t]);
+
     if (userInfo === null && isLoading) {
         return <Loader />;
     }
@@ -58,7 +67,7 @@ const Profile = () => {
             case 'orders':
                 return <OrderHistory />;
             case 'addresses':
-                return <AddressBook />;
+                return <AddressBook checkoutContext={location.state} />;
             case 'profile':
             default:
                 return <ProfileSettings profile={profile} loading={profileLoading} />;
@@ -337,8 +346,9 @@ const OrderHistory = () => {
     );
 };
 
-const AddressBook = () => {
+const AddressBook = ({ checkoutContext }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { t } = useTranslation('common');
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [formData, setFormData] = useState({
@@ -358,7 +368,16 @@ const AddressBook = () => {
         e.preventDefault();
         // Chỉ validate phoneNumber và address là bắt buộc
         if (!formData.phoneNumber || !formData.address) {
-            alert('Vui lòng nhập đầy đủ SĐT và địa chỉ cụ thể!');
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: {
+                    message: t(
+                        'profile.addresses.validation.required',
+                        'Please enter both phone number and address.',
+                    ),
+                    type: 'error',
+                },
+            });
             return;
         }
         console.log('addressData gửi lên:', formData); // Log dữ liệu gửi lên
@@ -368,6 +387,8 @@ const AddressBook = () => {
             phoneNumber: '',
             address: '',
         });
+
+        // Removed success toast - user will see the return to checkout button appear instead
     };
 
     const handleDelete = (addressId) => {
@@ -387,9 +408,42 @@ const AddressBook = () => {
         dispatch(setDefaultAddress(addressId));
     };
 
+    const handleReturnToCheckout = () => {
+        navigate('/checkout', {
+            state: {
+                fromProfile: true,
+                addressAdded: true,
+                checkoutData: checkoutContext?.checkoutData,
+            },
+        });
+    };
+
     return (
-        <div>
-            <h2>{t('profile.tabs.addresses', 'Address Book')}</h2>
+        <div className="address-book">
+            <div className="address-book-header">
+                <h2>{t('profile.tabs.addresses', 'Address Book')}</h2>
+                {checkoutContext?.fromCheckout && (
+                    <div className="checkout-context-banner">
+                        <div className="checkout-context-message">
+                            <span className="checkout-context-icon">🛒</span>
+                            <span>
+                                {t(
+                                    'profile.addresses.checkoutContext',
+                                    'Add a shipping address to complete your order',
+                                )}
+                            </span>
+                        </div>
+                        {addresses && addresses.length > 0 && (
+                            <button
+                                className="btn btn-primary return-to-checkout-btn"
+                                onClick={handleReturnToCheckout}
+                            >
+                                {t('profile.addresses.returnToCheckout', 'Return to Checkout')}
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
             {loading && <Loader />}
             {error && <p className="error-message">{error}</p>}
 

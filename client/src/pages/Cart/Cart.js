@@ -71,7 +71,7 @@ const Cart = () => {
                                     className="cart-item-image"
                                 />
                                 <div className="cart-item-details">
-                                    <Link to={`/products/${item.product._id}`}>
+                                    <Link to={`/product/${item.product.slug || item.product._id}`}>
                                         {item.product.name}
                                     </Link>
                                     <p>

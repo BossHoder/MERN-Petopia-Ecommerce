@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { createOrder } from '../../store/actions/orderActions';
 import { getAddresses, addAddress } from '../../store/actions/addressActions';
+import {
+    preserveCheckoutState,
+    restoreCheckoutState,
+    updateCheckoutStep,
+    updatePaymentMethod,
+    updateShippingAddress,
+} from '../../store/actions/checkoutActions';
 import { ORDER_CREATE_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
 import Notification from '../../components/Notification/Notification'; // Sửa import
@@ -12,24 +19,31 @@ import './Checkout.css';
 const Checkout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const { t } = useTranslation('common');
 
     const [step, setStep] = useState(1);
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [shippingAddress, setShippingAddress] = useState({
         address: '',
-        country: 'Vietnam',
+        phone: '',
     });
 
-    const { me: userInfo } = useSelector((state) => state.auth); // Sửa cho nhất quán
+    const { me: userInfo } = useSelector((state) => state.auth);
     const { items: cartItems } = useSelector((state) => state.cart);
-    const { addresses, loading: addressLoading } = useSelector((state) => state.address); // Sửa từ addresses thành address
+    const { addresses, loading: addressLoading } = useSelector((state) => state.address);
     const {
         order,
         success,
         error,
         loading: orderLoading,
     } = useSelector((state) => state.orderCreate);
+    const {
+        step: reduxStep,
+        paymentMethod: reduxPaymentMethod,
+        shippingAddress: reduxShippingAddress,
+        isRestored,
+    } = useSelector((state) => state.checkout);
 
     const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const shippingPrice = itemsPrice > 100 ? 0 : 10; // Giả lập
@@ -56,6 +70,28 @@ const Checkout = () => {
         dispatch(getAddresses());
     }, [navigate, dispatch, success, order, cartItems, orderLoading]);
 
+    // Initialize state from Redux if available
+    useEffect(() => {
+        if (isRestored) {
+            setStep(reduxStep);
+            setPaymentMethod(reduxPaymentMethod);
+            setShippingAddress(reduxShippingAddress);
+        }
+    }, [isRestored, reduxStep, reduxPaymentMethod, reduxShippingAddress]);
+
+    // Handle returning from profile page with checkout context
+    useEffect(() => {
+        if (location.state?.fromProfile && location.state?.checkoutData) {
+            // Restore checkout state from Redux
+            dispatch(restoreCheckoutState());
+
+            // Removed success toast - user can see their addresses are now available
+
+            // Clear the navigation state to prevent re-triggering
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location.state, location.pathname, dispatch, navigate, t]);
+
     const handleAddressChange = (e) => {
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
     };
@@ -66,13 +102,68 @@ const Checkout = () => {
 
     const submitAddressHandler = (e) => {
         e.preventDefault();
-        // Có thể thêm action `addAddress` ở đây nếu muốn lưu địa chỉ mới
+
+        // Validate that user has at least one saved address
+        if (!addresses || addresses.length === 0) {
+            // Preserve current checkout state in Redux
+            dispatch(
+                preserveCheckoutState({
+                    step,
+                    paymentMethod,
+                    shippingAddress,
+                }),
+            );
+
+            // Show error message using toast system
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: {
+                    message: t(
+                        'checkout.errors.noAddressFound',
+                        'Please add a shipping address to continue with your order.',
+                    ),
+                    type: 'error',
+                },
+            });
+
+            // Redirect to profile page with checkout context
+            navigate('/profile', {
+                state: {
+                    fromCheckout: true,
+                    focusTab: 'addresses',
+                    checkoutData: {
+                        cartItems,
+                        paymentMethod,
+                        step: 1,
+                    },
+                },
+            });
+            return;
+        }
+
+        // Validate that a shipping address is selected
+        if (!shippingAddress.address || !shippingAddress.phoneNumber) {
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: {
+                    message: t(
+                        'checkout.errors.selectAddress',
+                        'Please select a shipping address to continue.',
+                    ),
+                    type: 'error',
+                },
+            });
+            return;
+        }
+
         setStep(2);
+        dispatch(updateCheckoutStep(2));
     };
 
     const submitPaymentHandler = (e) => {
         e.preventDefault();
         setStep(3);
+        dispatch(updateCheckoutStep(3));
     };
 
     const placeOrderHandler = () => {
@@ -115,7 +206,7 @@ const Checkout = () => {
                         <div>
                             <h2>{t('checkout.shippingAddress', 'Shipping Address')}</h2>
                             {addressLoading && <Loader />}
-                            {addresses && addresses.length > 0 && (
+                            {addresses && addresses.length > 0 ? (
                                 <div className="saved-addresses">
                                     <h3>
                                         {t(
@@ -129,10 +220,35 @@ const Checkout = () => {
                                             className="saved-address"
                                             onClick={() => handleSelectSavedAddress(addr)}
                                         >
-                                            {addr.address}, {addr.city}, {addr.postalCode}
+                                            <div>
+                                                <span>Địa chỉ: </span>
+                                                {addr.address}
+                                            </div>
+                                            <div>
+                                                <span>Số điện thoại: </span>
+                                                {addr.phoneNumber}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
+                            ) : (
+                                !addressLoading && (
+                                    <div className="no-addresses-message">
+                                        <span className="icon">📍</span>
+                                        <div className="message">
+                                            {t(
+                                                'checkout.noAddresses.title',
+                                                'No shipping addresses found',
+                                            )}
+                                        </div>
+                                        <div className="sub-message">
+                                            {t(
+                                                'checkout.noAddresses.description',
+                                                'You need to add a shipping address before you can complete your order.',
+                                            )}
+                                        </div>
+                                    </div>
+                                )
                             )}
                             <form onSubmit={submitAddressHandler}>
                                 <div className="form-group">
@@ -143,26 +259,16 @@ const Checkout = () => {
                                         value={shippingAddress.address}
                                         onChange={handleAddressChange}
                                         required
+                                        readOnly
                                     />
-                                </div>
-                                <div className="form-group">
-                                    <label>{t('checkout.city', 'City')}</label>
+                                    <label>{t('checkout.phone', 'Phone')}</label>
                                     <input
                                         type="text"
-                                        name="city"
-                                        value={shippingAddress.city}
+                                        name="phone"
+                                        value={shippingAddress.phoneNumber}
                                         onChange={handleAddressChange}
                                         required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>{t('checkout.postalCode', 'Postal Code')}</label>
-                                    <input
-                                        type="text"
-                                        name="postalCode"
-                                        value={shippingAddress.postalCode}
-                                        onChange={handleAddressChange}
-                                        required
+                                        readOnly
                                     />
                                 </div>
                                 <button type="submit" className="btn btn-primary">
@@ -212,12 +318,7 @@ const Checkout = () => {
                     {step === 3 && (
                         <div>
                             <h2>{t('checkout.confirmOrder', 'Confirm Order')}</h2>
-                            <p>
-                                {t(
-                                    'checkout.confirmMessage',
-                                    'You are about to place the following order. Please review and confirm.',
-                                )}
-                            </p>
+                            <p>{t('checkout.confirmMessage', 'Confirm your order')}</p>
                             <button
                                 onClick={placeOrderHandler}
                                 className="btn btn-primary btn-block"

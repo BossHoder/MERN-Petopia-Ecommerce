@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -22,7 +22,9 @@ const store = createStore(
     ),
 );
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
     <Provider store={store}>
         <Router>
             <Routes>
@@ -30,5 +32,4 @@ ReactDOM.render(
             </Routes>
         </Router>
     </Provider>,
-    document.getElementById('root'),
 );

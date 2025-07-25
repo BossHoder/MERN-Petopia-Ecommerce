@@ -72,7 +72,7 @@ const CategoryCards = () => {
                                     style={{
                                         backgroundImage: `url(${
                                             category.image ||
-                                            '/placeholder.svg?height=160&width=160'
+                                            '../../../public/logo192.png?height=160&width=160'
                                         })`,
                                     }}
                                 />

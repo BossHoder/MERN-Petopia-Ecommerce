@@ -43,6 +43,10 @@ const Pagination = ({ pagination, onPageChange }) => {
         onPageChange(page);
         const params = new URLSearchParams(location.search);
         params.set('page', page);
+        // Ensure limit=4 is always set for consistent pagination
+        if (!params.has('limit')) {
+            params.set('limit', '4');
+        }
         navigate(`${location.pathname}?${params.toString()}`);
     };
 

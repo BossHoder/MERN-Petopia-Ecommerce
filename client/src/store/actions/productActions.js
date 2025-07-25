@@ -66,7 +66,13 @@ export const getAllProducts =
         try {
             dispatch({ type: GET_ALL_PRODUCTS_LOADING });
 
-            const queryParams = new URLSearchParams(filters).toString();
+            // Set default limit to 4 products per page if not specified
+            const defaultFilters = {
+                limit: 4,
+                ...filters,
+            };
+
+            const queryParams = new URLSearchParams(defaultFilters).toString();
             const response = await axios.get(`/api/products?${queryParams}`);
 
             dispatch({

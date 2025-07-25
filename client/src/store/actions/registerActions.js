@@ -10,7 +10,9 @@ import {
 export const registerUserWithEmail = (formData, history) => async (dispatch, getState) => {
     dispatch({ type: REGISTER_WITH_EMAIL_LOADING });
     try {
-        await API.post('/auth/register', formData);
+        // Loại bỏ confirmPassword khỏi payload gửi backend
+        const { confirmPassword, ...payload } = formData;
+        await API.post('/auth/register', payload);
         dispatch({
             type: REGISTER_WITH_EMAIL_SUCCESS,
         });
@@ -23,6 +25,8 @@ export const registerUserWithEmail = (formData, history) => async (dispatch, get
             loginUserWithEmail({ email: formData.email, password: formData.password }, history),
         );
     } catch (err) {
+        // Log chi tiết lỗi backend trả về
+        console.log('Register error:', err.response?.data);
         let errorMessage = 'Có lỗi xảy ra trong quá trình đăng ký';
         if (err.response?.data) {
             errorMessage = err.response.data.message || errorMessage;

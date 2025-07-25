@@ -116,6 +116,7 @@ const ProductCard = ({ product }) => {
                 disabled={!product.inStock}
                 onClick={(e) => {
                     e.preventDefault();
+                    console.log('Add to cart product:', product); // Debug product object
                     dispatch(addToCart(product.id, 1));
                 }}
             >
@@ -136,8 +137,8 @@ const ProductCard = ({ product }) => {
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.59H6.5" />
                 </svg>
                 {product.inStock
-                    ? t('product.addToCart', 'Thêm vào giỏ')
-                    : t('product.outOfStock', 'Hết hàng')}
+                    ? t('products.addToCart', 'Thêm vào giỏ')
+                    : t('products.outOfStock', 'Hết hàng')}
             </button>
         </div>
     );
