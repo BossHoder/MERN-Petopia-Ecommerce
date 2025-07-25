@@ -35,9 +35,8 @@ export const getFeaturedCategories = () => async (dispatch) => {
 export const getAllCategories = () => async (dispatch) => {
     try {
         dispatch({ type: GET_ALL_CATEGORIES_LOADING });
-
-        const response = await axios.get('/api/categories');
-
+        // Gọi endpoint mới có productCount
+        const response = await axios.get('/api/categories/with-count');
         dispatch({
             type: GET_ALL_CATEGORIES_SUCCESS,
             payload: response.data.data.categories,
@@ -59,7 +58,8 @@ export const clearCategoryErrors = () => ({
 export const fetchParentCategories = () => async (dispatch) => {
     try {
         dispatch({ type: GET_PARENT_CATEGORIES_LOADING });
-        const response = await axios.get('/api/categories/parent-categories');
+        // Gọi endpoint mới có productCount
+        const response = await axios.get('/api/categories/parent-categories-with-count');
         dispatch({
             type: GET_PARENT_CATEGORIES_SUCCESS,
             payload: response.data.data.parentCategories,

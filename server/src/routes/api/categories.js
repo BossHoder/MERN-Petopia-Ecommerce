@@ -8,6 +8,8 @@ const router = Router();
 // Public routes
 router.get('/featured', CategoryController.getFeaturedCategories);
 router.get('/parent-categories', CategoryController.getParentCategories);
+router.get('/parent-categories-with-count', CategoryController.getParentCategoriesWithCount);
+router.get('/with-count', CategoryController.getAllCategoriesWithCount);
 router.get('/', CategoryController.getAllCategories);
 
 // Admin routes (if needed in future)

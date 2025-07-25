@@ -1,5 +1,6 @@
 import Category from '../models/Category.js';
 import ParentCategory from '../models/parentCategory.js';
+import Product from '../models/Product.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import { responseHelper } from '../helpers/index.js';
 import { categoryDto } from '../dto/categoryDto.js';
@@ -96,6 +97,80 @@ class CategoryController {
             });
         } catch (error) {
             console.error('Error in getAllCategories:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Get all categories with productCount
+    async getAllCategoriesWithCount(req, res) {
+        try {
+            const categories = await Category.find({ isPublished: true })
+                .populate('parentCategory', 'name')
+                .sort({ sortOrder: 1 })
+                .lean();
+
+            // Đếm số sản phẩm cho từng category
+            const counts = await Product.aggregate([{ $group: { _id: '$category', count: { $sum: 1 } } }]);
+            console.log('AGGREGATE CATEGORY COUNTS:', counts);
+            console.log(
+                'CATEGORIES:',
+                categories.map((c) => ({ _id: c._id, name: c.name })),
+            );
+            const countMap = {};
+            counts.forEach((c) => {
+                countMap[c._id?.toString()] = c.count;
+            });
+
+            const categoriesWithCount = categories.map((cat) => ({
+                ...categoryDto(cat),
+                _id: cat._id, // Đảm bảo luôn trả về _id
+                productCount: countMap[cat._id.toString()] || 0,
+            }));
+            console.log(
+                'CATEGORIES WITH COUNT:',
+                categoriesWithCount.map((c) => ({ _id: c._id, name: c.name, productCount: c.productCount })),
+            );
+
+            return responseHelper.success(res, {
+                categories: categoriesWithCount,
+            });
+        } catch (error) {
+            console.error('Error in getAllCategoriesWithCount:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Get all parent categories with productCount
+    async getParentCategoriesWithCount(req, res) {
+        try {
+            const parentCategories = await ParentCategory.find({ isPublished: true }).sort({ sortOrder: 1 }).lean();
+
+            // Đếm số sản phẩm cho từng parentCategory
+            const counts = await Product.aggregate([{ $group: { _id: '$parentCategory', count: { $sum: 1 } } }]);
+            console.log('AGGREGATE PARENT CATEGORY COUNTS:', counts);
+            console.log(
+                'PARENT CATEGORIES:',
+                parentCategories.map((p) => ({ _id: p._id, name: p.name })),
+            );
+            const countMap = {};
+            counts.forEach((c) => {
+                countMap[c._id?.toString()] = c.count;
+            });
+
+            const parentWithCount = parentCategories.map((parent) => ({
+                ...parent,
+                productCount: countMap[parent._id.toString()] || 0,
+            }));
+            console.log(
+                'PARENT CATEGORIES WITH COUNT:',
+                parentWithCount.map((p) => ({ _id: p._id, name: p.name, productCount: p.productCount })),
+            );
+
+            return responseHelper.success(res, {
+                parentCategories: parentWithCount,
+            });
+        } catch (error) {
+            console.error('Error in getParentCategoriesWithCount:', error);
             return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }

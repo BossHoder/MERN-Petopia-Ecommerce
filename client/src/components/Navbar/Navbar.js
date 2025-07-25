@@ -23,10 +23,6 @@ const AppNavbar = () => {
     // Tính tổng số lượng sản phẩm trong giỏ
     const totalQuantity = cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
 
-    // Debug log
-    console.log('cartItems:', cartItems);
-    console.log('totalQuantity:', totalQuantity);
-
     useEffect(() => {
         dispatch(getCart());
     }, [dispatch]);
