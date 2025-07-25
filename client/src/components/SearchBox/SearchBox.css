@@ -1,17 +1,102 @@
 .search-box {
+    position: relative;
     display: flex;
     align-items: center;
     background-color: #f1f5f9;
     border-radius: 8px;
-    overflow: hidden;
+    overflow: visible;
+    width: 300px;
 }
 
+.search-box input {
+    border: none;
+    background: transparent;
+    padding: 0.75rem 1rem;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    color: #374151;
+}
+
+.search-box input::placeholder {
+    color: #9ca3af;
+}
+
+.search-box input:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
+
+/* Suggestions dropdown */
+.suggestion-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.suggestion-list li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-list li:last-child {
+    border-bottom: none;
+}
+
+.suggestion-list li:hover,
+.suggestion-list li.selected {
+    background-color: #f97316;
+    color: white;
+}
+
+.suggestion-list li .type {
+    font-size: 12px;
+    background: #f3f4f6;
+    color: #6b7280;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: capitalize;
+}
+
+.suggestion-list li:hover .type,
+.suggestion-list li.selected .type {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.loading-item {
+    color: #6b7280;
+    font-style: italic;
+    pointer-events: none;
+}
+
+.loading-item:hover {
+    background-color: transparent !important;
+}
+
+/* Legacy styles for compatibility */
 .search-input {
     border: none;
     background: transparent;
     padding: 0.5rem 1rem;
     outline: none;
-    width: 200px; /* Adjust as needed */
+    width: 200px;
 }
 
 .search-button {

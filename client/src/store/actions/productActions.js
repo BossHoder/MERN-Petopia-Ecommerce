@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../services/api';
 import {
     GET_FEATURED_PRODUCTS_LOADING,
     GET_FEATURED_PRODUCTS_SUCCESS,
@@ -22,7 +22,7 @@ export const getFeaturedProducts =
         try {
             dispatch({ type: GET_FEATURED_PRODUCTS_LOADING });
 
-            const response = await axios.get(`/api/products/featured?limit=${limit}`);
+            const response = await API.get(`/api/products/featured?limit=${limit}`);
 
             dispatch({
                 type: GET_FEATURED_PRODUCTS_SUCCESS,
@@ -43,7 +43,7 @@ export const getBestsellers =
         try {
             dispatch({ type: GET_BESTSELLERS_LOADING });
 
-            const response = await axios.get(
+            const response = await API.get(
                 `/api/products?sortBy=salesCount&sortOrder=desc&limit=${limit}`,
             );
 
@@ -73,7 +73,7 @@ export const getAllProducts =
             };
 
             const queryParams = new URLSearchParams(defaultFilters).toString();
-            const response = await axios.get(`/api/products?${queryParams}`);
+            const response = await API.get(`/api/products?${queryParams}`);
 
             dispatch({
                 type: GET_ALL_PRODUCTS_SUCCESS,
@@ -96,7 +96,7 @@ export const getProductById = (id) => async (dispatch) => {
     try {
         dispatch({ type: GET_PRODUCT_BY_ID_LOADING });
 
-        const response = await axios.get(`/api/products/${id}`);
+        const response = await API.get(`/api/products/${id}`);
 
         dispatch({
             type: GET_PRODUCT_BY_ID_SUCCESS,
@@ -117,7 +117,7 @@ export const getProductById = (id) => async (dispatch) => {
 
 export const fetchProductSuggestions = (keyword) => async (dispatch) => {
     try {
-        const response = await axios.get(
+        const response = await API.get(
             `/api/products/suggest?keyword=${encodeURIComponent(keyword)}`,
         );
         return response.data.data.suggestions;
