@@ -106,6 +106,45 @@
     margin-bottom: 1rem;
 }
 
+/* Hide spinner for input[type=number] in all browsers */
+.quantity-input-no-spinner::-webkit-outer-spin-button,
+.quantity-input-no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.quantity-input-no-spinner {
+    -moz-appearance: textfield;
+    appearance: none;
+}
+
+.variant-square-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 4px;
+}
+.variant-square-btn:hover {
+    border-color: #f59e0b;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);
+}
+.variant-square-btn.active {
+    border-color: #f59e0b;
+    background: #fef3c7;
+    color: #b45309;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+}
+.variant-square-btn:focus {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+}
+
 @media (max-width: 992px) {
     .product-main-layout {
         grid-template-columns: 1fr 1fr;

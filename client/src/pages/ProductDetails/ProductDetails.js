@@ -15,8 +15,11 @@ const ProductDetails = () => {
     const dispatch = useDispatch();
     const { t } = useTranslation('common');
 
-    // State for cart quantity and review form
+    // State for cart quantity, review form, và variant selection
     const [quantity, setQuantity] = useState(1);
+    // Lưu lựa chọn cho từng group (theo variant name)
+    const [selectedVariantValues, setSelectedVariantValues] = useState({});
+    const [activeVariant, setActiveVariant] = useState(null); // variant object đã chọn đủ
     const [rating, setRating] = useState(0);
     const [title, setTitle] = useState('');
     const [comment, setComment] = useState('');
@@ -55,6 +58,50 @@ const ProductDetails = () => {
         dispatch(getProductReviews(productId));
     }, [dispatch, productId, reviewSuccess]);
 
+    // Khi chọn variant value, reset quantity về 1
+    useEffect(() => {
+        setQuantity(1);
+    }, [activeVariant]);
+
+    // Xử lý group variants
+    let variantGroups = [];
+    if (product && product.variants && product.variants.length > 0) {
+        // Gom nhóm theo name
+        const groupMap = {};
+        product.variants.forEach((v) => {
+            if (!groupMap[v.name]) groupMap[v.name] = new Set();
+            groupMap[v.name].add(v.value);
+        });
+        variantGroups = Object.entries(groupMap).map(([name, values]) => ({
+            name,
+            values: Array.from(values),
+        }));
+    }
+
+    // Khi user chọn đủ các group, xác định variant chính xác
+    useEffect(() => {
+        if (!product || !product.variants || product.variants.length === 0) {
+            setActiveVariant(null);
+            return;
+        }
+        // Tìm variant khớp với tất cả lựa chọn
+        const keys = Object.keys(selectedVariantValues);
+        if (keys.length !== variantGroups.length) {
+            setActiveVariant(null);
+            return;
+        }
+        const found = product.variants.find((v) =>
+            variantGroups.every((g) =>
+                v.name === g.name ? v.value === selectedVariantValues[g.name] : true,
+            ),
+        );
+        setActiveVariant(found || null);
+    }, [selectedVariantValues, product]);
+
+    // Lấy giá, tồn kho theo variant nếu có
+    const displayPrice = activeVariant ? activeVariant.price : product?.price;
+    const displayStock = activeVariant ? activeVariant.stockQuantity : product?.stockQuantity;
+
     const addToCartHandler = () => {
         setAddToCartError('');
         setAddToCartSuccess(false);
@@ -75,6 +122,20 @@ const ProductDetails = () => {
     const submitReviewHandler = (e) => {
         e.preventDefault();
         dispatch(addProductReview(productId, { rating, title, comment }));
+    };
+
+    // Xử lý click chọn/huỷ chọn variant value
+    const handleVariantSelect = (groupName, value) => {
+        setSelectedVariantValues((prev) => {
+            // Nếu đã chọn value này thì huỷ chọn
+            if (prev[groupName] === value) {
+                const newObj = { ...prev };
+                delete newObj[groupName];
+                return newObj;
+            }
+            // Chọn value mới cho group
+            return { ...prev, [groupName]: value };
+        });
     };
 
     return (
@@ -102,46 +163,145 @@ const ProductDetails = () => {
                                         {t('productDetails.reviews', 'reviews')})
                                     </span>
                                 </div>
-                                <p className="product-price">${product.price.toFixed(2)}</p>
+                                <p className="product-price">
+                                    ${displayPrice ? displayPrice.toFixed(2) : '0.00'}
+                                </p>
                                 <p className="product-description">{product.description}</p>
                             </div>
                             {/* Action Panel */}
                             <div className="product-action-panel">
+                                {/* Variants Grouped Buttons */}
+                                {variantGroups.length > 0 && (
+                                    <>
+                                        {variantGroups.map((group) => (
+                                            <div
+                                                className="action-row"
+                                                key={group.name}
+                                                style={{
+                                                    flexDirection: 'column',
+                                                    alignItems: 'flex-start',
+                                                }}
+                                            >
+                                                <span style={{ fontWeight: 500, marginBottom: 4 }}>
+                                                    {group.name}:
+                                                </span>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        gap: 8,
+                                                        flexWrap: 'wrap',
+                                                    }}
+                                                >
+                                                    {group.values.map((value) => {
+                                                        const isActive =
+                                                            selectedVariantValues[group.name] ===
+                                                            value;
+                                                        return (
+                                                            <button
+                                                                type="button"
+                                                                key={value}
+                                                                className={`variant-square-btn${
+                                                                    isActive ? ' active' : ''
+                                                                }`}
+                                                                onClick={() =>
+                                                                    handleVariantSelect(
+                                                                        group.name,
+                                                                        value,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {value}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                )}
                                 <div className="action-row">
                                     <span>{t('productDetails.price', 'Price')}:</span>{' '}
-                                    <strong>${product.price.toFixed(2)}</strong>
+                                    <strong>
+                                        ${displayPrice ? displayPrice.toFixed(2) : '0.00'}
+                                    </strong>
                                 </div>
                                 <div className="action-row">
                                     <span>{t('productDetails.status', 'Status')}:</span>{' '}
                                     <span>
-                                        {product.stockQuantity > 0
+                                        {displayStock > 0
                                             ? t('productDetails.inStock', 'In Stock')
                                             : t('productDetails.outOfStock', 'Out of Stock')}
                                     </span>
                                 </div>
-                                {product.stockQuantity > 0 && (
+                                {displayStock > 0 && (
                                     <div className="action-row">
                                         <span>{t('productDetails.qty', 'Qty')}:</span>
-                                        <select
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(Number(e.target.value))}
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                            }}
                                         >
-                                            {[
-                                                ...Array(
-                                                    Math.min(product.stockQuantity, 10),
-                                                ).keys(),
-                                            ].map((x) => (
-                                                <option key={x + 1} value={x + 1}>
-                                                    {x + 1}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            <button
+                                                type="button"
+                                                className="btn btn-light"
+                                                style={{ minWidth: 32 }}
+                                                onClick={() =>
+                                                    setQuantity((q) => Math.max(1, q - 1))
+                                                }
+                                                disabled={quantity <= 1}
+                                                aria-label="Decrease quantity"
+                                            >
+                                                -
+                                            </button>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={displayStock}
+                                                value={quantity}
+                                                onChange={(e) => {
+                                                    let val = Number(e.target.value);
+                                                    if (isNaN(val)) val = 1;
+                                                    val = Math.max(1, Math.min(displayStock, val));
+                                                    setQuantity(val);
+                                                }}
+                                                className="quantity-input-no-spinner"
+                                                style={{
+                                                    width: 48,
+                                                    textAlign: 'center',
+                                                    appearance: 'none',
+                                                    MozAppearance: 'textfield',
+                                                    WebkitAppearance: 'none',
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="btn btn-light"
+                                                style={{ minWidth: 32 }}
+                                                onClick={() =>
+                                                    setQuantity((q) =>
+                                                        Math.min(displayStock, q + 1),
+                                                    )
+                                                }
+                                                disabled={quantity >= displayStock}
+                                                aria-label="Increase quantity"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                                 <button
                                     className="btn btn-primary btn-block"
                                     onClick={addToCartHandler}
-                                    disabled={product.stockQuantity === 0}
+                                    disabled={
+                                        displayStock === 0 ||
+                                        (variantGroups.length > 0 &&
+                                            (!activeVariant ||
+                                                Object.keys(selectedVariantValues).length !==
+                                                    variantGroups.length))
+                                    }
                                 >
                                     {t('productDetails.addToCart', 'Add To Cart')}
                                 </button>

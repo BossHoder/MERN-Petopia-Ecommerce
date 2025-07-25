@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 
 import { useFormik } from 'formik';
 
@@ -14,6 +14,8 @@ import './styles.css';
 const Login = ({ auth, loginUserWithEmail }) => {
     const { t } = useI18n();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectPath = searchParams.get('redirect') || '/';
 
     const formik = useFormik({
         initialValues: {
@@ -22,11 +24,19 @@ const Login = ({ auth, loginUserWithEmail }) => {
         },
         validationSchema: loginSchema,
         onSubmit: (values) => {
-            loginUserWithEmail(values, navigate);
+            // Tạo custom navigate function với redirect path
+            const customNavigate = (path) => {
+                if (path === '/') {
+                    navigate(redirectPath, { replace: true });
+                } else {
+                    navigate(path, { replace: true });
+                }
+            };
+            loginUserWithEmail(values, customNavigate);
         },
     });
 
-    if (auth.isAuthenticated) return <Navigate to="/" replace />;
+    if (auth.isAuthenticated) return <Navigate to={redirectPath} replace />;
 
     return (
         <div className="petopia-login-page">

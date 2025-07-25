@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { safeRedirectToLogin } from '../utils/authRedirect';
 
 // Create axios instance with default config
 const API = axios.create({
@@ -56,9 +57,13 @@ API.interceptors.response.use(
             response: error.response?.data,
         });
 
+        // Handle 401 errors more gracefully
         if (error.response?.status === 401) {
+            // Clear invalid token
             localStorage.removeItem('token');
-            window.location.href = '/login';
+
+            // Use safe redirect utility to prevent loops
+            safeRedirectToLogin();
         }
         return Promise.reject(error);
     },

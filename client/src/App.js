@@ -21,6 +21,7 @@ import Products from './pages/Products/Products'; // Import Products
 import ProductDetails from './pages/ProductDetails/ProductDetails'; // Import ProductDetails
 
 import Loader from './components/Loader/Loader';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -65,18 +66,74 @@ const App = () => {
             {appLoaded ? (
                 <Layout>
                     <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                        <Route
+                            path="/login"
+                            element={
+                                <ProtectedRoute requireAuth={false}>
+                                    <Login />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/register"
+                            element={
+                                <ProtectedRoute requireAuth={false}>
+                                    <Register />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/products" element={<Products />} />
                         <Route path="/product/:id" element={<ProductDetails />} />
-                        <Route path="/users" element={<Users />} />
+                        <Route
+                            path="/users"
+                            element={
+                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                    <Users />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/notfound" element={<NotFound />} />
-                        <Route path="/admin" element={<Admin />} />
+                        <Route
+                            path="/admin"
+                            element={
+                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                    <Admin />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/cart" element={<Cart />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route path="/order/:id" element={<OrderDetails />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/:username" element={<Profile />} />
+                        <Route
+                            path="/checkout"
+                            element={
+                                <ProtectedRoute requireAuth={true}>
+                                    <Checkout />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/order/:id"
+                            element={
+                                <ProtectedRoute requireAuth={true}>
+                                    <OrderDetails />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <ProtectedRoute requireAuth={true}>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/:username"
+                            element={
+                                <ProtectedRoute requireAuth={true}>
+                                    <Profile />
+                                </ProtectedRoute>
+                            }
+                        />
                         <Route path="/" element={<Home />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

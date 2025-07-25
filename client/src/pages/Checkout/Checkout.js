@@ -18,8 +18,6 @@ const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [shippingAddress, setShippingAddress] = useState({
         address: '',
-        city: '',
-        postalCode: '',
         country: 'Vietnam',
     });
 
@@ -39,11 +37,7 @@ const Checkout = () => {
     const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
     useEffect(() => {
-        // Nếu không có thông tin user, chuyển đến trang đăng nhập
-        if (!userInfo) {
-            navigate('/login?redirect=/checkout');
-            return;
-        }
+        // ProtectedRoute đã xử lý authentication, chỉ cần xử lý business logic
 
         // Nếu tạo đơn hàng thành công, reset state và chuyển đến trang chi tiết đơn hàng
         if (success) {
@@ -60,7 +54,7 @@ const Checkout = () => {
 
         // Lấy danh sách địa chỉ đã lưu
         dispatch(getAddresses());
-    }, [navigate, userInfo, dispatch, success, order, cartItems, orderLoading]);
+    }, [navigate, dispatch, success, order, cartItems, orderLoading]);
 
     const handleAddressChange = (e) => {
         setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });

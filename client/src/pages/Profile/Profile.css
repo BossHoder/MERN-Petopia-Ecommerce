@@ -218,7 +218,7 @@
 
 .btn-danger {
     background-color: #ef4444;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 .btn-danger:hover {
     background-color: #dc2626;

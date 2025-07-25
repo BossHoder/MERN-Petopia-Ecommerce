@@ -28,7 +28,7 @@ const showToast = (msg, type = 'success') => {
 export const loadMe = () => async (dispatch, getState) => {
     const state = getState();
 
-    // Nếu không có token, không gọi API
+    // Nếu không có token, set appLoaded = true và không gọi API
     if (!state.auth.token) {
         dispatch({
             type: ME_FAIL,
@@ -48,6 +48,16 @@ export const loadMe = () => async (dispatch, getState) => {
             payload: { me: response.data.data?.me },
         });
     } catch (err) {
+        // Nếu token không hợp lệ, xóa token và set appLoaded = true
+        if (err?.response?.status === 401) {
+            localStorage.removeItem('token');
+
+            // Clear authentication state
+            dispatch({
+                type: LOGOUT_SUCCESS,
+            });
+        }
+
         dispatch({
             type: ME_FAIL,
             payload: {
@@ -126,21 +136,46 @@ export const logOutUser = (navigate) => async (dispatch) => {
         // Xóa cookie (nếu có)
         deleteAllCookies();
 
-        // Gọi API để server ghi nhận logout
-        await API.get('/auth/logout');
-
+        // Dispatch logout success trước khi gọi API
         dispatch({
             type: LOGOUT_SUCCESS,
         });
 
-        // Chuyển hướng bằng cách tải lại trang để đảm bảo reset state
-        window.location.href = '/login';
+        // Gọi API để server ghi nhận logout (không chờ response)
+        API.get('/auth/logout').catch((err) => {
+            console.warn('Logout API call failed:', err);
+        });
+
+        // Sử dụng React Router navigate thay vì window.location
+        if (navigate) {
+            navigate('/login', { replace: true });
+        } else {
+            // Fallback: use history API instead of window.location to avoid full reload
+            window.history.pushState(null, '', '/login');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+
+        // Show success message
+        dispatch({
+            type: 'SHOW_TOAST',
+            payload: { message: 'Đăng xuất thành công!', type: 'success' },
+        });
     } catch (err) {
-        // Thường thì không cần xử lý lỗi ở đây vì logout nên thành công
-        // Nếu có lỗi, chỉ cần log ra console
         console.error('Logout failed:', err);
-        // Ngay cả khi API lỗi, vẫn cố gắng chuyển hướng người dùng
-        window.location.href = '/login';
+
+        // Vẫn dispatch logout success để clear state
+        dispatch({
+            type: LOGOUT_SUCCESS,
+        });
+
+        // Vẫn chuyển hướng ngay cả khi có lỗi
+        if (navigate) {
+            navigate('/login', { replace: true });
+        } else {
+            // Fallback: use history API instead of window.location to avoid full reload
+            window.history.pushState(null, '', '/login');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        }
     }
 };
 

@@ -31,9 +31,8 @@ const Profile = () => {
     // Các state khác cho order và address sẽ do component con tự quản lý
 
     useEffect(() => {
-        if (userInfo === null && !isLoading) {
-            navigate('/login');
-        } else if (userInfo) {
+        // ProtectedRoute đã xử lý authentication, chỉ cần load profile data
+        if (userInfo) {
             // Nếu có username trên URL, đó là xem profile của người khác
             if (paramUsername) {
                 // Chỉ admin mới có quyền xem profile người khác
@@ -48,7 +47,7 @@ const Profile = () => {
                 dispatch(getProfile(null, navigate)); // Truyền null hoặc undefined
             }
         }
-    }, [dispatch, navigate, userInfo, paramUsername, isLoading]);
+    }, [dispatch, navigate, userInfo, paramUsername]);
 
     if (userInfo === null && isLoading) {
         return <Loader />;
