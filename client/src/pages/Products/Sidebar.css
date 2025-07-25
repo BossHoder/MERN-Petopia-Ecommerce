@@ -391,3 +391,141 @@
         font-size: 15px;
     }
 }
+
+/* Price range presets */
+.price-range-presets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.price-preset-btn {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.price-preset-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.price-separator {
+    color: var(--text-light);
+    font-weight: 500;
+    margin: 0 4px;
+}
+
+/* Brand filter */
+.brand-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.brand-item {
+    margin-bottom: 4px;
+}
+
+.brand-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.brand-btn:hover {
+    background: var(--gray-50);
+}
+
+.brand-btn.active {
+    background: var(--accent-color);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.brand-name {
+    display: block;
+}
+
+.loading-brands,
+.no-brands {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+/* Rating filter */
+.rating-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rating-item {
+    margin-bottom: 4px;
+}
+
+.rating-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-btn:hover {
+    background: var(--gray-50);
+}
+
+.rating-btn.active {
+    background: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.rating-stars {
+    display: flex;
+    gap: 1px;
+}
+
+.star {
+    font-size: 14px;
+    color: var(--gray-300);
+}
+
+.star.filled {
+    color: #fbbf24;
+}
+
+.rating-text {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.rating-btn.active .rating-text {
+    color: var(--primary-color);
+    font-weight: 500;
+}

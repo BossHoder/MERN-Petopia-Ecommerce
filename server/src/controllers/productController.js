@@ -409,6 +409,22 @@ class ProductController {
             return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // Get all unique brands
+    async getBrands(req, res) {
+        try {
+            const brands = await Product.distinct('brand');
+            const filteredBrands = brands.filter((brand) => brand && brand.trim() !== '');
+
+            return responseHelper.success(res, {
+                brands: filteredBrands.sort(),
+                message: 'Brands retrieved successfully',
+            });
+        } catch (error) {
+            console.error('Error fetching brands:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 
 export default new ProductController();

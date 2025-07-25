@@ -43,6 +43,8 @@ const Sidebar = ({ onFilterChange }) => {
 
     const [selectedParent, setSelectedParent] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedBrand, setSelectedBrand] = useState('');
+    const [selectedRating, setSelectedRating] = useState('');
     const [localFilters, setLocalFilters] = useState({
         minPrice: '',
         maxPrice: '',
@@ -55,27 +57,92 @@ const Sidebar = ({ onFilterChange }) => {
         diet: false,
     });
     const [inStock, setInStock] = useState(true);
+    const [brands, setBrands] = useState([]);
+    const [loadingBrands, setLoadingBrands] = useState(false);
 
     useEffect(() => {
         dispatch(fetchParentCategories());
         dispatch(getAllCategories());
+        fetchBrands();
     }, [dispatch]);
+
+    const fetchBrands = async () => {
+        try {
+            setLoadingBrands(true);
+            const response = await fetch('/api/products/brands');
+            if (response.ok) {
+                const data = await response.json();
+                setBrands(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error fetching brands:', error);
+        } finally {
+            setLoadingBrands(false);
+        }
+    };
 
     const handleParentClick = (parentId) => {
         if (selectedParent === parentId) {
             setSelectedParent(''); // Toggle: đóng nếu đang mở
             setSelectedCategory('');
-            onFilterChange({ parentCategoryId: '', category: '', ...localFilters });
+            onFilterChange({
+                parentCategoryId: '',
+                category: '',
+                brand: selectedBrand,
+                minRating: selectedRating,
+                inStock,
+                ...localFilters,
+            });
         } else {
             setSelectedParent(parentId);
             setSelectedCategory('');
-            onFilterChange({ parentCategoryId: parentId, category: '', ...localFilters });
+            onFilterChange({
+                parentCategoryId: parentId,
+                category: '',
+                brand: selectedBrand,
+                minRating: selectedRating,
+                inStock,
+                ...localFilters,
+            });
         }
     };
 
     const handleCategoryClick = (categoryId) => {
         setSelectedCategory(categoryId);
-        onFilterChange({ parentCategoryId: selectedParent, category: categoryId, ...localFilters });
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: categoryId,
+            brand: selectedBrand,
+            minRating: selectedRating,
+            inStock,
+            ...localFilters,
+        });
+    };
+
+    const handleBrandClick = (brand) => {
+        const newBrand = selectedBrand === brand ? '' : brand;
+        setSelectedBrand(newBrand);
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: selectedCategory,
+            brand: newBrand,
+            minRating: selectedRating,
+            inStock,
+            ...localFilters,
+        });
+    };
+
+    const handleRatingClick = (rating) => {
+        const newRating = selectedRating === rating ? '' : rating;
+        setSelectedRating(newRating);
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: selectedCategory,
+            brand: selectedBrand,
+            minRating: newRating,
+            inStock,
+            ...localFilters,
+        });
     };
 
     const handleChange = (e) => {
@@ -89,7 +156,28 @@ const Sidebar = ({ onFilterChange }) => {
         onFilterChange({
             parentCategoryId: selectedParent,
             category: selectedCategory,
+            brand: selectedBrand,
+            minRating: selectedRating,
+            inStock,
             ...localFilters,
+        });
+    };
+
+    const handlePriceChange = (e) => {
+        const newFilters = {
+            ...localFilters,
+            [e.target.name]: e.target.value,
+        };
+        setLocalFilters(newFilters);
+
+        // Apply price filter immediately
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: selectedCategory,
+            brand: selectedBrand,
+            minRating: selectedRating,
+            inStock,
+            ...newFilters,
         });
     };
 
@@ -101,7 +189,16 @@ const Sidebar = ({ onFilterChange }) => {
     };
 
     const handleInStockToggle = () => {
-        setInStock(!inStock);
+        const newInStock = !inStock;
+        setInStock(newInStock);
+        onFilterChange({
+            parentCategoryId: selectedParent,
+            category: selectedCategory,
+            brand: selectedBrand,
+            minRating: selectedRating,
+            inStock: newInStock,
+            ...localFilters,
+        });
     };
 
     return (
@@ -211,41 +308,167 @@ const Sidebar = ({ onFilterChange }) => {
                     </button>
                     {expandedSections.price && (
                         <div className="filter-section-content">
-                            <div className="price-range-slider">
-                                <div className="slider-track">
-                                    <div
-                                        className="slider-range"
-                                        style={{ left: '10%', width: '60%' }}
-                                    ></div>
-                                    <div className="slider-thumb" style={{ left: '10%' }}></div>
-                                    <div className="slider-thumb" style={{ left: '70%' }}></div>
-                                </div>
-                                <div className="price-labels">
-                                    <span>$0</span>
-                                    <span>$100+</span>
-                                </div>
-                            </div>
                             <div className="price-inputs">
                                 <input
                                     type="number"
                                     name="minPrice"
-                                    placeholder={t('sidebar.min', 'Min')}
+                                    placeholder={t('sidebar.min', 'Min Price')}
                                     value={localFilters.minPrice}
-                                    onChange={handleChange}
+                                    onChange={handlePriceChange}
                                     className="price-input"
+                                    min="0"
                                 />
+                                <span className="price-separator">-</span>
                                 <input
                                     type="number"
                                     name="maxPrice"
-                                    placeholder={t('sidebar.max', 'Max')}
+                                    placeholder={t('sidebar.max', 'Max Price')}
                                     value={localFilters.maxPrice}
-                                    onChange={handleChange}
+                                    onChange={handlePriceChange}
                                     className="price-input"
+                                    min="0"
                                 />
+                            </div>
+                            <div className="price-range-presets">
+                                <button
+                                    className="price-preset-btn"
+                                    onClick={() => {
+                                        const newFilters = { minPrice: '', maxPrice: '25' };
+                                        setLocalFilters({ ...localFilters, ...newFilters });
+                                        onFilterChange({
+                                            parentCategoryId: selectedParent,
+                                            category: selectedCategory,
+                                            brand: selectedBrand,
+                                            minRating: selectedRating,
+                                            inStock,
+                                            ...localFilters,
+                                            ...newFilters,
+                                        });
+                                    }}
+                                >
+                                    Under $25
+                                </button>
+                                <button
+                                    className="price-preset-btn"
+                                    onClick={() => {
+                                        const newFilters = { minPrice: '25', maxPrice: '50' };
+                                        setLocalFilters({ ...localFilters, ...newFilters });
+                                        onFilterChange({
+                                            parentCategoryId: selectedParent,
+                                            category: selectedCategory,
+                                            brand: selectedBrand,
+                                            minRating: selectedRating,
+                                            inStock,
+                                            ...localFilters,
+                                            ...newFilters,
+                                        });
+                                    }}
+                                >
+                                    $25 - $50
+                                </button>
+                                <button
+                                    className="price-preset-btn"
+                                    onClick={() => {
+                                        const newFilters = { minPrice: '50', maxPrice: '' };
+                                        setLocalFilters({ ...localFilters, ...newFilters });
+                                        onFilterChange({
+                                            parentCategoryId: selectedParent,
+                                            category: selectedCategory,
+                                            brand: selectedBrand,
+                                            minRating: selectedRating,
+                                            inStock,
+                                            ...localFilters,
+                                            ...newFilters,
+                                        });
+                                    }}
+                                >
+                                    $50+
+                                </button>
                             </div>
                         </div>
                     )}
                 </div>
+
+                {/* Brand Filter */}
+                <div className="filter-section">
+                    <button
+                        className="filter-section-header"
+                        onClick={() => toggleSection('brand')}
+                    >
+                        <span className="filter-section-title">Brand</span>
+                        {expandedSections.brand ? <ChevronDown /> : <ChevronRight />}
+                    </button>
+                    {expandedSections.brand && (
+                        <div className="filter-section-content">
+                            {loadingBrands ? (
+                                <div className="loading-brands">Loading brands...</div>
+                            ) : brands.length > 0 ? (
+                                <ul className="brand-list">
+                                    {brands.map((brand) => (
+                                        <li key={brand} className="brand-item">
+                                            <button
+                                                className={`brand-btn${
+                                                    selectedBrand === brand ? ' active' : ''
+                                                }`}
+                                                onClick={() => handleBrandClick(brand)}
+                                            >
+                                                <span className="brand-name">{brand}</span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="no-brands">No brands available</div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Rating Filter */}
+                <div className="filter-section">
+                    <button
+                        className="filter-section-header"
+                        onClick={() => toggleSection('rating')}
+                    >
+                        <span className="filter-section-title">Rating</span>
+                        {expandedSections.rating ? <ChevronDown /> : <ChevronRight />}
+                    </button>
+                    {expandedSections.rating && (
+                        <div className="filter-section-content">
+                            <ul className="rating-list">
+                                {[5, 4, 3, 2, 1].map((rating) => (
+                                    <li key={rating} className="rating-item">
+                                        <button
+                                            className={`rating-btn${
+                                                selectedRating === rating.toString()
+                                                    ? ' active'
+                                                    : ''
+                                            }`}
+                                            onClick={() => handleRatingClick(rating.toString())}
+                                        >
+                                            <div className="rating-stars">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className={`star ${
+                                                            i < rating ? 'filled' : 'empty'
+                                                        }`}
+                                                    >
+                                                        ★
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <span className="rating-text">
+                                                {rating} star{rating !== 1 ? 's' : ''} & up
+                                            </span>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
                 {/* In Stock Toggle */}
                 <div className="filter-section">
                     <div className="filter-section-header toggle-header">

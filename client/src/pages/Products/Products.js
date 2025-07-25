@@ -68,6 +68,17 @@ const Products = () => {
             navigate(`${location.pathname}?${params.toString()}`, { replace: true });
         }
 
+        // Initialize sort state from URL
+        if (queryFilters.sortBy && queryFilters.sortOrder) {
+            const sortKey = `${queryFilters.sortBy}-${queryFilters.sortOrder}`;
+            const sortMapping = {
+                'createdAt-desc': 'relevance',
+                'price-asc': 'price-low',
+                'price-desc': 'price-high',
+            };
+            setSortBy(sortMapping[sortKey] || 'relevance');
+        }
+
         dispatch(getAllProducts(queryFilters));
     }, [dispatch, location.search, navigate, location.pathname]);
 
@@ -98,11 +109,29 @@ const Products = () => {
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
-    const handleSortChange = (sort) => {
-        setSortBy(sort);
+    const handleSortChange = (sortValue) => {
+        setSortBy(sortValue);
         const params = new URLSearchParams(location.search);
-        params.set('sort', sort);
+
+        // Map frontend sort values to backend parameters
+        const sortMapping = {
+            relevance: { sortBy: 'createdAt', sortOrder: 'desc' },
+            'price-low': { sortBy: 'price', sortOrder: 'asc' },
+            'price-high': { sortBy: 'price', sortOrder: 'desc' },
+        };
+
+        const sortConfig = sortMapping[sortValue] || sortMapping['relevance'];
+
+        // Remove old sort parameters
+        params.delete('sort');
+        params.delete('sortBy');
+        params.delete('sortOrder');
+
+        // Set new sort parameters
+        params.set('sortBy', sortConfig.sortBy);
+        params.set('sortOrder', sortConfig.sortOrder);
         params.set('page', '1');
+
         // Ensure limit=4 is always set for consistent pagination
         if (!params.has('limit')) {
             params.set('limit', '4');
@@ -112,9 +141,8 @@ const Products = () => {
 
     const sortOptions = [
         { value: 'relevance', label: 'Relevance' },
-        { value: 'price', label: 'Price' },
-        { value: 'rating', label: 'Rating' },
-        { value: 'newest', label: 'Newest' },
+        { value: 'price-low', label: 'Price: Low to High' },
+        { value: 'price-high', label: 'Price: High to Low' },
     ];
 
     return (
@@ -207,7 +235,7 @@ const Products = () => {
                             <div className="products-error">
                                 <p className="error-message">{error}</p>
                             </div>
-                        ) : (
+                        ) : products.length > 0 ? (
                             <>
                                 <div
                                     className={`products-grid ${
@@ -231,6 +259,23 @@ const Products = () => {
                                     </div>
                                 )}
                             </>
+                        ) : (
+                            <div className="no-products-found">
+                                <div className="no-products-icon">🐾</div>
+                                <h3>No products found</h3>
+                                <p>
+                                    Try adjusting your filters or search criteria to find what
+                                    you're looking for.
+                                </p>
+                                <button
+                                    className="clear-filters-btn"
+                                    onClick={() => {
+                                        navigate('/products?limit=4');
+                                    }}
+                                >
+                                    Clear All Filters
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>

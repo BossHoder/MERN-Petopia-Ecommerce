@@ -14,6 +14,7 @@ const router = Router();
 // ===========================================
 router.get('/', ProductController.getAllProducts);
 router.get('/featured', ProductController.getFeaturedProducts);
+router.get('/brands', ProductController.getBrands);
 router.get('/category/:categorySlug', ProductController.getProductsByCategory);
 router.get('/:id', ProductController.getProductById);
 router.post('/:id/reviews', requireJwtAuth, ProductController.createProductReview);
