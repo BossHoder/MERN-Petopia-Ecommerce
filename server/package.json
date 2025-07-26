@@ -18,7 +18,9 @@
         "client": "npm start --prefix ../client",
         "dev": "concurrently \"npm run server\" \"npm run client\"",
         "seed:products": "nodemon --exec babel-node src/scripts/createProductCollection.js",
-        "seed": "node src/database/seeders/index.js"
+        "seed": "node src/database/seeders/index.js",
+        "migrate": "node src/utils/runMigrations.js",
+        "migrate:parent-slugs": "node src/utils/updateParentCategorySlugs.js"
     },
     "author": "Theanhdola",
     "license": "ISC",

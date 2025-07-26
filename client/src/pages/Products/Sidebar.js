@@ -69,10 +69,21 @@ const Sidebar = ({ onFilterChange }) => {
     const fetchBrands = async () => {
         try {
             setLoadingBrands(true);
+            console.log('Fetching brands...');
             const response = await fetch('/api/products/brands');
+            console.log('Brands response status:', response.status);
+
             if (response.ok) {
                 const data = await response.json();
-                setBrands(data.data || []);
+                console.log('Brands data received:', data);
+                // Backend trả về: { success: true, data: { brands: [...] } }
+                const brandsArray = data.data?.brands || [];
+                console.log('Brands array:', brandsArray);
+                setBrands(brandsArray);
+            } else {
+                console.error('Failed to fetch brands, status:', response.status);
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
             }
         } catch (error) {
             console.error('Error fetching brands:', error);
@@ -81,12 +92,13 @@ const Sidebar = ({ onFilterChange }) => {
         }
     };
 
-    const handleParentClick = (parentId) => {
-        if (selectedParent === parentId) {
-            setSelectedParent(''); // Toggle: đóng nếu đang mở
+    const handleParentClick = (parentSlug) => {
+        if (selectedParent === parentSlug) {
+            // Toggle: đóng nếu đang mở
+            setSelectedParent('');
             setSelectedCategory('');
             onFilterChange({
-                parentCategoryId: '',
+                parentCategory: '',
                 category: '',
                 brand: selectedBrand,
                 minRating: selectedRating,
@@ -94,10 +106,11 @@ const Sidebar = ({ onFilterChange }) => {
                 ...localFilters,
             });
         } else {
-            setSelectedParent(parentId);
-            setSelectedCategory('');
+            // Mở parent category mới và đóng tất cả các parent khác
+            setSelectedParent(parentSlug);
+            setSelectedCategory(''); // Reset category selection khi chuyển parent
             onFilterChange({
-                parentCategoryId: parentId,
+                parentCategory: parentSlug,
                 category: '',
                 brand: selectedBrand,
                 minRating: selectedRating,
@@ -107,11 +120,11 @@ const Sidebar = ({ onFilterChange }) => {
         }
     };
 
-    const handleCategoryClick = (categoryId) => {
-        setSelectedCategory(categoryId);
+    const handleCategoryClick = (categorySlug) => {
+        setSelectedCategory(categorySlug);
         onFilterChange({
-            parentCategoryId: selectedParent,
-            category: categoryId,
+            parentCategory: selectedParent,
+            category: categorySlug,
             brand: selectedBrand,
             minRating: selectedRating,
             inStock,
@@ -123,7 +136,7 @@ const Sidebar = ({ onFilterChange }) => {
         const newBrand = selectedBrand === brand ? '' : brand;
         setSelectedBrand(newBrand);
         onFilterChange({
-            parentCategoryId: selectedParent,
+            parentCategory: selectedParent,
             category: selectedCategory,
             brand: newBrand,
             minRating: selectedRating,
@@ -136,7 +149,7 @@ const Sidebar = ({ onFilterChange }) => {
         const newRating = selectedRating === rating ? '' : rating;
         setSelectedRating(newRating);
         onFilterChange({
-            parentCategoryId: selectedParent,
+            parentCategory: selectedParent,
             category: selectedCategory,
             brand: selectedBrand,
             minRating: newRating,
@@ -154,7 +167,7 @@ const Sidebar = ({ onFilterChange }) => {
 
     const handleApplyFilters = () => {
         onFilterChange({
-            parentCategoryId: selectedParent,
+            parentCategory: selectedParent,
             category: selectedCategory,
             brand: selectedBrand,
             minRating: selectedRating,
@@ -172,7 +185,7 @@ const Sidebar = ({ onFilterChange }) => {
 
         // Apply price filter immediately
         onFilterChange({
-            parentCategoryId: selectedParent,
+            parentCategory: selectedParent,
             category: selectedCategory,
             brand: selectedBrand,
             minRating: selectedRating,
@@ -224,74 +237,98 @@ const Sidebar = ({ onFilterChange }) => {
                                 </div>
                             ) : (
                                 <ul className="parent-category-list">
-                                    {parentCategories.map((parent) => (
-                                        <li
-                                            key={parent._id || parent.id}
-                                            className="parent-category-item"
-                                        >
-                                            <button
-                                                className={`parent-category-btn${
-                                                    selectedParent === parent._id ? ' active' : ''
-                                                }`}
-                                                onClick={() => handleParentClick(parent._id)}
+                                    {parentCategories.map((parent) => {
+                                        // Fallback to _id if slug doesn't exist
+                                        const parentKey = parent.slug || parent._id;
+                                        const isActive = selectedParent === parentKey;
+
+                                        return (
+                                            <li
+                                                key={parent._id || parent.id}
+                                                className="parent-category-item"
                                             >
-                                                {parent.iconUrl && (
-                                                    <img
-                                                        src={parent.iconUrl}
-                                                        alt=""
-                                                        className="category-icon"
-                                                    />
-                                                )}
-                                                <span className="category-name">{parent.name}</span>
-                                                <span className="category-count">
-                                                    {parent.productCount}
-                                                </span>
-                                                <span className="category-arrow">
-                                                    {selectedParent === parent._id ? (
-                                                        <ChevronDown />
-                                                    ) : (
-                                                        <ChevronRight />
+                                                <button
+                                                    className={`parent-category-btn${
+                                                        isActive ? ' active' : ''
+                                                    }`}
+                                                    onClick={() => handleParentClick(parentKey)}
+                                                >
+                                                    {parent.iconUrl && (
+                                                        <img
+                                                            src={parent.iconUrl}
+                                                            alt=""
+                                                            className="category-icon"
+                                                        />
                                                     )}
-                                                </span>
-                                            </button>
-                                            {selectedParent === parent._id && (
-                                                <ul className="category-list">
-                                                    {categories
-                                                        .filter(
-                                                            (cat) =>
-                                                                String(
-                                                                    cat.parentCategory?._id ||
-                                                                        cat.parentCategory,
-                                                                ) === String(parent._id),
-                                                        )
-                                                        .map((cat) => (
-                                                            <li
-                                                                key={cat._id || cat.id}
-                                                                className="category-item"
-                                                            >
-                                                                <button
-                                                                    className={`category-btn${
-                                                                        selectedCategory === cat._id
-                                                                            ? ' active'
-                                                                            : ''
-                                                                    }`}
-                                                                    onClick={() =>
-                                                                        handleCategoryClick(cat._id)
-                                                                    }
+                                                    <span className="category-name">
+                                                        {parent.name}
+                                                    </span>
+                                                    <span className="category-count">
+                                                        {parent.productCount}
+                                                    </span>
+                                                    <span className="category-arrow">
+                                                        {isActive ? (
+                                                            <ChevronDown />
+                                                        ) : (
+                                                            <ChevronRight />
+                                                        )}
+                                                    </span>
+                                                </button>
+                                                {isActive && (
+                                                    <ul
+                                                        className="category-list"
+                                                        title={
+                                                            categories.filter(
+                                                                (cat) =>
+                                                                    String(
+                                                                        cat.parentCategory?._id ||
+                                                                            cat.parentCategory,
+                                                                    ) === String(parent._id),
+                                                            ).length > 4
+                                                                ? 'Scroll to see more categories'
+                                                                : ''
+                                                        }
+                                                    >
+                                                        {categories
+                                                            .filter(
+                                                                (cat) =>
+                                                                    String(
+                                                                        cat.parentCategory?._id ||
+                                                                            cat.parentCategory,
+                                                                    ) === String(parent._id),
+                                                            )
+                                                            .map((cat) => (
+                                                                <li
+                                                                    key={cat._id || cat.id}
+                                                                    className="category-item"
                                                                 >
-                                                                    <span className="category-name">
-                                                                        {cat.name}
-                                                                    </span>
-                                                                    <span className="category-count">
-                                                                        {cat.productCount}
-                                                                    </span>
-                                                                </button>
-                                                            </li>
-                                                        ))}
-                                                </ul>
-                                            )}
-                                        </li>
-                                    ))}
+                                                                    <button
+                                                                        className={`category-btn${
+                                                                            selectedCategory ===
+                                                                            cat.slug
+                                                                                ? ' active'
+                                                                                : ''
+                                                                        }`}
+                                                                        onClick={() =>
+                                                                            handleCategoryClick(
+                                                                                cat.slug,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <span className="category-name">
+                                                                            {cat.name}
+                                                                        </span>
+                                                                        <span className="category-count">
+                                                                            {cat.productCount}
+                                                                        </span>
+                                                                    </button>
+                                                                </li>
+                                                            ))}
+                                                    </ul>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             )}
                         </div>

@@ -25,7 +25,8 @@ class ProductController {
                 sortBy = 'createdAt',
                 sortOrder = 'desc',
                 category,
-                parentCategoryId,
+                parentCategory,
+                parentCategoryId, // Keep for backward compatibility
                 brand,
                 minPrice,
                 maxPrice,
@@ -38,16 +39,45 @@ class ProductController {
             const filter = { isPublished };
 
             // Handle category filtering logic
-            if (category && parentCategoryId) {
-                // Nếu có cả category và parentCategoryId, ưu tiên category cụ thể
-                filter.category = category;
+            if (category && (parentCategory || parentCategoryId)) {
+                // Nếu có cả category và parentCategory, ưu tiên category cụ thể
+                // Category có thể là slug hoặc ID
+                if (mongoose.Types.ObjectId.isValid(category)) {
+                    filter.category = category; // ID
+                } else {
+                    // Tìm category bằng slug
+                    const categoryDoc = await Category.findOne({ slug: category }).select('_id');
+                    if (categoryDoc) {
+                        filter.category = categoryDoc._id;
+                    }
+                }
             } else if (category) {
-                // Chỉ có category
-                filter.category = category;
-            } else if (parentCategoryId) {
-                // Chỉ có parentCategoryId, lấy tất cả category thuộc parentCategory
-                const categories = await Category.find({ parentCategory: parentCategoryId }).select('_id');
-                filter.category = { $in: categories.map((c) => c._id) };
+                // Chỉ có category (slug hoặc ID)
+                if (mongoose.Types.ObjectId.isValid(category)) {
+                    filter.category = category; // ID
+                } else {
+                    // Tìm category bằng slug
+                    const categoryDoc = await Category.findOne({ slug: category }).select('_id');
+                    if (categoryDoc) {
+                        filter.category = categoryDoc._id;
+                    }
+                }
+            } else if (parentCategory || parentCategoryId) {
+                // Chỉ có parentCategory (slug hoặc ID), lấy tất cả category thuộc parentCategory
+                let parentId = parentCategory || parentCategoryId;
+
+                if (mongoose.Types.ObjectId.isValid(parentId)) {
+                    // ParentCategory ID
+                    const categories = await Category.find({ parentCategory: parentId }).select('_id');
+                    filter.category = { $in: categories.map((c) => c._id) };
+                } else {
+                    // ParentCategory slug
+                    const parentCategoryDoc = await ParentCategory.findOne({ slug: parentId }).select('_id');
+                    if (parentCategoryDoc) {
+                        const categories = await Category.find({ parentCategory: parentCategoryDoc._id }).select('_id');
+                        filter.category = { $in: categories.map((c) => c._id) };
+                    }
+                }
             }
             if (brand) filter.brand = { $regex: brand, $options: 'i' };
             if (inStock !== undefined) filter.stockQuantity = inStock ? { $gt: 0 } : { $eq: 0 };
@@ -420,11 +450,21 @@ class ProductController {
     // Get all unique brands
     async getBrands(req, res) {
         try {
+            console.log('getBrands called');
+
+            // First check if we have any products
+            const productCount = await Product.countDocuments();
+            console.log('Total products in database:', productCount);
+
             const brands = await Product.distinct('brand');
+            console.log('Raw brands from database:', brands);
+
             const filteredBrands = brands.filter((brand) => brand && brand.trim() !== '');
+            console.log('Filtered brands:', filteredBrands);
 
             return responseHelper.success(res, {
                 brands: filteredBrands.sort(),
+                totalProducts: productCount,
                 message: 'Brands retrieved successfully',
             });
         } catch (error) {
