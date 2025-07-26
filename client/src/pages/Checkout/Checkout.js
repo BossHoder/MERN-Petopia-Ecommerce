@@ -141,7 +141,7 @@ const Checkout = () => {
                 payload: {
                     message: t(
                         'checkout.errors.noAddressFound',
-                        'Please add a shipping address to continue with your order.',
+                        'Please add a shipping address to continue with your order',
                     ),
                     type: 'error',
                 },
@@ -169,7 +169,7 @@ const Checkout = () => {
                 payload: {
                     message: t(
                         'checkout.errors.selectAddress',
-                        'Please select a shipping address to continue.',
+                        'Please select a shipping address to continue',
                     ),
                     type: 'error',
                 },
@@ -190,7 +190,16 @@ const Checkout = () => {
 
     const placeOrderHandler = () => {
         if (cartItems.length === 0) {
-            alert('Your cart is empty. Cannot place order.');
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: {
+                    message: t(
+                        'checkout.errors.emptyCart',
+                        'Your cart is empty. Cannot place order',
+                    ),
+                    type: 'error',
+                },
+            });
             return;
         }
         const orderData = {

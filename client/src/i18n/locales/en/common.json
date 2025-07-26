@@ -416,6 +416,34 @@
             "items": "Items",
             "shipping": "Shipping",
             "tax": "Tax"
+        },
+        "errors": {
+            "selectAddress": "Please select a shipping address to continue",
+            "noAddressFound": "Please add a shipping address to continue with your order",
+            "emptyCart": "Your cart is empty. Cannot place order",
+            "invalidShippingInfo": "Please provide valid shipping information"
+        },
+        "guest": {
+            "title": "Guest Checkout Information",
+            "fullName": "Full Name",
+            "email": "Email Address",
+            "phoneNumber": "Phone Number",
+            "city": "City",
+            "address": "Shipping Address",
+            "continue": "Continue to Payment",
+            "fullNamePlaceholder": "Enter your full name",
+            "emailPlaceholder": "Enter your email address",
+            "phonePlaceholder": "Enter your phone number",
+            "cityPlaceholder": "Enter your city",
+            "addressPlaceholder": "Enter your full shipping address",
+            "errors": {
+                "fullNameRequired": "Full name is required",
+                "emailRequired": "Email address is required",
+                "emailInvalid": "Please enter a valid email address",
+                "phoneRequired": "Phone number is required",
+                "phoneInvalid": "Phone number must be 10 digits",
+                "addressRequired": "Shipping address is required"
+            }
         }
     },
     "orderDetails": {

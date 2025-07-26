@@ -439,6 +439,34 @@
             "items": "Sản phẩm",
             "shipping": "Vận chuyển",
             "tax": "Thuế"
+        },
+        "errors": {
+            "selectAddress": "Vui lòng chọn địa chỉ giao hàng để tiếp tục",
+            "noAddressFound": "Vui lòng thêm địa chỉ giao hàng để tiếp tục đặt hàng",
+            "emptyCart": "Giỏ hàng của bạn đang trống. Không thể đặt hàng",
+            "invalidShippingInfo": "Vui lòng cung cấp thông tin giao hàng hợp lệ"
+        },
+        "guest": {
+            "title": "Thông tin thanh toán khách vãng lai",
+            "fullName": "Họ và tên",
+            "email": "Địa chỉ email",
+            "phoneNumber": "Số điện thoại",
+            "city": "Thành phố",
+            "address": "Địa chỉ giao hàng",
+            "continue": "Tiếp tục thanh toán",
+            "fullNamePlaceholder": "Nhập họ và tên của bạn",
+            "emailPlaceholder": "Nhập địa chỉ email của bạn",
+            "phonePlaceholder": "Nhập số điện thoại của bạn",
+            "cityPlaceholder": "Nhập thành phố của bạn",
+            "addressPlaceholder": "Nhập địa chỉ giao hàng đầy đủ",
+            "errors": {
+                "fullNameRequired": "Họ và tên là bắt buộc",
+                "emailRequired": "Địa chỉ email là bắt buộc",
+                "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+                "phoneRequired": "Số điện thoại là bắt buộc",
+                "phoneInvalid": "Số điện thoại phải có 10 chữ số",
+                "addressRequired": "Địa chỉ giao hàng là bắt buộc"
+            }
         }
     },
     "orderDetails": {
