@@ -8,11 +8,30 @@ console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
 console.log('REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
 console.log('REACT_APP_SERVER_URL:', process.env.REACT_APP_SERVER_URL);
 
+// Determine base URL based on environment
+const getBaseURL = () => {
+    // If REACT_APP_API_URL is explicitly set, use it
+    if (process.env.REACT_APP_API_URL) {
+        return process.env.REACT_APP_API_URL;
+    }
+
+    // If in development, use proxy (empty string)
+    if (process.env.NODE_ENV === 'development') {
+        return '';
+    }
+
+    // If in production but no API URL set, use current domain
+    if (process.env.NODE_ENV === 'production') {
+        return window.location.origin;
+    }
+
+    // Fallback
+    return 'http://localhost:5000';
+};
+
 // Create axios instance with default config
 const API = axios.create({
-    baseURL:
-        process.env.REACT_APP_API_URL ||
-        (process.env.NODE_ENV === 'development' ? '' : 'http://localhost:5000'),
+    baseURL: getBaseURL(),
     timeout: 30000, // 30 seconds timeout
     headers: {
         'Content-Type': 'application/json',
