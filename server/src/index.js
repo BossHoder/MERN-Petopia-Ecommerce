@@ -22,6 +22,9 @@ const router = Router();
 
 console.log('🚀 Server is starting...');
 
+// Environment check
+const isProduction = process.env.NODE_ENV === 'production';
+
 // CORS Middleware
 const allowedOrigins = isProduction
     ? [
@@ -58,8 +61,6 @@ import './services/localStrategy.js';
 // Import models to register them with Mongoose
 import './models/User.js';
 import './models/Product.js';
-
-const isProduction = process.env.NODE_ENV === 'production';
 
 const dbConnection = isProduction ? process.env.MONGO_URI_PROD : process.env.MONGO_URI_DEV;
 
