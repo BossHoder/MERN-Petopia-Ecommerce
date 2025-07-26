@@ -23,9 +23,22 @@ const router = Router();
 console.log('🚀 Server is starting...');
 
 // CORS Middleware
+const allowedOrigins = isProduction
+    ? [
+          'https://petopiavn.live',
+          'https://www.petopiavn.live',
+          'https://petopia-12598ae75272.herokuapp.com',
+          process.env.CLIENT_URL_PROD,
+      ].filter(Boolean) // Remove any undefined values
+    : ['http://localhost:3000', 'https://localhost:3000'];
+
+console.log('🌐 CORS Configuration:');
+console.log('Environment:', process.env.NODE_ENV);
+console.log('Allowed Origins:', allowedOrigins);
+
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'https://localhost:3000'],
+        origin: allowedOrigins,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'],
