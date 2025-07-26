@@ -2,6 +2,7 @@
     "name": "mern-boilerplate",
     "version": "0.1.0",
     "private": true,
+    "proxy": "http://127.0.0.1:5000",
     "scripts": {
         "start": "set NODE_OPTIONS=--openssl-legacy-provider && set HTTPS=true && react-scripts start",
         "build": "set NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",

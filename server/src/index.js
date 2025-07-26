@@ -33,7 +33,7 @@ const allowedOrigins = isProduction
           'https://petopia-12598ae75272.herokuapp.com',
           process.env.CLIENT_URL_PROD,
       ].filter(Boolean) // Remove any undefined values
-    : ['http://localhost:3000', 'https://localhost:3000'];
+    : ['http://localhost:3000', 'https://localhost:3000', 'http://127.0.0.1:3000', 'https://127.0.0.1:3000'];
 
 console.log('🌐 CORS Configuration:');
 console.log('Environment:', process.env.NODE_ENV);

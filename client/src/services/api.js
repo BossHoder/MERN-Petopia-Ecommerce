@@ -10,7 +10,9 @@ console.log('REACT_APP_SERVER_URL:', process.env.REACT_APP_SERVER_URL);
 
 // Create axios instance with default config
 const API = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
+    baseURL:
+        process.env.REACT_APP_API_URL ||
+        (process.env.NODE_ENV === 'development' ? '' : 'http://localhost:5000'),
     timeout: 30000, // 30 seconds timeout
     headers: {
         'Content-Type': 'application/json',
