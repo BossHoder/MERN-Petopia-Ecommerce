@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { safeRedirectToLogin } from '../utils/authRedirect';
 
+// Debug environment variables
+console.log('🔍 Environment Variables Debug:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('REACT_APP_BASE_URL:', process.env.REACT_APP_BASE_URL);
+console.log('REACT_APP_SERVER_URL:', process.env.REACT_APP_SERVER_URL);
+
 // Create axios instance with default config
 const API = axios.create({
     baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000',
@@ -9,6 +16,8 @@ const API = axios.create({
         'Content-Type': 'application/json',
     },
 });
+
+console.log('🌐 API Base URL:', API.defaults.baseURL);
 
 // Request interceptor to add auth token
 API.interceptors.request.use(
