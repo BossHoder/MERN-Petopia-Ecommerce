@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import moment from 'moment';
 
 import { getProfile, editUser } from '../../store/actions/userActions';
@@ -12,6 +12,9 @@ import {
     setDefaultAddress,
 } from '../../store/actions/addressActions';
 import Loader from '../../components/Loader/Loader';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import { useUrlTabs, createTabConfig } from '../../hooks/useUrlTabs';
 import { getAvatarUrl } from '../../utils/helpers';
 import { loadMe } from '../../store/actions/authActions';
 
@@ -19,12 +22,27 @@ import './Profile.css'; // Sử dụng CSS mới
 import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
-    const [activeTab, setActiveTab] = useState('profile');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const { username: paramUsername } = useParams();
     const { t } = useTranslation('common');
+
+    // Tab configuration
+    const profileTabs = createTabConfig([
+        { key: 'profile', label: t('profile.tabs.settings', 'Cài đặt hồ sơ') },
+        { key: 'orders', label: t('profile.tabs.orders', 'Lịch sử đơn hàng') },
+        { key: 'addresses', label: t('profile.tabs.addresses', 'Sổ địa chỉ') },
+    ]);
+
+    // URL-based tab navigation
+    const { currentTab: activeTab, handleTabChange } = useUrlTabs(
+        profileTabs.defaultTab,
+        profileTabs.validTabs,
+    );
+
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('profile');
 
     // Lấy state từ Redux
     const { me: userInfo, isLoading } = useSelector((state) => state.auth);
@@ -53,10 +71,13 @@ const Profile = () => {
     // Handle checkout redirection and auto-focus Address Book tab
     useEffect(() => {
         if (location.state?.fromCheckout && location.state?.focusTab) {
-            setActiveTab(location.state.focusTab);
+            const focusTab = location.state.focusTab;
+            if (profileTabs.validTabs.includes(focusTab)) {
+                handleTabChange(focusTab);
+            }
             // Removed the blue info toast - user will see the checkout context banner instead
         }
-    }, [location.state, dispatch, t]);
+    }, [location.state, handleTabChange, profileTabs.validTabs]);
 
     if (userInfo === null && isLoading) {
         return <Loader />;
@@ -76,29 +97,62 @@ const Profile = () => {
 
     return (
         <div className="profile-container">
-            <div className="profile-sidebar">
-                <ul className="profile-tabs">
-                    <li
-                        className={activeTab === 'profile' ? 'active' : ''}
-                        onClick={() => setActiveTab('profile')}
-                    >
-                        {t('profile.tabs.settings', 'Profile Settings')}
-                    </li>
-                    <li
-                        className={activeTab === 'orders' ? 'active' : ''}
-                        onClick={() => setActiveTab('orders')}
-                    >
-                        {t('profile.tabs.orders', 'Order History')}
-                    </li>
-                    <li
-                        className={activeTab === 'addresses' ? 'active' : ''}
-                        onClick={() => setActiveTab('addresses')}
-                    >
-                        {t('profile.tabs.addresses', 'Address Book')}
-                    </li>
-                </ul>
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNavigation
+                items={breadcrumbItems}
+                ariaLabel={t('breadcrumb.profileNavigation', 'Profile navigation')}
+            />
+
+            {/* Profile Layout Grid */}
+            <div className="profile-layout">
+                <div className="profile-sidebar">
+                    <ul className="profile-tabs">
+                        <li
+                            className={activeTab === 'profile' ? 'active' : ''}
+                            onClick={() => handleTabChange('profile')}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleTabChange('profile');
+                                }
+                            }}
+                        >
+                            {t('profile.tabs.settings', 'Cài đặt hồ sơ')}
+                        </li>
+                        <li
+                            className={activeTab === 'orders' ? 'active' : ''}
+                            onClick={() => handleTabChange('orders')}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleTabChange('orders');
+                                }
+                            }}
+                        >
+                            {t('profile.tabs.orders', 'Lịch sử đơn hàng')}
+                        </li>
+                        <li
+                            className={activeTab === 'addresses' ? 'active' : ''}
+                            onClick={() => handleTabChange('addresses')}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleTabChange('addresses');
+                                }
+                            }}
+                        >
+                            {t('profile.tabs.addresses', 'Sổ địa chỉ')}
+                        </li>
+                    </ul>
+                </div>
+                <div className="profile-content">{renderContent()}</div>
             </div>
-            <div className="profile-content">{renderContent()}</div>
         </div>
     );
 };

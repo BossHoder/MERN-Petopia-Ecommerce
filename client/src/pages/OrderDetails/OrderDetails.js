@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { getOrderDetails } from '../../store/actions/orderActions';
 import Loader from '../../components/Loader/Loader';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import './OrderDetails.css';
 
@@ -11,6 +13,9 @@ const OrderDetails = () => {
     const { id: orderId } = useParams();
     const dispatch = useDispatch();
     const { t } = useTranslation('common');
+
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('order', orderId);
 
     const { order, loading, error } = useSelector((state) => state.orderDetails);
 
@@ -26,6 +31,12 @@ const OrderDetails = () => {
         <p className="error-message">{error}</p>
     ) : (
         <div className="order-details-container">
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNavigation
+                items={breadcrumbItems}
+                ariaLabel={t('breadcrumb.orderNavigation', 'Order navigation')}
+            />
+
             <h1>
                 {t('orderDetails.title', 'Order #')}
                 {order._id}

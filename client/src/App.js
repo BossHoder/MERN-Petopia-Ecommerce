@@ -19,6 +19,8 @@ import Checkout from './pages/Checkout/Checkout'; // Import Checkout
 import OrderDetails from './pages/OrderDetails/OrderDetails'; // Import OrderDetails
 import Products from './pages/Products/Products'; // Import Products
 import ProductDetails from './pages/ProductDetails/ProductDetails'; // Import ProductDetails
+import CategoryPage from './pages/Category/CategoryPage'; // Import CategoryPage
+import SubcategoryPage from './pages/Category/SubcategoryPage'; // Import SubcategoryPage
 
 import Loader from './components/Loader/Loader';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
@@ -84,6 +86,11 @@ const App = () => {
                         />
                         <Route path="/products" element={<Products />} />
                         <Route path="/product/:id" element={<ProductDetails />} />
+                        <Route path="/category/:slug" element={<CategoryPage />} />
+                        <Route
+                            path="/category/:parentSlug/:categorySlug"
+                            element={<SubcategoryPage />}
+                        />
                         <Route
                             path="/users"
                             element={

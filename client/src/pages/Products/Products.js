@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../../store/actions/productActions';
 import Loader from '../../components/Loader/Loader';
 import ProductCard from '../../components/ProductCard/ProductCard';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import Sidebar from './Sidebar';
 import Pagination from './Pagination';
 import './Products.css';
@@ -51,6 +53,9 @@ const Products = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { t } = useTranslation('common');
+
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('products');
 
     const { products, pagination, productsLoading, error } = useSelector((state) => state.products);
     const [viewMode, setViewMode] = useState('grid');
@@ -150,28 +155,11 @@ const Products = () => {
             <div className="products-container">
                 <Sidebar onFilterChange={handleFilterChange} />
                 <div className="products-main">
-                    {/* Breadcrumb */}
-                    <nav className="breadcrumb" aria-label="Breadcrumb">
-                        <ol className="breadcrumb-list">
-                            <li>
-                                <a href="#" className="breadcrumb-link">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <span className="breadcrumb-separator">/</span>
-                            </li>
-                            <li>
-                                <a href="#" className="breadcrumb-link">
-                                    Shop
-                                </a>
-                            </li>
-                            <li>
-                                <span className="breadcrumb-separator">/</span>
-                            </li>
-                            <li className="breadcrumb-current">Products</li>
-                        </ol>
-                    </nav>
+                    {/* Breadcrumb Navigation */}
+                    <BreadcrumbNavigation
+                        items={breadcrumbItems}
+                        ariaLabel={t('breadcrumb.productsNavigation', 'Products navigation')}
+                    />
                     {/* Header */}
                     <div className="products-header">
                         <div className="products-title-section">

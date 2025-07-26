@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getCart, removeFromCart, updateCartItemQuantity } from '../../store/actions/cartActions';
 import Loader from '../../components/Loader/Loader';
 import Message from '../../components/Message/Message';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import './Cart.css';
 
@@ -11,6 +13,9 @@ const Cart = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { t } = useTranslation('common');
+
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('cart');
 
     const { me: userInfo, appLoaded } = useSelector((state) => state.auth);
     const { items, loading, error } = useSelector((state) => state.cart);
@@ -45,6 +50,12 @@ const Cart = () => {
 
     return (
         <div className="cart-container">
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNavigation
+                items={breadcrumbItems}
+                ariaLabel={t('breadcrumb.cartNavigation', 'Cart navigation')}
+            />
+
             <h1>{t('cart.title', 'Shopping Cart')}</h1>
             {loading ? (
                 <Loader />

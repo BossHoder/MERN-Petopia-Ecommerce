@@ -5,6 +5,7 @@ import categoriesRoutes from './categories.js';
 import cartRoutes from './cart.js';
 import orderRoutes from './orders.js';
 import reviewRoutes from './reviews.js'; // Import review routes
+import breadcrumbRoutes from './breadcrumb.js'; // Import breadcrumb routes
 // import messagesRoutes from './messages.js';
 
 const router = Router();
@@ -15,6 +16,7 @@ router.use('/categories', categoriesRoutes);
 router.use('/cart', cartRoutes);
 router.use('/orders', orderRoutes);
 router.use('/reviews', reviewRoutes); // Use review routes
+router.use('/breadcrumb', breadcrumbRoutes); // Use breadcrumb routes
 // router.use('/messages', messagesRoutes);
 
 export default router;

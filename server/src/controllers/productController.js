@@ -30,6 +30,8 @@ class ProductController {
                 brand,
                 minPrice,
                 maxPrice,
+                minRating,
+                maxRating,
                 inStock,
                 isFeatured,
                 search,
@@ -90,6 +92,13 @@ class ProductController {
                 if (maxPrice) filter.price.$lte = maxPrice;
             }
 
+            // Rating Range Filter
+            if (minRating || maxRating) {
+                filter.ratings = {};
+                if (minRating) filter.ratings.$gte = minRating;
+                if (maxRating) filter.ratings.$lte = maxRating;
+            }
+
             if (search) {
                 // Tìm category và parentCategory match keyword
                 const categories = await Category.find({ name: { $regex: search, $options: 'i' } }).select('_id');
@@ -145,6 +154,8 @@ class ProductController {
                     brand,
                     minPrice,
                     maxPrice,
+                    minRating,
+                    maxRating,
                     inStock,
                     isFeatured,
                     search,

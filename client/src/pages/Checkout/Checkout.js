@@ -13,6 +13,9 @@ import {
 import { ORDER_CREATE_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
 import Notification from '../../components/Notification/Notification';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
+import { useUrlSteps } from '../../hooks/useUrlTabs';
 import GuestCheckoutForm from '../../components/GuestCheckoutForm/GuestCheckoutForm';
 import { useTranslation } from 'react-i18next';
 import './Checkout.css';
@@ -23,7 +26,11 @@ const Checkout = () => {
     const location = useLocation();
     const { t } = useTranslation('common');
 
-    const [step, setStep] = useState(1);
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('checkout');
+
+    // URL-based step navigation
+    const { currentStep, handleStepChange } = useUrlSteps(1, [1, 2, 3]);
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [shippingAddress, setShippingAddress] = useState({
         address: '',
@@ -82,7 +89,7 @@ const Checkout = () => {
     // Initialize state from Redux if available
     useEffect(() => {
         if (isRestored) {
-            setStep(reduxStep);
+            handleStepChange(reduxStep);
             setPaymentMethod(reduxPaymentMethod);
             setShippingAddress(reduxShippingAddress);
         }
@@ -117,7 +124,7 @@ const Checkout = () => {
             city: guestData.city,
             fullName: guestData.fullName,
         });
-        setStep(2);
+        handleStepChange(2);
         dispatch(updateCheckoutStep(2));
     };
 
@@ -129,7 +136,7 @@ const Checkout = () => {
             // Preserve current checkout state in Redux
             dispatch(
                 preserveCheckoutState({
-                    step,
+                    step: currentStep,
                     paymentMethod,
                     shippingAddress,
                 }),
@@ -178,13 +185,13 @@ const Checkout = () => {
         }
 
         // For guest users, the address validation is handled in the guest form
-        setStep(2);
+        handleStepChange(2);
         dispatch(updateCheckoutStep(2));
     };
 
     const submitPaymentHandler = (e) => {
         e.preventDefault();
-        setStep(3);
+        handleStepChange(3);
         dispatch(updateCheckoutStep(3));
     };
 
@@ -222,23 +229,28 @@ const Checkout = () => {
 
     return (
         <div className="checkout-container">
+            {/* Breadcrumb Navigation */}
+            <BreadcrumbNavigation
+                items={breadcrumbItems}
+                ariaLabel={t('breadcrumb.checkoutNavigation', 'Checkout navigation')}
+            />
             <h1>{t('checkout.title', 'Checkout')}</h1>
             {orderLoading && <Loader />}
             {error && <Notification type="error">{error}</Notification>} {/* Sửa component */}
             <div className="checkout-steps">
-                <div className={step >= 1 ? 'step active' : 'step'}>
+                <div className={currentStep >= 1 ? 'step active' : 'step'}>
                     {t('checkout.steps.shipping', 'Shipping')}
                 </div>
-                <div className={step >= 2 ? 'step active' : 'step'}>
+                <div className={currentStep >= 2 ? 'step active' : 'step'}>
                     {t('checkout.steps.payment', 'Payment')}
                 </div>
-                <div className={step >= 3 ? 'step active' : 'step'}>
+                <div className={currentStep >= 3 ? 'step active' : 'step'}>
                     {t('checkout.steps.placeOrder', 'Place Order')}
                 </div>
             </div>
             <div className="checkout-content">
                 <div className="checkout-form">
-                    {step === 1 && (
+                    {currentStep === 1 && (
                         <div>
                             <h2>{t('checkout.shippingAddress', 'Shipping Address')}</h2>
 
@@ -326,7 +338,7 @@ const Checkout = () => {
                         </div>
                     )}
 
-                    {step === 2 && (
+                    {currentStep === 2 && (
                         <div>
                             <h2>{t('checkout.paymentMethod', 'Payment Method')}</h2>
                             <form onSubmit={submitPaymentHandler}>
@@ -363,7 +375,7 @@ const Checkout = () => {
                         </div>
                     )}
 
-                    {step === 3 && (
+                    {currentStep === 3 && (
                         <div>
                             <h2>{t('checkout.confirmOrder', 'Confirm Order')}</h2>
                             <p>{t('checkout.confirmMessage', 'Confirm your order')}</p>

@@ -18,6 +18,7 @@ import { addressReducer } from './addressReducer';
 import { reviewListReducer, reviewAddReducer } from './reviewReducer';
 import toastReducer from './toastReducer';
 import checkoutReducer from './checkoutReducer';
+import breadcrumbReducer from './breadcrumbReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -37,4 +38,5 @@ export default combineReducers({
     reviewAdd: reviewAddReducer,
     toast: toastReducer,
     checkout: checkoutReducer,
+    breadcrumb: breadcrumbReducer,
 });

@@ -1,10 +1,608 @@
+/* Pet-friendly Color Variables */
+:root {
+    --loader-orange: #ff6b35;
+    --loader-orange-light: #ff8a5b;
+    --loader-brown: #1d120c;
+    --loader-brown-light: #a16345;
+    --loader-cream: #fcf9f8;
+    --loader-tan: #f4ebe6;
+    --loader-border: #ead7cd;
+    --loader-shadow: 0 4px 20px rgba(29, 18, 12, 0.1);
+    --loader-shadow-strong: 0 8px 32px rgba(29, 18, 12, 0.15);
+}
+
+/* Base Loader Container */
 .loader-container {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
-    /* align-items: center; */
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
 }
 
-.loader .loader-content {
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(244, 235, 230, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--loader-cream);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: var(--loader-shadow-strong);
+    border: 1px solid var(--loader-border);
+    min-width: 200px;
+}
+
+/* Loader Message Styling */
+.loader-message {
+    margin: 1.5rem 0 0 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--loader-brown);
+    opacity: 0.8;
+    animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Size Variants */
+.loader-container.sm .loader-content {
+    padding: 1rem;
+    min-width: 120px;
+}
+
+.loader-container.sm .loader-message {
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+.loader-container.lg .loader-content {
+    padding: 3rem;
+    min-width: 280px;
+}
+
+.loader-container.lg .loader-message {
+    font-size: 1.125rem;
+    margin-top: 2rem;
+}
+
+/* Color Themes */
+.loader-container.orange .loader-content {
+    background: linear-gradient(135deg, var(--loader-cream) 0%, #fff5f0 100%);
+    border-color: var(--loader-orange);
+}
+
+.loader-container.brown .loader-content {
+    background: linear-gradient(135deg, var(--loader-tan) 0%, var(--loader-cream) 100%);
+    border-color: var(--loader-brown-light);
+}
+
+.loader-container.cream .loader-content {
+    background: var(--loader-cream);
+    border-color: var(--loader-border);
+}
+
+/* ===========================================
+   PAW PRINTS LOADER - Adorable walking paws
+   =========================================== */
+.paw-loader {
+    position: relative;
+}
+
+.paw-prints {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.paw-print {
+    font-size: 2rem;
+    animation: pawWalk 1.5s ease-in-out infinite;
+    transform-origin: center;
+    filter: drop-shadow(0 2px 4px rgba(29, 18, 12, 0.2));
+}
+
+.paw-print.paw-1 {
+    animation-delay: 0s;
+}
+.paw-print.paw-2 {
+    animation-delay: 0.2s;
+}
+.paw-print.paw-3 {
+    animation-delay: 0.4s;
+}
+.paw-print.paw-4 {
+    animation-delay: 0.6s;
+}
+
+@keyframes pawWalk {
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.6;
+    }
+    25% {
+        transform: scale(1.2) rotate(-5deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 0.8;
+    }
+    75% {
+        transform: scale(1.3) rotate(-3deg);
+        opacity: 1;
+    }
+}
+
+/* Size variants for paw loader */
+.paw-loader.sm .paw-print {
+    font-size: 1.5rem;
+}
+.paw-loader.lg .paw-print {
+    font-size: 2.5rem;
+}
+
+/* ===========================================
+   BEATING HEART LOADER - Loving heartbeat
+   =========================================== */
+.heart-loader {
+    position: relative;
+}
+
+.beating-heart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.heart {
+    font-size: 3rem;
+    animation: heartbeat 1.2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
+}
+
+@keyframes heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
+    }
+    25% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
+    }
+    50% {
+        transform: scale(1.3);
+        filter: drop-shadow(0 8px 16px rgba(255, 107, 53, 0.5));
+    }
+    75% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
+    }
+}
+
+/* Size variants for heart loader */
+.heart-loader.sm .heart {
+    font-size: 2rem;
+}
+.heart-loader.lg .heart {
+    font-size: 4rem;
+}
+
+/* ===========================================
+   SPINNING BONE LOADER - Playful bone spin
+   =========================================== */
+.bone-loader {
+    position: relative;
+}
+
+.spinning-bone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bone {
+    font-size: 2.5rem;
+    animation: boneSpin 2s linear infinite;
+    filter: drop-shadow(0 3px 6px rgba(161, 99, 69, 0.3));
+}
+
+@keyframes boneSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+/* Size variants for bone loader */
+.bone-loader.sm .bone {
+    font-size: 2rem;
+}
+.bone-loader.lg .bone {
+    font-size: 3rem;
+}
+
+/* ===========================================
+   BOUNCING DOTS LOADER - Playful bouncing
+   =========================================== */
+.dots-loader {
+    position: relative;
+}
+
+.bouncing-dots {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--loader-orange);
+    animation: dotBounce 1.4s ease-in-out infinite;
+    box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+}
+
+.dot.dot-1 {
+    animation-delay: 0s;
+}
+.dot.dot-2 {
+    animation-delay: 0.2s;
+}
+.dot.dot-3 {
+    animation-delay: 0.4s;
+}
+
+@keyframes dotBounce {
+    0%,
+    80%,
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 0.7;
+    }
+    40% {
+        transform: scale(1.3) translateY(-20px);
+        opacity: 1;
+    }
+}
+
+/* Size variants for dots loader */
+.dots-loader.sm .dot {
+    width: 8px;
+    height: 8px;
+}
+
+.dots-loader.lg .dot {
+    width: 16px;
+    height: 16px;
+}
+
+/* Color variants for dots */
+.dots-loader.brown .dot {
+    background: var(--loader-brown-light);
+    box-shadow: 0 2px 4px rgba(161, 99, 69, 0.3);
+}
+
+.dots-loader.cream .dot {
+    background: var(--loader-brown);
+    box-shadow: 0 2px 4px rgba(29, 18, 12, 0.3);
+}
+
+/* ===========================================
+   MINIMAL RING LOADER - Clean and elegant
+   =========================================== */
+.minimal-loader {
+    position: relative;
+}
+
+.spinner-ring {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-top-color: var(--loader-orange);
+    border-radius: 50%;
+    animation: ringRotate 1.2s linear infinite;
+}
+
+.ring:nth-child(1) {
+    animation-delay: 0s;
+    border-width: 3px;
+}
+
+.ring:nth-child(2) {
+    animation-delay: 0.1s;
+    border-width: 2px;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    border-top-color: var(--loader-orange-light);
+}
+
+.ring:nth-child(3) {
+    animation-delay: 0.2s;
+    border-width: 2px;
+    width: 60%;
+    height: 60%;
+    top: 20%;
+    left: 20%;
+    border-top-color: var(--loader-brown-light);
+}
+
+.ring:nth-child(4) {
+    animation-delay: 0.3s;
+    border-width: 1px;
+    width: 40%;
+    height: 40%;
+    top: 30%;
+    left: 30%;
+    border-top-color: var(--loader-brown);
+}
+
+@keyframes ringRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Size variants for minimal loader */
+.minimal-loader.sm .spinner-ring {
+    width: 40px;
+    height: 40px;
+}
+
+.minimal-loader.lg .spinner-ring {
+    width: 80px;
+    height: 80px;
+}
+
+/* Color variants for minimal loader */
+.minimal-loader.brown .ring:nth-child(1) {
+    border-top-color: var(--loader-brown);
+}
+
+.minimal-loader.brown .ring:nth-child(2) {
+    border-top-color: var(--loader-brown-light);
+}
+
+.minimal-loader.cream .ring:nth-child(1) {
+    border-top-color: var(--loader-brown-light);
+}
+
+.minimal-loader.cream .ring:nth-child(2) {
+    border-top-color: var(--loader-brown);
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN & ACCESSIBILITY
+   =========================================== */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .loader-container {
+        padding: 1rem;
+    }
+
+    .loader-content {
+        padding: 1.5rem;
+        min-width: 160px;
+        border-radius: 16px;
+    }
+
+    .loader-message {
+        font-size: 0.875rem;
+        margin-top: 1rem;
+    }
+
+    /* Adjust animation sizes for mobile */
+    .paw-print {
+        font-size: 1.75rem;
+    }
+
+    .heart {
+        font-size: 2.5rem;
+    }
+
+    .bone {
+        font-size: 2rem;
+    }
+
+    .spinner-ring {
+        width: 50px;
+        height: 50px;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loader-content {
+        padding: 1rem;
+        min-width: 140px;
+    }
+
+    .loader-message {
+        font-size: 0.8125rem;
+    }
+
+    .paw-print {
+        font-size: 1.5rem;
+    }
+
+    .heart {
+        font-size: 2rem;
+    }
+
+    .bone {
+        font-size: 1.75rem;
+    }
+}
+
+/* Accessibility features */
+@media (prefers-reduced-motion: reduce) {
+    .paw-print,
+    .heart,
+    .bone,
+    .dot,
+    .ring {
+        animation: none;
+    }
+
+    .loader-message {
+        animation: none;
+        opacity: 1;
+    }
+
+    /* Provide static visual feedback for reduced motion */
+    .paw-print {
+        opacity: 0.8;
+    }
+
+    .heart {
+        transform: scale(1.1);
+    }
+
+    .bone {
+        transform: rotate(45deg);
+    }
+
+    .dot {
+        opacity: 0.8;
+    }
+
+    .ring {
+        border-top-color: var(--loader-orange);
+        opacity: 0.7;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .loader-content {
+        border: 2px solid;
+        background: white;
+    }
+
+    .loader-message {
+        color: black;
+        font-weight: 600;
+    }
+
+    .dot {
+        background: black;
+        box-shadow: none;
+    }
+
+    .ring {
+        border-top-color: black;
+    }
+}
+
+/* Dark mode support (if implemented) */
+@media (prefers-color-scheme: dark) {
+    .loader-overlay {
+        background: rgba(29, 18, 12, 0.95);
+    }
+
+    .loader-content {
+        background: var(--loader-brown);
+        border-color: var(--loader-brown-light);
+        color: var(--loader-cream);
+    }
+
+    .loader-message {
+        color: var(--loader-cream);
+    }
+}
+
+/* Print styles */
+@media print {
+    .loader-container,
+    .loader-overlay {
+        display: none;
+    }
+}
+
+/* Focus management for accessibility */
+.loader-container[aria-hidden='true'] {
+    pointer-events: none;
+}
+
+/* Screen reader support */
+.loader-content::before {
+    content: attr(aria-label);
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Loading state announcements */
+.loader-container[role='status'] {
+    position: relative;
+}
+
+.loader-container[role='status']::after {
+    content: 'Loading content, please wait';
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
 }

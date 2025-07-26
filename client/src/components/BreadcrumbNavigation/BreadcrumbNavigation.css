@@ -1,0 +1,242 @@
+/* Import design system variables */
+@import '../../styles/variables.css';
+
+/* Pet-friendly Color Variables */
+:root {
+    --breadcrumb-text-color: var(--text-light, #888);
+    --breadcrumb-link-color: var(--text-light, #888);
+    --breadcrumb-link-hover: var(--primary-color, #ed6b2a);
+    --breadcrumb-current-color: var(--text-dark, #222);
+    --breadcrumb-separator-color: var(--text-light, #888);
+    --breadcrumb-bg: transparent;
+    --breadcrumb-border: var(--gray-200, #e5e7eb);
+    --breadcrumb-focus-color: var(--primary-color, #ed6b2a);
+    --breadcrumb-focus-outline: 2px solid var(--primary-color, #ed6b2a);
+}
+
+/* Main breadcrumb navigation container */
+.breadcrumb-navigation {
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    background: var(--breadcrumb-bg);
+    border-bottom: 1px solid var(--breadcrumb-border);
+}
+
+/* Breadcrumb list */
+.breadcrumb-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Individual breadcrumb items */
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--breadcrumb-text-color);
+}
+
+/* Breadcrumb links */
+.breadcrumb-link {
+    color: var(--breadcrumb-link-color);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    
+    /* Ensure minimum touch target size for accessibility */
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.breadcrumb-link:hover {
+    color: var(--breadcrumb-link-hover);
+    background-color: rgba(237, 107, 42, 0.1);
+    text-decoration: underline;
+}
+
+.breadcrumb-link:focus {
+    outline: var(--breadcrumb-focus-outline);
+    outline-offset: 2px;
+    color: var(--breadcrumb-focus-color);
+    background-color: rgba(237, 107, 42, 0.1);
+}
+
+/* Current page indicator */
+.breadcrumb-current {
+    color: var(--breadcrumb-current-color);
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: rgba(237, 107, 42, 0.1);
+}
+
+/* Separator styling */
+.breadcrumb-separator {
+    color: var(--breadcrumb-separator-color);
+    font-weight: 400;
+    user-select: none;
+    margin: 0 0.25rem;
+}
+
+/* Truncated items (for mobile) */
+.breadcrumb-truncated {
+    color: var(--breadcrumb-separator-color);
+    font-weight: 400;
+    user-select: none;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Current item styling */
+.breadcrumb-item.current .breadcrumb-current {
+    background-color: rgba(237, 107, 42, 0.15);
+    border: 1px solid rgba(237, 107, 42, 0.3);
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 640px) {
+    .breadcrumb-navigation {
+        padding: 0.5rem 0;
+        margin-bottom: 0.75rem;
+    }
+    
+    .breadcrumb-list {
+        font-size: 0.8125rem;
+        gap: 0.375rem;
+        overflow-x: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+        padding-bottom: 0.25rem;
+    }
+    
+    .breadcrumb-list::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+    
+    .breadcrumb-item {
+        flex-shrink: 0;
+        gap: 0.375rem;
+    }
+    
+    .breadcrumb-link,
+    .breadcrumb-current {
+        padding: 0.375rem 0.5rem;
+        white-space: nowrap;
+    }
+    
+    .breadcrumb-separator {
+        margin: 0 0.125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .breadcrumb-list {
+        font-size: 0.75rem;
+        gap: 0.25rem;
+    }
+    
+    .breadcrumb-link,
+    .breadcrumb-current {
+        padding: 0.25rem 0.375rem;
+        font-size: 0.75rem;
+    }
+    
+    .breadcrumb-separator {
+        font-size: 0.75rem;
+    }
+}
+
+/* Tablet responsive design */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .breadcrumb-navigation {
+        padding: 0.625rem 0;
+    }
+    
+    .breadcrumb-list {
+        font-size: 0.875rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .breadcrumb-link {
+        border: 1px solid transparent;
+    }
+    
+    .breadcrumb-link:hover,
+    .breadcrumb-link:focus {
+        border-color: currentColor;
+        background-color: transparent;
+    }
+    
+    .breadcrumb-current {
+        border: 1px solid currentColor;
+        background-color: transparent;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .breadcrumb-link {
+        transition: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    .breadcrumb-navigation {
+        border-bottom: 1px solid #000;
+        margin-bottom: 1rem;
+    }
+    
+    .breadcrumb-link {
+        color: #000;
+        text-decoration: underline;
+    }
+    
+    .breadcrumb-current {
+        color: #000;
+        font-weight: bold;
+        background-color: transparent;
+    }
+    
+    .breadcrumb-separator {
+        color: #000;
+    }
+}
+
+/* Focus visible for better keyboard navigation */
+.breadcrumb-link:focus-visible {
+    outline: var(--breadcrumb-focus-outline);
+    outline-offset: 2px;
+}
+
+/* Loading state (for future use) */
+.breadcrumb-navigation.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.breadcrumb-navigation.loading .breadcrumb-link {
+    cursor: not-allowed;
+}
+
+/* Error state (for future use) */
+.breadcrumb-navigation.error {
+    border-bottom-color: var(--red-500, #ef4444);
+}
+
+.breadcrumb-navigation.error .breadcrumb-current {
+    color: var(--red-500, #ef4444);
+}

@@ -7,6 +7,8 @@ import { addToCart } from '../../store/actions/cartActions';
 import { ADD_REVIEW_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
 import Notification from '../../components/Notification/Notification';
+import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
+import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import './ProductDetails.css';
 
@@ -15,6 +17,9 @@ const ProductDetails = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { t } = useTranslation('common');
+
+    // Breadcrumb hook
+    const { items: breadcrumbItems } = useBreadcrumb('product', productId);
 
     // State for cart quantity, review form, và variant selection
     const [quantity, setQuantity] = useState(1);
@@ -148,6 +153,12 @@ const ProductDetails = () => {
             ) : (
                 product && (
                     <>
+                        {/* Breadcrumb Navigation */}
+                        <BreadcrumbNavigation
+                            items={breadcrumbItems}
+                            ariaLabel={t('breadcrumb.productNavigation', 'Product navigation')}
+                        />
+
                         {/* --- Product Main Info --- */}
                         <div className="product-main-layout">
                             {/* Image Gallery */}

@@ -137,6 +137,8 @@ export const productQuerySchema = Joi.object({
     brand: Joi.string().trim().optional(),
     minPrice: Joi.number().positive().optional(),
     maxPrice: Joi.number().positive().optional(),
+    minRating: Joi.number().min(1).max(5).optional(), // Rating filter (1-5 stars)
+    maxRating: Joi.number().min(1).max(5).optional(), // Rating filter (1-5 stars)
     inStock: Joi.boolean().optional(),
     onSale: Joi.boolean().optional(),
     isFeatured: Joi.boolean().optional(),
