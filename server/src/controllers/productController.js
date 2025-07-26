@@ -36,9 +36,16 @@ class ProductController {
             } = value;
 
             const filter = { isPublished };
-            if (category) filter.category = category;
-            if (parentCategoryId) {
-                // Lấy tất cả category thuộc parentCategory
+
+            // Handle category filtering logic
+            if (category && parentCategoryId) {
+                // Nếu có cả category và parentCategoryId, ưu tiên category cụ thể
+                filter.category = category;
+            } else if (category) {
+                // Chỉ có category
+                filter.category = category;
+            } else if (parentCategoryId) {
+                // Chỉ có parentCategoryId, lấy tất cả category thuộc parentCategory
                 const categories = await Category.find({ parentCategory: parentCategoryId }).select('_id');
                 filter.category = { $in: categories.map((c) => c._id) };
             }
