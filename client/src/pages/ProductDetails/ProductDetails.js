@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductById } from '../../store/actions/productActions';
 import { getProductReviews, addProductReview } from '../../store/actions/reviewActions';
@@ -13,6 +13,7 @@ import './ProductDetails.css';
 const ProductDetails = () => {
     const { id: productId } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { t } = useTranslation('common');
 
     // State for cart quantity, review form, và variant selection
@@ -29,7 +30,7 @@ const ProductDetails = () => {
     const [addToCartError, setAddToCartError] = useState('');
 
     // Selectors for various parts of the state
-    const { userInfo } = useSelector((state) => state.auth);
+    const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
     const {
         currentProduct: product,
         productLoading,
@@ -103,6 +104,20 @@ const ProductDetails = () => {
     const displayStock = activeVariant ? activeVariant.stockQuantity : product?.stockQuantity;
 
     const addToCartHandler = () => {
+        // Check if user is authenticated
+        if (!isAuthenticated) {
+            // Show toast message and redirect to login
+            dispatch({
+                type: 'SHOW_TOAST',
+                payload: {
+                    message: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+                    type: 'warning',
+                },
+            });
+            navigate('/login');
+            return;
+        }
+
         setAddToCartError('');
         setAddToCartSuccess(false);
         // Dispatch the action and handle success/error

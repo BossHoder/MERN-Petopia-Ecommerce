@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './ProductCard.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/actions/cartActions';
 
 const ProductCard = ({ product }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { isAuthenticated } = useSelector((state) => state.auth);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('vi-VN', {
@@ -116,6 +118,21 @@ const ProductCard = ({ product }) => {
                 disabled={!product.inStock}
                 onClick={(e) => {
                     e.preventDefault();
+
+                    // Check if user is authenticated
+                    if (!isAuthenticated) {
+                        // Show toast message and redirect to login
+                        dispatch({
+                            type: 'SHOW_TOAST',
+                            payload: {
+                                message: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
+                                type: 'warning',
+                            },
+                        });
+                        navigate('/login');
+                        return;
+                    }
+
                     console.log('Add to cart product:', product); // Debug product object
                     dispatch(addToCart(product.id, 1));
                 }}

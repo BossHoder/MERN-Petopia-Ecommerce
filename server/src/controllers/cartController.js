@@ -27,6 +27,12 @@ const getCart = asyncHandler(async (req, res) => {
 // @access  Private
 const addItemToCart = asyncHandler(async (req, res) => {
     const { productId: productIdentifier, quantity } = req.body; // Rename for clarity
+
+    // Ensure user is authenticated
+    if (!req.user || !req.user.id) {
+        return validationErrorResponse(res, 'User authentication required');
+    }
+
     const userId = req.user.id;
 
     // Validate quantity
@@ -54,10 +60,38 @@ const addItemToCart = asyncHandler(async (req, res) => {
 
     if (!cart) {
         // If no cart, create a new one
-        cart = await Cart.create({
-            user: userId,
-            items: [{ product: product._id, quantity, price: product.price }],
-        });
+        try {
+            cart = await Cart.create({
+                user: userId,
+                items: [{ product: product._id, quantity, price: product.price }],
+            });
+        } catch (error) {
+            // Handle duplicate key error
+            if (error.code === 11000) {
+                // Cart already exists, try to find it again
+                cart = await Cart.findOne({ user: userId });
+                if (cart) {
+                    // Add item to existing cart
+                    const itemIndex = cart.items.findIndex(
+                        (item) => item.product.toString() === product._id.toString(),
+                    );
+                    if (itemIndex > -1) {
+                        const newQuantity = cart.items[itemIndex].quantity + quantity;
+                        if (product.stockQuantity < newQuantity) {
+                            return validationErrorResponse(res, ERROR_MESSAGES.NOT_ENOUGH_STOCK);
+                        }
+                        cart.items[itemIndex].quantity = newQuantity;
+                    } else {
+                        cart.items.push({ product: product._id, quantity, price: product.price });
+                    }
+                    await cart.save();
+                } else {
+                    throw error; // Re-throw if cart still not found
+                }
+            } else {
+                throw error; // Re-throw other errors
+            }
+        }
     } else {
         // If cart exists, find the item using the product's actual ObjectId
         const itemIndex = cart.items.findIndex((item) => item.product.toString() === product._id.toString());
