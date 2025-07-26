@@ -5,6 +5,7 @@ import {
     removeItemFromCart,
     updateItemQuantity,
     clearCart,
+    migrateGuestCart,
 } from '../../controllers/cartController.js';
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
 
@@ -14,6 +15,7 @@ const router = Router();
 router.use(requireJwtAuth);
 
 router.route('/').get(getCart).post(addItemToCart).delete(clearCart);
+router.route('/migrate').post(migrateGuestCart);
 
 router.route('/items/:productId').put(updateItemQuantity).delete(removeItemFromCart);
 

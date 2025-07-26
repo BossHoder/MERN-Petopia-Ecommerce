@@ -118,23 +118,8 @@ const ProductCard = ({ product }) => {
                 disabled={!product.inStock}
                 onClick={(e) => {
                     e.preventDefault();
-
-                    // Check if user is authenticated
-                    if (!isAuthenticated) {
-                        // Show toast message and redirect to login
-                        dispatch({
-                            type: 'SHOW_TOAST',
-                            payload: {
-                                message: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
-                                type: 'warning',
-                            },
-                        });
-                        navigate('/login');
-                        return;
-                    }
-
                     console.log('Add to cart product:', product); // Debug product object
-                    dispatch(addToCart(product.id, 1));
+                    dispatch(addToCart(product.id, 1, product));
                 }}
             >
                 {/* Shopping cart SVG */}

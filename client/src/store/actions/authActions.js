@@ -83,6 +83,10 @@ export const loginUserWithEmail = (formData, history) => async (dispatch, getSta
         // Load user data sau khi login thành công
         dispatch(loadMe());
 
+        // Migrate guest cart if exists
+        const { migrateGuestCart } = await import('./cartActions');
+        dispatch(migrateGuestCart());
+
         // Navigate với React Router v6
         dispatch({
             type: 'SHOW_TOAST',

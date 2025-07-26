@@ -12,21 +12,18 @@ const Cart = () => {
     const navigate = useNavigate();
     const { t } = useTranslation('common');
 
-    const { me: userInfo, appLoaded } = useSelector((state) => state.auth); // Lấy thêm appLoaded
+    const { me: userInfo, appLoaded } = useSelector((state) => state.auth);
     const { items, loading, error } = useSelector((state) => state.cart);
 
-    // Thêm log debug userInfo
+    // Debug log
     console.log('userInfo in Cart:', userInfo, 'appLoaded:', appLoaded);
 
     useEffect(() => {
         if (appLoaded) {
-            if (!userInfo) {
-                navigate('/login');
-            } else {
-                dispatch(getCart());
-            }
+            // Always load cart regardless of authentication status
+            dispatch(getCart());
         }
-    }, [dispatch, navigate, userInfo, appLoaded]);
+    }, [dispatch, appLoaded]);
 
     const handleQuantityChange = (productId, quantity) => {
         if (quantity <= 0) {

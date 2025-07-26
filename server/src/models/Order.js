@@ -14,10 +14,12 @@ const OrderItemSchema = new Schema({
 });
 
 const ShippingAddressSchema = new Schema({
-    address: { type: String },
+    address: { type: String, required: true },
     city: { type: String },
     postalCode: { type: String },
     country: { type: String },
+    phoneNumber: { type: String, required: true },
+    fullName: { type: String },
 });
 
 const PaymentResultSchema = new Schema({
@@ -31,8 +33,17 @@ const OrderSchema = new Schema(
     {
         user: {
             type: Schema.Types.ObjectId,
-            required: true,
+            required: false, // Allow null for guest orders
             ref: 'User',
+        },
+        guestInfo: {
+            email: { type: String },
+            fullName: { type: String },
+            phoneNumber: { type: String },
+        },
+        isGuestOrder: {
+            type: Boolean,
+            default: false,
         },
         orderNumber: {
             type: String,

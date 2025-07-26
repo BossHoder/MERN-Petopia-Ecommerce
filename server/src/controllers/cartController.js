@@ -187,4 +187,58 @@ const clearCart = asyncHandler(async (req, res) => {
     }
 });
 
-export { getCart, addItemToCart, removeItemFromCart, updateItemQuantity, clearCart };
+// @desc    Migrate guest cart to authenticated user cart
+// @route   POST /api/cart/migrate
+// @access  Private
+const migrateGuestCart = asyncHandler(async (req, res) => {
+    const { items } = req.body;
+    const userId = req.user.id;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return successResponse(res, { message: 'No items to migrate' });
+    }
+
+    // Find or create user cart
+    let cart = await Cart.findOne({ user: userId });
+    if (!cart) {
+        cart = new Cart({ user: userId, items: [] });
+    }
+
+    // Migrate each item from guest cart
+    for (const guestItem of items) {
+        const { productId, quantity, price } = guestItem;
+
+        // Validate product exists
+        const product = await Product.findById(productId);
+        if (!product) {
+            continue; // Skip invalid products
+        }
+
+        // Check if item already exists in user cart
+        const existingItemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+
+        if (existingItemIndex > -1) {
+            // Update existing item quantity
+            const newQuantity = cart.items[existingItemIndex].quantity + quantity;
+            if (product.stockQuantity >= newQuantity) {
+                cart.items[existingItemIndex].quantity = newQuantity;
+            }
+        } else {
+            // Add new item if stock is available
+            if (product.stockQuantity >= quantity) {
+                cart.items.push({
+                    product: productId,
+                    quantity,
+                    price: product.price, // Use current price
+                });
+            }
+        }
+    }
+
+    await cart.save();
+    await cart.populate('items.product', 'name price image slug');
+
+    return successResponse(res, cart);
+});
+
+export { getCart, addItemToCart, removeItemFromCart, updateItemQuantity, clearCart, migrateGuestCart };

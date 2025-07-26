@@ -12,7 +12,8 @@ import {
 } from '../../store/actions/checkoutActions';
 import { ORDER_CREATE_RESET } from '../../store/types';
 import Loader from '../../components/Loader/Loader';
-import Notification from '../../components/Notification/Notification'; // Sửa import
+import Notification from '../../components/Notification/Notification';
+import GuestCheckoutForm from '../../components/GuestCheckoutForm/GuestCheckoutForm';
 import { useTranslation } from 'react-i18next';
 import './Checkout.css';
 
@@ -26,10 +27,16 @@ const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [shippingAddress, setShippingAddress] = useState({
         address: '',
-        phone: '',
+        phoneNumber: '',
+    });
+    const [guestInfo, setGuestInfo] = useState({
+        fullName: '',
+        email: '',
+        phoneNumber: '',
     });
 
     const { me: userInfo } = useSelector((state) => state.auth);
+    const isAuthenticated = userInfo && userInfo.id;
     const { items: cartItems } = useSelector((state) => state.cart);
     const { addresses, loading: addressLoading } = useSelector((state) => state.address);
     const {
@@ -100,11 +107,23 @@ const Checkout = () => {
         setShippingAddress(addr);
     };
 
+    const handleGuestInfoSubmit = (guestData) => {
+        setGuestInfo(guestData);
+        setShippingAddress({
+            address: guestData.address,
+            phoneNumber: guestData.phoneNumber,
+            city: guestData.city,
+            fullName: guestData.fullName,
+        });
+        setStep(2);
+        dispatch(updateCheckoutStep(2));
+    };
+
     const submitAddressHandler = (e) => {
         e.preventDefault();
 
-        // Validate that user has at least one saved address
-        if (!addresses || addresses.length === 0) {
+        // For authenticated users, validate that they have at least one saved address
+        if (isAuthenticated && (!addresses || addresses.length === 0)) {
             // Preserve current checkout state in Redux
             dispatch(
                 preserveCheckoutState({
@@ -141,8 +160,8 @@ const Checkout = () => {
             return;
         }
 
-        // Validate that a shipping address is selected
-        if (!shippingAddress.address || !shippingAddress.phoneNumber) {
+        // For authenticated users, validate that a shipping address is selected
+        if (isAuthenticated && (!shippingAddress.address || !shippingAddress.phoneNumber)) {
             dispatch({
                 type: 'SHOW_TOAST',
                 payload: {
@@ -156,6 +175,7 @@ const Checkout = () => {
             return;
         }
 
+        // For guest users, the address validation is handled in the guest form
         setStep(2);
         dispatch(updateCheckoutStep(2));
     };
@@ -171,17 +191,22 @@ const Checkout = () => {
             alert('Your cart is empty. Cannot place order.');
             return;
         }
-        dispatch(
-            createOrder({
-                orderItems: cartItems,
-                shippingAddress,
-                paymentMethod,
-                itemsPrice,
-                shippingPrice,
-                taxPrice,
-                totalPrice,
-            }),
-        );
+        const orderData = {
+            orderItems: cartItems,
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+        };
+
+        // Add guest info if user is not authenticated
+        if (!isAuthenticated) {
+            orderData.guestInfo = guestInfo;
+        }
+
+        dispatch(createOrder(orderData));
     };
 
     return (
@@ -205,76 +230,88 @@ const Checkout = () => {
                     {step === 1 && (
                         <div>
                             <h2>{t('checkout.shippingAddress', 'Shipping Address')}</h2>
-                            {addressLoading && <Loader />}
-                            {addresses && addresses.length > 0 ? (
-                                <div className="saved-addresses">
-                                    <h3>
-                                        {t(
-                                            'checkout.selectSavedAddress',
-                                            'Select a saved address:',
-                                        )}
-                                    </h3>
-                                    {addresses.map((addr) => (
-                                        <div
-                                            key={addr._id}
-                                            className="saved-address"
-                                            onClick={() => handleSelectSavedAddress(addr)}
-                                        >
-                                            <div>
-                                                <span>Địa chỉ: </span>
-                                                {addr.address}
-                                            </div>
-                                            <div>
-                                                <span>Số điện thoại: </span>
-                                                {addr.phoneNumber}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+
+                            {!isAuthenticated ? (
+                                // Guest checkout form
+                                <GuestCheckoutForm
+                                    onSubmit={handleGuestInfoSubmit}
+                                    initialData={guestInfo}
+                                />
                             ) : (
-                                !addressLoading && (
-                                    <div className="no-addresses-message">
-                                        <span className="icon">📍</span>
-                                        <div className="message">
-                                            {t(
-                                                'checkout.noAddresses.title',
-                                                'No shipping addresses found',
-                                            )}
+                                // Authenticated user address selection
+                                <>
+                                    {addressLoading && <Loader />}
+                                    {addresses && addresses.length > 0 ? (
+                                        <div className="saved-addresses">
+                                            <h3>
+                                                {t(
+                                                    'checkout.selectSavedAddress',
+                                                    'Select a saved address:',
+                                                )}
+                                            </h3>
+                                            {addresses.map((addr) => (
+                                                <div
+                                                    key={addr._id}
+                                                    className="saved-address"
+                                                    onClick={() => handleSelectSavedAddress(addr)}
+                                                >
+                                                    <div>
+                                                        <span>Địa chỉ: </span>
+                                                        {addr.address}
+                                                    </div>
+                                                    <div>
+                                                        <span>Số điện thoại: </span>
+                                                        {addr.phoneNumber}
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
-                                        <div className="sub-message">
-                                            {t(
-                                                'checkout.noAddresses.description',
-                                                'You need to add a shipping address before you can complete your order.',
-                                            )}
+                                    ) : (
+                                        !addressLoading && (
+                                            <div className="no-addresses-message">
+                                                <span className="icon">📍</span>
+                                                <div className="message">
+                                                    {t(
+                                                        'checkout.noAddresses.title',
+                                                        'No shipping addresses found',
+                                                    )}
+                                                </div>
+                                                <div className="sub-message">
+                                                    {t(
+                                                        'checkout.noAddresses.description',
+                                                        'You need to add a shipping address before you can complete your order.',
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+                                    <form onSubmit={submitAddressHandler}>
+                                        <div className="form-group">
+                                            <label>{t('checkout.address', 'Address')}</label>
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                value={shippingAddress.address}
+                                                onChange={handleAddressChange}
+                                                required
+                                                readOnly
+                                            />
+                                            <label>{t('checkout.phone', 'Phone')}</label>
+                                            <input
+                                                type="text"
+                                                name="phone"
+                                                value={shippingAddress.phoneNumber}
+                                                onChange={handleAddressChange}
+                                                required
+                                                readOnly
+                                            />
                                         </div>
-                                    </div>
-                                )
+                                        <button type="submit" className="btn btn-primary">
+                                            {t('checkout.continue', 'Continue')}
+                                        </button>
+                                    </form>
+                                </>
                             )}
-                            <form onSubmit={submitAddressHandler}>
-                                <div className="form-group">
-                                    <label>{t('checkout.address', 'Address')}</label>
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        value={shippingAddress.address}
-                                        onChange={handleAddressChange}
-                                        required
-                                        readOnly
-                                    />
-                                    <label>{t('checkout.phone', 'Phone')}</label>
-                                    <input
-                                        type="text"
-                                        name="phone"
-                                        value={shippingAddress.phoneNumber}
-                                        onChange={handleAddressChange}
-                                        required
-                                        readOnly
-                                    />
-                                </div>
-                                <button type="submit" className="btn btn-primary">
-                                    {t('checkout.continue', 'Continue')}
-                                </button>
-                            </form>
                         </div>
                     )}
 

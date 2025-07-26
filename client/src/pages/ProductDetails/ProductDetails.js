@@ -104,24 +104,10 @@ const ProductDetails = () => {
     const displayStock = activeVariant ? activeVariant.stockQuantity : product?.stockQuantity;
 
     const addToCartHandler = () => {
-        // Check if user is authenticated
-        if (!isAuthenticated) {
-            // Show toast message and redirect to login
-            dispatch({
-                type: 'SHOW_TOAST',
-                payload: {
-                    message: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng',
-                    type: 'warning',
-                },
-            });
-            navigate('/login');
-            return;
-        }
-
         setAddToCartError('');
         setAddToCartSuccess(false);
         // Dispatch the action and handle success/error
-        dispatch(addToCart(productId, quantity))
+        dispatch(addToCart(productId, quantity, product))
             .then(() => {
                 setAddToCartSuccess(true);
                 // Hide the success message after 3 seconds

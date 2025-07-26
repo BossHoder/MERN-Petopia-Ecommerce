@@ -11,9 +11,11 @@ import requireAdmin from '../../middleware/requireAdmin.js';
 
 const router = Router();
 
-router.use(requireJwtAuth);
-
+// Create order route - allow both authenticated and guest users
 router.route('/').post(createOrder);
+
+// Protected routes - require authentication
+router.use(requireJwtAuth);
 
 router.route('/myorders').get(getMyOrders);
 

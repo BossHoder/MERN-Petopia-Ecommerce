@@ -11,22 +11,32 @@ import {
 
 // @desc    Create new order
 // @route   POST /api/orders
-// @access  Private
+// @access  Public (supports both authenticated and guest users)
 const createOrder = asyncHandler(async (req, res) => {
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice } = req.body;
+    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, guestInfo } =
+        req.body;
 
     if (!orderItems || orderItems.length === 0) {
         return validationErrorResponse(res, ERROR_MESSAGES.NO_ORDER_ITEMS);
     }
 
+    // Validate shipping address for both authenticated and guest users
+    if (!shippingAddress || !shippingAddress.address || !shippingAddress.phoneNumber) {
+        return validationErrorResponse(res, 'Shipping address and phone number are required');
+    }
+
+    const isGuestOrder = !req.user;
+
     const order = new Order({
-        user: req.user.id,
+        user: isGuestOrder ? null : req.user.id,
+        isGuestOrder,
+        guestInfo: isGuestOrder ? guestInfo : null,
         orderItems: orderItems.map((item) => ({
             name: item.product.name,
             quantity: item.quantity,
             image: item.product.images && item.product.images.length > 0 ? item.product.images[0] : '/placeholder.jpg',
             price: item.price,
-            product: item.product._id, // Sửa ở đây
+            product: item.product._id,
         })),
         shippingAddress,
         paymentMethod,
