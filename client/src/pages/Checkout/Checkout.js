@@ -58,7 +58,7 @@ const Checkout = () => {
     const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
     useEffect(() => {
-        // ProtectedRoute đã xử lý authentication, chỉ cần xử lý business logic
+        // Handle checkout business logic for both authenticated and guest users
 
         // Nếu tạo đơn hàng thành công, reset state và chuyển đến trang chi tiết đơn hàng
         if (success) {
@@ -73,9 +73,11 @@ const Checkout = () => {
             return;
         }
 
-        // Lấy danh sách địa chỉ đã lưu
-        dispatch(getAddresses());
-    }, [navigate, dispatch, success, order, cartItems, orderLoading]);
+        // Lấy danh sách địa chỉ đã lưu (chỉ cho authenticated users)
+        if (isAuthenticated) {
+            dispatch(getAddresses());
+        }
+    }, [navigate, dispatch, success, order, cartItems, orderLoading, isAuthenticated]);
 
     // Initialize state from Redux if available
     useEffect(() => {
