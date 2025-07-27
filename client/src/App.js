@@ -15,6 +15,9 @@ import Users from './pages/Users/Users';
 import Admin from './pages/Admin/Admin';
 import AdminLayout from './components/Admin/AdminLayout/AdminLayout'; // Import AdminLayout
 import Dashboard from './pages/Admin/Dashboard/Dashboard'; // Import Dashboard
+import ParentCategories from './pages/Admin/ParentCategories/ParentCategories'; // Import ParentCategories
+import Categories from './pages/Admin/Categories/Categories'; // Import Categories
+import AdminProducts from './pages/Admin/Products/Products'; // Import Admin Products
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
@@ -88,12 +91,10 @@ const App = () => {
                         <Route index element={<Dashboard />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="users" element={<Users />} />
-                        <Route path="products" element={<div>Admin Products - Coming Soon</div>} />
+                        <Route path="parentcategories" element={<ParentCategories />} />
+                        <Route path="categories" element={<Categories />} />
+                        <Route path="products" element={<AdminProducts />} />
                         <Route path="orders" element={<div>Admin Orders - Coming Soon</div>} />
-                        <Route
-                            path="categories"
-                            element={<div>Admin Categories - Coming Soon</div>}
-                        />
                         <Route
                             path="analytics"
                             element={<div>Admin Analytics - Coming Soon</div>}

@@ -1,0 +1,286 @@
+/* Attributes Manager Styles */
+.attributes-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.attributes-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #1F2937);
+    margin-bottom: 16px;
+}
+
+.attributes-error {
+    font-size: 12px;
+    color: var(--danger, #DC2626);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: var(--danger-light, #FEE2E2);
+    border-radius: 6px;
+    border: 1px solid var(--danger, #DC2626);
+}
+
+/* Attributes Grid */
+.attributes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.attribute-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.attribute-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #1F2937);
+}
+
+.attribute-input,
+.attribute-select {
+    padding: 10px 12px;
+    border: 1px solid var(--border-light, #E5E7EB);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--bg-white, #FFFFFF);
+    transition: border-color 0.2s ease;
+}
+
+.attribute-input:focus,
+.attribute-select:focus {
+    outline: none;
+    border-color: var(--brand-orange, #FF6B35);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.attribute-input::placeholder {
+    color: var(--text-secondary, #6B7280);
+}
+
+/* Dimensions Section */
+.dimensions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-gray-50, #F9FAFB);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #E5E7EB);
+}
+
+.dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.dimension-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dimension-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary, #6B7280);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dimension-input {
+    padding: 8px 10px;
+    border: 1px solid var(--border-light, #E5E7EB);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--bg-white, #FFFFFF);
+    transition: border-color 0.2s ease;
+}
+
+.dimension-input:focus {
+    outline: none;
+    border-color: var(--brand-orange, #FF6B35);
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+/* Custom Attributes Section */
+.custom-attributes-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-white, #FFFFFF);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #E5E7EB);
+}
+
+.custom-attributes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.add-attribute-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--brand-orange, #FF6B35);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-attribute-btn:hover {
+    background: var(--brand-orange-dark, #E55A2B);
+}
+
+.custom-attribute-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    background: var(--bg-gray-50, #F9FAFB);
+    border-radius: 6px;
+    border: 1px solid var(--border-light, #E5E7EB);
+}
+
+.custom-attribute-key,
+.custom-attribute-value {
+    padding: 8px 10px;
+    border: 1px solid var(--border-light, #E5E7EB);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--bg-white, #FFFFFF);
+    transition: border-color 0.2s ease;
+}
+
+.custom-attribute-key:focus,
+.custom-attribute-value:focus {
+    outline: none;
+    border-color: var(--brand-orange, #FF6B35);
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+.custom-attribute-key::placeholder,
+.custom-attribute-value::placeholder {
+    color: var(--text-secondary, #6B7280);
+    font-size: 12px;
+}
+
+.remove-attribute-btn {
+    width: 28px;
+    height: 28px;
+    background: var(--danger, #DC2626);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-attribute-btn:hover {
+    background: var(--danger-dark, #B91C1C);
+}
+
+.no-custom-attributes {
+    text-align: center;
+    padding: 16px;
+    color: var(--text-secondary, #6B7280);
+    font-style: italic;
+}
+
+.no-custom-attributes p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .attributes-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .dimensions-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .custom-attributes-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .add-attribute-btn {
+        justify-content: center;
+    }
+
+    .custom-attribute-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .remove-attribute-btn {
+        justify-self: end;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Focus and Accessibility */
+.add-attribute-btn:focus,
+.remove-attribute-btn:focus {
+    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline-offset: 2px;
+}
+
+/* Animation for new custom attributes */
+.custom-attribute-row {
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Validation states */
+.attribute-input.error,
+.attribute-select.error,
+.dimension-input.error,
+.custom-attribute-key.error,
+.custom-attribute-value.error {
+    border-color: var(--danger, #DC2626);
+    background: var(--danger-light, #FEE2E2);
+}
+
+.attribute-input.success,
+.attribute-select.success,
+.dimension-input.success {
+    border-color: var(--success, #10B981);
+    background: var(--success-light, #D1FAE5);
+}

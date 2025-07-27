@@ -2,6 +2,7 @@ import { Router } from 'express';
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
 import requireAdmin from '../../middleware/requireAdmin.js';
 import adminController from '../../controllers/adminController.js';
+import upload from '../../utils/uploadConfig.js';
 
 const router = Router();
 
@@ -41,15 +42,30 @@ router.get('/users/:id', adminController.getUserDetails);
 
 // Products Management (Enhanced)
 router.get('/products', adminController.getAllProductsAdmin);
+router.get('/products/:id', adminController.getProductById);
+router.post('/products', upload.array('images', 5), adminController.createProduct);
+router.put('/products/:id', upload.array('images', 5), adminController.updateProduct);
+router.delete('/products/:id', adminController.deleteProduct);
+router.post('/products/bulk-delete', adminController.bulkDeleteProducts);
 router.post('/products/bulk-update', adminController.bulkUpdateProducts);
 router.put('/products/:id/featured', adminController.toggleProductFeatured);
 router.put('/products/:id/publish', adminController.toggleProductPublish);
 
+// Parent Categories Management
+router.get('/parent-categories', adminController.getAllParentCategoriesAdmin);
+router.get('/parent-categories/:id', adminController.getParentCategoryById);
+router.post('/parent-categories', adminController.createParentCategory);
+router.put('/parent-categories/:id', adminController.updateParentCategory);
+router.delete('/parent-categories/:id', adminController.deleteParentCategory);
+router.post('/parent-categories/bulk-delete', adminController.bulkDeleteParentCategories);
+
 // Categories Management
 router.get('/categories', adminController.getAllCategoriesAdmin);
+router.get('/categories/:id', adminController.getCategoryById);
 router.post('/categories', adminController.createCategory);
 router.put('/categories/:id', adminController.updateCategory);
 router.delete('/categories/:id', adminController.deleteCategory);
+router.post('/categories/bulk-delete', adminController.bulkDeleteCategories);
 
 // System Settings
 router.get('/settings', adminController.getSystemSettings);

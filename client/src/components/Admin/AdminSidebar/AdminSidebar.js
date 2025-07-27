@@ -16,7 +16,7 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
         },
         {
             id: 'products',
-            label: t('admin.products', 'Products'),
+            label: t('admin.products.title', 'Products'),
             path: '/admin/products',
             icon: '🛍️',
         },
@@ -33,8 +33,14 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
             icon: '👥',
         },
         {
+            id: 'parentcategories',
+            label: t('admin.parentCategories.title', 'Parent Categories'),
+            path: '/admin/parentcategories',
+            icon: '📁',
+        },
+        {
             id: 'categories',
-            label: t('admin.categories', 'Categories'),
+            label: t('admin.categories.title', 'Categories'),
             path: '/admin/categories',
             icon: '📂',
         },

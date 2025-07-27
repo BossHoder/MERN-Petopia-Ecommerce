@@ -1,0 +1,154 @@
+/* Admin Pagination Styles */
+.admin-pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid var(--border-light, #E5E7EB);
+    margin-top: 24px;
+}
+
+.admin-pagination-info {
+    display: flex;
+    align-items: center;
+}
+
+.admin-pagination-text {
+    font-size: 14px;
+    color: var(--text-secondary, #6B7280);
+    font-weight: 500;
+}
+
+.admin-pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-pagination-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-white, #FFFFFF);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-primary, #1F2937);
+}
+
+.admin-pagination-arrow:hover:not(:disabled) {
+    background: var(--bg-gray-50, #F9FAFB);
+    border-color: var(--border-gray-300, #D1D5DB);
+}
+
+.admin-pagination-arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--bg-gray-100, #F3F4F6);
+}
+
+.admin-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px;
+}
+
+.admin-pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-white, #FFFFFF);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #1F2937);
+}
+
+.admin-pagination-btn:hover {
+    background: var(--bg-gray-50, #F9FAFB);
+    border-color: var(--border-gray-300, #D1D5DB);
+}
+
+.admin-pagination-btn.active {
+    background: var(--brand-orange, #FF6B35);
+    border-color: var(--brand-orange, #FF6B35);
+    color: white;
+}
+
+.admin-pagination-btn.active:hover {
+    background: var(--brand-orange-dark, #E55A2B);
+    border-color: var(--brand-orange-dark, #E55A2B);
+}
+
+.admin-pagination-ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    font-size: 14px;
+    color: var(--text-secondary, #6B7280);
+    font-weight: 500;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .admin-pagination-container {
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .admin-pagination-info {
+        order: 2;
+    }
+
+    .admin-pagination-nav {
+        order: 1;
+    }
+
+    .admin-pagination-text {
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .admin-pagination-arrow,
+    .admin-pagination-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .admin-pagination-pages {
+        gap: 2px;
+        margin: 0 4px;
+    }
+}
+
+/* Pet-friendly styling */
+.admin-pagination-container {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Focus states for accessibility */
+.admin-pagination-arrow:focus,
+.admin-pagination-btn:focus {
+    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline-offset: 2px;
+}
+
+/* Loading state */
+.admin-pagination-container.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}

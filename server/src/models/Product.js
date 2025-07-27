@@ -88,14 +88,14 @@ const productSchema = new mongoose.Schema(
             ref: 'Category',
             required: true,
             // Check if category actually exists
-            validate: {
-                validator: async function (v) {
-                    const Category = mongoose.model('Category');
-                    const category = await Category.findById(v);
-                    return !!category;
-                },
-                message: 'Category does not exist',
-            },
+            // validate: {
+            //     validator: async function (v) {
+            //         const Category = mongoose.model('Category');
+            //         const category = await Category.findById(v);
+            //         return !!category;
+            //     },
+            //     message: 'Category does not exist',
+            // },
         },
         stockQuantity: {
             type: Number,

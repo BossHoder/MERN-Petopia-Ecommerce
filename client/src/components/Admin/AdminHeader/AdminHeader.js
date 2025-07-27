@@ -50,6 +50,15 @@ const AdminHeader = ({ onToggleSidebar, sidebarCollapsed }) => {
             </div>
 
             <div className="header-right">
+                {/* Notifications */}
+                <button
+                    className="notification-btn"
+                    aria-label={t('admin.notifications', 'Notifications')}
+                >
+                    <span className="notification-icon">🔔</span>
+                    <span className="notification-badge">3</span>
+                </button>
+
                 {/* User Menu */}
                 <div className="user-menu" ref={userMenuRef}>
                     <button

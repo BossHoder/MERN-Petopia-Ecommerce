@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import Category from '../models/Category.js';
+import ParentCategory from '../models/parentCategory.js';
 
 // ===========================================
 // DASHBOARD CONTROLLERS
@@ -289,9 +290,189 @@ export default {
     getUserDetails: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'User details retrieved successfully');
     }),
+    // ===========================================
+    // PRODUCTS MANAGEMENT
+    // ===========================================
     getAllProductsAdmin: asyncHandler(async (req, res) => {
-        return successResponse(res, [], 'Products retrieved successfully');
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search;
+        const sortBy = req.query.sortBy || 'createdAt';
+        const sortOrder = req.query.sortOrder || 'desc';
+
+        let query = {};
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+                { sku: { $regex: search, $options: 'i' } },
+            ];
+        }
+
+        const skip = (page - 1) * limit;
+        const sortOptions = {};
+        sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+        const [products, totalProducts] = await Promise.all([
+            Product.find(query).populate('category', 'name').sort(sortOptions).skip(skip).limit(limit),
+            Product.countDocuments(query),
+        ]);
+
+        // Map stockQuantity to stock for frontend compatibility
+        const mappedProducts = products.map((product) => ({
+            ...product.toObject(),
+            stock: product.stockQuantity,
+        }));
+
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        return successResponse(
+            res,
+            {
+                products: mappedProducts,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalProducts,
+                    hasNext: page < totalPages,
+                    hasPrev: page > 1,
+                },
+            },
+            'Products retrieved successfully',
+        );
     }),
+
+    getProductById: asyncHandler(async (req, res) => {
+        const product = await Product.findById(req.params.id).populate('category', 'name');
+
+        if (!product) {
+            return errorResponse(res, 'Product not found', 404);
+        }
+
+        // Map stockQuantity to stock for frontend compatibility
+        const mappedProduct = {
+            ...product.toObject(),
+            stock: product.stockQuantity,
+        };
+
+        return successResponse(res, { product: mappedProduct }, 'Product retrieved successfully');
+    }),
+
+    createProduct: asyncHandler(async (req, res) => {
+        // Parse JSON fields
+        if (req.body.attributes && typeof req.body.attributes === 'string') {
+            req.body.attributes = JSON.parse(req.body.attributes);
+        }
+        if (req.body.variants && typeof req.body.variants === 'string') {
+            req.body.variants = JSON.parse(req.body.variants);
+        }
+
+        // Generate slug if not provided
+        if (!req.body.slug && req.body.name) {
+            req.body.slug = req.body.name
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+        }
+
+        // Handle images
+        let images = [];
+
+        // Add existing images if provided
+        if (req.body.existingImages && typeof req.body.existingImages === 'string') {
+            const existingImages = JSON.parse(req.body.existingImages);
+            images = [...existingImages];
+        }
+
+        // Add new uploaded images
+        if (req.files && req.files.length > 0) {
+            const newImages = req.files.map((file) => `/public/images/${file.filename}`);
+            images = [...images, ...newImages];
+        }
+
+        req.body.images = images;
+
+        const product = new Product(req.body);
+        await product.save();
+        await product.populate('category', 'name');
+        return successResponse(res, { product }, 'Product created successfully');
+    }),
+
+    updateProduct: asyncHandler(async (req, res) => {
+        // Parse JSON fields
+        if (req.body.attributes && typeof req.body.attributes === 'string') {
+            req.body.attributes = JSON.parse(req.body.attributes);
+        }
+        if (req.body.variants && typeof req.body.variants === 'string') {
+            req.body.variants = JSON.parse(req.body.variants);
+        }
+
+        // Generate slug if not provided but name is changed
+        if (!req.body.slug && req.body.name) {
+            req.body.slug = req.body.name
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .trim();
+        }
+
+        // Handle images
+        let images = [];
+
+        // Add existing images if provided
+        if (req.body.existingImages && typeof req.body.existingImages === 'string') {
+            const existingImages = JSON.parse(req.body.existingImages);
+            images = [...existingImages];
+        }
+
+        // Add new uploaded images
+        if (req.files && req.files.length > 0) {
+            const newImages = req.files.map((file) => `/public/images/${file.filename}`);
+            images = [...images, ...newImages];
+        }
+
+        // Only update images if we have new data
+        if (images.length > 0 || req.body.existingImages) {
+            req.body.images = images;
+        }
+
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        }).populate('category', 'name');
+
+        if (!product) {
+            return errorResponse(res, 'Product not found', 404);
+        }
+
+        return successResponse(res, { product }, 'Product updated successfully');
+    }),
+
+    deleteProduct: asyncHandler(async (req, res) => {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return errorResponse(res, 'Product not found', 404);
+        }
+
+        await Product.findByIdAndDelete(req.params.id);
+        return successResponse(res, {}, 'Product deleted successfully');
+    }),
+
+    bulkDeleteProducts: asyncHandler(async (req, res) => {
+        const { ids } = req.body;
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return errorResponse(res, 'Invalid product IDs', 400);
+        }
+
+        const result = await Product.deleteMany({ _id: { $in: ids } });
+        return successResponse(res, { deletedCount: result.deletedCount }, 'Products deleted successfully');
+    }),
+
     bulkUpdateProducts: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'Products updated successfully');
     }),
@@ -301,17 +482,221 @@ export default {
     toggleProductPublish: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'Product publish status updated successfully');
     }),
+    // ===========================================
+    // PARENT CATEGORIES MANAGEMENT
+    // ===========================================
+    getAllParentCategoriesAdmin: asyncHandler(async (req, res) => {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search;
+        const sortBy = req.query.sortBy || 'createdAt';
+        const sortOrder = req.query.sortOrder || 'desc';
+
+        let query = {};
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+            ];
+        }
+
+        const skip = (page - 1) * limit;
+        const sortOptions = {};
+        sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+        const [parentCategories, totalParentCategories] = await Promise.all([
+            ParentCategory.find(query).sort(sortOptions).skip(skip).limit(limit),
+            ParentCategory.countDocuments(query),
+        ]);
+
+        const totalPages = Math.ceil(totalParentCategories / limit);
+
+        return successResponse(
+            res,
+            {
+                parentCategories,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalParentCategories,
+                    hasNext: page < totalPages,
+                    hasPrev: page > 1,
+                },
+            },
+            'Parent categories retrieved successfully',
+        );
+    }),
+
+    getParentCategoryById: asyncHandler(async (req, res) => {
+        const parentCategory = await ParentCategory.findById(req.params.id);
+
+        if (!parentCategory) {
+            return errorResponse(res, 'Parent category not found', 404);
+        }
+
+        return successResponse(res, { parentCategory }, 'Parent category retrieved successfully');
+    }),
+
+    createParentCategory: asyncHandler(async (req, res) => {
+        const parentCategory = new ParentCategory(req.body);
+        await parentCategory.save();
+        return successResponse(res, { parentCategory }, 'Parent category created successfully');
+    }),
+
+    updateParentCategory: asyncHandler(async (req, res) => {
+        const parentCategory = await ParentCategory.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!parentCategory) {
+            return errorResponse(res, 'Parent category not found', 404);
+        }
+
+        return successResponse(res, { parentCategory }, 'Parent category updated successfully');
+    }),
+
+    deleteParentCategory: asyncHandler(async (req, res) => {
+        const parentCategory = await ParentCategory.findById(req.params.id);
+
+        if (!parentCategory) {
+            return errorResponse(res, 'Parent category not found', 404);
+        }
+
+        // Check if there are categories under this parent category
+        const categoriesCount = await Category.countDocuments({ parentCategory: req.params.id });
+        if (categoriesCount > 0) {
+            return errorResponse(res, 'Cannot delete parent category with existing categories', 400);
+        }
+
+        await ParentCategory.findByIdAndDelete(req.params.id);
+        return successResponse(res, {}, 'Parent category deleted successfully');
+    }),
+
+    bulkDeleteParentCategories: asyncHandler(async (req, res) => {
+        const { ids } = req.body;
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return errorResponse(res, 'Invalid parent category IDs', 400);
+        }
+
+        // Check if any parent categories have categories
+        const categoriesCount = await Category.countDocuments({ parentCategory: { $in: ids } });
+        if (categoriesCount > 0) {
+            return errorResponse(res, 'Cannot delete parent categories with existing categories', 400);
+        }
+
+        const result = await ParentCategory.deleteMany({ _id: { $in: ids } });
+        return successResponse(res, { deletedCount: result.deletedCount }, 'Parent categories deleted successfully');
+    }),
+
+    // ===========================================
+    // CATEGORIES MANAGEMENT
+    // ===========================================
     getAllCategoriesAdmin: asyncHandler(async (req, res) => {
-        return successResponse(res, [], 'Categories retrieved successfully');
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const search = req.query.search;
+        const sortBy = req.query.sortBy || 'createdAt';
+        const sortOrder = req.query.sortOrder || 'desc';
+
+        let query = {};
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+            ];
+        }
+
+        const skip = (page - 1) * limit;
+        const sortOptions = {};
+        sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+        const [categories, totalCategories] = await Promise.all([
+            Category.find(query).populate('parentCategory', 'name').sort(sortOptions).skip(skip).limit(limit),
+            Category.countDocuments(query),
+        ]);
+
+        const totalPages = Math.ceil(totalCategories / limit);
+
+        return successResponse(
+            res,
+            {
+                categories,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalCategories,
+                    hasNext: page < totalPages,
+                    hasPrev: page > 1,
+                },
+            },
+            'Categories retrieved successfully',
+        );
     }),
+
+    getCategoryById: asyncHandler(async (req, res) => {
+        const category = await Category.findById(req.params.id).populate('parentCategory', 'name');
+
+        if (!category) {
+            return errorResponse(res, 'Category not found', 404);
+        }
+
+        return successResponse(res, { category }, 'Category retrieved successfully');
+    }),
+
     createCategory: asyncHandler(async (req, res) => {
-        return successResponse(res, {}, 'Category created successfully');
+        const category = new Category(req.body);
+        await category.save();
+        await category.populate('parentCategory', 'name');
+        return successResponse(res, { category }, 'Category created successfully');
     }),
+
     updateCategory: asyncHandler(async (req, res) => {
-        return successResponse(res, {}, 'Category updated successfully');
+        const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        }).populate('parentCategory', 'name');
+
+        if (!category) {
+            return errorResponse(res, 'Category not found', 404);
+        }
+
+        return successResponse(res, { category }, 'Category updated successfully');
     }),
+
     deleteCategory: asyncHandler(async (req, res) => {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return errorResponse(res, 'Category not found', 404);
+        }
+
+        // Check if there are products in this category
+        const productsCount = await Product.countDocuments({ category: req.params.id });
+        if (productsCount > 0) {
+            return errorResponse(res, 'Cannot delete category with existing products', 400);
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
         return successResponse(res, {}, 'Category deleted successfully');
+    }),
+
+    bulkDeleteCategories: asyncHandler(async (req, res) => {
+        const { ids } = req.body;
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return errorResponse(res, 'Invalid category IDs', 400);
+        }
+
+        // Check if any categories have products
+        const productsCount = await Product.countDocuments({ category: { $in: ids } });
+        if (productsCount > 0) {
+            return errorResponse(res, 'Cannot delete categories with existing products', 400);
+        }
+
+        const result = await Category.deleteMany({ _id: { $in: ids } });
+        return successResponse(res, { deletedCount: result.deletedCount }, 'Categories deleted successfully');
     }),
     getSystemSettings: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'System settings retrieved successfully');
