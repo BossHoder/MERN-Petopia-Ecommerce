@@ -1,0 +1,50 @@
+/* Admin Layout Styles */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--brand-cream, #FCF9F8);
+}
+
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 280px; /* Sidebar width */
+    transition: margin-left 0.3s ease;
+}
+
+.admin-main.sidebar-collapsed {
+    margin-left: 80px; /* Collapsed sidebar width */
+}
+
+.admin-content {
+    flex: 1;
+    padding: 24px;
+    background-color: var(--brand-cream, #FCF9F8);
+    overflow-y: auto;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .admin-main {
+        margin-left: 0;
+    }
+    
+    .admin-main.sidebar-collapsed {
+        margin-left: 0;
+    }
+    
+    .admin-content {
+        padding: 16px;
+    }
+}
+
+/* Pet-friendly styling */
+.admin-layout {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.admin-content {
+    border-radius: 12px 0 0 0;
+    box-shadow: 0 2px 8px rgba(29, 18, 12, 0.08);
+}

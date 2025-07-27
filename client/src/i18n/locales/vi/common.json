@@ -627,12 +627,53 @@
         "noUsers": "Không tìm thấy người dùng nào."
     },
     "admin": {
-        "title": "Bảng điều khiển Admin",
+        "title": "Bảng Điều Khiển Admin",
         "manageUsers": "Quản lý Người dùng",
         "manageProducts": "Quản lý Sản phẩm",
         "manageCategories": "Quản lý Danh mục",
         "manageOrders": "Quản lý Đơn hàng",
-        "manageCoupons": "Quản lý Mã giảm giá"
+        "manageCoupons": "Quản lý Mã giảm giá",
+        "dashboard": "Bảng điều khiển",
+        "products": "Sản phẩm",
+        "orders": "Đơn hàng",
+        "users": "Người dùng",
+        "categories": "Danh mục",
+        "analytics": "Phân tích",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ",
+        "backToStore": "Quay lại Cửa hàng",
+        "notifications": "Thông báo",
+        "userMenu": "Menu người dùng",
+        "toggleSidebar": "Bật/tắt thanh bên",
+        "expandSidebar": "Mở rộng thanh bên",
+        "collapseSidebar": "Thu gọn thanh bên",
+        "dashboard": {
+            "title": "Tổng Quan Bảng Điều Khiển",
+            "subtitle": "Chào mừng trở lại! Đây là những gì đang diễn ra với cửa hàng của bạn.",
+            "totalOrders": "Tổng Đơn Hàng",
+            "totalRevenue": "Tổng Doanh Thu",
+            "totalProducts": "Tổng Sản Phẩm",
+            "totalUsers": "Tổng Người Dùng",
+            "quickActions": "Thao Tác Nhanh",
+            "addProduct": "Thêm Sản Phẩm Mới",
+            "addProductDesc": "Tạo danh sách sản phẩm mới",
+            "viewOrders": "Xem Đơn Hàng Gần Đây",
+            "viewOrdersDesc": "Kiểm tra đơn hàng mới nhất của khách hàng",
+            "manageUsers": "Quản Lý Người Dùng",
+            "manageUsersDesc": "Xem và quản lý tài khoản người dùng",
+            "viewAnalytics": "Xem Phân Tích",
+            "viewAnalyticsDesc": "Kiểm tra dữ liệu bán hàng và hiệu suất",
+            "loading": "Đang tải dữ liệu bảng điều khiển...",
+            "error": "Không thể tải dữ liệu bảng điều khiển",
+            "refresh": "Làm Mới Dữ Liệu",
+            "trends": {
+                "up": "Tăng",
+                "down": "Giảm",
+                "neutral": "Không thay đổi",
+                "fromLastMonth": "so với tháng trước",
+                "fromLastWeek": "so với tuần trước"
+            }
+        }
     },
     "messages": {
         "title": "Tin nhắn",
@@ -674,7 +715,30 @@
             "google": "Google",
             "facebook": "Facebook",
             "noAccount": "Chưa có tài khoản?",
-            "signUp": "Đăng ký"
+            "signUp": "Đăng ký",
+            "success": "Đăng nhập thành công!",
+            "failed": "Đăng nhập thất bại!",
+            "invalidCredentials": "Email hoặc mật khẩu không hợp lệ",
+            "tokenExpired": "Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.",
+            "adminAccessDenied": "Từ chối truy cập Admin. Không đủ quyền.",
+            "sessionExpired": "Phiên của bạn đã hết hạn",
+            "authenticationFailed": "Xác thực thất bại",
+            "invalidToken": "Token không hợp lệ từ máy chủ",
+            "malformedToken": "Phát hiện token bị lỗi",
+            "noTokenFound": "Không tìm thấy token xác thực"
+        },
+        "debug": {
+            "loadMeDebug": "Debug loadMe()",
+            "noTokenSkipApi": "Không tìm thấy token - bỏ qua gọi API",
+            "makingApiCall": "Đang thực hiện gọi API loadMe()...",
+            "apiCallFailed": "Gọi API loadMe() thất bại",
+            "invalidTokenClearing": "Phát hiện token không hợp lệ - xóa trạng thái xác thực",
+            "loginResponseStructure": "Cấu trúc phản hồi đăng nhập",
+            "loginSuccessStoring": "Đăng nhập thành công, lưu token",
+            "oauthLoginResponse": "Phản hồi đăng nhập OAuth",
+            "expectedUnauthorized": "401 dự kiến (không có token khi khởi động)",
+            "unexpectedUnauthorized": "401 không mong đợi - xóa xác thực và chuyển hướng",
+            "expectedNotRedirecting": "401 dự kiến - không chuyển hướng"
         },
         "register": {
             "title": "Tham gia gia đình Petopia!",
@@ -779,6 +843,8 @@
         "categoryNavigation": "Điều hướng danh mục",
         "checkoutNavigation": "Điều hướng thanh toán",
         "navigation": "Điều hướng breadcrumb",
-        "goTo": "Đi tới"
+        "goTo": "Đi tới",
+        "adminNavigation": "Điều hướng Admin",
+        "adminDashboard": "Điều hướng bảng điều khiển Admin"
     }
 }

@@ -13,6 +13,8 @@ import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 import Users from './pages/Users/Users';
 import Admin from './pages/Admin/Admin';
+import AdminLayout from './components/Admin/AdminLayout/AdminLayout'; // Import AdminLayout
+import Dashboard from './pages/Admin/Dashboard/Dashboard'; // Import Dashboard
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
@@ -26,6 +28,7 @@ import Loader from './components/Loader/Loader';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import authDebugger from './utils/authDebugger'; // Import auth debugger
 
 import { logInUserWithOauth, loadMe } from './store/actions/authActions';
 
@@ -50,6 +53,12 @@ const App = () => {
 
     useEffect(() => {
         dispatch(loadMe());
+
+        // Make auth debugger available globally for debugging
+        if (process.env.NODE_ENV === 'development') {
+            window.authDebugger = authDebugger;
+            console.log('🔧 Auth Debugger available: window.authDebugger');
+        }
     }, [dispatch]);
 
     useEffect(() => {
@@ -100,8 +109,41 @@ const App = () => {
                             }
                         />
                         <Route path="/notfound" element={<NotFound />} />
+
+                        {/* Admin Routes with AdminLayout */}
                         <Route
                             path="/admin"
+                            element={
+                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                    <AdminLayout />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route index element={<Dashboard />} />
+                            <Route path="dashboard" element={<Dashboard />} />
+                            <Route path="users" element={<Users />} />
+                            <Route
+                                path="products"
+                                element={<div>Admin Products - Coming Soon</div>}
+                            />
+                            <Route path="orders" element={<div>Admin Orders - Coming Soon</div>} />
+                            <Route
+                                path="categories"
+                                element={<div>Admin Categories - Coming Soon</div>}
+                            />
+                            <Route
+                                path="analytics"
+                                element={<div>Admin Analytics - Coming Soon</div>}
+                            />
+                            <Route
+                                path="settings"
+                                element={<div>Admin Settings - Coming Soon</div>}
+                            />
+                        </Route>
+
+                        {/* Legacy admin route for backward compatibility */}
+                        <Route
+                            path="/admin-legacy"
                             element={
                                 <ProtectedRoute requireAuth={true} requireAdmin={true}>
                                     <Admin />

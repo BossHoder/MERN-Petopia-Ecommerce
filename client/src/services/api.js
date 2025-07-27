@@ -80,20 +80,34 @@ API.interceptors.response.use(
         return response;
     },
     (error) => {
-        console.error('API Response Error:', {
-            status: error.response?.status,
-            url: error.config?.url,
-            message: error.message,
-            response: error.response?.data,
-        });
+        // Check if this is an expected 401 from loadMe() on app startup
+        const isLoadMeEndpoint = error.config?.url === '/api/users/me';
+        const is401Error = error.response?.status === 401;
+
+        // For loadMe() 401 errors, we expect them when there's no valid token
+        const isExpected401 = is401Error && isLoadMeEndpoint;
+
+        if (!isExpected401) {
+            console.error('API Response Error:', {
+                status: error.response?.status,
+                url: error.config?.url,
+                message: error.message,
+                response: error.response?.data,
+            });
+        } else {
+            console.log('🔍 Expected 401 from loadMe() - no valid token:', error.config?.url);
+        }
 
         // Handle 401 errors more gracefully
         if (error.response?.status === 401) {
-            // Clear invalid token
-            localStorage.removeItem('token');
-
-            // Use safe redirect utility to prevent loops
-            safeRedirectToLogin();
+            // Only clear token and redirect for unexpected 401s (not from loadMe)
+            if (!isExpected401) {
+                console.log('🚨 Unexpected 401 - clearing auth and redirecting');
+                localStorage.removeItem('token');
+                safeRedirectToLogin();
+            } else {
+                console.log('✅ Expected 401 - not redirecting');
+            }
         }
         return Promise.reject(error);
     },

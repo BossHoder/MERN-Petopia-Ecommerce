@@ -9,6 +9,7 @@ import {
     ME_LOADING,
     ME_SUCCESS,
     ME_FAIL,
+    SET_TOKEN_FROM_STORAGE,
 } from '../types';
 
 const initialState = {
@@ -46,6 +47,7 @@ export default function (state = initialState, { type, payload }) {
                 token: payload.token,
                 me: payload.me,
                 error: null,
+                appLoaded: true, // 🔧 FIX: Set appLoaded to true after successful login
             };
         case ME_SUCCESS:
             return {
@@ -98,6 +100,13 @@ export default function (state = initialState, { type, payload }) {
                 isLoading: false,
                 error: payload.error,
                 appLoaded: true,
+            };
+        case SET_TOKEN_FROM_STORAGE:
+            return {
+                ...state,
+                token: payload.token,
+                isLoading: false,
+                error: null,
             };
         default:
             return state;

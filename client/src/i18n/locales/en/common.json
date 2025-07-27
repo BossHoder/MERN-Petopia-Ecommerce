@@ -613,12 +613,53 @@
         "noUsers": "No users found."
     },
     "admin": {
-        "title": "Admin dashboard",
+        "title": "Admin Dashboard",
         "manageUsers": "Manage Users",
         "manageProducts": "Manage Products",
         "manageCategories": "Manage Categories",
         "manageOrders": "Manage Orders",
-        "manageCoupons": "Manage Coupons"
+        "manageCoupons": "Manage Coupons",
+        "dashboard": "Dashboard",
+        "products": "Products",
+        "orders": "Orders",
+        "users": "Users",
+        "categories": "Categories",
+        "analytics": "Analytics",
+        "settings": "Settings",
+        "profile": "Profile",
+        "backToStore": "Back to Store",
+        "notifications": "Notifications",
+        "userMenu": "User menu",
+        "toggleSidebar": "Toggle sidebar",
+        "expandSidebar": "Expand sidebar",
+        "collapseSidebar": "Collapse sidebar",
+        "dashboard": {
+            "title": "Dashboard Overview",
+            "subtitle": "Welcome back! Here's what's happening with your store.",
+            "totalOrders": "Total Orders",
+            "totalRevenue": "Total Revenue",
+            "totalProducts": "Total Products",
+            "totalUsers": "Total Users",
+            "quickActions": "Quick Actions",
+            "addProduct": "Add New Product",
+            "addProductDesc": "Create a new product listing",
+            "viewOrders": "View Recent Orders",
+            "viewOrdersDesc": "Check latest customer orders",
+            "manageUsers": "Manage Users",
+            "manageUsersDesc": "View and manage user accounts",
+            "viewAnalytics": "View Analytics",
+            "viewAnalyticsDesc": "Check sales and performance data",
+            "loading": "Loading dashboard data...",
+            "error": "Failed to load dashboard data",
+            "refresh": "Refresh Data",
+            "trends": {
+                "up": "Increase",
+                "down": "Decrease",
+                "neutral": "No change",
+                "fromLastMonth": "from last month",
+                "fromLastWeek": "from last week"
+            }
+        }
     },
     "messages": {
         "title": "Messages",
@@ -681,7 +722,30 @@
             "google": "Google",
             "facebook": "Facebook",
             "noAccount": "Don't have an account?",
-            "signUp": "Sign up"
+            "signUp": "Sign up",
+            "success": "Login successful!",
+            "failed": "Login failed!",
+            "invalidCredentials": "Invalid email or password",
+            "tokenExpired": "Your session has expired. Please login again.",
+            "adminAccessDenied": "Admin access denied. Insufficient permissions.",
+            "sessionExpired": "Your session has expired",
+            "authenticationFailed": "Authentication failed",
+            "invalidToken": "Invalid token received from server",
+            "malformedToken": "Malformed token detected",
+            "noTokenFound": "No authentication token found"
+        },
+        "debug": {
+            "loadMeDebug": "loadMe() Debug",
+            "noTokenSkipApi": "No token found - skipping API call",
+            "makingApiCall": "Making loadMe() API call...",
+            "apiCallFailed": "loadMe() API call failed",
+            "invalidTokenClearing": "Invalid token detected - clearing auth state",
+            "loginResponseStructure": "Login response structure",
+            "loginSuccessStoring": "Login successful, storing token",
+            "oauthLoginResponse": "OAuth login response",
+            "expectedUnauthorized": "Expected 401 (no token on startup)",
+            "unexpectedUnauthorized": "Unexpected 401 - clearing auth and redirecting",
+            "expectedNotRedirecting": "Expected 401 - not redirecting"
         },
         "register": {
             "title": "Join the Petopia Family!",
@@ -786,6 +850,8 @@
         "categoryNavigation": "Category navigation",
         "checkoutNavigation": "Checkout navigation",
         "navigation": "Breadcrumb navigation",
-        "goTo": "Go to"
+        "goTo": "Go to",
+        "adminNavigation": "Admin navigation",
+        "adminDashboard": "Admin dashboard navigation"
     }
 }

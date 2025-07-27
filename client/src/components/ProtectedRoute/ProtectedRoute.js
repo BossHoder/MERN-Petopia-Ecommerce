@@ -7,6 +7,17 @@ const ProtectedRoute = ({ children, requireAuth = true, requireAdmin = false }) 
     const { isAuthenticated, me, appLoaded } = useSelector((state) => state.auth);
     const location = useLocation();
 
+    // Debug logging
+    console.log('🛡️ ProtectedRoute Debug:', {
+        path: location.pathname,
+        requireAuth,
+        requireAdmin,
+        isAuthenticated,
+        userRole: me?.role,
+        appLoaded,
+        hasToken: !!localStorage.getItem('token'),
+    });
+
     // Chờ app load xong trước khi quyết định redirect
     if (!appLoaded) {
         return <Loader />;
