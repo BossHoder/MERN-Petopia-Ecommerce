@@ -208,6 +208,52 @@ class ProductController {
         }
     }
 
+    // Get product by slug specifically
+    async getProductBySlug(req, res, next) {
+        try {
+            const { slug } = req.params;
+            console.log('getProductBySlug called with slug:', slug);
+
+            // Find by slug only
+            const product = await Product.findOne({
+                slug: slug,
+                isPublished: true,
+            })
+                .populate({
+                    path: 'category',
+                    select: 'name slug parentCategory',
+                    populate: { path: 'parentCategory', select: 'name slug' },
+                })
+                .lean();
+
+            if (!product) {
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+            }
+
+            // Get related products (same category, excluding current product)
+            const relatedProducts = await Product.find({
+                category: product.category._id,
+                _id: { $ne: product._id },
+                isPublished: true,
+            })
+                .populate({
+                    path: 'category',
+                    select: 'name slug parentCategory',
+                    populate: { path: 'parentCategory', select: 'name slug' },
+                })
+                .limit(4)
+                .lean();
+
+            return responseHelper.success(res, {
+                product: productDto(product),
+                relatedProducts: productsDto(relatedProducts),
+            });
+        } catch (error) {
+            console.error('Error in getProductBySlug:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // Create new product (Admin only)
     async createProduct(req, res, next) {
         try {

@@ -76,6 +76,7 @@ router.get(
 
 // These routes must come AFTER /suggest to avoid conflicts
 router.get('/category/:categorySlug', ProductController.getProductsByCategory);
+router.get('/slug/:slug', ProductController.getProductBySlug);
 router.get('/:id', ProductController.getProductById);
 router.post('/:id/reviews', requireJwtAuth, ProductController.createProductReview);
 

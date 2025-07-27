@@ -115,6 +115,30 @@ export const getProductById = (id) => async (dispatch) => {
     }
 };
 
+// Get product by slug
+export const getProductBySlug = (slug) => async (dispatch) => {
+    try {
+        dispatch({ type: GET_PRODUCT_BY_ID_LOADING });
+
+        const response = await API.get(`/api/products/slug/${slug}`);
+
+        dispatch({
+            type: GET_PRODUCT_BY_ID_SUCCESS,
+            payload: {
+                product: response.data.data.product,
+                relatedProducts: response.data.data.relatedProducts || [],
+            },
+        });
+    } catch (error) {
+        const errorMessage =
+            error.response?.data?.message || 'Product not found. Please check the URL.';
+        dispatch({
+            type: GET_PRODUCT_BY_ID_FAIL,
+            payload: errorMessage,
+        });
+    }
+};
+
 export const fetchProductSuggestions = (keyword) => async (dispatch) => {
     try {
         const response = await API.get(

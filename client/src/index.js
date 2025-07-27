@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { thunk } from 'redux-thunk';
+import { HelmetProvider } from 'react-helmet-async'; // eslint-disable-line
 
 import App from './App';
 import './index.css';
@@ -25,11 +26,13 @@ const store = createStore(
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
-    <Provider store={store}>
-        <Router>
-            <Routes>
-                <Route path="/*" element={<App />} />
-            </Routes>
-        </Router>
-    </Provider>,
+    <HelmetProvider>
+        <Provider store={store}>
+            <Router>
+                <Routes>
+                    <Route path="/*" element={<App />} />
+                </Routes>
+            </Router>
+        </Provider>
+    </HelmetProvider>,
 );

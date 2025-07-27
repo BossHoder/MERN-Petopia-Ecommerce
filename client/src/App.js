@@ -23,7 +23,7 @@ import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
 import OrderDetails from './pages/OrderDetails/OrderDetails'; // Import OrderDetails
 import Products from './pages/Products/Products'; // Import Products
-import ProductDetails from './pages/ProductDetails/ProductDetails'; // Import ProductDetails
+import ProductDetail from './pages/ProductDetail/ProductDetail'; // Import ProductDetail
 import CategoryPage from './pages/Category/CategoryPage'; // Import CategoryPage
 import SubcategoryPage from './pages/Category/SubcategoryPage'; // Import SubcategoryPage
 
@@ -125,7 +125,7 @@ const App = () => {
                                         }
                                     />
                                     <Route path="/products" element={<Products />} />
-                                    <Route path="/product/:id" element={<ProductDetails />} />
+                                    <Route path="/product/:slug" element={<ProductDetail />} />
                                     <Route path="/category/:slug" element={<CategoryPage />} />
                                     <Route
                                         path="/category/:parentSlug/:categorySlug"

@@ -304,6 +304,7 @@ const ProductDetails = () => {
                                     </div>
                                 )}
                                 <button
+                                    style={{ width: '50%' }}
                                     className="btn btn-primary btn-block"
                                     onClick={addToCartHandler}
                                     disabled={
