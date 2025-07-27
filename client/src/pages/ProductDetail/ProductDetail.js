@@ -10,6 +10,7 @@ import ProductInfo from '../../components/ProductDetail/ProductInfo';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import { getProductBySlug } from '../../store/actions/productActions';
+import { addToCart } from '../../store/actions/cartActions';
 import './styles.css';
 
 const ProductDetail = () => {
@@ -53,6 +54,7 @@ const ProductDetail = () => {
                 imagesToShow = product.images;
             }
 
+            console.log('🖼️ ProductDetail setting currentImages:', imagesToShow);
             setCurrentImages(imagesToShow);
             setSelectedImageIndex(0); // Reset to first image when images change
         }
@@ -75,27 +77,46 @@ const ProductDetail = () => {
     };
 
     // Handle add to cart
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!product) return;
 
-        // TODO: Implement actual add to cart logic with Redux action
-        // Example cart item structure:
-        // {
-        //     productId: product._id,
-        //     name: product.name,
-        //     price: selectedVariant ? selectedVariant.price : product.price,
-        //     image: currentImages[0] || '/placeholder-image.svg',
-        //     quantity: quantity,
-        //     variant: selectedVariant ? { ... } : null
-        // }
+        try {
+            // Prepare minimal product data for cart (only for guest users)
+            const productData = {
+                name: product.name,
+                price: currentPrice,
+                image: currentImages[0] || '/placeholder-image.svg',
+            };
 
-        toast.success(t('product.addedToCart', 'Added to cart successfully!'));
+            // Get product ID (use id field from server DTO)
+            const productId = product.id;
+            console.log('🛒 Using productId:', productId);
+            console.log('🛒 ProductDetail - Adding to cart:', {
+                productId,
+                quantity,
+                productData,
+            });
+
+            // Dispatch add to cart action
+            await dispatch(addToCart(productId, quantity, productData));
+
+            // Show success message
+            toast.success(t('product.addedToCart', 'Added to cart successfully!'));
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            toast.error(t('product.addToCartError', 'Failed to add to cart. Please try again.'));
+        }
     };
 
     // Handle buy now
-    const handleBuyNow = () => {
-        handleAddToCart();
-        navigate('/checkout');
+    const handleBuyNow = async () => {
+        try {
+            await handleAddToCart();
+            navigate('/checkout');
+        } catch (error) {
+            console.error('Error in buy now:', error);
+            // Don't navigate if adding to cart failed
+        }
     };
 
     // Loading state

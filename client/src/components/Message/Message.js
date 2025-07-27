@@ -51,6 +51,11 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
         if (message.error) setIsEdit(true);
     }, [message.error]);
 
+    // Safety check - return null if message data is incomplete
+    if (!message || !message.user || !message.id) {
+        return null;
+    }
+
     return (
         <div className={message.isLoading ? 'message loader' : 'message'}>
             <div className="message-header">
@@ -90,6 +95,7 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
                     <p>{message.text}</p>
                 )}
                 {auth.isAuthenticated &&
+                    auth.me &&
                     (auth.me.id === message.user.id || auth.me.role === 'ADMIN') && (
                         <>
                             {!isEdit ? (

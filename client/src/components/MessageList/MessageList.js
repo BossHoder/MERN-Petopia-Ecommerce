@@ -12,7 +12,8 @@ const MessageList = ({ getMessages, message: { messages, isLoading, error } }) =
     const { t } = useI18n();
 
     useEffect(() => {
-        getMessages();
+        // Temporarily disabled - messages API endpoint not available
+        // getMessages();
     }, []);
 
     return (

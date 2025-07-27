@@ -381,8 +381,9 @@
     outline-offset: 2px;
 }
 
-/* Loading state */
-.main-image-container::before {
+/* Loading state - only show when image is loading or has error */
+.main-image-container.loading::before,
+.main-image-container.error::before {
     content: '';
     position: absolute;
     top: 0;
@@ -396,7 +397,8 @@
     z-index: 1;
 }
 
-.main-image-container::after {
+.main-image-container.loading::after,
+.main-image-container.error::after {
     content: '📷';
     position: absolute;
     top: 50%;

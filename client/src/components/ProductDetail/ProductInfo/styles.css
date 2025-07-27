@@ -321,10 +321,15 @@
     font-size: 18px;
 }
 
-/* Specific button styles */
-.add-to-cart-btn,
-.buy-now-btn,
-.wishlist-btn {
+/* Specific button styles for ProductDetail only */
+.product-info .product-actions .add-to-cart-btn,
+.product-info .product-actions .buy-now-btn {
+    flex: 0 0 48%;
+    width: 48%;
+    max-width: 48%;
+}
+
+.product-info .product-actions .wishlist-btn {
     flex: 0 0 auto;
     max-width: none;
     width: auto;

@@ -55,12 +55,16 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
 
     // Get image URL
     const getImageUrl = (image) => {
+        let imageUrl;
         if (typeof image === 'string') {
-            return image.startsWith('http')
+            imageUrl = image.startsWith('http')
                 ? image
                 : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${image}`;
+        } else {
+            imageUrl = image?.url || image?.preview || '/placeholder-image.svg';
         }
-        return image?.url || image?.preview || '/placeholder-image.svg';
+
+        return imageUrl;
     };
 
     // Handle thumbnail scroll
@@ -101,6 +105,7 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
             <div className="main-image-container">
                 <img
                     ref={mainImageRef}
+                    key={`main-${selectedIndex}-${getImageUrl(currentImage)}`}
                     src={getImageUrl(currentImage)}
                     alt={`${productName} - ${selectedIndex + 1}`}
                     className={`main-image ${isZoomed ? 'zoomed' : ''}`}
@@ -188,6 +193,7 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
                                     }`}
                                 >
                                     <img
+                                        key={`thumb-${index}-${getImageUrl(image)}`}
                                         src={getImageUrl(image)}
                                         alt={`${productName} thumbnail ${index + 1}`}
                                         onError={(e) => {

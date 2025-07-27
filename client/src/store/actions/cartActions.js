@@ -56,6 +56,7 @@ export const addToCart =
 
                 if (isAuthenticated) {
                     // Add to server cart for authenticated users
+                    console.log('🛒 Adding to cart:', { productId, quantity });
                     const { data } = await api.post('/api/cart', { productId, quantity });
                     dispatch({
                         type: types.ADD_TO_CART_SUCCESS,
@@ -76,10 +77,6 @@ export const addToCart =
                     });
                 }
 
-                dispatch({
-                    type: 'SHOW_TOAST',
-                    payload: { message: 'Đã thêm vào giỏ hàng!', type: 'success' },
-                });
                 resolve();
             } catch (error) {
                 const errorMessage = error.response?.data?.message || error.message;

@@ -26,6 +26,7 @@ const getCart = asyncHandler(async (req, res) => {
 // @route   POST /api/cart
 // @access  Private
 const addItemToCart = asyncHandler(async (req, res) => {
+    console.log('🛒 Cart Controller - Request body:', req.body);
     const { productId: productIdentifier, quantity } = req.body; // Rename for clarity
 
     // Ensure user is authenticated
@@ -40,10 +41,22 @@ const addItemToCart = asyncHandler(async (req, res) => {
         return validationErrorResponse(res, ERROR_MESSAGES.QUANTITY_MUST_BE_POSITIVE);
     }
 
+    // Validate productIdentifier
+    if (!productIdentifier) {
+        return validationErrorResponse(res, 'Product identifier is required');
+    }
+
     // Find product by ID or Slug
     const product = await Product.findOne({
         $or: [
-            { _id: productIdentifier.match(/^[0-9a-fA-F]{24}$/) ? productIdentifier : null },
+            {
+                _id:
+                    productIdentifier &&
+                    typeof productIdentifier === 'string' &&
+                    productIdentifier.match(/^[0-9a-fA-F]{24}$/)
+                        ? productIdentifier
+                        : null,
+            },
             { slug: productIdentifier },
         ],
     });
