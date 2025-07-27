@@ -1,0 +1,315 @@
+/* Variant Image Upload Component Styles */
+.variant-image-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.variant-image-upload-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.variant-image-upload-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #1F2937);
+}
+
+.variant-name-hint {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-secondary, #6B7280);
+    margin-left: 4px;
+}
+
+.image-count-info {
+    font-size: 11px;
+    color: var(--text-secondary, #6B7280);
+    background: var(--bg-gray-100, #F3F4F6);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.variant-image-upload-error {
+    font-size: 11px;
+    color: var(--danger, #DC2626);
+    padding: 6px 8px;
+    background: var(--danger-light, #FEE2E2);
+    border-radius: 4px;
+    border: 1px solid var(--danger, #DC2626);
+}
+
+/* Compact Upload Dropzone */
+.variant-image-upload-dropzone {
+    border: 2px dashed var(--border-light, #E5E7EB);
+    border-radius: 8px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-gray-50, #F9FAFB);
+    position: relative;
+    min-height: 80px;
+}
+
+.variant-image-upload-dropzone:hover {
+    border-color: var(--brand-orange, #FF6B35);
+    background: var(--brand-cream-light, #FFF8F6);
+}
+
+.variant-image-upload-dropzone.drag-over {
+    border-color: var(--brand-orange, #FF6B35);
+    background: var(--brand-cream-light, #FFF8F6);
+    transform: scale(1.02);
+}
+
+.variant-image-upload-dropzone.error {
+    border-color: var(--danger, #DC2626);
+    background: var(--danger-light, #FEE2E2);
+}
+
+.variant-image-upload-input {
+    display: none;
+}
+
+.variant-image-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.variant-image-upload-icon {
+    font-size: 24px;
+    opacity: 0.6;
+}
+
+.variant-image-upload-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary, #1F2937);
+    margin: 0;
+}
+
+.variant-image-upload-subtext {
+    font-size: 10px;
+    color: var(--text-secondary, #6B7280);
+    margin: 0;
+}
+
+/* Compact Image Preview Grid */
+.variant-image-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    max-width: 100%;
+}
+
+.variant-image-preview-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.variant-image-preview-wrapper {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-white, #FFFFFF);
+}
+
+.variant-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.variant-image-preview-wrapper:hover .variant-image-preview {
+    transform: scale(1.05);
+}
+
+/* Compact Image Controls */
+.variant-image-preview-controls {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.variant-image-preview-wrapper:hover .variant-image-preview-controls {
+    opacity: 1;
+}
+
+.variant-image-control-btn {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.variant-image-control-btn.remove {
+    background: var(--danger, #DC2626);
+    color: white;
+}
+
+.variant-image-control-btn.remove:hover {
+    background: var(--danger-dark, #B91C1C);
+}
+
+.variant-image-control-btn.move-left,
+.variant-image-control-btn.move-right {
+    background: var(--brand-orange, #FF6B35);
+    color: white;
+}
+
+.variant-image-control-btn.move-left:hover,
+.variant-image-control-btn.move-right:hover {
+    background: var(--brand-orange-dark, #E55A2B);
+}
+
+/* Primary Image Badge */
+.variant-primary-image-badge {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    background: var(--brand-orange, #FF6B35);
+    color: white;
+    font-size: 8px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+/* New Image Badge */
+.variant-image-new-badge {
+    background: var(--success, #10B981);
+    color: white;
+    font-size: 8px;
+    font-weight: 500;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .variant-image-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 6px;
+    }
+
+    .variant-image-upload-dropzone {
+        padding: 12px 8px;
+        min-height: 60px;
+    }
+
+    .variant-image-upload-icon {
+        font-size: 20px;
+    }
+
+    .variant-image-upload-text {
+        font-size: 11px;
+    }
+
+    .variant-image-upload-subtext {
+        font-size: 9px;
+    }
+
+    .variant-image-control-btn {
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
+    }
+
+    .variant-primary-image-badge {
+        font-size: 7px;
+        padding: 1px 3px;
+    }
+}
+
+/* Focus and Accessibility */
+.variant-image-upload-dropzone:focus-within {
+    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline-offset: 2px;
+}
+
+.variant-image-control-btn:focus {
+    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline-offset: 1px;
+}
+
+/* Animation for new images */
+.variant-image-preview-item {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Compact layout adjustments */
+.variant-image-upload-header {
+    margin-bottom: 8px;
+}
+
+.variant-image-upload-dropzone {
+    margin-bottom: 8px;
+}
+
+/* Integration with variant form */
+.variant-form .variant-image-upload {
+    background: var(--bg-white, #FFFFFF);
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-light, #E5E7EB);
+}
+
+/* Thumbnail preview for collapsed variants */
+.variant-image-thumbnail {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid var(--border-light, #E5E7EB);
+    margin-right: 8px;
+}
+
+.variant-image-thumbnails {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.variant-image-count {
+    font-size: 10px;
+    color: var(--text-secondary, #6B7280);
+    background: var(--bg-gray-100, #F3F4F6);
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+}

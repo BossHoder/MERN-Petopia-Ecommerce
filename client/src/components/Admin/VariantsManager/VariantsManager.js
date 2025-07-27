@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useI18n } from '../../../hooks/useI18n';
+import VariantImageUpload from '../VariantImageUpload';
 import './styles.css';
 
 const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error = null }) => {
@@ -15,6 +16,7 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
             price: basePrice,
             stock: 0,
             attributes: {},
+            images: [],
             isActive: true,
         };
         onVariantsChange([...variants, newVariant]);
@@ -51,6 +53,16 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                 ...updatedVariants[index].attributes,
                 [attributeKey]: value === '' ? undefined : value,
             },
+        };
+        onVariantsChange(updatedVariants);
+    };
+
+    // Update variant images
+    const updateVariantImages = (index, images) => {
+        const updatedVariants = [...variants];
+        updatedVariants[index] = {
+            ...updatedVariants[index],
+            images: images,
         };
         onVariantsChange(updatedVariants);
     };
@@ -127,6 +139,29 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                                         </span>
                                         {variant.sku && (
                                             <span className="variant-sku">SKU: {variant.sku}</span>
+                                        )}
+                                        {variant.images && variant.images.length > 0 && (
+                                            <div className="variant-image-thumbnails">
+                                                <img
+                                                    src={
+                                                        variant.images[0].isNew
+                                                            ? variant.images[0].preview
+                                                            : typeof variant.images[0] === 'string'
+                                                            ? variant.images[0]
+                                                            : variant.images[0].url
+                                                    }
+                                                    alt="Variant thumbnail"
+                                                    className="variant-image-thumbnail"
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                    }}
+                                                />
+                                                {variant.images.length > 1 && (
+                                                    <span className="variant-image-count">
+                                                        +{variant.images.length - 1}
+                                                    </span>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -337,6 +372,19 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* Variant Images */}
+                                    <div className="variant-images-section">
+                                        <VariantImageUpload
+                                            images={variant.images || []}
+                                            onImagesChange={(images) =>
+                                                updateVariantImages(index, images)
+                                            }
+                                            maxImages={3}
+                                            variantName={variant.name}
+                                            error={null}
+                                        />
                                     </div>
 
                                     {/* Variant Status */}

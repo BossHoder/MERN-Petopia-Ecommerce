@@ -394,6 +394,33 @@ export default {
 
         req.body.images = images;
 
+        // Handle variant images
+        if (req.body.variants && typeof req.body.variants === 'string') {
+            const variants = JSON.parse(req.body.variants);
+
+            // Process variant images
+            const processedVariants = variants.map((variant, index) => {
+                const variantImages = [...(variant.images || [])];
+
+                // Check for new variant images
+                const variantImageField = `variantImages_${index}`;
+                if (req.files) {
+                    const variantFiles = req.files.filter((file) => file.fieldname === variantImageField);
+                    if (variantFiles.length > 0) {
+                        const newVariantImages = variantFiles.map((file) => `/public/images/${file.filename}`);
+                        variantImages.push(...newVariantImages);
+                    }
+                }
+
+                return {
+                    ...variant,
+                    images: variantImages,
+                };
+            });
+
+            req.body.variants = processedVariants;
+        }
+
         const product = new Product(req.body);
         await product.save();
         await product.populate('category', 'name');
@@ -437,6 +464,33 @@ export default {
         // Only update images if we have new data
         if (images.length > 0 || req.body.existingImages) {
             req.body.images = images;
+        }
+
+        // Handle variant images
+        if (req.body.variants && typeof req.body.variants === 'string') {
+            const variants = JSON.parse(req.body.variants);
+
+            // Process variant images
+            const processedVariants = variants.map((variant, index) => {
+                const variantImages = [...(variant.images || [])];
+
+                // Check for new variant images
+                const variantImageField = `variantImages_${index}`;
+                if (req.files) {
+                    const variantFiles = req.files.filter((file) => file.fieldname === variantImageField);
+                    if (variantFiles.length > 0) {
+                        const newVariantImages = variantFiles.map((file) => `/public/images/${file.filename}`);
+                        variantImages.push(...newVariantImages);
+                    }
+                }
+
+                return {
+                    ...variant,
+                    images: variantImages,
+                };
+            });
+
+            req.body.variants = processedVariants;
         }
 
         const product = await Product.findByIdAndUpdate(req.params.id, req.body, {

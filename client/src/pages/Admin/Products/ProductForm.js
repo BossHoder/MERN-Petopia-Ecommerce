@@ -137,12 +137,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                 formData.append('attributes', JSON.stringify(values.attributes));
             }
 
-            // Add variants as JSON string
-            if (values.variants && values.variants.length > 0) {
-                formData.append('variants', JSON.stringify(values.variants));
-            }
-
-            // Handle images
+            // Handle main product images
             const existingImages = [];
 
             values.images.forEach((image) => {
@@ -161,6 +156,35 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
             // Add existing images as JSON string
             if (existingImages.length > 0) {
                 formData.append('existingImages', JSON.stringify(existingImages));
+            }
+
+            // Handle variant images
+            if (values.variants && values.variants.length > 0) {
+                const processedVariants = values.variants.map((variant, variantIndex) => {
+                    const variantData = { ...variant };
+                    const existingVariantImages = [];
+
+                    if (variant.images && variant.images.length > 0) {
+                        variant.images.forEach((image, imageIndex) => {
+                            if (image.isNew && image.file) {
+                                // New variant image file to upload
+                                formData.append(`variantImages_${variantIndex}`, image.file);
+                            } else if (typeof image === 'string') {
+                                // Existing variant image URL
+                                existingVariantImages.push(image);
+                            } else if (image.url) {
+                                // Existing variant image object
+                                existingVariantImages.push(image.url);
+                            }
+                        });
+                    }
+
+                    // Replace images array with existing images only
+                    variantData.images = existingVariantImages;
+                    return variantData;
+                });
+
+                formData.append('variants', JSON.stringify(processedVariants));
             }
 
             if (mode === 'addnew') {

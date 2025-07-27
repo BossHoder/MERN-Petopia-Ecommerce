@@ -859,7 +859,19 @@
                 "totalVariants": "Tổng Biến Thể",
                 "activeVariants": "Hoạt Động",
                 "totalStock": "Tổng Tồn Kho",
-                "priceRange": "Khoảng Giá"
+                "priceRange": "Khoảng Giá",
+                "images": "Hình Ảnh Biến Thể",
+                "imageUpload": {
+                    "dropText": "Thả hình ảnh biến thể hoặc nhấp",
+                    "supportText": "Tối đa 3 hình, mỗi hình 5MB",
+                    "maxImagesError": "Tối đa 3 hình ảnh được phép cho mỗi biến thể",
+                    "invalidType": "Loại tệp không hợp lệ",
+                    "fileTooLarge": "Tệp quá lớn",
+                    "primary": "Chính",
+                    "new": "Mới",
+                    "moveLeft": "Di chuyển trái",
+                    "moveRight": "Di chuyển phải"
+                }
             }
         },
         "sort": {

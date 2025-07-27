@@ -840,7 +840,19 @@
                 "totalVariants": "Total Variants",
                 "activeVariants": "Active",
                 "totalStock": "Total Stock",
-                "priceRange": "Price Range"
+                "priceRange": "Price Range",
+                "images": "Variant Images",
+                "imageUpload": {
+                    "dropText": "Drop variant images or click",
+                    "supportText": "Max 3 images, 5MB each",
+                    "maxImagesError": "Maximum 3 images allowed per variant",
+                    "invalidType": "Invalid file type",
+                    "fileTooLarge": "File too large",
+                    "primary": "Primary",
+                    "new": "New",
+                    "moveLeft": "Move left",
+                    "moveRight": "Move right"
+                }
             }
         },
         "sort": {

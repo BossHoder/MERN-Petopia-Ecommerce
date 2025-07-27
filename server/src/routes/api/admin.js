@@ -43,8 +43,8 @@ router.get('/users/:id', adminController.getUserDetails);
 // Products Management (Enhanced)
 router.get('/products', adminController.getAllProductsAdmin);
 router.get('/products/:id', adminController.getProductById);
-router.post('/products', upload.array('images', 5), adminController.createProduct);
-router.put('/products/:id', upload.array('images', 5), adminController.updateProduct);
+router.post('/products', upload.any(), adminController.createProduct);
+router.put('/products/:id', upload.any(), adminController.updateProduct);
 router.delete('/products/:id', adminController.deleteProduct);
 router.post('/products/bulk-delete', adminController.bulkDeleteProducts);
 router.post('/products/bulk-update', adminController.bulkUpdateProducts);

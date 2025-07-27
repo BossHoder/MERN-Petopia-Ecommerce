@@ -15,7 +15,7 @@
 .variants-label {
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
 }
 
 .add-variant-btn {
@@ -23,7 +23,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--brand-orange, #FF6B35);
+    background: var(--brand-orange, #ff6b35);
     color: white;
     border: none;
     border-radius: 6px;
@@ -34,26 +34,26 @@
 }
 
 .add-variant-btn:hover {
-    background: var(--brand-orange-dark, #E55A2B);
+    background: var(--brand-orange-dark, #e55a2b);
 }
 
 .variants-error {
     font-size: 12px;
-    color: var(--danger, #DC2626);
+    color: var(--danger, #dc2626);
     margin-bottom: 8px;
     padding: 8px 12px;
-    background: var(--danger-light, #FEE2E2);
+    background: var(--danger-light, #fee2e2);
     border-radius: 6px;
-    border: 1px solid var(--danger, #DC2626);
+    border: 1px solid var(--danger, #dc2626);
 }
 
 /* No Variants State */
 .no-variants {
     text-align: center;
     padding: 48px 24px;
-    background: var(--bg-gray-50, #F9FAFB);
+    background: var(--bg-gray-50, #f9fafb);
     border-radius: 12px;
-    border: 2px dashed var(--border-light, #E5E7EB);
+    border: 2px dashed var(--border-light, #e5e7eb);
 }
 
 .no-variants-icon {
@@ -65,13 +65,13 @@
 .no-variants h3 {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     margin: 0 0 8px 0;
 }
 
 .no-variants p {
     font-size: 14px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     margin: 0;
     max-width: 400px;
     margin-left: auto;
@@ -86,8 +86,8 @@
 }
 
 .variant-card {
-    background: var(--bg-white, #FFFFFF);
-    border: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-white, #ffffff);
+    border: 1px solid var(--border-light, #e5e7eb);
     border-radius: 8px;
     overflow: hidden;
     transition: box-shadow 0.2s ease;
@@ -104,13 +104,13 @@
     align-items: center;
     padding: 16px 20px;
     cursor: pointer;
-    background: var(--bg-gray-50, #F9FAFB);
-    border-bottom: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-gray-50, #f9fafb);
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
     transition: background-color 0.2s ease;
 }
 
 .variant-header:hover {
-    background: var(--bg-gray-100, #F3F4F6);
+    background: var(--bg-gray-100, #f3f4f6);
 }
 
 .variant-summary {
@@ -129,7 +129,7 @@
 .variant-name {
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
 }
 
 .variant-status {
@@ -142,12 +142,12 @@
 }
 
 .variant-status.active {
-    background: var(--success-light, #D1FAE5);
-    color: var(--success-dark, #065F46);
+    background: var(--success-light, #d1fae5);
+    color: var(--success-dark, #065f46);
 }
 
 .variant-status.inactive {
-    background: var(--gray-light, #F3F4F6);
+    background: var(--gray-light, #f3f4f6);
     color: var(--gray-dark, #374151);
 }
 
@@ -160,15 +160,15 @@
 
 .variant-price {
     font-weight: 600;
-    color: var(--brand-orange, #FF6B35);
+    color: var(--brand-orange, #ff6b35);
 }
 
 .variant-stock {
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
 }
 
 .variant-sku {
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     font-family: 'Monaco', 'Menlo', monospace;
     font-size: 12px;
 }
@@ -194,28 +194,28 @@
 }
 
 .expand-btn {
-    background: var(--bg-gray-200, #E5E7EB);
-    color: var(--text-primary, #1F2937);
+    background: var(--bg-gray-200, #e5e7eb);
+    color: var(--text-primary, #1f2937);
 }
 
 .expand-btn:hover {
-    background: var(--bg-gray-300, #D1D5DB);
+    background: var(--bg-gray-300, #d1d5db);
 }
 
 .remove-variant-btn {
-    background: var(--danger-light, #FEE2E2);
-    color: var(--danger, #DC2626);
+    background: var(--danger-light, #fee2e2);
+    color: var(--danger, #dc2626);
 }
 
 .remove-variant-btn:hover {
-    background: var(--danger, #DC2626);
+    background: var(--danger, #dc2626);
     color: white;
 }
 
 /* Variant Form */
 .variant-form {
     padding: 20px;
-    background: var(--bg-white, #FFFFFF);
+    background: var(--bg-white, #ffffff);
 }
 
 .variant-form-grid {
@@ -234,26 +234,26 @@
 .form-label {
     font-size: 14px;
     font-weight: 500;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
 }
 
 .form-input {
     padding: 10px 12px;
-    border: 1px solid var(--border-light, #E5E7EB);
+    border: 1px solid var(--border-light, #e5e7eb);
     border-radius: 6px;
     font-size: 14px;
-    background: var(--bg-white, #FFFFFF);
+    background: var(--bg-white, #ffffff);
     transition: border-color 0.2s ease;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: var(--brand-orange, #FF6B35);
+    border-color: var(--brand-orange, #ff6b35);
     box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
 .form-input::placeholder {
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
 }
 
 /* SKU Input Group */
@@ -269,8 +269,8 @@
 .generate-sku-btn {
     width: 40px;
     height: 40px;
-    background: var(--bg-gray-100, #F3F4F6);
-    border: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-gray-100, #f3f4f6);
+    border: 1px solid var(--border-light, #e5e7eb);
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
@@ -281,7 +281,7 @@
 }
 
 .generate-sku-btn:hover {
-    background: var(--bg-gray-200, #E5E7EB);
+    background: var(--bg-gray-200, #e5e7eb);
 }
 
 /* Variant Attributes */
@@ -305,28 +305,37 @@
 .attribute-label {
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
 }
 
 .attribute-input {
     padding: 8px 10px;
-    border: 1px solid var(--border-light, #E5E7EB);
+    border: 1px solid var(--border-light, #e5e7eb);
     border-radius: 4px;
     font-size: 13px;
-    background: var(--bg-white, #FFFFFF);
+    background: var(--bg-white, #ffffff);
     transition: border-color 0.2s ease;
 }
 
 .attribute-input:focus {
     outline: none;
-    border-color: var(--brand-orange, #FF6B35);
+    border-color: var(--brand-orange, #ff6b35);
     box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.1);
+}
+
+/* Variant Images Section */
+.variant-images-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-gray-50, #f9fafb);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #e5e7eb);
 }
 
 /* Variant Status Section */
 .variant-status-section {
     padding-top: 16px;
-    border-top: 1px solid var(--border-light, #E5E7EB);
+    border-top: 1px solid var(--border-light, #e5e7eb);
 }
 
 .form-checkbox {
@@ -338,21 +347,21 @@
 .checkbox {
     width: 18px;
     height: 18px;
-    accent-color: var(--brand-orange, #FF6B35);
+    accent-color: var(--brand-orange, #ff6b35);
 }
 
 .checkbox-label {
     font-size: 14px;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     cursor: pointer;
 }
 
 /* Variants Summary */
 .variants-summary {
     padding: 16px;
-    background: var(--bg-gray-50, #F9FAFB);
+    background: var(--bg-gray-50, #f9fafb);
     border-radius: 8px;
-    border: 1px solid var(--border-light, #E5E7EB);
+    border: 1px solid var(--border-light, #e5e7eb);
 }
 
 .summary-stats {
@@ -370,7 +379,7 @@
 
 .stat-label {
     font-size: 12px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -379,7 +388,7 @@
 .stat-value {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
 }
 
 /* Mobile Responsive */
@@ -429,7 +438,7 @@
 .expand-btn:focus,
 .remove-variant-btn:focus,
 .generate-sku-btn:focus {
-    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline: 2px solid var(--brand-orange, #ff6b35);
     outline-offset: 2px;
 }
 
