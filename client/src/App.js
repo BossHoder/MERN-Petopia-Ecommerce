@@ -75,123 +75,125 @@ const App = () => {
         <>
             <ToastDispatcher />
             {appLoaded ? (
-                <Layout>
-                    <Routes>
+                <Routes>
+                    {/* Admin Routes - Separate from main layout */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                <AdminLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<Dashboard />} />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="users" element={<Users />} />
+                        <Route path="products" element={<div>Admin Products - Coming Soon</div>} />
+                        <Route path="orders" element={<div>Admin Orders - Coming Soon</div>} />
                         <Route
-                            path="/login"
-                            element={
-                                <ProtectedRoute requireAuth={false}>
-                                    <Login />
-                                </ProtectedRoute>
-                            }
+                            path="categories"
+                            element={<div>Admin Categories - Coming Soon</div>}
                         />
                         <Route
-                            path="/register"
-                            element={
-                                <ProtectedRoute requireAuth={false}>
-                                    <Register />
-                                </ProtectedRoute>
-                            }
+                            path="analytics"
+                            element={<div>Admin Analytics - Coming Soon</div>}
                         />
-                        <Route path="/products" element={<Products />} />
-                        <Route path="/product/:id" element={<ProductDetails />} />
-                        <Route path="/category/:slug" element={<CategoryPage />} />
-                        <Route
-                            path="/category/:parentSlug/:categorySlug"
-                            element={<SubcategoryPage />}
-                        />
-                        <Route
-                            path="/users"
-                            element={
-                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                                    <Users />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route path="/notfound" element={<NotFound />} />
+                        <Route path="settings" element={<div>Admin Settings - Coming Soon</div>} />
+                    </Route>
 
-                        {/* Admin Routes with AdminLayout */}
-                        <Route
-                            path="/admin"
-                            element={
-                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                                    <AdminLayout />
-                                </ProtectedRoute>
-                            }
-                        >
-                            <Route index element={<Dashboard />} />
-                            <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="users" element={<Users />} />
-                            <Route
-                                path="products"
-                                element={<div>Admin Products - Coming Soon</div>}
-                            />
-                            <Route path="orders" element={<div>Admin Orders - Coming Soon</div>} />
-                            <Route
-                                path="categories"
-                                element={<div>Admin Categories - Coming Soon</div>}
-                            />
-                            <Route
-                                path="analytics"
-                                element={<div>Admin Analytics - Coming Soon</div>}
-                            />
-                            <Route
-                                path="settings"
-                                element={<div>Admin Settings - Coming Soon</div>}
-                            />
-                        </Route>
+                    {/* Customer-facing Routes - Wrapped in main Layout */}
+                    <Route
+                        path="/*"
+                        element={
+                            <Layout>
+                                <Routes>
+                                    <Route
+                                        path="/login"
+                                        element={
+                                            <ProtectedRoute requireAuth={false}>
+                                                <Login />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/register"
+                                        element={
+                                            <ProtectedRoute requireAuth={false}>
+                                                <Register />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route path="/products" element={<Products />} />
+                                    <Route path="/product/:id" element={<ProductDetails />} />
+                                    <Route path="/category/:slug" element={<CategoryPage />} />
+                                    <Route
+                                        path="/category/:parentSlug/:categorySlug"
+                                        element={<SubcategoryPage />}
+                                    />
+                                    <Route
+                                        path="/users"
+                                        element={
+                                            <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                                <Users />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route path="/notfound" element={<NotFound />} />
 
-                        {/* Legacy admin route for backward compatibility */}
-                        <Route
-                            path="/admin-legacy"
-                            element={
-                                <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                                    <Admin />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route
-                            path="/order/:id"
-                            element={
-                                <ProtectedRoute requireAuth={true}>
-                                    <OrderDetails />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/profile"
-                            element={
-                                <ProtectedRoute requireAuth={true}>
-                                    <Profile />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/:username"
-                            element={
-                                <ProtectedRoute requireAuth={true}>
-                                    <Profile />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route path="/" element={<Home />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                    <ToastContainer
-                        position="top-right"
-                        autoClose={3000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="colored"
+                                    {/* Legacy admin route for backward compatibility */}
+                                    <Route
+                                        path="/admin-legacy"
+                                        element={
+                                            <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                                                <Admin />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route path="/cart" element={<Cart />} />
+                                    <Route path="/checkout" element={<Checkout />} />
+                                    <Route
+                                        path="/order/:id"
+                                        element={
+                                            <ProtectedRoute requireAuth={true}>
+                                                <OrderDetails />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/profile"
+                                        element={
+                                            <ProtectedRoute requireAuth={true}>
+                                                <Profile />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path="/:username"
+                                        element={
+                                            <ProtectedRoute requireAuth={true}>
+                                                <Profile />
+                                            </ProtectedRoute>
+                                        }
+                                    />
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="*" element={<NotFound />} />
+                                </Routes>
+                                <ToastContainer
+                                    position="top-right"
+                                    autoClose={3000}
+                                    hideProgressBar={false}
+                                    newestOnTop={false}
+                                    closeOnClick
+                                    rtl={false}
+                                    pauseOnFocusLoss
+                                    draggable
+                                    pauseOnHover
+                                    theme="colored"
+                                />
+                            </Layout>
+                        }
                     />
-                </Layout>
+                </Routes>
             ) : (
                 <Loader />
             )}

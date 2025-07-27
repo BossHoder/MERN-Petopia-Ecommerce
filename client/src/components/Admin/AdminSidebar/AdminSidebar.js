@@ -10,7 +10,7 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
     const menuItems = [
         {
             id: 'dashboard',
-            label: t('admin.dashboard', 'Dashboard'),
+            label: t('admin.dashboard.title', 'Dashboard'),
             path: '/admin/dashboard',
             icon: '📊',
         },
