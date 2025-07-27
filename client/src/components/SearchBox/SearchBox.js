@@ -2,9 +2,11 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { fetchProductSuggestions } from '../../store/actions/productActions';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import './SearchBox.css';
 
 const SearchBox = () => {
+    const { t } = useTranslation();
     const [keyword, setKeyword] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -125,14 +127,14 @@ const SearchBox = () => {
                 value={keyword}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Search for products, categories..."
+                placeholder={t('search.placeholder')}
                 autoComplete="off"
             />
             {(suggestions.length > 0 || isLoading) && (
                 <ul className="suggestion-list">
                     {isLoading ? (
                         <li className="loading-item">
-                            <span>Searching...</span>
+                            <span>{t('search.searching')}</span>
                         </li>
                     ) : (
                         suggestions.map((s, index) => (

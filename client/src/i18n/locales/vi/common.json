@@ -99,7 +99,15 @@
         "description": "Mô tả",
         "category": "Danh mục",
         "brand": "Thương hiệu",
-        "rating": "Đánh giá"
+        "rating": "Đánh giá",
+        "of": "trong",
+        "results": "kết quả",
+        "sortBy": "Sắp xếp theo",
+        "listView": "Xem dạng danh sách",
+        "gridView": "Xem dạng lưới",
+        "noProductsFound": "Không tìm thấy sản phẩm",
+        "adjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc tiêu chí tìm kiếm để tìm thấy những gì bạn đang tìm kiếm.",
+        "clearAllFilters": "Xóa tất cả bộ lọc"
     },
     "names": {
         "premiumDryDogFoodChickenRice": "Thức ăn khô cao cấp cho chó - Gà & Gạo lứt",
@@ -525,7 +533,12 @@
         "priceRange": "Khoảng giá",
         "min": "Tối thiểu",
         "max": "Tối đa",
-        "applyFilters": "Áp dụng bộ lọc"
+        "applyFilters": "Áp dụng bộ lọc",
+        "scrollToSeeMore": "Cuộn để xem thêm danh mục",
+        "brand": "Thương hiệu",
+        "rating": "Đánh giá",
+        "customerRating": "Đánh giá khách hàng",
+        "specialDiet": "Chế độ ăn đặc biệt"
     },
     "profile": {
         "tabs": {
@@ -626,5 +639,146 @@
         "writeMessage": "Viết tin nhắn",
         "placeholder": "Viết tin nhắn",
         "addMessage": "Thêm tin nhắn"
+    },
+    "footer": {
+        "aboutUs": "Giới thiệu",
+        "contact": "Liên hệ",
+        "faq": "Câu hỏi thường gặp",
+        "privacyPolicy": "Chính sách bảo mật",
+        "termsOfService": "Điều khoản dịch vụ",
+        "copyright": "© 2024 Petopia. Tất cả quyền được bảo lưu.",
+        "socialMedia": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
+    },
+    "search": {
+        "placeholder": "Tìm kiếm sản phẩm, danh mục...",
+        "searching": "Đang tìm kiếm...",
+        "noResults": "Không tìm thấy kết quả",
+        "suggestions": "Gợi ý"
+    },
+    "auth": {
+        "login": {
+            "title": "Chào mừng trở lại!",
+            "subtitle": "Đăng nhập để tiếp tục vào tài khoản của bạn.",
+            "email": "Địa chỉ Email",
+            "emailPlaceholder": "you@example.com",
+            "password": "Mật khẩu",
+            "passwordPlaceholder": "••••••••",
+            "forgotPassword": "Quên mật khẩu?",
+            "submit": "Đăng nhập",
+            "submitting": "Đang đăng nhập...",
+            "socialLogin": "Hoặc tiếp tục với",
+            "google": "Google",
+            "facebook": "Facebook",
+            "noAccount": "Chưa có tài khoản?",
+            "signUp": "Đăng ký"
+        },
+        "register": {
+            "title": "Tham gia gia đình Petopia!",
+            "subtitle": "Tạo tài khoản và khám phá mọi thứ thú cưng của bạn cần.",
+            "createAccount": "Tạo tài khoản của bạn",
+            "fullName": "Họ và tên",
+            "fullNamePlaceholder": "Họ và tên",
+            "username": "Tên người dùng",
+            "usernamePlaceholder": "Tên người dùng",
+            "email": "Địa chỉ Email",
+            "emailPlaceholder": "you@example.com",
+            "password": "Mật khẩu",
+            "passwordPlaceholder": "••••••••",
+            "confirmPassword": "Xác nhận mật khẩu",
+            "confirmPasswordPlaceholder": "••••••••",
+            "submit": "Tạo tài khoản",
+            "submitting": "Đang tạo tài khoản...",
+            "hasAccount": "Đã có tài khoản?",
+            "signIn": "Đăng nhập"
+        },
+        "hero": {
+            "welcomeTitle": "Chào mừng đến với Petopia",
+            "welcomeSubtitle": "Cửa hàng một cửa cho mọi thứ thú cưng của bạn cần."
+        }
+    },
+    "validation": {
+        "email": {
+            "invalid": "Địa chỉ email không hợp lệ",
+            "required": "Email là bắt buộc",
+            "minLength": "Email phải có ít nhất 5 ký tự",
+            "maxLength": "Email phải có tối đa 255 ký tự"
+        },
+        "password": {
+            "required": "Mật khẩu là bắt buộc",
+            "minLength": "Mật khẩu phải có ít nhất 6 ký tự",
+            "maxLength": "Mật khẩu phải có tối đa 255 ký tự",
+            "weak": "Mật khẩu quá yếu"
+        },
+        "name": {
+            "required": "Tên là bắt buộc",
+            "minLength": "Tên phải có ít nhất 2 ký tự",
+            "maxLength": "Tên phải có tối đa 50 ký tự"
+        },
+        "username": {
+            "required": "Tên người dùng là bắt buộc",
+            "minLength": "Tên người dùng phải có ít nhất 3 ký tự",
+            "maxLength": "Tên người dùng phải có tối đa 30 ký tự",
+            "invalid": "Tên người dùng chỉ có thể chứa chữ cái, số và dấu gạch dưới"
+        },
+        "confirmPassword": {
+            "required": "Vui lòng xác nhận mật khẩu",
+            "match": "Mật khẩu phải khớp"
+        },
+        "message": {
+            "required": "Tin nhắn là bắt buộc",
+            "minLength": "Tin nhắn phải có ít nhất 5 ký tự",
+            "maxLength": "Tin nhắn phải có tối đa 300 ký tự"
+        }
+    },
+    "newsletter": {
+        "title": "Đăng ký nhận tin",
+        "description": "Nhận thông tin khuyến mãi và tips chăm sóc thú cưng mới nhất",
+        "placeholder": "Nhập email của bạn...",
+        "subscribe": "Đăng ký",
+        "submitting": "Đang đăng ký...",
+        "success": "Cảm ơn bạn đã đăng ký!"
+    },
+    "brandPromise": {
+        "title": "Tại sao chọn Petopia?",
+        "subtitle": "Cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn và thú cưng",
+        "safety": {
+            "title": "An toàn & Chất lượng",
+            "desc": "Tất cả sản phẩm được kiểm tra chất lượng nghiêm ngặt"
+        },
+        "delivery": {
+            "title": "Giao hàng nhanh",
+            "desc": "Giao hàng toàn quốc trong 1-3 ngày"
+        },
+        "support": {
+            "title": "Hỗ trợ 24/7",
+            "desc": "Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ"
+        },
+        "reviews": {
+            "title": "Đánh giá tích cực",
+            "desc": "Hàng ngàn khách hàng hài lòng và tin tưởng"
+        }
+    },
+    "productCard": {
+        "addToWishlist": "Thêm vào yêu thích",
+        "outOfStock": "Hết hàng",
+        "reviews": "đánh giá"
+    },
+    "wishlist": {
+        "addToWishlist": "Thêm vào yêu thích",
+        "removeFromWishlist": "Xóa khỏi yêu thích",
+        "addedToWishlist": "Đã thêm vào yêu thích",
+        "removedFromWishlist": "Đã xóa khỏi yêu thích"
+    },
+    "breadcrumb": {
+        "cartNavigation": "Điều hướng giỏ hàng",
+        "productNavigation": "Điều hướng sản phẩm",
+        "categoryNavigation": "Điều hướng danh mục",
+        "checkoutNavigation": "Điều hướng thanh toán",
+        "navigation": "Điều hướng breadcrumb",
+        "goTo": "Đi tới"
     }
 }

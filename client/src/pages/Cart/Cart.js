@@ -43,7 +43,7 @@ const Cart = () => {
     };
 
     const handleCheckout = () => {
-        navigate('/checkout'); // Sẽ tạo trang này sau
+        navigate('/checkout');
     };
 
     const subtotal = items.reduce((acc, item) => acc + item.quantity * item.price, 0);
@@ -53,19 +53,19 @@ const Cart = () => {
             {/* Breadcrumb Navigation */}
             <BreadcrumbNavigation
                 items={breadcrumbItems}
-                ariaLabel={t('breadcrumb.cartNavigation', 'Cart navigation')}
+                ariaLabel={t('breadcrumb.cartNavigation')}
             />
 
-            <h1>{t('cart.title', 'Shopping Cart')}</h1>
+            <h1>{t('cart.title')}</h1>
             {loading ? (
                 <Loader />
             ) : error ? (
                 <Message type="error">{error}</Message>
             ) : items.length === 0 ? (
                 <div className="cart-empty">
-                    <p>{t('cart.empty', 'Your cart is empty.')}</p>
+                    <p>{t('cart.empty')}</p>
                     <Link to="/" className="btn btn-primary">
-                        {t('cart.goShopping', 'Go Shopping')}
+                        {t('cart.goShopping')}
                     </Link>
                 </div>
             ) : (
@@ -83,7 +83,7 @@ const Cart = () => {
                                         {item.product.name}
                                     </Link>
                                     <p>
-                                        {t('cart.price', 'Price')}: ${item.price.toFixed(2)}
+                                        {t('cart.price')}: ${item.price.toFixed(2)}
                                     </p>
                                 </div>
                                 <div className="cart-item-actions">
@@ -115,7 +115,7 @@ const Cart = () => {
                                         className="remove-btn"
                                         onClick={() => handleRemoveItem(item.product._id)}
                                     >
-                                        {t('cart.remove', 'Remove')}
+                                        {t('cart.remove')}
                                     </button>
                                 </div>
                             </div>
@@ -123,22 +123,22 @@ const Cart = () => {
                     </div>
 
                     <div className="cart-summary">
-                        <h2>{t('cart.summaryTitle', 'Order Summary')}</h2>
+                        <h2>{t('cart.summaryTitle')}</h2>
                         <div className="summary-row">
                             <span>
-                                {t('cart.subtotal', 'Subtotal')} (
+                                {t('cart.subtotal')} (
                                 {items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
-                                {t('cart.items', 'items')})
+                                {t('cart.items')})
                             </span>
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
                         {/* Logic for shipping, tax, etc. can be added here */}
                         <div className="summary-total">
-                            <span>{t('cart.total', 'Total')}</span>
+                            <span>{t('cart.total')}</span>
                             <span>${subtotal.toFixed(2)}</span>
                         </div>
                         <button className="btn btn-primary btn-block" onClick={handleCheckout}>
-                            {t('cart.checkout', 'Proceed to Checkout')}
+                            {t('cart.checkout')}
                         </button>
                     </div>
                 </div>

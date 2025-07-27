@@ -10,23 +10,23 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
         phoneNumber: initialData.phoneNumber || '',
         address: initialData.address || '',
         city: initialData.city || '',
-        ...initialData
+        ...initialData,
     });
 
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
-        
+
         // Clear error when user starts typing
         if (errors[name]) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ''
+                [name]: '',
             }));
         }
     };
@@ -35,23 +35,23 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
         const newErrors = {};
 
         if (!formData.fullName.trim()) {
-            newErrors.fullName = t('checkout.guest.errors.fullNameRequired', 'Full name is required');
+            newErrors.fullName = t('checkout.guest.errors.fullNameRequired');
         }
 
         if (!formData.email.trim()) {
-            newErrors.email = t('checkout.guest.errors.emailRequired', 'Email is required');
+            newErrors.email = t('checkout.guest.errors.emailRequired');
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = t('checkout.guest.errors.emailInvalid', 'Email is invalid');
+            newErrors.email = t('checkout.guest.errors.emailInvalid');
         }
 
         if (!formData.phoneNumber.trim()) {
-            newErrors.phoneNumber = t('checkout.guest.errors.phoneRequired', 'Phone number is required');
+            newErrors.phoneNumber = t('checkout.guest.errors.phoneRequired');
         } else if (!/^[0-9]{10}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
-            newErrors.phoneNumber = t('checkout.guest.errors.phoneInvalid', 'Phone number must be 10 digits');
+            newErrors.phoneNumber = t('checkout.guest.errors.phoneInvalid');
         }
 
         if (!formData.address.trim()) {
-            newErrors.address = t('checkout.guest.errors.addressRequired', 'Address is required');
+            newErrors.address = t('checkout.guest.errors.addressRequired');
         }
 
         setErrors(newErrors);
@@ -67,13 +67,11 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
 
     return (
         <div className="guest-checkout-form">
-            <h3>{t('checkout.guest.title', 'Guest Checkout Information')}</h3>
+            <h3>{t('checkout.guest.title')}</h3>
             <form onSubmit={handleSubmit}>
                 <div className="form-row">
                     <div className="form-group">
-                        <label htmlFor="fullName">
-                            {t('checkout.guest.fullName', 'Full Name')} *
-                        </label>
+                        <label htmlFor="fullName">{t('checkout.guest.fullName')} *</label>
                         <input
                             type="text"
                             id="fullName"
@@ -81,15 +79,15 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
                             value={formData.fullName}
                             onChange={handleChange}
                             className={errors.fullName ? 'error' : ''}
-                            placeholder={t('checkout.guest.fullNamePlaceholder', 'Enter your full name')}
+                            placeholder={t('checkout.guest.fullNamePlaceholder')}
                         />
-                        {errors.fullName && <span className="error-message">{errors.fullName}</span>}
+                        {errors.fullName && (
+                            <span className="error-message">{errors.fullName}</span>
+                        )}
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="email">
-                            {t('checkout.guest.email', 'Email Address')} *
-                        </label>
+                        <label htmlFor="email">{t('checkout.guest.email')} *</label>
                         <input
                             type="email"
                             id="email"
@@ -97,7 +95,7 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
                             value={formData.email}
                             onChange={handleChange}
                             className={errors.email ? 'error' : ''}
-                            placeholder={t('checkout.guest.emailPlaceholder', 'Enter your email')}
+                            placeholder={t('checkout.guest.emailPlaceholder')}
                         />
                         {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
@@ -105,9 +103,7 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
 
                 <div className="form-row">
                     <div className="form-group">
-                        <label htmlFor="phoneNumber">
-                            {t('checkout.guest.phoneNumber', 'Phone Number')} *
-                        </label>
+                        <label htmlFor="phoneNumber">{t('checkout.guest.phoneNumber')} *</label>
                         <input
                             type="tel"
                             id="phoneNumber"
@@ -115,37 +111,35 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
                             value={formData.phoneNumber}
                             onChange={handleChange}
                             className={errors.phoneNumber ? 'error' : ''}
-                            placeholder={t('checkout.guest.phonePlaceholder', 'Enter your phone number')}
+                            placeholder={t('checkout.guest.phonePlaceholder')}
                         />
-                        {errors.phoneNumber && <span className="error-message">{errors.phoneNumber}</span>}
+                        {errors.phoneNumber && (
+                            <span className="error-message">{errors.phoneNumber}</span>
+                        )}
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="city">
-                            {t('checkout.guest.city', 'City')}
-                        </label>
+                        <label htmlFor="city">{t('checkout.guest.city')}</label>
                         <input
                             type="text"
                             id="city"
                             name="city"
                             value={formData.city}
                             onChange={handleChange}
-                            placeholder={t('checkout.guest.cityPlaceholder', 'Enter your city')}
+                            placeholder={t('checkout.guest.cityPlaceholder')}
                         />
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="address">
-                        {t('checkout.guest.address', 'Shipping Address')} *
-                    </label>
+                    <label htmlFor="address">{t('checkout.guest.address')} *</label>
                     <textarea
                         id="address"
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
                         className={errors.address ? 'error' : ''}
-                        placeholder={t('checkout.guest.addressPlaceholder', 'Enter your full shipping address')}
+                        placeholder={t('checkout.guest.addressPlaceholder')}
                         rows="3"
                     />
                     {errors.address && <span className="error-message">{errors.address}</span>}
@@ -153,7 +147,7 @@ const GuestCheckoutForm = ({ onSubmit, initialData = {} }) => {
 
                 <div className="guest-checkout-actions">
                     <button type="submit" className="btn btn-primary">
-                        {t('checkout.guest.continue', 'Continue to Payment')}
+                        {t('checkout.guest.continue')}
                     </button>
                 </div>
             </form>

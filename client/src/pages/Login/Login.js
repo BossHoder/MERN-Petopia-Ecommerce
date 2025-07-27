@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 import { loginUserWithEmail } from '../../store/actions/authActions';
 import { FACEBOOK_AUTH_LINK, GOOGLE_AUTH_LINK } from '../../constants';
-import { loginSchema } from './validation';
+import { getLoginSchema } from './validation';
 import { useI18n } from '../../hooks/useI18n';
 import './styles.css';
 
@@ -22,7 +22,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
             email: '',
             password: '',
         },
-        validationSchema: loginSchema,
+        validationSchema: getLoginSchema(t),
         onSubmit: (values) => {
             // Tạo custom navigate function với redirect path
             const customNavigate = (path) => {
@@ -44,10 +44,8 @@ const Login = ({ auth, loginUserWithEmail }) => {
             <div className="hero-section">
                 <div className="hero-overlay">
                     <div className="hero-content">
-                        <h1 className="hero-title">Welcome to Petopia</h1>
-                        <p className="hero-subtitle">
-                            Your one-stop shop for everything your pet needs.
-                        </p>
+                        <h1 className="hero-title">{t('auth.hero.welcomeTitle')}</h1>
+                        <p className="hero-subtitle">{t('auth.hero.welcomeSubtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -56,14 +54,14 @@ const Login = ({ auth, loginUserWithEmail }) => {
             <div className="form-section">
                 <div className="form-container">
                     <div className="login-card">
-                        <h2 className="login-title">Welcome Back!</h2>
-                        <p className="login-subtitle">Log in to continue to your account.</p>
+                        <h2 className="login-title">{t('auth.login.title')}</h2>
+                        <p className="login-subtitle">{t('auth.login.subtitle')}</p>
 
                         <form onSubmit={formik.handleSubmit} noValidate className="petopia-form">
                             {/* Email Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="email">
-                                    Email Address
+                                    {t('auth.login.email')}
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -72,7 +70,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder="you@example.com"
+                                    placeholder={t('auth.login.emailPlaceholder')}
                                     value={formik.values.email}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -93,10 +91,10 @@ const Login = ({ auth, loginUserWithEmail }) => {
                             <div className="form-group">
                                 <div className="password-header">
                                     <label className="form-label" htmlFor="password">
-                                        Password
+                                        {t('auth.login.password')}
                                     </label>
                                     <Link to="/forgot-password" className="forgot-link">
-                                        Forgot Password?
+                                        {t('auth.login.forgotPassword')}
                                     </Link>
                                 </div>
                                 <input
@@ -108,7 +106,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t('auth.login.passwordPlaceholder')}
                                     value={formik.values.password}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -149,7 +147,11 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                 type="submit"
                                 className={`btn-primary ${auth.isLoading ? 'loading' : ''}`}
                                 disabled={auth.isLoading}
-                                aria-label={auth.isLoading ? 'Logging in...' : 'Log In'}
+                                aria-label={
+                                    auth.isLoading
+                                        ? t('auth.login.submitting')
+                                        : t('auth.login.submit')
+                                }
                             >
                                 {auth.isLoading ? (
                                     <>
@@ -174,10 +176,10 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                                 strokeWidth="4"
                                             />
                                         </svg>
-                                        Logging in...
+                                        {t('auth.login.submitting')}
                                     </>
                                 ) : (
-                                    'Log In'
+                                    t('auth.login.submit')
                                 )}
                             </button>
 
@@ -199,7 +201,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                             {/* Divider */}
                             <div className="auth-divider">
                                 <div className="divider-line"></div>
-                                <span className="divider-text">Or continue with</span>
+                                <span className="divider-text">{t('auth.login.socialLogin')}</span>
                                 <div className="divider-line"></div>
                             </div>
 
@@ -208,35 +210,35 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                 <a
                                     className="btn-social"
                                     href={GOOGLE_AUTH_LINK}
-                                    aria-label="Continue with Google"
+                                    aria-label={`Continue with ${t('auth.login.google')}`}
                                 >
                                     <img
-                                        alt="Google"
+                                        alt={t('auth.login.google')}
                                         className="social-icon"
                                         src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjU2IDEyLjI1YzAtLjc4LS4wNy0xLjUzLS4yLTIuMjVIMTJ2NC4yNmg1LjkyYy0uMjYgMS4zNy0xLjA0IDIuNTMtMi4yMSAzLjMxdjIuNzdoMy41N2MyLjA4LTEuOTIgMy4yOC00Ljc0IDMuMjgtOC4wOXoiIGZpbGw9IiM0Mjg1RjQiLz4KPHBhdGggZD0iTTEyIDIzYzIuOTcgMCA1LjQ2LS45OCA3LjI4LTIuNjZsLTMuNTctMi43N2MtLjk4LjY2LTIuMjMgMS4wNi0zLjcxIDEuMDYtMi44NiAwLTUuMjktMS45My02LjE2LTQuNTNIMi4xOHYyLjg0QzMuOTkgMjAuNTMgNy43IDIzIDEyIDIzeiIgZmlsbD0iIzM0QTg1MyIvPgo8cGF0aCBkPSJNNS44NCAxNC4wOWMtLjIyLS42Ni0uMzUtMS4zNi0uMzUtMi4wOXMuMTMtMS40My4zNS0yLjA5VjcuMDdIMi4xOEMxLjQzIDguNTUgMSAxMC4yMiAxIDEyczQuNDMgMy40NSAxLjE4IDQuOTNsMi44NS0yLjIyLjgxLS42MnoiIGZpbGw9IiNGQkJDMDQiLz4KPHBhdGggZD0iTTEyIDUuMzhjMS42MiAwIDMuMDYuNTYgNC4yMSAxLjY0bDMuMTUtMy4xNUMxNy40NSAyLjA5IDE0Ljk3IDEgMTIgMSA3LjcgMSAzLjk5IDMuNDcgMi4xOCA3LjA3bDMuNjYgMi44NGMuODctMi42IDMuMy00LjUzIDYuMTYtNC41M3oiIGZpbGw9IiNFQTQzMzUiLz4KPC9zdmc+"
                                     />
-                                    Google
+                                    {t('auth.login.google')}
                                 </a>
                                 <a
                                     className="btn-social"
                                     href={FACEBOOK_AUTH_LINK}
-                                    aria-label="Continue with Facebook"
+                                    aria-label={`Continue with ${t('auth.login.facebook')}`}
                                 >
                                     <img
-                                        alt="Facebook"
+                                        alt={t('auth.login.facebook')}
                                         className="social-icon"
                                         src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzE4NzdGMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTI0IDEyLjA3M2MwLTYuNjI3LTUuMzczLTEyLTEyLTEyczEyIDUuMzczIDEyIDEyYzAgNS45OS00LjM4OCAxMC45NTQtMTAuMTI1IDExLjg1NHYtOC4zODVINy4wNzh2LTMuNDdoMy4wNDdWOS40M2MwLTMuMDA3IDEuNzkyLTQuNjY5IDQuNTMzLTQuNjY5IDEuMzEyIDAgMi42ODYuMjM1IDIuNjg2LjIzNXYyLjk1M0gxNS44M2MtMS40OTEgMC0xLjk1Ni45MjUtMS45NTYgMS44NzR2Mi4yNWgzLjMyOGwtLjUzMiAzLjQ3aC0yLjc5NnY4LjM4NUMxOS42MTIgMjMuMDI3IDI0IDE4LjA2MiAyNCAxMi4wNzN6Ii8+Cjwvc3ZnPg=="
                                     />
-                                    Facebook
+                                    {t('auth.login.facebook')}
                                 </a>
                             </div>
                         </form>
 
                         {/* Footer */}
                         <p className="auth-footer">
-                            Don't have an account?{' '}
+                            {t('auth.login.noAccount')}{' '}
                             <Link to="/register" className="auth-link">
-                                Sign up
+                                {t('auth.login.signUp')}
                             </Link>
                         </p>
                     </div>

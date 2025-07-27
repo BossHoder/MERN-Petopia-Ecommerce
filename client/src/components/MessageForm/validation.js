@@ -1,8 +1,10 @@
 import * as Yup from 'yup';
 
-export const messageFormSchema = Yup.object({
-    text: Yup.string()
-        .min(5, 'Must be 5 characters at minimum')
-        .max(300, 'Must be 300 characters or less')
-        .required('Required'),
-});
+export const getMessageFormSchema = (t) => {
+    return Yup.object({
+        text: Yup.string()
+            .min(5, t('validation.message.minLength'))
+            .max(300, t('validation.message.maxLength'))
+            .required(t('validation.message.required')),
+    });
+};

@@ -9,35 +9,26 @@ const BrandPromise = () => {
         {
             id: 'safety',
             icon: '🛡️',
-            title: t('brandPromise.safety.title', 'An Toàn & Chất Lượng'),
-            description: t(
-                'brandPromise.safety.desc',
-                'Tất cả sản phẩm được kiểm tra chất lượng nghiêm ngặt',
-            ),
+            title: t('brandPromise.safety.title'),
+            description: t('brandPromise.safety.desc'),
         },
         {
             id: 'delivery',
             icon: '🚚',
-            title: t('brandPromise.delivery.title', 'Giao Hàng Nhanh'),
-            description: t('brandPromise.delivery.desc', 'Giao hàng toàn quốc trong 1-3 ngày'),
+            title: t('brandPromise.delivery.title'),
+            description: t('brandPromise.delivery.desc'),
         },
         {
             id: 'support',
             icon: '💬',
-            title: t('brandPromise.support.title', 'Hỗ Trợ 24/7'),
-            description: t(
-                'brandPromise.support.desc',
-                'Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ',
-            ),
+            title: t('brandPromise.support.title'),
+            description: t('brandPromise.support.desc'),
         },
         {
             id: 'reviews',
             icon: '⭐',
-            title: t('brandPromise.reviews.title', 'Đánh Giá Tích Cực'),
-            description: t(
-                'brandPromise.reviews.desc',
-                'Hàng ngàn khách hàng hài lòng và tin tưởng',
-            ),
+            title: t('brandPromise.reviews.title'),
+            description: t('brandPromise.reviews.desc'),
         },
     ];
 
@@ -45,15 +36,8 @@ const BrandPromise = () => {
         <section className="brand-promise">
             <div className="brand-promise-container">
                 <div className="brand-promise-header">
-                    <h2 className="brand-promise-title">
-                        {t('brandPromise.title', 'Tại Sao Chọn Petopia?')}
-                    </h2>
-                    <p className="brand-promise-subtitle">
-                        {t(
-                            'brandPromise.subtitle',
-                            'Cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn và thú cưng',
-                        )}
-                    </p>
+                    <h2 className="brand-promise-title">{t('brandPromise.title')}</h2>
+                    <p className="brand-promise-subtitle">{t('brandPromise.subtitle')}</p>
                 </div>
 
                 <div className="brand-promise-grid">

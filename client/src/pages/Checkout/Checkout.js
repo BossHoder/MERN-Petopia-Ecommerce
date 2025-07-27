@@ -232,27 +232,27 @@ const Checkout = () => {
             {/* Breadcrumb Navigation */}
             <BreadcrumbNavigation
                 items={breadcrumbItems}
-                ariaLabel={t('breadcrumb.checkoutNavigation', 'Checkout navigation')}
+                ariaLabel={t('breadcrumb.checkoutNavigation')}
             />
-            <h1>{t('checkout.title', 'Checkout')}</h1>
+            <h1>{t('checkout.title')}</h1>
             {orderLoading && <Loader />}
             {error && <Notification type="error">{error}</Notification>} {/* Sửa component */}
             <div className="checkout-steps">
                 <div className={currentStep >= 1 ? 'step active' : 'step'}>
-                    {t('checkout.steps.shipping', 'Shipping')}
+                    {t('checkout.steps.shipping')}
                 </div>
                 <div className={currentStep >= 2 ? 'step active' : 'step'}>
-                    {t('checkout.steps.payment', 'Payment')}
+                    {t('checkout.steps.payment')}
                 </div>
                 <div className={currentStep >= 3 ? 'step active' : 'step'}>
-                    {t('checkout.steps.placeOrder', 'Place Order')}
+                    {t('checkout.steps.placeOrder')}
                 </div>
             </div>
             <div className="checkout-content">
                 <div className="checkout-form">
                     {currentStep === 1 && (
                         <div>
-                            <h2>{t('checkout.shippingAddress', 'Shipping Address')}</h2>
+                            <h2>{t('checkout.shippingAddress')}</h2>
 
                             {!isAuthenticated ? (
                                 // Guest checkout form
@@ -310,7 +310,7 @@ const Checkout = () => {
                                     )}
                                     <form onSubmit={submitAddressHandler}>
                                         <div className="form-group">
-                                            <label>{t('checkout.address', 'Address')}</label>
+                                            <label>{t('checkout.address')}</label>
                                             <input
                                                 type="text"
                                                 name="address"
@@ -319,7 +319,7 @@ const Checkout = () => {
                                                 required
                                                 readOnly
                                             />
-                                            <label>{t('checkout.phone', 'Phone')}</label>
+                                            <label>{t('checkout.phone')}</label>
                                             <input
                                                 type="text"
                                                 name="phone"
@@ -330,7 +330,7 @@ const Checkout = () => {
                                             />
                                         </div>
                                         <button type="submit" className="btn btn-primary">
-                                            {t('checkout.continue', 'Continue')}
+                                            {t('checkout.continue')}
                                         </button>
                                     </form>
                                 </>
@@ -340,7 +340,7 @@ const Checkout = () => {
 
                     {currentStep === 2 && (
                         <div>
-                            <h2>{t('checkout.paymentMethod', 'Payment Method')}</h2>
+                            <h2>{t('checkout.paymentMethod')}</h2>
                             <form onSubmit={submitPaymentHandler}>
                                 <div className="form-group">
                                     <input
@@ -351,9 +351,7 @@ const Checkout = () => {
                                         checked={paymentMethod === 'COD'}
                                         onChange={(e) => setPaymentMethod(e.target.value)}
                                     />
-                                    <label htmlFor="cod">
-                                        {t('checkout.cod', 'Cash on Delivery (COD)')}
-                                    </label>
+                                    <label htmlFor="cod">{t('checkout.cod')}</label>
                                 </div>
                                 <div className="form-group">
                                     <input
@@ -364,12 +362,10 @@ const Checkout = () => {
                                         checked={paymentMethod === 'PayPal'}
                                         onChange={(e) => setPaymentMethod(e.target.value)}
                                     />
-                                    <label htmlFor="paypal">
-                                        {t('checkout.paypal', 'PayPal or Credit Card')}
-                                    </label>
+                                    <label htmlFor="paypal">{t('checkout.paypal')}</label>
                                 </div>
                                 <button type="submit" className="btn btn-primary">
-                                    {t('checkout.continue', 'Continue')}
+                                    {t('checkout.continue')}
                                 </button>
                             </form>
                         </div>
@@ -377,34 +373,34 @@ const Checkout = () => {
 
                     {currentStep === 3 && (
                         <div>
-                            <h2>{t('checkout.confirmOrder', 'Confirm Order')}</h2>
-                            <p>{t('checkout.confirmMessage', 'Confirm your order')}</p>
+                            <h2>{t('checkout.confirmOrder')}</h2>
+                            <p>{t('checkout.confirmMessage')}</p>
                             <button
                                 onClick={placeOrderHandler}
                                 className="btn btn-primary btn-block"
                             >
-                                {t('checkout.steps.placeOrder', 'Place Order')}
+                                {t('checkout.steps.placeOrder')}
                             </button>
                         </div>
                     )}
                 </div>
 
                 <div className="checkout-summary">
-                    <h2>{t('cart.summaryTitle', 'Order Summary')}</h2>
+                    <h2>{t('cart.summaryTitle')}</h2>
                     <div className="summary-row">
-                        <span>{t('checkout.summary.items', 'Items')}:</span>
+                        <span>{t('checkout.summary.items')}:</span>
                         <span>${itemsPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
-                        <span>{t('checkout.summary.shipping', 'Shipping')}:</span>
+                        <span>{t('checkout.summary.shipping')}:</span>
                         <span>${shippingPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-row">
-                        <span>{t('checkout.summary.tax', 'Tax')}:</span>
+                        <span>{t('checkout.summary.tax')}:</span>
                         <span>${taxPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-total">
-                        <span>{t('cart.total', 'Total')}:</span>
+                        <span>{t('cart.total')}:</span>
                         <span>${totalPrice.toFixed(2)}</span>
                     </div>
                 </div>

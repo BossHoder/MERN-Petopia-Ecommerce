@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
                         className="wishlist-btn"
                         onClick={handleAddToWishlist}
                         tabIndex={-1}
-                        aria-label="Add to wishlist"
+                        aria-label={t('productCard.addToWishlist')}
                     >
                         {/* Heart SVG */}
                         <svg
@@ -95,7 +95,9 @@ const ProductCard = ({ product }) => {
                     {product.brand && <div className="product-brand">{product.brand}</div>}
                     <div className="product-rating">
                         <div className="stars">{renderStars(product.ratings || 0)}</div>
-                        <span className="rating-text">({product.numReviews || 0})</span>
+                        <span className="rating-text">
+                            ({product.numReviews || 0} {t('productCard.reviews')})
+                        </span>
                     </div>
                     <div className="product-price">
                         {product.salePrice ? (
@@ -138,9 +140,7 @@ const ProductCard = ({ product }) => {
                     <circle cx="20" cy="21" r="1" />
                     <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.59H6.5" />
                 </svg>
-                {product.inStock
-                    ? t('products.addToCart', 'Thêm vào giỏ')
-                    : t('products.outOfStock', 'Hết hàng')}
+                {product.inStock ? t('products.addToCart') : t('productCard.outOfStock')}
             </button>
         </div>
     );

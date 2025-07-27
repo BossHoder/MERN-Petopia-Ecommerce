@@ -46,9 +46,7 @@ const CategoryCards = () => {
         return (
             <section className="category-cards">
                 <div className="category-cards-container">
-                    <div className="category-error">
-                        {t('categories.error', 'Không thể tải danh mục. Vui lòng thử lại sau.')}
-                    </div>
+                    <div className="category-error">{t('categories.error')}</div>
                 </div>
             </section>
         );
@@ -57,7 +55,7 @@ const CategoryCards = () => {
     return (
         <section className="category-cards">
             <div className="category-cards-container">
-                <h2 className="category-cards-title">Shop by Category</h2>
+                <h2 className="category-cards-title">{t('categories.title')}</h2>
 
                 <div className="category-cards-grid">
                     {featuredCategories.map((category) => (

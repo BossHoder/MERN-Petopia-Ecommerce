@@ -7,7 +7,7 @@ import './BreadcrumbNavigation.css';
 /**
  * Enhanced Breadcrumb Navigation Component
  * WCAG 2.1 AA compliant with mobile-responsive design
- * 
+ *
  * @param {Array} items - Array of breadcrumb items
  * @param {string} separator - Separator between breadcrumb items
  * @param {boolean} showHome - Whether to show home link
@@ -28,7 +28,7 @@ const BreadcrumbNavigation = ({
     // Generate home item if showHome is true
     const homeItem = showHome
         ? {
-              name: t('navigation.home', 'Home'),
+              name: t('navigation.home'),
               path: '/',
               slug: '',
               current: false,
@@ -54,7 +54,7 @@ const BreadcrumbNavigation = ({
         : allItems;
 
     // Generate ARIA label
-    const defaultAriaLabel = t('breadcrumb.navigation', 'Breadcrumb navigation');
+    const defaultAriaLabel = t('breadcrumb.navigation');
     const navigationAriaLabel = ariaLabel || defaultAriaLabel;
 
     return (
@@ -96,7 +96,7 @@ const BreadcrumbNavigation = ({
                                     to={item.path}
                                     className="breadcrumb-link"
                                     itemProp="item"
-                                    title={`${t('breadcrumb.goTo', 'Go to')} ${item.name}`}
+                                    title={`${t('breadcrumb.goTo')} ${item.name}`}
                                 >
                                     <span itemProp="name">{item.name}</span>
                                 </Link>

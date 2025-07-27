@@ -24,15 +24,8 @@ const Hero = () => {
         <section className="hero">
             <div className="hero-container">
                 <div className="hero-content">
-                    <h1 className="hero-title">
-                        {t('hero.title', 'Find everything your pet needs')}
-                    </h1>
-                    <p className="hero-subtitle">
-                        {t(
-                            'hero.subtitle',
-                            'Quality products, expert advice, and a community that loves pets as much as you do.',
-                        )}
-                    </p>
+                    <h1 className="hero-title">{t('hero.title')}</h1>
+                    <p className="hero-subtitle">{t('hero.subtitle')}</p>
 
                     <form className="hero-search-form" onSubmit={handleSearch}>
                         <div className="hero-search-container">
@@ -54,16 +47,13 @@ const Hero = () => {
                             </span>
                             <input
                                 type="text"
-                                placeholder={t(
-                                    'hero.searchPlaceholder',
-                                    'Search for food, toys, treats...',
-                                )}
+                                placeholder={t('hero.searchPlaceholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="hero-search-input"
                             />
                             <button type="submit" className="hero-search-btn">
-                                {t('hero.search', 'Search')}
+                                {t('hero.search')}
                             </button>
                         </div>
                     </form>

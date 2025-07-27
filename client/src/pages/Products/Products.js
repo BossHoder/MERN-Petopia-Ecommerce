@@ -158,14 +158,12 @@ const Products = () => {
                     {/* Breadcrumb Navigation */}
                     <BreadcrumbNavigation
                         items={breadcrumbItems}
-                        ariaLabel={t('breadcrumb.productsNavigation', 'Products navigation')}
+                        ariaLabel={t('breadcrumb.productNavigation')}
                     />
                     {/* Header */}
                     <div className="products-header">
                         <div className="products-title-section">
-                            <h1 className="products-title">
-                                {t('products.title', 'Our Products')}
-                            </h1>
+                            <h1 className="products-title">{t('products.title')}</h1>
                             {pagination && (
                                 <p className="products-count">
                                     Showing {(pagination.currentPage - 1) * pagination.limit + 1}-
@@ -173,7 +171,8 @@ const Products = () => {
                                         pagination.currentPage * pagination.limit,
                                         pagination.totalProducts,
                                     )}{' '}
-                                    of {pagination.totalProducts} results
+                                    {t('products.of')} {pagination.totalProducts}{' '}
+                                    {t('products.results')}
                                 </p>
                             )}
                         </div>
@@ -181,7 +180,7 @@ const Products = () => {
                     {/* Controls */}
                     <div className="products-controls">
                         <div className="sort-controls">
-                            <span className="sort-label">Sort by:</span>
+                            <span className="sort-label">{t('products.sortBy')}:</span>
                             <div className="sort-buttons">
                                 {sortOptions.map((option) => (
                                     <button
@@ -200,14 +199,14 @@ const Products = () => {
                             <button
                                 className={`view-btn${viewMode === 'list' ? ' active' : ''}`}
                                 onClick={() => setViewMode('list')}
-                                title="List view"
+                                title={t('products.listView')}
                             >
                                 <ListIcon />
                             </button>
                             <button
                                 className={`view-btn${viewMode === 'grid' ? ' active' : ''}`}
                                 onClick={() => setViewMode('grid')}
-                                title="Grid view"
+                                title={t('products.gridView')}
                             >
                                 <GridIcon />
                             </button>
@@ -250,18 +249,15 @@ const Products = () => {
                         ) : (
                             <div className="no-products-found">
                                 <div className="no-products-icon">🐾</div>
-                                <h3>No products found</h3>
-                                <p>
-                                    Try adjusting your filters or search criteria to find what
-                                    you're looking for.
-                                </p>
+                                <h3>{t('products.noProductsFound')}</h3>
+                                <p>{t('products.adjustFilters')}</p>
                                 <button
                                     className="clear-filters-btn"
                                     onClick={() => {
                                         navigate('/products?limit=4');
                                     }}
                                 >
-                                    Clear All Filters
+                                    {t('products.clearAllFilters')}
                                 </button>
                             </div>
                         )}

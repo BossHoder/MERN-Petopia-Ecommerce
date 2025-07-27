@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 
 import { deleteMessage, editMessage, clearMessageError } from '../../store/actions/messageActions';
-import { messageFormSchema } from './validation';
+import { getMessageFormSchema } from './validation';
 
 import './styles.css';
 
 const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError }) => {
+    const { t } = useTranslation();
     const [isEdit, setIsEdit] = useState(false);
 
     const handleDelete = (e, id) => {
@@ -31,7 +33,7 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
             text: '',
             id: message.id,
         },
-        validationSchema: messageFormSchema,
+        validationSchema: getMessageFormSchema(t),
         onSubmit: (values, { resetForm }) => {
             editMessage(values.id, { text: values.text });
             setIsEdit(false);
@@ -93,14 +95,14 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
                             {!isEdit ? (
                                 <>
                                     <button onClick={handleClickEdit} type="button" className="btn">
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={(e) => handleDelete(e, message.id)}
                                         type="button"
                                         className="btn"
                                     >
-                                        Delete
+                                        {t('common.delete')}
                                     </button>
                                 </>
                             ) : (
@@ -110,7 +112,7 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
                                         className="btn"
                                         disabled={message.isLoading}
                                     >
-                                        Submit
+                                        {t('common.save')}
                                     </button>
                                     <button
                                         onClick={() => {
@@ -120,7 +122,7 @@ const Message = ({ message, auth, deleteMessage, editMessage, clearMessageError 
                                         type="button"
                                         className="btn"
                                     >
-                                        Cancel
+                                        {t('common.cancel')}
                                     </button>
                                 </>
                             )}

@@ -36,10 +36,8 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
             <div className="hero-section">
                 <div className="hero-overlay">
                     <div className="hero-content">
-                        <h1 className="hero-title">Join the Petopia Family!</h1>
-                        <p className="hero-subtitle">
-                            Create your account and discover everything your pet needs.
-                        </p>
+                        <h1 className="hero-title">{t('auth.register.title')}</h1>
+                        <p className="hero-subtitle">{t('auth.register.subtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -48,12 +46,12 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
             <div className="form-section">
                 <div className="form-container">
                     <div className="register-card">
-                        <h2 className="register-title">Create your account</h2>
+                        <h2 className="register-title">{t('auth.register.createAccount')}</h2>
                         <form onSubmit={formik.handleSubmit} noValidate className="petopia-form">
                             {/* Full Name Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="name">
-                                    Full Name
+                                    {t('auth.register.fullName')}
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -62,7 +60,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                                     id="name"
                                     name="name"
                                     type="text"
-                                    placeholder="Full Name"
+                                    placeholder={t('auth.register.fullNamePlaceholder')}
                                     value={formik.values.name}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -82,7 +80,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                             {/* Username Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="username">
-                                    Username
+                                    {t('auth.register.username')}
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -93,7 +91,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                                     id="username"
                                     name="username"
                                     type="text"
-                                    placeholder="Username"
+                                    placeholder={t('auth.register.usernamePlaceholder')}
                                     value={formik.values.username}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}

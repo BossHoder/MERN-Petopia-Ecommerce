@@ -226,15 +226,13 @@ const Sidebar = ({ onFilterChange }) => {
                         className="filter-section-header"
                         onClick={() => toggleSection('categories')}
                     >
-                        <span className="filter-section-title">Categories</span>
+                        <span className="filter-section-title">{t('sidebar.categories')}</span>
                         {expandedSections.categories ? <ChevronDown /> : <ChevronRight />}
                     </button>
                     {expandedSections.categories && (
                         <div className="filter-section-content">
                             {parentCategoriesLoading ? (
-                                <div className="loading-text">
-                                    {t('common.loading', 'Loading...')}
-                                </div>
+                                <div className="loading-text">{t('common.loading')}</div>
                             ) : (
                                 <ul className="parent-category-list">
                                     {parentCategories.map((parent) => {
@@ -285,7 +283,7 @@ const Sidebar = ({ onFilterChange }) => {
                                                                             cat.parentCategory,
                                                                     ) === String(parent._id),
                                                             ).length > 4
-                                                                ? 'Scroll to see more categories'
+                                                                ? t('sidebar.scrollToSeeMore')
                                                                 : ''
                                                         }
                                                     >
@@ -340,7 +338,7 @@ const Sidebar = ({ onFilterChange }) => {
                         className="filter-section-header"
                         onClick={() => toggleSection('price')}
                     >
-                        <span className="filter-section-title">Price</span>
+                        <span className="filter-section-title">{t('sidebar.priceRange')}</span>
                         {expandedSections.price ? <ChevronDown /> : <ChevronRight />}
                     </button>
                     {expandedSections.price && (
@@ -349,7 +347,7 @@ const Sidebar = ({ onFilterChange }) => {
                                 <input
                                     type="number"
                                     name="minPrice"
-                                    placeholder={t('sidebar.min', 'Min Price')}
+                                    placeholder={t('sidebar.min')}
                                     value={localFilters.minPrice}
                                     onChange={handlePriceChange}
                                     className="price-input"
@@ -359,68 +357,12 @@ const Sidebar = ({ onFilterChange }) => {
                                 <input
                                     type="number"
                                     name="maxPrice"
-                                    placeholder={t('sidebar.max', 'Max Price')}
+                                    placeholder={t('sidebar.max')}
                                     value={localFilters.maxPrice}
                                     onChange={handlePriceChange}
                                     className="price-input"
                                     min="0"
                                 />
-                            </div>
-                            <div className="price-range-presets">
-                                <button
-                                    className="price-preset-btn"
-                                    onClick={() => {
-                                        const newFilters = { minPrice: '', maxPrice: '25' };
-                                        setLocalFilters({ ...localFilters, ...newFilters });
-                                        onFilterChange({
-                                            parentCategoryId: selectedParent,
-                                            category: selectedCategory,
-                                            brand: selectedBrand,
-                                            minRating: selectedRating,
-                                            inStock,
-                                            ...localFilters,
-                                            ...newFilters,
-                                        });
-                                    }}
-                                >
-                                    Under $25
-                                </button>
-                                <button
-                                    className="price-preset-btn"
-                                    onClick={() => {
-                                        const newFilters = { minPrice: '25', maxPrice: '50' };
-                                        setLocalFilters({ ...localFilters, ...newFilters });
-                                        onFilterChange({
-                                            parentCategoryId: selectedParent,
-                                            category: selectedCategory,
-                                            brand: selectedBrand,
-                                            minRating: selectedRating,
-                                            inStock,
-                                            ...localFilters,
-                                            ...newFilters,
-                                        });
-                                    }}
-                                >
-                                    $25 - $50
-                                </button>
-                                <button
-                                    className="price-preset-btn"
-                                    onClick={() => {
-                                        const newFilters = { minPrice: '50', maxPrice: '' };
-                                        setLocalFilters({ ...localFilters, ...newFilters });
-                                        onFilterChange({
-                                            parentCategoryId: selectedParent,
-                                            category: selectedCategory,
-                                            brand: selectedBrand,
-                                            minRating: selectedRating,
-                                            inStock,
-                                            ...localFilters,
-                                            ...newFilters,
-                                        });
-                                    }}
-                                >
-                                    $50+
-                                </button>
                             </div>
                         </div>
                     )}
@@ -432,7 +374,7 @@ const Sidebar = ({ onFilterChange }) => {
                         className="filter-section-header"
                         onClick={() => toggleSection('brand')}
                     >
-                        <span className="filter-section-title">Brand</span>
+                        <span className="filter-section-title">{t('sidebar.brand')}</span>
                         {expandedSections.brand ? <ChevronDown /> : <ChevronRight />}
                     </button>
                     {expandedSections.brand && (
@@ -467,7 +409,7 @@ const Sidebar = ({ onFilterChange }) => {
                         className="filter-section-header"
                         onClick={() => toggleSection('rating')}
                     >
-                        <span className="filter-section-title">Rating</span>
+                        <span className="filter-section-title">{t('sidebar.rating')}</span>
                         {expandedSections.rating ? <ChevronDown /> : <ChevronRight />}
                     </button>
                     {expandedSections.rating && (
@@ -496,7 +438,7 @@ const Sidebar = ({ onFilterChange }) => {
                                                 ))}
                                             </div>
                                             <span className="rating-text">
-                                                {rating} star{rating !== 1 ? 's' : ''} & up
+                                                {rating} sao trở lên
                                             </span>
                                         </button>
                                     </li>
@@ -509,7 +451,7 @@ const Sidebar = ({ onFilterChange }) => {
                 {/* In Stock Toggle */}
                 <div className="filter-section">
                     <div className="filter-section-header toggle-header">
-                        <span className="filter-section-title">In Stock</span>
+                        <span className="filter-section-title">Còn hàng </span>
                         <label className="toggle-switch">
                             <input
                                 type="checkbox"
@@ -527,30 +469,13 @@ const Sidebar = ({ onFilterChange }) => {
                         className="filter-section-header"
                         onClick={() => toggleSection('brand')}
                     >
-                        <span className="filter-section-title">Brand</span>
+                        <span className="filter-section-title">{t('sidebar.brand')}</span>
                         {expandedSections.brand ? <ChevronDown /> : <ChevronRight />}
-                    </button>
-                </div>
-                {/* Customer Rating Section */}
-                <div className="filter-section">
-                    <button
-                        className="filter-section-header"
-                        onClick={() => toggleSection('rating')}
-                    >
-                        <span className="filter-section-title">Customer Rating</span>
-                        {expandedSections.rating ? <ChevronDown /> : <ChevronRight />}
-                    </button>
-                </div>
-                {/* Special Diet Section */}
-                <div className="filter-section">
-                    <button className="filter-section-header" onClick={() => toggleSection('diet')}>
-                        <span className="filter-section-title">Special Diet</span>
-                        {expandedSections.diet ? <ChevronDown /> : <ChevronRight />}
                     </button>
                 </div>
             </div>
             <button className="apply-filters-btn" onClick={handleApplyFilters}>
-                {t('sidebar.applyFilters', 'Apply Filters')}
+                {t('sidebar.applyFilters')}
             </button>
         </aside>
     );

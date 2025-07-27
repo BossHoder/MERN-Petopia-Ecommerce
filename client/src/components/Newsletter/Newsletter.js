@@ -10,8 +10,8 @@ const Newsletter = () => {
 
     const validationSchema = Yup.object({
         email: Yup.string()
-            .email(t('validation.email.invalid', 'Email không hợp lệ'))
-            .required(t('validation.email.required', 'Email là bắt buộc')),
+            .email(t('validation.email.invalid'))
+            .required(t('validation.email.required')),
     });
 
     const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -38,22 +38,15 @@ const Newsletter = () => {
             <div className="newsletter-container">
                 <div className="newsletter-content">
                     <div className="newsletter-text">
-                        <h2 className="newsletter-title">
-                            {t('newsletter.title', 'Đăng Ký Nhận Tin')}
-                        </h2>
-                        <p className="newsletter-description">
-                            {t(
-                                'newsletter.description',
-                                'Nhận thông tin khuyến mãi và tips chăm sóc thú cưng mới nhất',
-                            )}
-                        </p>
+                        <h2 className="newsletter-title">{t('newsletter.title')}</h2>
+                        <p className="newsletter-description">{t('newsletter.description')}</p>
                     </div>
 
                     <div className="newsletter-form-container">
                         {isSubmitted ? (
                             <div className="newsletter-success">
                                 <div className="success-icon">✓</div>
-                                <p>{t('newsletter.success', 'Cảm ơn bạn đã đăng ký!')}</p>
+                                <p>{t('newsletter.success')}</p>
                             </div>
                         ) : (
                             <Formik
@@ -67,10 +60,7 @@ const Newsletter = () => {
                                             <Field
                                                 type="email"
                                                 name="email"
-                                                placeholder={t(
-                                                    'newsletter.placeholder',
-                                                    'Nhập email của bạn...',
-                                                )}
+                                                placeholder={t('newsletter.placeholder')}
                                                 className="newsletter-input"
                                             />
                                             <button
@@ -79,8 +69,8 @@ const Newsletter = () => {
                                                 className="newsletter-button"
                                             >
                                                 {isSubmitting
-                                                    ? t('newsletter.submitting', 'Đang gửi...')
-                                                    : t('newsletter.subscribe', 'Đăng Ký')}
+                                                    ? t('newsletter.submitting')
+                                                    : t('newsletter.subscribe')}
                                             </button>
                                         </div>
                                         <ErrorMessage

@@ -22,7 +22,7 @@ const Loader = ({
 }) => {
     const { t } = useTranslation('common');
 
-    const defaultMessage = t('common.loading', 'Loading...');
+    const defaultMessage = t('common.loading');
     const loadingMessage = message || defaultMessage;
 
     const renderLoader = () => {

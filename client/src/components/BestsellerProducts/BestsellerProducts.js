@@ -30,9 +30,7 @@ const BestsellerProducts = () => {
         return (
             <section className="bestseller-products" id="featured-products">
                 <div className="bestseller-container">
-                    <div className="bestseller-error">
-                        {t('products.error', 'Không thể tải sản phẩm. Vui lòng thử lại sau.')}
-                    </div>
+                    <div className="bestseller-error">{t('products.error')}</div>
                 </div>
             </section>
         );
@@ -41,7 +39,7 @@ const BestsellerProducts = () => {
     return (
         <section className="bestseller-products" id="featured-products">
             <div className="bestseller-container">
-                <h2 className="bestseller-title">Bestsellers This Month</h2>
+                <h2 className="bestseller-title">{t('products.bestsellers')}</h2>
 
                 <div className="bestseller-grid">
                     {bestsellers.slice(0, 8).map((product) => (

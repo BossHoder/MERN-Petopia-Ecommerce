@@ -156,7 +156,7 @@ const ProductDetails = () => {
                         {/* Breadcrumb Navigation */}
                         <BreadcrumbNavigation
                             items={breadcrumbItems}
-                            ariaLabel={t('breadcrumb.productNavigation', 'Product navigation')}
+                            ariaLabel={t('breadcrumb.productNavigation')}
                         />
 
                         {/* --- Product Main Info --- */}
@@ -170,9 +170,8 @@ const ProductDetails = () => {
                                 <h1>{product.name}</h1>
                                 <div className="product-rating">
                                     <span>
-                                        {product.ratings} {t('productDetails.stars', 'stars')} (
-                                        {product.numReviews}{' '}
-                                        {t('productDetails.reviews', 'reviews')})
+                                        {product.ratings} {t('productDetails.stars')} (
+                                        {product.numReviews} {t('productDetails.reviews')})
                                     </span>
                                 </div>
                                 <p className="product-price">
@@ -232,22 +231,22 @@ const ProductDetails = () => {
                                     </>
                                 )}
                                 <div className="action-row">
-                                    <span>{t('productDetails.price', 'Price')}:</span>{' '}
+                                    <span>{t('productDetails.price')}:</span>{' '}
                                     <strong>
                                         ${displayPrice ? displayPrice.toFixed(2) : '0.00'}
                                     </strong>
                                 </div>
                                 <div className="action-row">
-                                    <span>{t('productDetails.status', 'Status')}:</span>{' '}
+                                    <span>{t('productDetails.status')}:</span>{' '}
                                     <span>
                                         {displayStock > 0
-                                            ? t('productDetails.inStock', 'In Stock')
-                                            : t('productDetails.outOfStock', 'Out of Stock')}
+                                            ? t('productDetails.inStock')
+                                            : t('productDetails.outOfStock')}
                                     </span>
                                 </div>
                                 {displayStock > 0 && (
                                     <div className="action-row">
-                                        <span>{t('productDetails.qty', 'Qty')}:</span>
+                                        <span>{t('productDetails.qty')}:</span>
                                         <div
                                             style={{
                                                 display: 'flex',
@@ -315,7 +314,7 @@ const ProductDetails = () => {
                                                     variantGroups.length))
                                     }
                                 >
-                                    {t('productDetails.addToCart', 'Add To Cart')}
+                                    {t('productDetails.addToCart')}
                                 </button>
                                 {addToCartError && (
                                     <Notification type="error">{addToCartError}</Notification>
@@ -325,29 +324,27 @@ const ProductDetails = () => {
 
                         {/* --- Product Reviews Section --- */}
                         <div className="product-reviews-section">
-                            <h2>{t('productDetails.reviewsTitle', 'Reviews')}</h2>
+                            <h2>{t('productDetails.reviewsTitle')}</h2>
                             {reviewsLoading ? (
                                 <Loader />
                             ) : reviewsError ? (
                                 <Notification type="error">{reviewsError}</Notification>
                             ) : reviews.length === 0 ? (
-                                <Notification>
-                                    {t('productDetails.noReviews', 'No reviews yet.')}
-                                </Notification>
+                                <Notification>{t('productDetails.noReviews')}</Notification>
                             ) : (
                                 <ul className="reviews-list">
                                     {reviews.map((review) => (
                                         <li key={review._id} className="review-item">
                                             <strong>{review.user.name}</strong>
                                             <div className="review-rating">
-                                                {review.rating} {t('productDetails.stars', 'stars')}
+                                                {review.rating} {t('productDetails.stars')}
                                             </div>
                                             <p>
                                                 <strong>{review.title}</strong>
                                             </p>
                                             <p>{review.comment}</p>
                                             <small>
-                                                {t('productDetails.reviewedOn', 'Reviewed on')}{' '}
+                                                {t('productDetails.reviewedOn')}{' '}
                                                 {new Date(review.createdAt).toLocaleDateString()}
                                             </small>
                                         </li>
@@ -369,40 +366,34 @@ const ProductDetails = () => {
                                 {userInfo ? (
                                     <form onSubmit={submitReviewHandler}>
                                         <div className="form-group">
-                                            <label>{t('productDetails.rating', 'Rating')}</label>
+                                            <label>{t('productDetails.rating')}</label>
                                             <select
                                                 value={rating}
                                                 onChange={(e) => setRating(Number(e.target.value))}
                                                 required
                                             >
                                                 <option value="">
-                                                    {t('productDetails.select', 'Select...')}
+                                                    {t('productDetails.select')}
                                                 </option>
                                                 <option value="1">
-                                                    {t('productDetails.ratings.poor', '1 - Poor')}
+                                                    {t('productDetails.ratings.poor')}
                                                 </option>
                                                 <option value="2">
-                                                    {t('productDetails.ratings.fair', '2 - Fair')}
+                                                    {t('productDetails.ratings.fair')}
                                                 </option>
                                                 <option value="3">
-                                                    {t('productDetails.ratings.good', '3 - Good')}
+                                                    {t('productDetails.ratings.good')}
                                                 </option>
                                                 <option value="4">
-                                                    {t(
-                                                        'productDetails.ratings.veryGood',
-                                                        '4 - Very Good',
-                                                    )}
+                                                    {t('productDetails.ratings.veryGood')}
                                                 </option>
                                                 <option value="5">
-                                                    {t(
-                                                        'productDetails.ratings.excellent',
-                                                        '5 - Excellent',
-                                                    )}
+                                                    {t('productDetails.ratings.excellent')}
                                                 </option>
                                             </select>
                                         </div>
                                         <div className="form-group">
-                                            <label>{t('productDetails.titleLabel', 'Title')}</label>
+                                            <label>{t('productDetails.titleLabel')}</label>
                                             <input
                                                 type="text"
                                                 value={title}
@@ -411,9 +402,7 @@ const ProductDetails = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label>
-                                                {t('productDetails.commentLabel', 'Comment')}
-                                            </label>
+                                            <label>{t('productDetails.commentLabel')}</label>
                                             <textarea
                                                 rows="4"
                                                 value={comment}
@@ -422,17 +411,14 @@ const ProductDetails = () => {
                                             ></textarea>
                                         </div>
                                         <button type="submit" className="btn btn-primary">
-                                            {t('productDetails.submitReview', 'Submit Review')}
+                                            {t('productDetails.submitReview')}
                                         </button>
                                     </form>
                                 ) : (
                                     <Notification>
-                                        {t('productDetails.signInToReview', 'Please')}{' '}
-                                        <Link to="/login">{t('navigation.login', 'sign in')}</Link>{' '}
-                                        {t(
-                                            'productDetails.signInToReviewSuffix',
-                                            'to write a review.',
-                                        )}
+                                        {t('productDetails.signInToReview')}{' '}
+                                        <Link to="/login">{t('navigation.login')}</Link>{' '}
+                                        {t('productDetails.signInToReviewSuffix')}
                                     </Notification>
                                 )}
                             </div>

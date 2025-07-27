@@ -78,7 +78,15 @@
         "description": "Description",
         "category": "Category",
         "brand": "Brand",
-        "rating": "Rating"
+        "rating": "Rating",
+        "of": "of",
+        "results": "results",
+        "sortBy": "Sort by",
+        "listView": "List view",
+        "gridView": "Grid view",
+        "noProductsFound": "No products found",
+        "adjustFilters": "Try adjusting your filters or search criteria to find what you're looking for.",
+        "clearAllFilters": "Clear All Filters"
     },
     "names": {
         "premiumDryDogFoodChickenRice": "Premium Dry Dog Food - Chicken & Rice",
@@ -502,7 +510,12 @@
         "priceRange": "Price Range",
         "min": "Min",
         "max": "Max",
-        "applyFilters": "Apply Filters"
+        "applyFilters": "Apply Filters",
+        "scrollToSeeMore": "Scroll to see more categories",
+        "brand": "Brand",
+        "rating": "Rating",
+        "customerRating": "Customer Rating",
+        "specialDiet": "Special Diet"
     },
     "profile": {
         "tabs": {
@@ -633,5 +646,146 @@
         "addressNotFound": "Address not found.",
         "tooManyRequests": "Too many requests. Please try again later.",
         "serviceUnavailable": "Service temporarily unavailable. Please try again later."
+    },
+    "footer": {
+        "aboutUs": "About Us",
+        "contact": "Contact",
+        "faq": "FAQ",
+        "privacyPolicy": "Privacy Policy",
+        "termsOfService": "Terms of Service",
+        "copyright": "© 2024 Petopia. All rights reserved.",
+        "socialMedia": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
+    },
+    "search": {
+        "placeholder": "Search for products, categories...",
+        "searching": "Searching...",
+        "noResults": "No results found",
+        "suggestions": "Suggestions"
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome Back!",
+            "subtitle": "Log in to continue to your account.",
+            "email": "Email Address",
+            "emailPlaceholder": "you@example.com",
+            "password": "Password",
+            "passwordPlaceholder": "••••••••",
+            "forgotPassword": "Forgot Password?",
+            "submit": "Log In",
+            "submitting": "Logging in...",
+            "socialLogin": "Or continue with",
+            "google": "Google",
+            "facebook": "Facebook",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up"
+        },
+        "register": {
+            "title": "Join the Petopia Family!",
+            "subtitle": "Create your account and discover everything your pet needs.",
+            "createAccount": "Create your account",
+            "fullName": "Full Name",
+            "fullNamePlaceholder": "Full Name",
+            "username": "Username",
+            "usernamePlaceholder": "Username",
+            "email": "Email Address",
+            "emailPlaceholder": "you@example.com",
+            "password": "Password",
+            "passwordPlaceholder": "••••••••",
+            "confirmPassword": "Confirm Password",
+            "confirmPasswordPlaceholder": "••••••••",
+            "submit": "Create Account",
+            "submitting": "Creating account...",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign in"
+        },
+        "hero": {
+            "welcomeTitle": "Welcome to Petopia",
+            "welcomeSubtitle": "Your one-stop shop for everything your pet needs."
+        }
+    },
+    "validation": {
+        "email": {
+            "invalid": "Invalid email address",
+            "required": "Email is required",
+            "minLength": "Email must be at least 5 characters",
+            "maxLength": "Email must be at most 255 characters"
+        },
+        "password": {
+            "required": "Password is required",
+            "minLength": "Password must be at least 6 characters",
+            "maxLength": "Password must be at most 255 characters",
+            "weak": "Password is too weak"
+        },
+        "name": {
+            "required": "Name is required",
+            "minLength": "Name must be at least 2 characters",
+            "maxLength": "Name must be at most 50 characters"
+        },
+        "username": {
+            "required": "Username is required",
+            "minLength": "Username must be at least 3 characters",
+            "maxLength": "Username must be at most 30 characters",
+            "invalid": "Username can only contain letters, numbers, and underscores"
+        },
+        "confirmPassword": {
+            "required": "Please confirm your password",
+            "match": "Passwords must match"
+        },
+        "message": {
+            "required": "Message is required",
+            "minLength": "Message must be at least 5 characters",
+            "maxLength": "Message must be at most 300 characters"
+        }
+    },
+    "newsletter": {
+        "title": "Subscribe to Newsletter",
+        "description": "Get the latest promotions and pet care tips",
+        "placeholder": "Enter your email...",
+        "subscribe": "Subscribe",
+        "submitting": "Subscribing...",
+        "success": "Thank you for subscribing!"
+    },
+    "brandPromise": {
+        "title": "Why Choose Petopia?",
+        "subtitle": "Committed to providing the best shopping experience for you and your pets",
+        "safety": {
+            "title": "Safe & Quality",
+            "desc": "All products are rigorously quality tested"
+        },
+        "delivery": {
+            "title": "Fast Delivery",
+            "desc": "Nationwide delivery within 1-3 days"
+        },
+        "support": {
+            "title": "24/7 Support",
+            "desc": "Customer care team always ready to help"
+        },
+        "reviews": {
+            "title": "Positive Reviews",
+            "desc": "Thousands of satisfied and trusted customers"
+        }
+    },
+    "productCard": {
+        "addToWishlist": "Add to wishlist",
+        "outOfStock": "Out of stock",
+        "reviews": "reviews"
+    },
+    "wishlist": {
+        "addToWishlist": "Add to wishlist",
+        "removeFromWishlist": "Remove from wishlist",
+        "addedToWishlist": "Added to wishlist",
+        "removedFromWishlist": "Removed from wishlist"
+    },
+    "breadcrumb": {
+        "cartNavigation": "Cart navigation",
+        "productNavigation": "Product navigation",
+        "categoryNavigation": "Category navigation",
+        "checkoutNavigation": "Checkout navigation",
+        "navigation": "Breadcrumb navigation",
+        "goTo": "Go to"
     }
 }
