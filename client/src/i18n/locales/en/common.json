@@ -16,7 +16,10 @@
         "logout": "Logout",
         "coupons": "Coupons",
         "profile": "Profile",
-        "admin": "Admin"
+        "admin": "Admin",
+        "checkout": "Checkout",
+        "orders": "Orders",
+        "orderDetails": "Order Details"
     },
     "footer": {
         "description": "Bringing high-quality products and the best services for your beloved pets. Your pet's happiness is our top priority.",
@@ -42,9 +45,18 @@
             "phone": "(028) 1234 5678",
             "email": "support@petopia.vn"
         },
-        "copyright": "© {{year}} PETOPIA. All rights reserved.",
+        "copyright": "© 2025 PETOPIA. All rights reserved.",
         "privacyPolicy": "Privacy Policy",
-        "termsOfUse": "Terms of Use"
+        "termsOfUse": "Terms of Use",
+        "aboutUs": "About Us",
+        "contact": "Contact",
+        "faq": "FAQ",
+        "termsOfService": "Terms of Service",
+        "socialMedia": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
     },
     "common": {
         "welcome": "Welcome",
@@ -68,6 +80,7 @@
         "unpublished": "Unpublished",
         "saving": "Saving...",
         "deleting": "Deleting...",
+        "updating": "Updating...",
         "backToHome": "Back to Home"
     },
     "products": {
@@ -408,7 +421,9 @@
     "hero": {
         "title": "Happy Moments, Complete Love",
         "subtitle": "Discover safe toys, food, and accessories that bring joy to the whole family!",
-        "cta": "Explore Now"
+        "cta": "Explore Now",
+        "searchPlaceholder": "Search for products...",
+        "search": "Search"
     },
     "brandPromise": {
         "title": "Why Choose Petopia?",
@@ -485,6 +500,8 @@
             "emptyCart": "Your cart is empty. Cannot place order",
             "invalidShippingInfo": "Please provide valid shipping information"
         },
+        "orderSuccess": "Order placed successfully! Thank you for your purchase.",
+        "phone": "Phone Number",
         "guest": {
             "title": "Guest Checkout Information",
             "fullName": "Full Name",
@@ -612,13 +629,18 @@
     "auth": {
         "login": {
             "title": "Log in page",
+            "subtitle": "Log in to continue to your account.",
             "socialLogin": "Log in with social media",
             "facebook": "Login with Facebook",
             "google": "Login with Google",
             "email": "Email address",
             "password": "Password",
             "submit": "Log in now",
-            "noAccount": "Don't have an account?"
+            "noAccount": "Don't have an account?",
+            "forgotPassword": "Forgot password?",
+            "emailPlaceholder": "Enter your email address",
+            "passwordPlaceholder": "Enter your password",
+            "signUp": "Sign up"
         },
         "register": {
             "validation": {
@@ -925,243 +947,337 @@
             "results": "results",
             "previous": "Previous page",
             "next": "Next page"
+        },
+        "orders": {
+            "title": "Orders Management",
+            "subtitle": "Manage customer orders, update status, and track deliveries",
+            "orderNumber": "Order #",
+            "customer": "Customer",
+            "status": {
+                "title": "Status",
+                "all": "All Orders",
+                "pending": "Pending",
+                "processing": "Processing",
+                "delivering": "Delivering",
+                "delivered": "Delivered",
+                "cancelled": "Cancelled",
+                "refunded": "Refunded"
+            },
+            "total": "Total",
+            "paymentMethod": "Payment",
+            "paymentStatus": "Paid",
+            "deliveryStatus": "Delivered",
+            "dateCreated": "Date Created",
+            "actions": "Actions",
+            "guest": "Guest",
+            "registered": "Registered",
+            "payment": {
+                "COD": "COD",
+                "CREDIT_CARD": "Credit Card",
+                "BANK_TRANSFER": "Bank Transfer",
+                "MOMO": "MoMo",
+                "ZALOPAY": "ZaloPay"
+            },
+            "filterByStatus": "Filter by Status",
+            "searchPlaceholder": "Search by order number or customer email...",
+            "selectedCount": "orders selected",
+            "bulkUpdateStatus": "Update Status",
+            "noData": "No orders found. Orders will appear here once customers start placing orders.",
+            "viewDetails": "View Details",
+            "updateStatus": "Update Status",
+            "orderDetails": "Order Details",
+            "loadingDetails": "Loading order details...",
+            "orderNotFound": "Order not found",
+            "newStatus": "New Status",
+            "selectStatus": "Select new status",
+            "orderSummary": "Order Summary",
+            "orderDate": "Order Date",
+            "paid": "Paid",
+            "unpaid": "Unpaid",
+            "pending": "Pending",
+            "delivered": "Delivered",
+            "customerInfo": "Customer Information",
+            "customerName": "Name",
+            "customerEmail": "Email",
+            "customerPhone": "Phone",
+            "customerType": "Customer Type",
+            "shippingAddress": "Shipping Address",
+            "phone": "Phone",
+            "orderItems": "Order Items",
+            "orderTotals": "Order Totals",
+            "subtotal": "Subtotal",
+            "shipping": "Shipping",
+            "tax": "Tax",
+            "paymentStatusControl": {
+                "title": "Payment Status",
+                "paid": "Paid",
+                "unpaid": "Unpaid",
+                "updatePaymentStatus": "Update Payment Status",
+                "selectPaymentStatus": "Select payment status",
+                "updateSuccess": "Payment status updated successfully",
+                "updateError": "Failed to update payment status",
+                "disabledForStatus": "Payment status cannot be changed for cancelled or refunded orders"
+            },
+            "confirmStatusChange": "Confirm Status Change",
+            "currentStatus": "Current",
+            "criticalChangeWarning": "This action cannot be undone.",
+            "noTransitionsAvailable": "No status transitions available",
+            "statusUpdateSuccess": "Order status updated successfully",
+            "statusUpdateError": "Failed to update order status",
+            "paymentRequiredForDelivering": "Order must be paid before you can start delivery. Only COD orders can be marked as delivering without payment.",
+            "paymentRequiredForDelivered": "Order must be paid before you can mark as delivered. Only COD orders can be marked as delivered without payment."
+        },
+        "messages": {
+            "title": "Messages",
+            "writeMessage": "Write a message",
+            "placeholder": "Write a message",
+            "addMessage": "Add Message"
+        },
+        "errors": {
+            "validation": "Invalid data. Please check your input.",
+            "productNotFound": "Product not found.",
+            "cartNotFound": "Cart not found.",
+            "orderNotFound": "Order not found.",
+            "userNotFound": "User not found.",
+            "categoryNotFound": "Category not found.",
+            "couponNotFound": "Coupon not found.",
+            "unauthorized": "You need to log in.",
+            "forbidden": "You do not have permission to perform this action.",
+            "internal": "An internal error occurred. Please try again later.",
+            "notEnoughStock": "Not enough product in stock.",
+            "alreadyReviewed": "You have already reviewed this product.",
+            "skuExists": "SKU already exists.",
+            "slugExists": "Slug already exists.",
+            "couponInvalid": "Coupon is invalid or expired.",
+            "accessDenied": "Access denied.",
+            "addressNotFound": "Address not found.",
+            "tooManyRequests": "Too many requests. Please try again later.",
+            "serviceUnavailable": "Service temporarily unavailable. Please try again later."
+        },
+        "footer": {
+            "aboutUs": "About Us",
+            "contact": "Contact",
+            "faq": "FAQ",
+            "privacyPolicy": "Privacy Policy",
+            "termsOfService": "Terms of Service",
+            "copyright": "© 2024 Petopia. All rights reserved.",
+            "socialMedia": {
+                "facebook": "Facebook",
+                "twitter": "Twitter",
+                "instagram": "Instagram"
+            }
+        },
+        "search": {
+            "placeholder": "Search for products, categories...",
+            "searching": "Searching...",
+            "noResults": "No results found",
+            "suggestions": "Suggestions"
+        },
+        "auth": {
+            "login": {
+                "title": "Welcome Back!",
+                "subtitle": "Log in to continue to your account.",
+                "email": "Email Address",
+                "emailPlaceholder": "you@example.com",
+                "password": "Password",
+                "passwordPlaceholder": "••••••••",
+                "forgotPassword": "Forgot Password?",
+                "submit": "Log In",
+                "submitting": "Logging in...",
+                "socialLogin": "Or continue with",
+                "google": "Google",
+                "facebook": "Facebook",
+                "noAccount": "Don't have an account?",
+                "signUp": "Sign up",
+                "success": "Login successful!",
+                "failed": "Login failed!",
+                "invalidCredentials": "Invalid email or password",
+                "tokenExpired": "Your session has expired. Please login again.",
+                "adminAccessDenied": "Admin access denied. Insufficient permissions.",
+                "sessionExpired": "Your session has expired",
+                "authenticationFailed": "Authentication failed",
+                "invalidToken": "Invalid token received from server",
+                "malformedToken": "Malformed token detected",
+                "noTokenFound": "No authentication token found"
+            },
+            "debug": {
+                "loadMeDebug": "loadMe() Debug",
+                "noTokenSkipApi": "No token found - skipping API call",
+                "makingApiCall": "Making loadMe() API call...",
+                "apiCallFailed": "loadMe() API call failed",
+                "invalidTokenClearing": "Invalid token detected - clearing auth state",
+                "loginResponseStructure": "Login response structure",
+                "loginSuccessStoring": "Login successful, storing token",
+                "oauthLoginResponse": "OAuth login response",
+                "expectedUnauthorized": "Expected 401 (no token on startup)",
+                "unexpectedUnauthorized": "Unexpected 401 - clearing auth and redirecting",
+                "expectedNotRedirecting": "Expected 401 - not redirecting"
+            },
+            "register": {
+                "title": "Join the Petopia Family!",
+                "subtitle": "Create your account and discover everything your pet needs.",
+                "createAccount": "Create your account",
+                "fullName": "Full Name",
+                "fullNamePlaceholder": "Full Name",
+                "username": "Username",
+                "usernamePlaceholder": "Username",
+                "email": "Email Address",
+                "emailPlaceholder": "you@example.com",
+                "password": "Password",
+                "passwordPlaceholder": "••••••••",
+                "confirmPassword": "Confirm Password",
+                "confirmPasswordPlaceholder": "••••••••",
+                "submit": "Create Account",
+                "submitting": "Creating account...",
+                "hasAccount": "Already have an account?",
+                "signIn": "Sign in"
+            },
+            "hero": {
+                "welcomeTitle": "Welcome to Petopia",
+                "welcomeSubtitle": "Your one-stop shop for everything your pet needs."
+            }
+        },
+        "validation": {
+            "name": {
+                "required": "Name is required",
+                "minLength": "Name must be at least 2 characters",
+                "maxLength": "Name must not exceed 50 characters"
+            },
+            "username": {
+                "required": "Username is required",
+                "minLength": "Username must be at least 3 characters",
+                "maxLength": "Username must not exceed 20 characters",
+                "invalid": "Username can only contain letters, numbers, and underscores"
+            },
+            "email": {
+                "invalid": "Invalid email address",
+                "required": "Email is required",
+                "minLength": "Email must be at least 5 characters",
+                "maxLength": "Email must be at most 255 characters"
+            },
+            "password": {
+                "required": "Password is required",
+                "minLength": "Password must be at least 6 characters",
+                "maxLength": "Password must be at most 255 characters",
+                "weak": "Password is too weak"
+            },
+            "name": {
+                "required": "Name is required",
+                "minLength": "Name must be at least 2 characters",
+                "maxLength": "Name must be at most 50 characters"
+            },
+            "username": {
+                "required": "Username is required",
+                "minLength": "Username must be at least 3 characters",
+                "maxLength": "Username must be at most 30 characters",
+                "invalid": "Username can only contain letters, numbers, and underscores"
+            },
+            "confirmPassword": {
+                "required": "Please confirm your password",
+                "match": "Passwords must match"
+            },
+            "message": {
+                "required": "Message is required",
+                "minLength": "Message must be at least 5 characters",
+                "maxLength": "Message must be at most 300 characters"
+            },
+            "parentCategory": {
+                "nameRequired": "Name is required",
+                "nameMin": "Name must be at least 2 characters",
+                "nameMax": "Name cannot exceed 100 characters",
+                "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
+                "slugMin": "Slug must be at least 2 characters",
+                "slugMax": "Slug cannot exceed 100 characters",
+                "descriptionRequired": "Description is required",
+                "descriptionMax": "Description cannot exceed 500 characters",
+                "imageRequired": "Image URL is required",
+                "imageUrl": "Please enter a valid image URL"
+            },
+            "category": {
+                "nameRequired": "Name is required",
+                "nameMin": "Name must be at least 2 characters",
+                "nameMax": "Name cannot exceed 100 characters",
+                "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
+                "slugMin": "Slug must be at least 2 characters",
+                "slugMax": "Slug cannot exceed 100 characters",
+                "parentCategoryRequired": "Parent category is required",
+                "descriptionMax": "Description cannot exceed 500 characters",
+                "iconRequired": "Icon URL is required",
+                "iconUrl": "Please enter a valid icon URL"
+            },
+            "product": {
+                "nameRequired": "Name is required",
+                "nameMin": "Name must be at least 2 characters",
+                "nameMax": "Name cannot exceed 200 characters",
+                "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
+                "slugMin": "Slug must be at least 2 characters",
+                "slugMax": "Slug cannot exceed 200 characters",
+                "descriptionRequired": "Description is required",
+                "descriptionMin": "Description must be at least 10 characters",
+                "priceRequired": "Price is required",
+                "priceMin": "Price must be greater than 0",
+                "categoryRequired": "Category is required",
+                "stockRequired": "Stock is required",
+                "stockMin": "Stock cannot be negative",
+                "stockInteger": "Stock must be a whole number",
+                "imagesRequired": "At least one image is required",
+                "imageUrl": "Please enter valid image URLs",
+                "skuMax": "SKU cannot exceed 100 characters",
+                "brandMax": "Brand cannot exceed 100 characters"
+            }
+        },
+        "newsletter": {
+            "title": "Subscribe to Newsletter",
+            "description": "Get the latest promotions and pet care tips",
+            "placeholder": "Enter your email...",
+            "subscribe": "Subscribe",
+            "submitting": "Subscribing...",
+            "success": "Thank you for subscribing!"
+        },
+        "brandPromise": {
+            "title": "Why Choose Petopia?",
+            "subtitle": "Committed to providing the best shopping experience for you and your pets",
+            "safety": {
+                "title": "Safe & Quality",
+                "desc": "All products are rigorously quality tested"
+            },
+            "delivery": {
+                "title": "Fast Delivery",
+                "desc": "Nationwide delivery within 1-3 days"
+            },
+            "support": {
+                "title": "24/7 Support",
+                "desc": "Customer care team always ready to help"
+            },
+            "reviews": {
+                "title": "Positive Reviews",
+                "desc": "Thousands of satisfied and trusted customers"
+            }
+        },
+        "productCard": {
+            "addToWishlist": "Add to wishlist",
+            "outOfStock": "Out of stock",
+            "reviews": "reviews",
+            "addedToCart": "Added to cart successfully!",
+            "addToCartError": "Failed to add to cart. Please try again."
+        },
+        "wishlist": {
+            "addToWishlist": "Add to wishlist",
+            "removeFromWishlist": "Remove from wishlist",
+            "addedToWishlist": "Added to wishlist",
+            "removedFromWishlist": "Removed from wishlist"
+        },
+        "breadcrumb": {
+            "cartNavigation": "Cart navigation",
+            "productNavigation": "Product navigation",
+            "categoryNavigation": "Category navigation",
+            "checkoutNavigation": "Checkout navigation",
+            "navigation": "Breadcrumb navigation",
+            "goTo": "Go to",
+            "adminNavigation": "Admin navigation",
+            "adminDashboard": "Admin dashboard navigation",
+            "ordersManagement": "Orders management navigation",
+            "orderDetails": "Order details navigation"
         }
-    },
-    "messages": {
-        "title": "Messages",
-        "writeMessage": "Write a message",
-        "placeholder": "Write a message",
-        "addMessage": "Add Message"
-    },
-    "errors": {
-        "validation": "Invalid data. Please check your input.",
-        "productNotFound": "Product not found.",
-        "cartNotFound": "Cart not found.",
-        "orderNotFound": "Order not found.",
-        "userNotFound": "User not found.",
-        "categoryNotFound": "Category not found.",
-        "couponNotFound": "Coupon not found.",
-        "unauthorized": "You need to log in.",
-        "forbidden": "You do not have permission to perform this action.",
-        "internal": "An internal error occurred. Please try again later.",
-        "notEnoughStock": "Not enough product in stock.",
-        "alreadyReviewed": "You have already reviewed this product.",
-        "skuExists": "SKU already exists.",
-        "slugExists": "Slug already exists.",
-        "couponInvalid": "Coupon is invalid or expired.",
-        "accessDenied": "Access denied.",
-        "addressNotFound": "Address not found.",
-        "tooManyRequests": "Too many requests. Please try again later.",
-        "serviceUnavailable": "Service temporarily unavailable. Please try again later."
-    },
-    "footer": {
-        "aboutUs": "About Us",
-        "contact": "Contact",
-        "faq": "FAQ",
-        "privacyPolicy": "Privacy Policy",
-        "termsOfService": "Terms of Service",
-        "copyright": "© 2024 Petopia. All rights reserved.",
-        "socialMedia": {
-            "facebook": "Facebook",
-            "twitter": "Twitter",
-            "instagram": "Instagram"
-        }
-    },
-    "search": {
-        "placeholder": "Search for products, categories...",
-        "searching": "Searching...",
-        "noResults": "No results found",
-        "suggestions": "Suggestions"
-    },
-    "auth": {
-        "login": {
-            "title": "Welcome Back!",
-            "subtitle": "Log in to continue to your account.",
-            "email": "Email Address",
-            "emailPlaceholder": "you@example.com",
-            "password": "Password",
-            "passwordPlaceholder": "••••••••",
-            "forgotPassword": "Forgot Password?",
-            "submit": "Log In",
-            "submitting": "Logging in...",
-            "socialLogin": "Or continue with",
-            "google": "Google",
-            "facebook": "Facebook",
-            "noAccount": "Don't have an account?",
-            "signUp": "Sign up",
-            "success": "Login successful!",
-            "failed": "Login failed!",
-            "invalidCredentials": "Invalid email or password",
-            "tokenExpired": "Your session has expired. Please login again.",
-            "adminAccessDenied": "Admin access denied. Insufficient permissions.",
-            "sessionExpired": "Your session has expired",
-            "authenticationFailed": "Authentication failed",
-            "invalidToken": "Invalid token received from server",
-            "malformedToken": "Malformed token detected",
-            "noTokenFound": "No authentication token found"
-        },
-        "debug": {
-            "loadMeDebug": "loadMe() Debug",
-            "noTokenSkipApi": "No token found - skipping API call",
-            "makingApiCall": "Making loadMe() API call...",
-            "apiCallFailed": "loadMe() API call failed",
-            "invalidTokenClearing": "Invalid token detected - clearing auth state",
-            "loginResponseStructure": "Login response structure",
-            "loginSuccessStoring": "Login successful, storing token",
-            "oauthLoginResponse": "OAuth login response",
-            "expectedUnauthorized": "Expected 401 (no token on startup)",
-            "unexpectedUnauthorized": "Unexpected 401 - clearing auth and redirecting",
-            "expectedNotRedirecting": "Expected 401 - not redirecting"
-        },
-        "register": {
-            "title": "Join the Petopia Family!",
-            "subtitle": "Create your account and discover everything your pet needs.",
-            "createAccount": "Create your account",
-            "fullName": "Full Name",
-            "fullNamePlaceholder": "Full Name",
-            "username": "Username",
-            "usernamePlaceholder": "Username",
-            "email": "Email Address",
-            "emailPlaceholder": "you@example.com",
-            "password": "Password",
-            "passwordPlaceholder": "••••••••",
-            "confirmPassword": "Confirm Password",
-            "confirmPasswordPlaceholder": "••••••••",
-            "submit": "Create Account",
-            "submitting": "Creating account...",
-            "hasAccount": "Already have an account?",
-            "signIn": "Sign in"
-        },
-        "hero": {
-            "welcomeTitle": "Welcome to Petopia",
-            "welcomeSubtitle": "Your one-stop shop for everything your pet needs."
-        }
-    },
-    "validation": {
-        "email": {
-            "invalid": "Invalid email address",
-            "required": "Email is required",
-            "minLength": "Email must be at least 5 characters",
-            "maxLength": "Email must be at most 255 characters"
-        },
-        "password": {
-            "required": "Password is required",
-            "minLength": "Password must be at least 6 characters",
-            "maxLength": "Password must be at most 255 characters",
-            "weak": "Password is too weak"
-        },
-        "name": {
-            "required": "Name is required",
-            "minLength": "Name must be at least 2 characters",
-            "maxLength": "Name must be at most 50 characters"
-        },
-        "username": {
-            "required": "Username is required",
-            "minLength": "Username must be at least 3 characters",
-            "maxLength": "Username must be at most 30 characters",
-            "invalid": "Username can only contain letters, numbers, and underscores"
-        },
-        "confirmPassword": {
-            "required": "Please confirm your password",
-            "match": "Passwords must match"
-        },
-        "message": {
-            "required": "Message is required",
-            "minLength": "Message must be at least 5 characters",
-            "maxLength": "Message must be at most 300 characters"
-        },
-        "parentCategory": {
-            "nameRequired": "Name is required",
-            "nameMin": "Name must be at least 2 characters",
-            "nameMax": "Name cannot exceed 100 characters",
-            "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
-            "slugMin": "Slug must be at least 2 characters",
-            "slugMax": "Slug cannot exceed 100 characters",
-            "descriptionRequired": "Description is required",
-            "descriptionMax": "Description cannot exceed 500 characters",
-            "imageRequired": "Image URL is required",
-            "imageUrl": "Please enter a valid image URL"
-        },
-        "category": {
-            "nameRequired": "Name is required",
-            "nameMin": "Name must be at least 2 characters",
-            "nameMax": "Name cannot exceed 100 characters",
-            "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
-            "slugMin": "Slug must be at least 2 characters",
-            "slugMax": "Slug cannot exceed 100 characters",
-            "parentCategoryRequired": "Parent category is required",
-            "descriptionMax": "Description cannot exceed 500 characters",
-            "iconRequired": "Icon URL is required",
-            "iconUrl": "Please enter a valid icon URL"
-        },
-        "product": {
-            "nameRequired": "Name is required",
-            "nameMin": "Name must be at least 2 characters",
-            "nameMax": "Name cannot exceed 200 characters",
-            "slugPattern": "Slug can only contain lowercase letters, numbers, and hyphens",
-            "slugMin": "Slug must be at least 2 characters",
-            "slugMax": "Slug cannot exceed 200 characters",
-            "descriptionRequired": "Description is required",
-            "descriptionMin": "Description must be at least 10 characters",
-            "priceRequired": "Price is required",
-            "priceMin": "Price must be greater than 0",
-            "categoryRequired": "Category is required",
-            "stockRequired": "Stock is required",
-            "stockMin": "Stock cannot be negative",
-            "stockInteger": "Stock must be a whole number",
-            "imagesRequired": "At least one image is required",
-            "imageUrl": "Please enter valid image URLs",
-            "skuMax": "SKU cannot exceed 100 characters",
-            "brandMax": "Brand cannot exceed 100 characters"
-        }
-    },
-    "newsletter": {
-        "title": "Subscribe to Newsletter",
-        "description": "Get the latest promotions and pet care tips",
-        "placeholder": "Enter your email...",
-        "subscribe": "Subscribe",
-        "submitting": "Subscribing...",
-        "success": "Thank you for subscribing!"
-    },
-    "brandPromise": {
-        "title": "Why Choose Petopia?",
-        "subtitle": "Committed to providing the best shopping experience for you and your pets",
-        "safety": {
-            "title": "Safe & Quality",
-            "desc": "All products are rigorously quality tested"
-        },
-        "delivery": {
-            "title": "Fast Delivery",
-            "desc": "Nationwide delivery within 1-3 days"
-        },
-        "support": {
-            "title": "24/7 Support",
-            "desc": "Customer care team always ready to help"
-        },
-        "reviews": {
-            "title": "Positive Reviews",
-            "desc": "Thousands of satisfied and trusted customers"
-        }
-    },
-    "productCard": {
-        "addToWishlist": "Add to wishlist",
-        "outOfStock": "Out of stock",
-        "reviews": "reviews"
-    },
-    "wishlist": {
-        "addToWishlist": "Add to wishlist",
-        "removeFromWishlist": "Remove from wishlist",
-        "addedToWishlist": "Added to wishlist",
-        "removedFromWishlist": "Removed from wishlist"
-    },
-    "breadcrumb": {
-        "cartNavigation": "Cart navigation",
-        "productNavigation": "Product navigation",
-        "categoryNavigation": "Category navigation",
-        "checkoutNavigation": "Checkout navigation",
-        "navigation": "Breadcrumb navigation",
-        "goTo": "Go to",
-        "adminNavigation": "Admin navigation",
-        "adminDashboard": "Admin dashboard navigation"
     }
 }

@@ -7,10 +7,11 @@ import {
     getAdminProducts,
     deleteProduct,
     bulkDeleteProducts,
-    clearAdminErrors
+    clearAdminErrors,
 } from '../../../store/actions/adminActions';
 import AdminTable from '../../../components/Admin/AdminTable/AdminTable';
 import AdminPagination from '../../../components/Admin/AdminPagination/AdminPagination';
+import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import ProductForm from './ProductForm';
 import './styles.css';
 
@@ -29,14 +30,8 @@ const Products = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     // Redux state
-    const {
-        products,
-        productsPagination,
-        productsLoading,
-        productDeleteLoading,
-        error,
-        success
-    } = useSelector(state => state.admin);
+    const { products, productsPagination, productsLoading, productDeleteLoading, error, success } =
+        useSelector((state) => state.admin);
 
     // URL parameters
     const currentPage = parseInt(searchParams.get('page')) || 1;
@@ -77,20 +72,20 @@ const Products = () => {
                         <span className="sku">SKU: {item.sku || 'N/A'}</span>
                     </div>
                 </div>
-            )
+            ),
         },
         {
             key: 'category',
             title: t('admin.products.category', 'Category'),
             width: '15%',
-            render: (value) => value?.name || '-'
+            render: (value) => value?.name || '-',
         },
         {
             key: 'price',
             title: t('admin.products.price', 'Price'),
             width: '10%',
             align: 'right',
-            render: (value) => `$${value?.toFixed(2) || '0.00'}`
+            render: (value) => `$${value?.toFixed(2) || '0.00'}`,
         },
         {
             key: 'stock',
@@ -98,10 +93,14 @@ const Products = () => {
             width: '10%',
             align: 'center',
             render: (value) => (
-                <span className={`stock-badge ${value > 10 ? 'in-stock' : value > 0 ? 'low-stock' : 'out-of-stock'}`}>
+                <span
+                    className={`stock-badge ${
+                        value > 10 ? 'in-stock' : value > 0 ? 'low-stock' : 'out-of-stock'
+                    }`}
+                >
                     {value || 0}
                 </span>
-            )
+            ),
         },
         {
             key: 'isPublished',
@@ -110,9 +109,11 @@ const Products = () => {
             align: 'center',
             render: (value) => (
                 <span className={`status-badge ${value ? 'published' : 'unpublished'}`}>
-                    {value ? t('common.published', 'Published') : t('common.unpublished', 'Unpublished')}
+                    {value
+                        ? t('common.published', 'Published')
+                        : t('common.unpublished', 'Unpublished')}
                 </span>
-            )
+            ),
         },
         {
             key: 'isFeatured',
@@ -123,13 +124,13 @@ const Products = () => {
                 <span className={`featured-badge ${value ? 'featured' : 'not-featured'}`}>
                     {value ? '⭐' : '-'}
                 </span>
-            )
+            ),
         },
         {
             key: 'createdAt',
             title: t('admin.products.dateAdded', 'Date Added'),
             width: '15%',
-            render: (value) => new Date(value).toLocaleDateString()
+            render: (value) => new Date(value).toLocaleDateString(),
         },
         {
             key: 'actions',
@@ -153,8 +154,8 @@ const Products = () => {
                         🗑️
                     </button>
                 </div>
-            )
-        }
+            ),
+        },
     ];
 
     // Event handlers
@@ -248,6 +249,9 @@ const Products = () => {
 
     return (
         <div className="admin-products">
+            {/* Breadcrumb */}
+            <BreadcrumbNavigation />
+
             {/* Header */}
             <div className="admin-page-header">
                 <div className="admin-page-title">
@@ -264,7 +268,10 @@ const Products = () => {
                     <form onSubmit={handleSearch} className="admin-search-form">
                         <input
                             type="text"
-                            placeholder={t('admin.products.searchPlaceholder', 'Search products...')}
+                            placeholder={t(
+                                'admin.products.searchPlaceholder',
+                                'Search products...',
+                            )}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="admin-search-input"
@@ -273,7 +280,7 @@ const Products = () => {
                             🔍
                         </button>
                     </form>
-                    
+
                     <div className="admin-sort-controls">
                         <select
                             value={`${sortBy}-${sortOrder}`}
@@ -285,10 +292,18 @@ const Products = () => {
                         >
                             <option value="name-asc">{t('admin.sort.nameAZ', 'Name: A-Z')}</option>
                             <option value="name-desc">{t('admin.sort.nameZA', 'Name: Z-A')}</option>
-                            <option value="price-asc">{t('admin.sort.priceLowHigh', 'Price: Low to High')}</option>
-                            <option value="price-desc">{t('admin.sort.priceHighLow', 'Price: High to Low')}</option>
-                            <option value="createdAt-desc">{t('admin.sort.newestFirst', 'Newest First')}</option>
-                            <option value="createdAt-asc">{t('admin.sort.oldestFirst', 'Oldest First')}</option>
+                            <option value="price-asc">
+                                {t('admin.sort.priceLowHigh', 'Price: Low to High')}
+                            </option>
+                            <option value="price-desc">
+                                {t('admin.sort.priceHighLow', 'Price: High to Low')}
+                            </option>
+                            <option value="createdAt-desc">
+                                {t('admin.sort.newestFirst', 'Newest First')}
+                            </option>
+                            <option value="createdAt-asc">
+                                {t('admin.sort.oldestFirst', 'Oldest First')}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -301,7 +316,7 @@ const Products = () => {
                     >
                         ➕ {t('admin.products.addNew', 'Add New Product')}
                     </button>
-                    
+
                     {canEdit && (
                         <button
                             className="admin-btn admin-btn-secondary"
@@ -310,7 +325,7 @@ const Products = () => {
                             ✏️ {t('common.edit', 'Edit')}
                         </button>
                     )}
-                    
+
                     {canDelete && (
                         <button
                             className="admin-btn admin-btn-danger"
@@ -331,7 +346,10 @@ const Products = () => {
                 onSelectItem={setSelectedItems}
                 onSelectAll={setSelectedItems}
                 loading={productsLoading}
-                emptyMessage={t('admin.products.noData', 'No products found. Create your first product to get started.')}
+                emptyMessage={t(
+                    'admin.products.noData',
+                    'No products found. Create your first product to get started.',
+                )}
             />
 
             {/* Pagination */}
@@ -351,9 +369,14 @@ const Products = () => {
                         <div className="admin-modal-body">
                             <p>
                                 {selectedItems.length === 1
-                                    ? t('admin.products.deleteConfirmSingle', 'Are you sure you want to delete this product?')
-                                    : t('admin.products.deleteConfirmMultiple', `Are you sure you want to delete ${selectedItems.length} products?`)
-                                }
+                                    ? t(
+                                          'admin.products.deleteConfirmSingle',
+                                          'Are you sure you want to delete this product?',
+                                      )
+                                    : t(
+                                          'admin.products.deleteConfirmMultiple',
+                                          `Are you sure you want to delete ${selectedItems.length} products?`,
+                                      )}
                             </p>
                             <p className="admin-modal-warning">
                                 {t('admin.products.deleteWarning', 'This action cannot be undone.')}
@@ -371,7 +394,9 @@ const Products = () => {
                                 onClick={confirmDelete}
                                 disabled={productDeleteLoading}
                             >
-                                {productDeleteLoading ? t('common.deleting', 'Deleting...') : t('common.delete', 'Delete')}
+                                {productDeleteLoading
+                                    ? t('common.deleting', 'Deleting...')
+                                    : t('common.delete', 'Delete')}
                             </button>
                         </div>
                     </div>

@@ -32,6 +32,7 @@ router.get('/analytics/orders', adminController.getOrderAnalytics);
 // Orders Management
 router.get('/orders', adminController.getAllOrders);
 router.put('/orders/:id/status', adminController.updateOrderStatus);
+router.put('/orders/:id/payment', adminController.updatePaymentStatus);
 router.get('/orders/:id', adminController.getOrderDetails);
 
 // Users Management

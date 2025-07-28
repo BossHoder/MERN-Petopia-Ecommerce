@@ -16,7 +16,10 @@
         "logout": "Đăng xuất",
         "coupons": "Mã khuyến mãi",
         "profile": "Hồ sơ",
-        "admin": "Quản trị"
+        "admin": "Quản trị",
+        "checkout": "Thanh toán",
+        "orders": "Đơn hàng",
+        "orderDetails": "Chi tiết đơn hàng"
     },
     "footer": {
         "description": "Mang đến những sản phẩm chất lượng cao và dịch vụ tốt nhất cho thú cưng yêu quý của bạn. Hạnh phúc của boss cưng là ưu tiên hàng đầu của chúng tôi.",
@@ -42,9 +45,18 @@
             "phone": "(028) 1234 5678",
             "email": "support@petopia.vn"
         },
-        "copyright": "© {{year}} PETOPIA. Tất cả quyền được bảo lưu.",
+        "copyright": "© 2025 PETOPIA. Tất cả quyền được bảo lưu.",
         "privacyPolicy": "Chính sách bảo mật",
-        "termsOfUse": "Điều khoản sử dụng"
+        "termsOfUse": "Điều khoản sử dụng",
+        "aboutUs": "Giới thiệu",
+        "contact": "Liên hệ",
+        "faq": "Câu hỏi thường gặp",
+        "termsOfService": "Điều khoản dịch vụ",
+        "socialMedia": {
+            "facebook": "Facebook",
+            "twitter": "Twitter",
+            "instagram": "Instagram"
+        }
     },
     "common": {
         "welcome": "Chào mừng",
@@ -68,6 +80,7 @@
         "unpublished": "Chưa xuất bản",
         "saving": "Đang lưu...",
         "deleting": "Đang xóa...",
+        "updating": "Đang cập nhật...",
         "backToHome": "Về Trang Chủ",
         "remove": "Xóa",
         "active": "Hoạt động",
@@ -513,6 +526,8 @@
             "emptyCart": "Giỏ hàng của bạn đang trống. Không thể đặt hàng",
             "invalidShippingInfo": "Vui lòng cung cấp thông tin giao hàng hợp lệ"
         },
+        "orderSuccess": "Đặt hàng thành công! Cảm ơn bạn đã mua hàng.",
+        "phone": "Số điện thoại",
         "guest": {
             "title": "Thông tin thanh toán khách vãng lai",
             "fullName": "Họ và tên",
@@ -640,6 +655,7 @@
     "auth": {
         "login": {
             "title": "Trang đăng nhập",
+            "subtitle": "Đăng nhập để tiếp tục vào tài khoản của bạn.",
             "socialLogin": "Đăng nhập bằng mạng xã hội",
             "facebook": "Đăng nhập bằng Facebook",
             "google": "Đăng nhập bằng Google",
@@ -944,6 +960,85 @@
             "results": "kết quả",
             "previous": "Trang trước",
             "next": "Trang sau"
+        },
+        "orders": {
+            "title": "Quản Lý Đơn Hàng",
+            "subtitle": "Quản lý đơn hàng khách hàng, cập nhật trạng thái và theo dõi giao hàng",
+            "orderNumber": "Đơn hàng #",
+            "customer": "Khách hàng",
+            "status": {
+                "title": "Trạng thái",
+                "all": "Tất cả đơn hàng",
+                "pending": "Chờ xử lý",
+                "processing": "Đang xử lý",
+                "delivering": "Đang giao",
+                "delivered": "Đã giao",
+                "cancelled": "Đã hủy",
+                "refunded": "Đã hoàn tiền"
+            },
+            "total": "Tổng cộng",
+            "paymentMethod": "Thanh toán",
+            "paymentStatus": "Đã thanh toán",
+            "deliveryStatus": "Đã giao",
+            "dateCreated": "Ngày tạo",
+            "actions": "Thao tác",
+            "guest": "Khách",
+            "registered": "Đã đăng ký",
+            "payment": {
+                "COD": "COD",
+                "CREDIT_CARD": "Thẻ tín dụng",
+                "BANK_TRANSFER": "Chuyển khoản",
+                "MOMO": "MoMo",
+                "ZALOPAY": "ZaloPay"
+            },
+            "filterByStatus": "Lọc theo trạng thái",
+            "searchPlaceholder": "Tìm theo số đơn hàng hoặc email khách hàng...",
+            "selectedCount": "đơn hàng đã chọn",
+            "bulkUpdateStatus": "Cập nhật trạng thái",
+            "noData": "Không tìm thấy đơn hàng. Đơn hàng sẽ xuất hiện ở đây khi khách hàng bắt đầu đặt hàng.",
+            "viewDetails": "Xem chi tiết",
+            "updateStatus": "Cập nhật trạng thái",
+            "orderDetails": "Chi tiết đơn hàng",
+            "loadingDetails": "Đang tải chi tiết đơn hàng...",
+            "orderNotFound": "Không tìm thấy đơn hàng",
+            "newStatus": "Trạng thái mới",
+            "selectStatus": "Chọn trạng thái mới",
+            "orderSummary": "Tóm tắt đơn hàng",
+            "orderDate": "Ngày đặt hàng",
+            "paid": "Đã thanh toán",
+            "unpaid": "Chưa thanh toán",
+            "pending": "Chờ xử lý",
+            "delivered": "Đã giao",
+            "customerInfo": "Thông tin khách hàng",
+            "customerName": "Tên",
+            "customerEmail": "Email",
+            "customerPhone": "Điện thoại",
+            "customerType": "Loại khách hàng",
+            "shippingAddress": "Địa chỉ giao hàng",
+            "phone": "Điện thoại",
+            "orderItems": "Sản phẩm đặt hàng",
+            "orderTotals": "Tổng đơn hàng",
+            "subtotal": "Tạm tính",
+            "shipping": "Phí vận chuyển",
+            "tax": "Thuế",
+            "paymentStatusControl": {
+                "title": "Trạng thái thanh toán",
+                "paid": "Đã thanh toán",
+                "unpaid": "Chưa thanh toán",
+                "updatePaymentStatus": "Cập nhật trạng thái thanh toán",
+                "selectPaymentStatus": "Chọn trạng thái thanh toán",
+                "updateSuccess": "Cập nhật trạng thái thanh toán thành công",
+                "updateError": "Không thể cập nhật trạng thái thanh toán",
+                "disabledForStatus": "Không thể thay đổi trạng thái thanh toán cho đơn hàng đã hủy hoặc hoàn tiền"
+            },
+            "confirmStatusChange": "Xác nhận thay đổi trạng thái",
+            "currentStatus": "Hiện tại",
+            "criticalChangeWarning": "Hành động này không thể hoàn tác.",
+            "noTransitionsAvailable": "Không có chuyển đổi trạng thái nào khả dụng",
+            "statusUpdateSuccess": "Cập nhật trạng thái đơn hàng thành công",
+            "statusUpdateError": "Không thể cập nhật trạng thái đơn hàng",
+            "paymentRequiredForDelivering": "Đơn hàng phải được thanh toán trước khi bắt đầu giao hàng. Chỉ đơn hàng COD mới có thể chuyển sang trạng thái đang giao mà không cần thanh toán.",
+            "paymentRequiredForDelivered": "Đơn hàng phải được thanh toán trước khi đánh dấu đã giao. Chỉ đơn hàng COD mới có thể đánh dấu đã giao mà không cần thanh toán."
         }
     },
     "messages": {
@@ -996,7 +1091,11 @@
             "authenticationFailed": "Xác thực thất bại",
             "invalidToken": "Token không hợp lệ từ máy chủ",
             "malformedToken": "Phát hiện token bị lỗi",
-            "noTokenFound": "Không tìm thấy token xác thực"
+            "noTokenFound": "Không tìm thấy token xác thực",
+            "forgotPassword": "Quên mật khẩu?",
+            "emailPlaceholder": "Nhập địa chỉ email của bạn",
+            "passwordPlaceholder": "Nhập mật khẩu của bạn",
+            "signUp": "Đăng ký"
         },
         "debug": {
             "loadMeDebug": "Debug loadMe()",
@@ -1036,6 +1135,17 @@
         }
     },
     "validation": {
+        "name": {
+            "required": "Tên là bắt buộc",
+            "minLength": "Tên phải có ít nhất 2 ký tự",
+            "maxLength": "Tên không được quá 50 ký tự"
+        },
+        "username": {
+            "required": "Tên đăng nhập là bắt buộc",
+            "minLength": "Tên đăng nhập phải có ít nhất 3 ký tự",
+            "maxLength": "Tên đăng nhập không được quá 20 ký tự",
+            "invalid": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới"
+        },
         "email": {
             "invalid": "Địa chỉ email không hợp lệ",
             "required": "Email là bắt buộc",
@@ -1144,7 +1254,9 @@
     "productCard": {
         "addToWishlist": "Thêm vào yêu thích",
         "outOfStock": "Hết hàng",
-        "reviews": "đánh giá"
+        "reviews": "đánh giá",
+        "addedToCart": "Đã thêm vào giỏ hàng thành công!",
+        "addToCartError": "Không thể thêm vào giỏ hàng. Vui lòng thử lại."
     },
     "wishlist": {
         "addToWishlist": "Thêm vào yêu thích",
@@ -1160,6 +1272,8 @@
         "navigation": "Điều hướng breadcrumb",
         "goTo": "Đi tới",
         "adminNavigation": "Điều hướng Admin",
-        "adminDashboard": "Điều hướng bảng điều khiển Admin"
+        "adminDashboard": "Điều hướng bảng điều khiển Admin",
+        "ordersManagement": "Điều hướng quản lý đơn hàng",
+        "orderDetails": "Điều hướng chi tiết đơn hàng"
     }
 }

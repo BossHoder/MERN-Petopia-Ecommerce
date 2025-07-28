@@ -7,10 +7,11 @@ import {
     getAdminParentCategories,
     deleteParentCategory,
     bulkDeleteParentCategories,
-    clearAdminErrors
+    clearAdminErrors,
 } from '../../../store/actions/adminActions';
 import AdminTable from '../../../components/Admin/AdminTable/AdminTable';
 import AdminPagination from '../../../components/Admin/AdminPagination/AdminPagination';
+import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import ParentCategoryForm from './ParentCategoryForm';
 import './styles.css';
 
@@ -35,8 +36,8 @@ const ParentCategories = () => {
         parentCategoriesLoading,
         parentCategoryDeleteLoading,
         error,
-        success
-    } = useSelector(state => state.admin);
+        success,
+    } = useSelector((state) => state.admin);
 
     // URL parameters
     const currentPage = parseInt(searchParams.get('page')) || 1;
@@ -72,7 +73,7 @@ const ParentCategories = () => {
                     <span className="name">{value}</span>
                     <span className="slug">/{item.slug}</span>
                 </div>
-            )
+            ),
         },
         {
             key: 'description',
@@ -82,7 +83,7 @@ const ParentCategories = () => {
                 <div className="description-cell">
                     {value ? (value.length > 100 ? `${value.substring(0, 100)}...` : value) : '-'}
                 </div>
-            )
+            ),
         },
         {
             key: 'isPublished',
@@ -91,15 +92,17 @@ const ParentCategories = () => {
             align: 'center',
             render: (value) => (
                 <span className={`status-badge ${value ? 'published' : 'unpublished'}`}>
-                    {value ? t('common.published', 'Published') : t('common.unpublished', 'Unpublished')}
+                    {value
+                        ? t('common.published', 'Published')
+                        : t('common.unpublished', 'Unpublished')}
                 </span>
-            )
+            ),
         },
         {
             key: 'createdAt',
             title: t('admin.parentCategories.dateAdded', 'Date Added'),
             width: '15%',
-            render: (value) => new Date(value).toLocaleDateString()
+            render: (value) => new Date(value).toLocaleDateString(),
         },
         {
             key: 'actions',
@@ -123,8 +126,8 @@ const ParentCategories = () => {
                         🗑️
                     </button>
                 </div>
-            )
-        }
+            ),
+        },
     ];
 
     // Event handlers
@@ -218,6 +221,9 @@ const ParentCategories = () => {
 
     return (
         <div className="admin-parent-categories">
+            {/* Breadcrumb */}
+            <BreadcrumbNavigation />
+
             {/* Header */}
             <div className="admin-page-header">
                 <div className="admin-page-title">
@@ -234,7 +240,10 @@ const ParentCategories = () => {
                     <form onSubmit={handleSearch} className="admin-search-form">
                         <input
                             type="text"
-                            placeholder={t('admin.parentCategories.searchPlaceholder', 'Search parent categories...')}
+                            placeholder={t(
+                                'admin.parentCategories.searchPlaceholder',
+                                'Search parent categories...',
+                            )}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="admin-search-input"
@@ -243,7 +252,7 @@ const ParentCategories = () => {
                             🔍
                         </button>
                     </form>
-                    
+
                     <div className="admin-sort-controls">
                         <select
                             value={`${sortBy}-${sortOrder}`}
@@ -255,8 +264,12 @@ const ParentCategories = () => {
                         >
                             <option value="name-asc">{t('admin.sort.nameAZ', 'Name: A-Z')}</option>
                             <option value="name-desc">{t('admin.sort.nameZA', 'Name: Z-A')}</option>
-                            <option value="createdAt-desc">{t('admin.sort.newestFirst', 'Newest First')}</option>
-                            <option value="createdAt-asc">{t('admin.sort.oldestFirst', 'Oldest First')}</option>
+                            <option value="createdAt-desc">
+                                {t('admin.sort.newestFirst', 'Newest First')}
+                            </option>
+                            <option value="createdAt-asc">
+                                {t('admin.sort.oldestFirst', 'Oldest First')}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -269,7 +282,7 @@ const ParentCategories = () => {
                     >
                         ➕ {t('admin.parentCategories.addNew', 'Add New Parent Category')}
                     </button>
-                    
+
                     {canEdit && (
                         <button
                             className="admin-btn admin-btn-secondary"
@@ -278,7 +291,7 @@ const ParentCategories = () => {
                             ✏️ {t('common.edit', 'Edit')}
                         </button>
                     )}
-                    
+
                     {canDelete && (
                         <button
                             className="admin-btn admin-btn-danger"
@@ -299,7 +312,10 @@ const ParentCategories = () => {
                 onSelectItem={setSelectedItems}
                 onSelectAll={setSelectedItems}
                 loading={parentCategoriesLoading}
-                emptyMessage={t('admin.parentCategories.noData', 'No parent categories found. Create your first parent category to get started.')}
+                emptyMessage={t(
+                    'admin.parentCategories.noData',
+                    'No parent categories found. Create your first parent category to get started.',
+                )}
             />
 
             {/* Pagination */}
@@ -319,12 +335,20 @@ const ParentCategories = () => {
                         <div className="admin-modal-body">
                             <p>
                                 {selectedItems.length === 1
-                                    ? t('admin.parentCategories.deleteConfirmSingle', 'Are you sure you want to delete this parent category?')
-                                    : t('admin.parentCategories.deleteConfirmMultiple', `Are you sure you want to delete ${selectedItems.length} parent categories?`)
-                                }
+                                    ? t(
+                                          'admin.parentCategories.deleteConfirmSingle',
+                                          'Are you sure you want to delete this parent category?',
+                                      )
+                                    : t(
+                                          'admin.parentCategories.deleteConfirmMultiple',
+                                          `Are you sure you want to delete ${selectedItems.length} parent categories?`,
+                                      )}
                             </p>
                             <p className="admin-modal-warning">
-                                {t('admin.parentCategories.deleteWarning', 'This action cannot be undone.')}
+                                {t(
+                                    'admin.parentCategories.deleteWarning',
+                                    'This action cannot be undone.',
+                                )}
                             </p>
                         </div>
                         <div className="admin-modal-footer">
@@ -339,7 +363,9 @@ const ParentCategories = () => {
                                 onClick={confirmDelete}
                                 disabled={parentCategoryDeleteLoading}
                             >
-                                {parentCategoryDeleteLoading ? t('common.deleting', 'Deleting...') : t('common.delete', 'Delete')}
+                                {parentCategoryDeleteLoading
+                                    ? t('common.deleting', 'Deleting...')
+                                    : t('common.delete', 'Delete')}
                             </button>
                         </div>
                     </div>

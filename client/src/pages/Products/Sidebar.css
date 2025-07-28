@@ -3,7 +3,7 @@
 .products-sidebar {
     background: var(--white);
     border-radius: 12px;
-    padding: 24px;
+    padding: 10px;
     box-shadow: var(--shadow-sm);
     width: 100%;
     max-width: 320px;

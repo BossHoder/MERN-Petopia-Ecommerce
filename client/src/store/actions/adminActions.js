@@ -138,6 +138,30 @@ export const updateOrderStatus = (orderId, status) => async (dispatch) => {
 };
 
 /**
+ * Update payment status
+ */
+export const updatePaymentStatus = (orderId, isPaid) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_ORDER_UPDATE_REQUEST });
+
+        const response = await API.put(`/api/admin/orders/${orderId}/payment`, { isPaid });
+
+        dispatch({
+            type: ADMIN_ORDER_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        // Refresh orders list after update
+        dispatch(getAdminOrders());
+    } catch (error) {
+        dispatch({
+            type: ADMIN_ORDER_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to update payment status',
+        });
+    }
+};
+
+/**
  * Get order details by ID
  */
 export const getOrderDetails = (orderId) => async (dispatch) => {

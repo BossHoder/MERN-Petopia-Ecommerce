@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import './ProductCard.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/actions/cartActions';
+import { showSuccessToast, showErrorToast } from '../../utils/toastUtils';
 
 const ProductCard = ({ product }) => {
     const { t } = useTranslation();
@@ -118,10 +119,23 @@ const ProductCard = ({ product }) => {
             <button
                 className="add-to-cart-btn"
                 disabled={!product.inStock}
-                onClick={(e) => {
+                onClick={async (e) => {
                     e.preventDefault();
-                    console.log('Add to cart product:', product); // Debug product object
-                    dispatch(addToCart(product.id, 1, product));
+                    try {
+                        console.log('Add to cart product:', product); // Debug product object
+                        await dispatch(addToCart(product.id, 1, product));
+                        showSuccessToast(
+                            t('productCard.addedToCart', 'Added to cart successfully!'),
+                        );
+                    } catch (error) {
+                        console.error('Error adding to cart:', error);
+                        showErrorToast(
+                            t(
+                                'productCard.addToCartError',
+                                'Failed to add to cart. Please try again.',
+                            ),
+                        );
+                    }
                 }}
             >
                 {/* Shopping cart SVG */}

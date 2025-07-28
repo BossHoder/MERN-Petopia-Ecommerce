@@ -18,6 +18,7 @@ import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useUrlSteps } from '../../hooks/useUrlTabs';
 import GuestCheckoutForm from '../../components/GuestCheckoutForm/GuestCheckoutForm';
 import { useTranslation } from 'react-i18next';
+import { showSuccessToast } from '../../utils/toastUtils';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -69,6 +70,12 @@ const Checkout = () => {
 
         // Nếu tạo đơn hàng thành công, reset state và chuyển đến trang chi tiết đơn hàng
         if (success) {
+            showSuccessToast(
+                t(
+                    'checkout.orderSuccess',
+                    'Order placed successfully! Thank you for your purchase.',
+                ),
+            );
             dispatch({ type: ORDER_CREATE_RESET });
             navigate(`/order/${order._id}`);
             return;

@@ -17,6 +17,15 @@ const createOrder = asyncHandler(async (req, res) => {
     const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, guestInfo } =
         req.body;
 
+    console.log('🛒 Create Order Debug:', {
+        hasUser: !!req.user,
+        userId: req.user?._id,
+        userEmail: req.user?.email,
+        hasGuestInfo: !!guestInfo,
+        guestEmail: guestInfo?.email,
+        orderItemsCount: orderItems?.length || 0,
+    });
+
     if (!orderItems || orderItems.length === 0) {
         return validationErrorResponse(res, ERROR_MESSAGES.NO_ORDER_ITEMS);
     }
@@ -29,7 +38,7 @@ const createOrder = asyncHandler(async (req, res) => {
     const isGuestOrder = !req.user;
 
     const order = new Order({
-        user: isGuestOrder ? null : req.user.id,
+        user: isGuestOrder ? null : req.user._id,
         isGuestOrder,
         guestInfo: isGuestOrder ? guestInfo : null,
         orderItems: orderItems.map((item) => ({
@@ -47,8 +56,24 @@ const createOrder = asyncHandler(async (req, res) => {
         totalPrice,
     });
 
+    console.log('📦 Order Creation Data:', {
+        userId: order.user,
+        isGuestOrder: order.isGuestOrder,
+        hasGuestInfo: !!order.guestInfo,
+        orderItemsCount: order.orderItems.length,
+        totalPrice: order.totalPrice,
+    });
+
     try {
         const createdOrder = await order.save();
+
+        console.log('✅ Order created successfully:', {
+            orderId: createdOrder._id,
+            orderNumber: createdOrder.orderNumber,
+            userId: createdOrder.user,
+            isGuestOrder: createdOrder.isGuestOrder,
+            totalPrice: createdOrder.totalPrice,
+        });
 
         // Send order confirmation email (don't block order creation if email fails)
         try {
@@ -67,7 +92,7 @@ const createOrder = asyncHandler(async (req, res) => {
         return createdResponse(res, createdOrder);
     } catch (error) {
         // Log the full validation error to the backend console
-        console.error('Error saving order:', error);
+        console.error('❌ Error saving order:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 400, error.message);
     }
 });
@@ -87,10 +112,22 @@ const getOrderById = asyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id).populate('user', 'name email');
 
     if (order) {
-        // Ensure only the user who placed the order or an admin can view it
-        if (order.user._id.toString() !== req.user.id && req.user.role !== 'ADMIN') {
-            return errorResponse(res, ERROR_MESSAGES.FORBIDDEN, 403);
+        // Admin can view any order
+        if (req.user.role === 'ADMIN') {
+            return successResponse(res, order);
         }
+
+        // Handle guest orders (where user is null)
+        if (order.isGuestOrder || !order.user) {
+            // For guest orders, only admin can view (guests can't authenticate to access this endpoint)
+            return errorResponse(res, ERROR_MESSAGES.FORBIDDEN, 403);
+        } else {
+            // For user orders, ensure only the user who placed the order can view it
+            if (order.user._id.toString() !== req.user.id) {
+                return errorResponse(res, ERROR_MESSAGES.FORBIDDEN, 403);
+            }
+        }
+
         return successResponse(res, order);
     } else {
         return notFoundResponse(res, ERROR_MESSAGES.ORDER_NOT_FOUND);

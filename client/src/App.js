@@ -6,6 +6,9 @@ import Cookies from 'js-cookie';
 // Import i18n configuration
 import './i18n/i18n';
 
+// Import toast styles
+import './styles/toastStyles.css';
+
 import Layout from './layout/Layout'; // Import Layout
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';

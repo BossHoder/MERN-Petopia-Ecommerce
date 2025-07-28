@@ -7,10 +7,11 @@ import {
     getAdminCategories,
     deleteCategory,
     bulkDeleteCategories,
-    clearAdminErrors
+    clearAdminErrors,
 } from '../../../store/actions/adminActions';
 import AdminTable from '../../../components/Admin/AdminTable/AdminTable';
 import AdminPagination from '../../../components/Admin/AdminPagination/AdminPagination';
+import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import CategoryForm from './CategoryForm';
 import './styles.css';
 
@@ -35,8 +36,8 @@ const Categories = () => {
         categoriesLoading,
         categoryDeleteLoading,
         error,
-        success
-    } = useSelector(state => state.admin);
+        success,
+    } = useSelector((state) => state.admin);
 
     // URL parameters
     const currentPage = parseInt(searchParams.get('page')) || 1;
@@ -72,13 +73,13 @@ const Categories = () => {
                     <span className="name">{value}</span>
                     <span className="slug">/{item.slug}</span>
                 </div>
-            )
+            ),
         },
         {
             key: 'parentCategory',
             title: t('admin.categories.parentCategory', 'Parent Category'),
             width: '20%',
-            render: (value) => value?.name || '-'
+            render: (value) => value?.name || '-',
         },
         {
             key: 'description',
@@ -88,14 +89,14 @@ const Categories = () => {
                 <div className="description-cell">
                     {value ? (value.length > 80 ? `${value.substring(0, 80)}...` : value) : '-'}
                 </div>
-            )
+            ),
         },
         {
             key: 'productCount',
             title: t('admin.categories.productCount', 'Products'),
             width: '10%',
             align: 'center',
-            render: (value) => value || 0
+            render: (value) => value || 0,
         },
         {
             key: 'isPublished',
@@ -104,15 +105,17 @@ const Categories = () => {
             align: 'center',
             render: (value) => (
                 <span className={`status-badge ${value ? 'published' : 'unpublished'}`}>
-                    {value ? t('common.published', 'Published') : t('common.unpublished', 'Unpublished')}
+                    {value
+                        ? t('common.published', 'Published')
+                        : t('common.unpublished', 'Unpublished')}
                 </span>
-            )
+            ),
         },
         {
             key: 'createdAt',
             title: t('admin.categories.dateAdded', 'Date Added'),
             width: '10%',
-            render: (value) => new Date(value).toLocaleDateString()
+            render: (value) => new Date(value).toLocaleDateString(),
         },
         {
             key: 'actions',
@@ -136,8 +139,8 @@ const Categories = () => {
                         🗑️
                     </button>
                 </div>
-            )
-        }
+            ),
+        },
     ];
 
     // Event handlers
@@ -231,6 +234,9 @@ const Categories = () => {
 
     return (
         <div className="admin-categories">
+            {/* Breadcrumb */}
+            <BreadcrumbNavigation />
+
             {/* Header */}
             <div className="admin-page-header">
                 <div className="admin-page-title">
@@ -247,7 +253,10 @@ const Categories = () => {
                     <form onSubmit={handleSearch} className="admin-search-form">
                         <input
                             type="text"
-                            placeholder={t('admin.categories.searchPlaceholder', 'Search categories...')}
+                            placeholder={t(
+                                'admin.categories.searchPlaceholder',
+                                'Search categories...',
+                            )}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="admin-search-input"
@@ -256,7 +265,7 @@ const Categories = () => {
                             🔍
                         </button>
                     </form>
-                    
+
                     <div className="admin-sort-controls">
                         <select
                             value={`${sortBy}-${sortOrder}`}
@@ -268,8 +277,12 @@ const Categories = () => {
                         >
                             <option value="name-asc">{t('admin.sort.nameAZ', 'Name: A-Z')}</option>
                             <option value="name-desc">{t('admin.sort.nameZA', 'Name: Z-A')}</option>
-                            <option value="createdAt-desc">{t('admin.sort.newestFirst', 'Newest First')}</option>
-                            <option value="createdAt-asc">{t('admin.sort.oldestFirst', 'Oldest First')}</option>
+                            <option value="createdAt-desc">
+                                {t('admin.sort.newestFirst', 'Newest First')}
+                            </option>
+                            <option value="createdAt-asc">
+                                {t('admin.sort.oldestFirst', 'Oldest First')}
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -282,7 +295,7 @@ const Categories = () => {
                     >
                         ➕ {t('admin.categories.addNew', 'Add New Category')}
                     </button>
-                    
+
                     {canEdit && (
                         <button
                             className="admin-btn admin-btn-secondary"
@@ -291,7 +304,7 @@ const Categories = () => {
                             ✏️ {t('common.edit', 'Edit')}
                         </button>
                     )}
-                    
+
                     {canDelete && (
                         <button
                             className="admin-btn admin-btn-danger"
@@ -312,7 +325,10 @@ const Categories = () => {
                 onSelectItem={setSelectedItems}
                 onSelectAll={setSelectedItems}
                 loading={categoriesLoading}
-                emptyMessage={t('admin.categories.noData', 'No categories found. Create your first category to get started.')}
+                emptyMessage={t(
+                    'admin.categories.noData',
+                    'No categories found. Create your first category to get started.',
+                )}
             />
 
             {/* Pagination */}
@@ -332,12 +348,20 @@ const Categories = () => {
                         <div className="admin-modal-body">
                             <p>
                                 {selectedItems.length === 1
-                                    ? t('admin.categories.deleteConfirmSingle', 'Are you sure you want to delete this category?')
-                                    : t('admin.categories.deleteConfirmMultiple', `Are you sure you want to delete ${selectedItems.length} categories?`)
-                                }
+                                    ? t(
+                                          'admin.categories.deleteConfirmSingle',
+                                          'Are you sure you want to delete this category?',
+                                      )
+                                    : t(
+                                          'admin.categories.deleteConfirmMultiple',
+                                          `Are you sure you want to delete ${selectedItems.length} categories?`,
+                                      )}
                             </p>
                             <p className="admin-modal-warning">
-                                {t('admin.categories.deleteWarning', 'This action cannot be undone.')}
+                                {t(
+                                    'admin.categories.deleteWarning',
+                                    'This action cannot be undone.',
+                                )}
                             </p>
                         </div>
                         <div className="admin-modal-footer">
@@ -352,7 +376,9 @@ const Categories = () => {
                                 onClick={confirmDelete}
                                 disabled={categoryDeleteLoading}
                             >
-                                {categoryDeleteLoading ? t('common.deleting', 'Deleting...') : t('common.delete', 'Delete')}
+                                {categoryDeleteLoading
+                                    ? t('common.deleting', 'Deleting...')
+                                    : t('common.delete', 'Delete')}
                             </button>
                         </div>
                     </div>

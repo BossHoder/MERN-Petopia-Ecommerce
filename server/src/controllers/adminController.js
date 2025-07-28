@@ -5,6 +5,7 @@ import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import Category from '../models/Category.js';
 import ParentCategory from '../models/parentCategory.js';
+import { logOrderStatusChange, logPaymentStatusChange, extractRequestMetadata } from '../utils/auditLogger.js';
 
 // ===========================================
 // DASHBOARD CONTROLLERS
@@ -138,11 +139,35 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
         const { status } = req.body;
         const orderId = req.params.id;
 
-        const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        const validStatuses = ['pending', 'processing', 'delivering', 'delivered', 'cancelled', 'refunded'];
         if (!validStatuses.includes(status)) {
             return errorResponse(res, 'Invalid order status', 400);
         }
 
+        // Get the current order to track the old status
+        const currentOrder = await Order.findById(orderId);
+        if (!currentOrder) {
+            return errorResponse(res, 'Order not found', 404);
+        }
+
+        const oldStatus = currentOrder.orderStatus;
+
+        // Validate payment requirements for delivering/delivered status
+        if (
+            (status === 'delivering' || status === 'delivered') &&
+            currentOrder.paymentMethod !== 'COD' &&
+            !currentOrder.isPaid
+        ) {
+            const statusAction = status === 'delivering' ? 'start delivery' : 'mark as delivered';
+            const statusName = status === 'delivering' ? 'delivering' : 'delivered';
+            return errorResponse(
+                res,
+                `Order must be paid before you can ${statusAction}. Only COD orders can be marked as ${statusName} without payment.`,
+                400,
+            );
+        }
+
+        // Update the order
         const order = await Order.findByIdAndUpdate(
             orderId,
             {
@@ -152,14 +177,82 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
             { new: true },
         ).populate('user', 'name email');
 
-        if (!order) {
-            return errorResponse(res, 'Order not found', 404);
-        }
+        // Log the status change for audit trail
+        const requestMetadata = extractRequestMetadata(req);
+        await logOrderStatusChange({
+            orderId: order._id,
+            orderNumber: order.orderNumber,
+            oldStatus,
+            newStatus: orderStatus,
+            changedBy: req.user._id,
+            ipAddress: requestMetadata.ipAddress,
+            userAgent: requestMetadata.userAgent,
+            notes: `Status changed from ${oldStatus} to ${orderStatus} by admin`,
+        });
 
         return successResponse(res, order, 'Order status updated successfully');
     } catch (error) {
         console.error('Update order status error:', error);
         return errorResponse(res, 'Failed to update order status', 500);
+    }
+});
+
+/**
+ * @desc    Update payment status
+ * @route   PUT /api/admin/orders/:id/payment
+ * @access  Private/Admin
+ */
+const updatePaymentStatus = asyncHandler(async (req, res) => {
+    try {
+        const { isPaid } = req.body;
+        const orderId = req.params.id;
+
+        if (typeof isPaid !== 'boolean') {
+            return errorResponse(res, 'Invalid payment status', 400);
+        }
+
+        // Get the current order to track the old payment status
+        const currentOrder = await Order.findById(orderId);
+        if (!currentOrder) {
+            return errorResponse(res, 'Order not found', 404);
+        }
+
+        // Prevent payment status updates for cancelled or refunded orders
+        if (currentOrder.orderStatus === 'cancelled' || currentOrder.orderStatus === 'refunded') {
+            return errorResponse(res, 'Payment status cannot be changed for cancelled or refunded orders', 400);
+        }
+
+        const oldPaymentStatus = currentOrder.isPaid;
+
+        // Update the order
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            {
+                isPaid: isPaid,
+                ...(isPaid && { paidAt: new Date() }),
+            },
+            { new: true },
+        ).populate('user', 'name email');
+
+        // Log the payment status change for audit trail
+        const requestMetadata = extractRequestMetadata(req);
+        await logPaymentStatusChange({
+            orderId: order._id,
+            orderNumber: order.orderNumber,
+            oldPaymentStatus,
+            newPaymentStatus: isPaid,
+            changedBy: req.user._id,
+            ipAddress: requestMetadata.ipAddress,
+            userAgent: requestMetadata.userAgent,
+            notes: `Payment status changed from ${oldPaymentStatus ? 'Paid' : 'Unpaid'} to ${
+                isPaid ? 'Paid' : 'Unpaid'
+            } by admin`,
+        });
+
+        return successResponse(res, order, 'Payment status updated successfully');
+    } catch (error) {
+        console.error('Update payment status error:', error);
+        return errorResponse(res, 'Failed to update payment status', 500);
     }
 });
 
@@ -252,6 +345,7 @@ export default {
     getRecentUsers,
     getAllOrders,
     updateOrderStatus,
+    updatePaymentStatus,
     getOrderDetails: asyncHandler(async (req, res) => {
         try {
             const orderId = req.params.id;

@@ -1,0 +1,307 @@
+/* Status Change Confirmation Dialog Styles */
+.status-change-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+}
+
+.status-change-dialog {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Dialog Header */
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border-light, #E5E5E5);
+}
+
+.dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary, #1D120C);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dialog-close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--text-secondary, #6B7280);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.dialog-close-btn:hover:not(:disabled) {
+    background-color: var(--bg-light, #F8F9FA);
+    color: var(--text-primary, #1D120C);
+}
+
+.dialog-close-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Dialog Content */
+.dialog-content {
+    padding: 20px 24px;
+}
+
+.order-info {
+    margin-bottom: 20px;
+}
+
+.order-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--brand-primary-dark, #B8956A);
+    margin: 0;
+    text-align: center;
+}
+
+/* Status Change Preview */
+.status-change-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+    padding: 20px;
+    background: var(--bg-light, #F8F9FA);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #E5E5E5);
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    min-width: 100px;
+}
+
+.status-item.current {
+    background: white;
+    border: 2px solid var(--text-secondary, #6B7280);
+}
+
+.status-item.new {
+    background: var(--brand-primary-light, #F5F0E8);
+    border: 2px solid var(--brand-primary, #D4A574);
+}
+
+.status-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.status-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary, #1D120C);
+    text-align: center;
+}
+
+.status-type {
+    font-size: 12px;
+    color: var(--text-secondary, #6B7280);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-arrow {
+    font-size: 20px;
+    color: var(--brand-primary, #D4A574);
+    font-weight: bold;
+}
+
+/* Confirmation Message */
+.confirmation-message {
+    margin: 20px 0;
+}
+
+.confirmation-message p {
+    font-size: 14px;
+    color: var(--text-primary, #1D120C);
+    line-height: 1.5;
+    margin: 0 0 16px 0;
+    text-align: center;
+}
+
+.warning-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #FFF3CD;
+    border: 1px solid #FFEAA7;
+    border-radius: 6px;
+    margin-top: 16px;
+}
+
+.warning-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.warning-text {
+    font-size: 13px;
+    color: #856404;
+    font-weight: 500;
+}
+
+/* Dialog Actions */
+.dialog-actions {
+    display: flex;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border-light, #E5E5E5);
+    justify-content: flex-end;
+}
+
+.btn-secondary,
+.btn-primary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.btn-secondary {
+    background: var(--bg-light, #F8F9FA);
+    color: var(--text-primary, #1D120C);
+    border: 1px solid var(--border-light, #E5E5E5);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: var(--border-light, #E5E5E5);
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: var(--brand-primary, #D4A574);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--brand-primary-dark, #B8956A);
+    transform: translateY(-1px);
+}
+
+.btn-primary.critical {
+    background: #DC3545;
+}
+
+.btn-primary.critical:hover:not(:disabled) {
+    background: #C82333;
+}
+
+.btn-secondary:disabled,
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .status-change-dialog-overlay {
+        padding: 10px;
+    }
+    
+    .status-change-dialog {
+        max-width: none;
+        width: 100%;
+    }
+    
+    .dialog-header {
+        padding: 16px 20px 12px;
+    }
+    
+    .dialog-title {
+        font-size: 16px;
+    }
+    
+    .dialog-content {
+        padding: 16px 20px;
+    }
+    
+    .status-change-preview {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .status-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .dialog-actions {
+        padding: 12px 20px 20px;
+        flex-direction: column;
+    }
+    
+    .btn-secondary,
+    .btn-primary {
+        width: 100%;
+    }
+}
+
+/* Accessibility */
+.status-change-dialog:focus {
+    outline: 2px solid var(--brand-primary, #D4A574);
+    outline-offset: 2px;
+}
+
+/* Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Pet-friendly color variables */
+.status-change-dialog {
+    --brand-primary: #D4A574;
+    --brand-primary-dark: #B8956A;
+    --brand-primary-light: #F5F0E8;
+    --text-primary: #1D120C;
+    --text-secondary: #6B7280;
+    --border-light: #E5E5E5;
+    --bg-light: #F8F9FA;
+}

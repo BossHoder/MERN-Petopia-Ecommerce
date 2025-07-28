@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { useI18n } from '../../../hooks/useI18n';
+import { showSuccessToast, showErrorToast, showToastWithReload } from '../../../utils/toastUtils';
 import {
     getAdminOrders,
     updateOrderStatus,
-    clearAdminErrors
+    updatePaymentStatus,
+    clearAdminErrors,
 } from '../../../store/actions/adminActions';
 import AdminTable from '../../../components/Admin/AdminTable/AdminTable';
 import AdminPagination from '../../../components/Admin/AdminPagination/AdminPagination';
 import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import OrderStatusBadge from '../../../components/Admin/OrderStatusBadge/OrderStatusBadge';
+import PaymentStatusControl from '../../../components/Admin/PaymentStatusControl/PaymentStatusControl';
+import OrderStatusControl from '../../../components/Admin/OrderStatusControl/OrderStatusControl';
 import OrderDetails from './OrderDetails';
 import './styles.css';
 
@@ -31,14 +34,8 @@ const Orders = () => {
     const orderId = searchParams.get('orderId');
 
     // Redux state
-    const {
-        orders,
-        ordersPagination,
-        ordersLoading,
-        orderUpdateLoading,
-        error,
-        success
-    } = useSelector((state) => state.admin);
+    const { orders, ordersPagination, ordersLoading, orderUpdateLoading, error, success } =
+        useSelector((state) => state.admin);
 
     // Local state
     const [selectedItems, setSelectedItems] = useState([]);
@@ -47,8 +44,8 @@ const Orders = () => {
 
     // Breadcrumb items
     const breadcrumbItems = [
-        { label: t('admin.dashboard', 'Dashboard'), path: '/admin/dashboard' },
-        { label: t('admin.orders.title', 'Orders Management'), path: '/admin/orders' }
+        { name: t('admin.title', 'Admin Dashboard'), path: '/admin/dashboard' },
+        { name: t('admin.orders.title', 'Orders Management'), path: '/admin/orders' },
     ];
 
     // Load orders on component mount and when parameters change
@@ -59,11 +56,11 @@ const Orders = () => {
     // Handle success/error messages
     useEffect(() => {
         if (success) {
-            toast.success(success);
+            showSuccessToast(success);
             dispatch(clearAdminErrors());
         }
         if (error) {
-            toast.error(error);
+            showErrorToast(error);
             dispatch(clearAdminErrors());
         }
     }, [success, error, dispatch]);
@@ -73,9 +70,9 @@ const Orders = () => {
         { value: 'all', label: t('admin.orders.status.all', 'All Orders') },
         { value: 'pending', label: t('admin.orders.status.pending', 'Pending') },
         { value: 'processing', label: t('admin.orders.status.processing', 'Processing') },
-        { value: 'shipped', label: t('admin.orders.status.shipped', 'Shipped') },
+        { value: 'delivering', label: t('admin.orders.status.delivering', 'Delivering') },
         { value: 'delivered', label: t('admin.orders.status.delivered', 'Delivered') },
-        { value: 'cancelled', label: t('admin.orders.status.cancelled', 'Cancelled') }
+        { value: 'cancelled', label: t('admin.orders.status.cancelled', 'Cancelled') },
     ];
 
     // Table columns configuration
@@ -91,7 +88,7 @@ const Orders = () => {
                         <span className="guest-badge">{t('admin.orders.guest', 'Guest')}</span>
                     )}
                 </div>
-            )
+            ),
         },
         {
             key: 'customer',
@@ -106,21 +103,31 @@ const Orders = () => {
                         {item.user ? item.user.email : item.guestInfo?.email || 'N/A'}
                     </div>
                 </div>
-            )
+            ),
         },
         {
             key: 'orderStatus',
             title: t('admin.orders.status.title', 'Status'),
-            width: '12%',
+            width: '18%',
             align: 'center',
-            render: (value) => <OrderStatusBadge status={value} />
+            render: (value, item) => (
+                <OrderStatusControl
+                    currentStatus={value}
+                    orderId={item._id}
+                    orderNumber={item.orderNumber}
+                    isPaid={item.isPaid}
+                    paymentMethod={item.paymentMethod}
+                    onStatusUpdate={handleUpdateStatus}
+                    size="small"
+                />
+            ),
         },
         {
             key: 'totalPrice',
             title: t('admin.orders.total', 'Total'),
             width: '10%',
             align: 'right',
-            render: (value) => `$${value?.toFixed(2) || '0.00'}`
+            render: (value) => `$${value?.toFixed(2) || '0.00'}`,
         },
         {
             key: 'paymentMethod',
@@ -130,18 +137,22 @@ const Orders = () => {
                 <span className="payment-method">
                     {t(`admin.orders.payment.${value}`, value?.toUpperCase() || 'N/A')}
                 </span>
-            )
+            ),
         },
         {
             key: 'isPaid',
-            title: t('admin.orders.paymentStatus', 'Paid'),
-            width: '8%',
+            title: t('admin.orders.paymentStatusControl.title', 'Payment Status'),
+            width: '12%',
             align: 'center',
-            render: (value) => (
-                <span className={`payment-status ${value ? 'paid' : 'unpaid'}`}>
-                    {value ? '✅' : '❌'}
-                </span>
-            )
+            render: (value, item) => (
+                <PaymentStatusControl
+                    currentStatus={value}
+                    orderId={item._id}
+                    orderStatus={item.orderStatus}
+                    onStatusUpdate={handlePaymentStatusUpdate}
+                    size="small"
+                />
+            ),
         },
         {
             key: 'isDelivered',
@@ -152,13 +163,13 @@ const Orders = () => {
                 <span className={`delivery-status ${value ? 'delivered' : 'pending'}`}>
                     {value ? '✅' : '❌'}
                 </span>
-            )
+            ),
         },
         {
             key: 'createdAt',
             title: t('admin.orders.dateCreated', 'Date Created'),
             width: '12%',
-            render: (value) => new Date(value).toLocaleDateString()
+            render: (value) => new Date(value).toLocaleDateString(),
         },
         {
             key: 'actions',
@@ -182,8 +193,8 @@ const Orders = () => {
                         ✏️
                     </button>
                 </div>
-            )
-        }
+            ),
+        },
     ];
 
     // Event handlers
@@ -217,6 +228,18 @@ const Orders = () => {
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
+    // Auto-reload function
+    const reloadOrders = () => {
+        dispatch(
+            getAdminOrders({
+                page: currentPage,
+                limit: 10, // Default page size
+                status: statusFilter,
+                search: searchTerm,
+            }),
+        );
+    };
+
     const handleViewOrder = (orderIdToView) => {
         const params = new URLSearchParams(searchParams);
         params.set('view', 'details');
@@ -224,9 +247,41 @@ const Orders = () => {
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
-    const handleUpdateStatus = (orderIdToUpdate) => {
-        // This will be implemented with a modal/dropdown
-        console.log('Update status for order:', orderIdToUpdate);
+    const handleUpdateStatus = async (orderId, newStatus) => {
+        try {
+            await dispatch(updateOrderStatus(orderId, newStatus));
+            showToastWithReload(
+                t('admin.orders.statusUpdateSuccess', 'Order status updated successfully'),
+                'success',
+                reloadOrders,
+                1500,
+            );
+        } catch (error) {
+            showErrorToast(t('admin.orders.statusUpdateError', 'Failed to update order status'));
+        }
+    };
+
+    // Handle payment status update
+    const handlePaymentStatusUpdate = async (orderId, isPaid) => {
+        try {
+            await dispatch(updatePaymentStatus(orderId, isPaid));
+            showToastWithReload(
+                t(
+                    'admin.orders.paymentStatusControl.updateSuccess',
+                    'Payment status updated successfully',
+                ),
+                'success',
+                reloadOrders,
+                1500,
+            );
+        } catch (error) {
+            showErrorToast(
+                t(
+                    'admin.orders.paymentStatusControl.updateError',
+                    'Failed to update payment status',
+                ),
+            );
+        }
     };
 
     const handleCloseDetails = () => {
@@ -238,12 +293,7 @@ const Orders = () => {
 
     // Show order details if view mode is details
     if (viewMode === 'details' && orderId) {
-        return (
-            <OrderDetails
-                orderId={orderId}
-                onClose={handleCloseDetails}
-            />
-        );
+        return <OrderDetails orderId={orderId} onClose={handleCloseDetails} />;
     }
 
     const canBulkUpdate = selectedItems.length > 0;
@@ -259,11 +309,12 @@ const Orders = () => {
             {/* Page Header */}
             <div className="page-header">
                 <div className="header-content">
-                    <h1 className="page-title">
-                        {t('admin.orders.title', 'Orders Management')}
-                    </h1>
+                    <h1 className="page-title">{t('admin.orders.title', 'Orders Management')}</h1>
                     <p className="page-subtitle">
-                        {t('admin.orders.subtitle', 'Manage customer orders, update status, and track deliveries')}
+                        {t(
+                            'admin.orders.subtitle',
+                            'Manage customer orders, update status, and track deliveries',
+                        )}
                     </p>
                 </div>
             </div>
@@ -297,7 +348,10 @@ const Orders = () => {
                             type="text"
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
-                            placeholder={t('admin.orders.searchPlaceholder', 'Search by order number or customer email...')}
+                            placeholder={t(
+                                'admin.orders.searchPlaceholder',
+                                'Search by order number or customer email...',
+                            )}
                             className="search-input"
                         />
                         <button type="submit" className="search-btn">
@@ -332,7 +386,10 @@ const Orders = () => {
                 onSelectItem={setSelectedItems}
                 onSelectAll={setSelectedItems}
                 loading={ordersLoading}
-                emptyMessage={t('admin.orders.noData', 'No orders found. Orders will appear here once customers start placing orders.')}
+                emptyMessage={t(
+                    'admin.orders.noData',
+                    'No orders found. Orders will appear here once customers start placing orders.',
+                )}
             />
 
             {/* Pagination */}

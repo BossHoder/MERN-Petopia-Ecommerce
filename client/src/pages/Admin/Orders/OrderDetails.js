@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { useI18n } from '../../../hooks/useI18n';
-import { getOrderDetails, updateOrderStatus } from '../../../store/actions/adminActions';
+import { showSuccessToast, showErrorToast, showToastWithReload } from '../../../utils/toastUtils';
+import {
+    getOrderDetails,
+    updateOrderStatus,
+    updatePaymentStatus,
+} from '../../../store/actions/adminActions';
 import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import OrderStatusBadge from '../../../components/Admin/OrderStatusBadge/OrderStatusBadge';
+import OrderStatusControl from '../../../components/Admin/OrderStatusControl/OrderStatusControl';
+import PaymentStatusControl from '../../../components/Admin/PaymentStatusControl/PaymentStatusControl';
 import './OrderDetails.css';
 
 const OrderDetails = ({ orderId, onClose }) => {
@@ -12,17 +18,11 @@ const OrderDetails = ({ orderId, onClose }) => {
     const dispatch = useDispatch();
 
     // Redux state
-    const {
-        orderDetails,
-        orderDetailsLoading,
-        orderUpdateLoading,
-        error,
-        success
-    } = useSelector((state) => state.admin);
+    const { orderDetails, orderDetailsLoading, orderUpdateLoading, error, success } = useSelector(
+        (state) => state.admin,
+    );
 
-    // Local state
-    const [showStatusUpdate, setShowStatusUpdate] = useState(false);
-    const [newStatus, setNewStatus] = useState('');
+    // Local state - removed unused status update state
 
     // Load order details
     useEffect(() => {
@@ -34,33 +34,58 @@ const OrderDetails = ({ orderId, onClose }) => {
     // Handle success/error messages
     useEffect(() => {
         if (success) {
-            toast.success(success);
-            setShowStatusUpdate(false);
+            showSuccessToast(success);
         }
         if (error) {
-            toast.error(error);
+            showErrorToast(error);
         }
     }, [success, error]);
 
     // Breadcrumb items
     const breadcrumbItems = [
-        { label: t('admin.dashboard', 'Dashboard'), path: '/admin/dashboard' },
-        { label: t('admin.orders.title', 'Orders Management'), path: '/admin/orders' },
-        { label: t('admin.orders.orderDetails', 'Order Details'), path: '#' }
+        { name: t('admin.title', 'Admin Dashboard'), path: '/admin/dashboard' },
+        { name: t('admin.orders.title', 'Orders Management'), path: '/admin/orders' },
+        { name: t('admin.orders.orderDetails', 'Order Details'), path: '#' },
     ];
 
-    // Status options for update
-    const statusOptions = [
-        { value: 'pending', label: t('admin.orders.status.pending', 'Pending') },
-        { value: 'processing', label: t('admin.orders.status.processing', 'Processing') },
-        { value: 'shipped', label: t('admin.orders.status.shipped', 'Shipped') },
-        { value: 'delivered', label: t('admin.orders.status.delivered', 'Delivered') },
-        { value: 'cancelled', label: t('admin.orders.status.cancelled', 'Cancelled') }
-    ];
+    // Auto-reload function
+    const reloadOrderDetails = () => {
+        dispatch(getOrderDetails(orderId));
+    };
 
-    const handleStatusUpdate = () => {
-        if (newStatus && newStatus !== orderDetails?.orderStatus) {
-            dispatch(updateOrderStatus(orderId, newStatus));
+    const handleStatusUpdate = async (orderId, newStatus) => {
+        try {
+            await dispatch(updateOrderStatus(orderId, newStatus));
+            showToastWithReload(
+                t('admin.orders.statusUpdateSuccess', 'Order status updated successfully'),
+                'success',
+                reloadOrderDetails,
+                1500,
+            );
+        } catch (error) {
+            showErrorToast(t('admin.orders.statusUpdateError', 'Failed to update order status'));
+        }
+    };
+
+    const handlePaymentStatusUpdate = async (orderId, isPaid) => {
+        try {
+            await dispatch(updatePaymentStatus(orderId, isPaid));
+            showToastWithReload(
+                t(
+                    'admin.orders.paymentStatusControl.updateSuccess',
+                    'Payment status updated successfully',
+                ),
+                'success',
+                reloadOrderDetails,
+                1500,
+            );
+        } catch (error) {
+            showErrorToast(
+                t(
+                    'admin.orders.paymentStatusControl.updateError',
+                    'Failed to update payment status',
+                ),
+            );
         }
     };
 
@@ -106,58 +131,44 @@ const OrderDetails = ({ orderId, onClose }) => {
                     </div>
                 </div>
                 <div className="header-actions">
-                    <button
-                        onClick={() => setShowStatusUpdate(!showStatusUpdate)}
-                        className="btn-primary"
-                        disabled={orderUpdateLoading}
-                    >
-                        {t('admin.orders.updateStatus', 'Update Status')}
-                    </button>
                     <button onClick={onClose} className="btn-secondary">
                         {t('common.close', 'Close')}
                     </button>
                 </div>
             </div>
 
-            {/* Status Update Section */}
-            {showStatusUpdate && (
-                <div className="status-update-section">
-                    <div className="status-update-form">
-                        <label className="form-label">
-                            {t('admin.orders.newStatus', 'New Status')}
-                        </label>
-                        <div className="status-update-controls">
-                            <select
-                                value={newStatus}
-                                onChange={(e) => setNewStatus(e.target.value)}
-                                className="status-select"
-                            >
-                                <option value="">
-                                    {t('admin.orders.selectStatus', 'Select new status')}
-                                </option>
-                                {statusOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                            <button
-                                onClick={handleStatusUpdate}
-                                disabled={!newStatus || orderUpdateLoading}
-                                className="btn-primary"
-                            >
-                                {orderUpdateLoading ? t('common.updating', 'Updating...') : t('common.update', 'Update')}
-                            </button>
-                            <button
-                                onClick={() => setShowStatusUpdate(false)}
-                                className="btn-secondary"
-                            >
-                                {t('common.cancel', 'Cancel')}
-                            </button>
-                        </div>
+            {/* Status and Payment Controls Section */}
+            <div className="status-controls-section">
+                <div className="controls-grid">
+                    <div className="control-group">
+                        <h4 className="control-title">
+                            {t('admin.orders.status.title', 'Order Status')}
+                        </h4>
+                        <OrderStatusControl
+                            currentStatus={orderDetails?.orderStatus}
+                            orderId={orderId}
+                            orderNumber={orderDetails?.orderNumber}
+                            isPaid={orderDetails?.isPaid}
+                            paymentMethod={orderDetails?.paymentMethod}
+                            onStatusUpdate={handleStatusUpdate}
+                            size="large"
+                        />
+                    </div>
+
+                    <div className="control-group">
+                        <h4 className="control-title">
+                            {t('admin.orders.paymentStatusControl.title', 'Payment Status')}
+                        </h4>
+                        <PaymentStatusControl
+                            currentStatus={orderDetails?.isPaid}
+                            orderId={orderId}
+                            orderStatus={orderDetails?.orderStatus}
+                            onStatusUpdate={handlePaymentStatusUpdate}
+                            size="large"
+                        />
                     </div>
                 </div>
-            )}
+            </div>
 
             {/* Order Content */}
             <div className="order-details-content">
@@ -168,23 +179,39 @@ const OrderDetails = ({ orderId, onClose }) => {
                     </h2>
                     <div className="summary-grid">
                         <div className="summary-item">
-                            <span className="label">{t('admin.orders.orderDate', 'Order Date')}</span>
-                            <span className="value">{new Date(order.createdAt).toLocaleString()}</span>
-                        </div>
-                        <div className="summary-item">
-                            <span className="label">{t('admin.orders.paymentMethod', 'Payment Method')}</span>
-                            <span className="value">{order.paymentMethod?.toUpperCase()}</span>
-                        </div>
-                        <div className="summary-item">
-                            <span className="label">{t('admin.orders.paymentStatus', 'Payment Status')}</span>
-                            <span className={`value ${order.isPaid ? 'paid' : 'unpaid'}`}>
-                                {order.isPaid ? t('admin.orders.paid', 'Paid') : t('admin.orders.unpaid', 'Unpaid')}
+                            <span className="label">
+                                {t('admin.orders.orderDate', 'Order Date')}
+                            </span>
+                            <span className="value">
+                                {new Date(order.createdAt).toLocaleString()}
                             </span>
                         </div>
                         <div className="summary-item">
-                            <span className="label">{t('admin.orders.deliveryStatus', 'Delivery Status')}</span>
-                            <span className={`value ${order.isDelivered ? 'delivered' : 'pending'}`}>
-                                {order.isDelivered ? t('admin.orders.delivered', 'Delivered') : t('admin.orders.pending', 'Pending')}
+                            <span className="label">
+                                {t('admin.orders.paymentMethod', 'Payment Method')}
+                            </span>
+                            <span className="value">{order.paymentMethod?.toUpperCase()}</span>
+                        </div>
+                        <div className="summary-item">
+                            <span className="label">
+                                {t('admin.orders.paymentStatus', 'Payment Status')}
+                            </span>
+                            <span className={`value ${order.isPaid ? 'paid' : 'unpaid'}`}>
+                                {order.isPaid
+                                    ? t('admin.orders.paid', 'Paid')
+                                    : t('admin.orders.unpaid', 'Unpaid')}
+                            </span>
+                        </div>
+                        <div className="summary-item">
+                            <span className="label">
+                                {t('admin.orders.deliveryStatus', 'Delivery Status')}
+                            </span>
+                            <span
+                                className={`value ${order.isDelivered ? 'delivered' : 'pending'}`}
+                            >
+                                {order.isDelivered
+                                    ? t('admin.orders.delivered', 'Delivered')
+                                    : t('admin.orders.pending', 'Pending')}
                             </span>
                         </div>
                     </div>
@@ -203,21 +230,31 @@ const OrderDetails = ({ orderId, onClose }) => {
                             </span>
                         </div>
                         <div className="info-item">
-                            <span className="label">{t('admin.orders.customerEmail', 'Email')}</span>
+                            <span className="label">
+                                {t('admin.orders.customerEmail', 'Email')}
+                            </span>
                             <span className="value">
                                 {order.user ? order.user.email : order.guestInfo?.email || 'N/A'}
                             </span>
                         </div>
                         <div className="info-item">
-                            <span className="label">{t('admin.orders.customerPhone', 'Phone')}</span>
+                            <span className="label">
+                                {t('admin.orders.customerPhone', 'Phone')}
+                            </span>
                             <span className="value">
-                                {order.guestInfo?.phoneNumber || order.shippingAddress?.phoneNumber || 'N/A'}
+                                {order.guestInfo?.phoneNumber ||
+                                    order.shippingAddress?.phoneNumber ||
+                                    'N/A'}
                             </span>
                         </div>
                         <div className="info-item">
-                            <span className="label">{t('admin.orders.customerType', 'Customer Type')}</span>
+                            <span className="label">
+                                {t('admin.orders.customerType', 'Customer Type')}
+                            </span>
                             <span className="value">
-                                {order.isGuestOrder ? t('admin.orders.guest', 'Guest') : t('admin.orders.registered', 'Registered')}
+                                {order.isGuestOrder
+                                    ? t('admin.orders.guest', 'Guest')
+                                    : t('admin.orders.registered', 'Registered')}
                             </span>
                         </div>
                     </div>
@@ -238,32 +275,38 @@ const OrderDetails = ({ orderId, onClose }) => {
                         </p>
                         <p className="address-line">{order.shippingAddress?.country}</p>
                         <p className="address-line">
-                            <strong>{t('admin.orders.phone', 'Phone')}:</strong> {order.shippingAddress?.phoneNumber}
+                            <strong>{t('admin.orders.phone', 'Phone')}:</strong>{' '}
+                            {order.shippingAddress?.phoneNumber}
                         </p>
                     </div>
                 </div>
 
                 {/* Order Items */}
                 <div className="details-section">
-                    <h2 className="section-title">
-                        {t('admin.orders.orderItems', 'Order Items')}
-                    </h2>
+                    <h2 className="section-title">{t('admin.orders.orderItems', 'Order Items')}</h2>
                     <div className="order-items">
                         {order.orderItems?.map((item, index) => (
                             <div key={index} className="order-item">
                                 <div className="item-image">
                                     <img
-                                        src={item.image || '/placeholder.jpg'}
+                                        src={item.image || '/placeholder.svg'}
                                         alt={item.name}
                                         onError={(e) => {
-                                            e.target.src = '/placeholder.jpg';
+                                            if (
+                                                e.target.src !==
+                                                window.location.origin + '/placeholder.svg'
+                                            ) {
+                                                e.target.src = '/placeholder.svg';
+                                            }
                                         }}
                                     />
                                 </div>
                                 <div className="item-details">
                                     <h3 className="item-name">{item.name}</h3>
                                     <div className="item-meta">
-                                        <span className="item-price">${item.price?.toFixed(2)}</span>
+                                        <span className="item-price">
+                                            ${item.price?.toFixed(2)}
+                                        </span>
                                         <span className="item-quantity">x{item.quantity}</span>
                                         <span className="item-total">
                                             ${(item.price * item.quantity)?.toFixed(2)}

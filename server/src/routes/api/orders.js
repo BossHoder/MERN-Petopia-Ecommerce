@@ -7,12 +7,13 @@ import {
     updateOrderToDelivered,
 } from '../../controllers/orderController.js';
 import requireJwtAuth from '../../middleware/requireJwtAuth.js';
+import optionalJwtAuth from '../../middleware/optionalJwtAuth.js';
 import requireAdmin from '../../middleware/requireAdmin.js';
 
 const router = Router();
 
 // Create order route - allow both authenticated and guest users
-router.route('/').post(createOrder);
+router.route('/').post(optionalJwtAuth, createOrder);
 
 // Protected routes - require authentication
 router.use(requireJwtAuth);

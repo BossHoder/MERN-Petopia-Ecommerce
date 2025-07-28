@@ -13,7 +13,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             icon: '⏳',
             bgColor: '#FFF3CD',
             textColor: '#856404',
-            borderColor: '#FFEAA7'
+            borderColor: '#FFEAA7',
         },
         processing: {
             label: t('admin.orders.status.processing', 'Processing'),
@@ -21,15 +21,15 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             icon: '⚙️',
             bgColor: '#D1ECF1',
             textColor: '#0C5460',
-            borderColor: '#B8DAFF'
+            borderColor: '#B8DAFF',
         },
-        shipped: {
-            label: t('admin.orders.status.shipped', 'Shipped'),
+        delivering: {
+            label: t('admin.orders.status.delivering', 'Delivering'),
             color: 'primary',
             icon: '🚚',
             bgColor: '#D4EDDA',
             textColor: '#155724',
-            borderColor: '#C3E6CB'
+            borderColor: '#C3E6CB',
         },
         delivered: {
             label: t('admin.orders.status.delivered', 'Delivered'),
@@ -37,7 +37,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             icon: '✅',
             bgColor: '#D4EDDA',
             textColor: '#155724',
-            borderColor: '#C3E6CB'
+            borderColor: '#C3E6CB',
         },
         cancelled: {
             label: t('admin.orders.status.cancelled', 'Cancelled'),
@@ -45,7 +45,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             icon: '❌',
             bgColor: '#F8D7DA',
             textColor: '#721C24',
-            borderColor: '#F5C6CB'
+            borderColor: '#F5C6CB',
         },
         refunded: {
             label: t('admin.orders.status.refunded', 'Refunded'),
@@ -53,8 +53,8 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             icon: '💰',
             bgColor: '#E2E3E5',
             textColor: '#383D41',
-            borderColor: '#D6D8DB'
-        }
+            borderColor: '#D6D8DB',
+        },
     };
 
     // Get status configuration or default
@@ -64,7 +64,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
     const sizeClasses = {
         small: 'status-badge-small',
         medium: 'status-badge-medium',
-        large: 'status-badge-large'
+        large: 'status-badge-large',
     };
 
     return (
@@ -73,7 +73,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
             style={{
                 backgroundColor: config.bgColor,
                 color: config.textColor,
-                borderColor: config.borderColor
+                borderColor: config.borderColor,
             }}
             title={config.label}
         >
@@ -82,9 +82,7 @@ const OrderStatusBadge = ({ status, size = 'medium', showIcon = true }) => {
                     {config.icon}
                 </span>
             )}
-            <span className="status-text">
-                {config.label}
-            </span>
+            <span className="status-text">{config.label}</span>
         </span>
     );
 };

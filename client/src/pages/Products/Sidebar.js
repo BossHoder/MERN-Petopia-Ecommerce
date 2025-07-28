@@ -464,15 +464,6 @@ const Sidebar = ({ onFilterChange }) => {
                     </div>
                 </div>
                 {/* Brand Section */}
-                <div className="filter-section">
-                    <button
-                        className="filter-section-header"
-                        onClick={() => toggleSection('brand')}
-                    >
-                        <span className="filter-section-title">{t('sidebar.brand')}</span>
-                        {expandedSections.brand ? <ChevronDown /> : <ChevronRight />}
-                    </button>
-                </div>
             </div>
             <button className="apply-filters-btn" onClick={handleApplyFilters}>
                 {t('sidebar.applyFilters')}
