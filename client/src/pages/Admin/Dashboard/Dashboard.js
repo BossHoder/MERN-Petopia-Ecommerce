@@ -91,63 +91,6 @@ const Dashboard = () => {
                     />
                 ))}
             </div>
-
-            {/* Quick Actions */}
-            <div className="quick-actions">
-                <h2 className="section-title">
-                    {t('admin.dashboard.quickActions', 'Quick Actions')}
-                </h2>
-                <div className="actions-grid">
-                    <div className="action-card">
-                        <div className="action-icon">➕</div>
-                        <div className="action-content">
-                            <h3>{t('admin.dashboard.addProduct', 'Add New Product')}</h3>
-                            <p>
-                                {t(
-                                    'admin.dashboard.addProductDesc',
-                                    'Create a new product listing',
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="action-card">
-                        <div className="action-icon">📋</div>
-                        <div className="action-content">
-                            <h3>{t('admin.dashboard.viewOrders', 'View Recent Orders')}</h3>
-                            <p>
-                                {t(
-                                    'admin.dashboard.viewOrdersDesc',
-                                    'Check latest customer orders',
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="action-card">
-                        <div className="action-icon">👥</div>
-                        <div className="action-content">
-                            <h3>{t('admin.dashboard.manageUsers', 'Manage Users')}</h3>
-                            <p>
-                                {t(
-                                    'admin.dashboard.manageUsersDesc',
-                                    'View and manage user accounts',
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                    <div className="action-card">
-                        <div className="action-icon">📊</div>
-                        <div className="action-content">
-                            <h3>{t('admin.dashboard.viewAnalytics', 'View Analytics')}</h3>
-                            <p>
-                                {t(
-                                    'admin.dashboard.viewAnalyticsDesc',
-                                    'Check sales and performance data',
-                                )}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
