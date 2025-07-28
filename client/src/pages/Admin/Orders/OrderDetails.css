@@ -511,3 +511,58 @@
         transform: rotate(360deg);
     }
 }
+
+/* Delivery Estimate Styles */
+.delivery-estimate {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.delivery-range {
+    display: block;
+    color: #6c757d;
+    font-size: 0.85rem;
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+/* Automatic Transition Styles */
+.transition-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.transition-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #dee2e6;
+}
+
+.transition-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.transition-status.executed {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.transition-status.scheduled {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+.transition-item .transition-status.executed {
+    border-left-color: #28a745;
+}
+
+.transition-item .transition-status.scheduled {
+    border-left-color: #ffc107;
+}

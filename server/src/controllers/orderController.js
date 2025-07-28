@@ -9,6 +9,12 @@ import {
     validationErrorResponse,
     createdResponse,
 } from '../helpers/responseHelper.js';
+import {
+    calculateDeliveryRange,
+    calculateEstimatedDeliveryDate,
+    calculateAutomaticTransitionTimes,
+} from '../utils/deliveryUtils.js';
+import orderSchedulerService from '../services/orderSchedulerService.js';
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -37,6 +43,12 @@ const createOrder = asyncHandler(async (req, res) => {
 
     const isGuestOrder = !req.user;
 
+    // Calculate delivery estimates
+    const orderDate = new Date();
+    const deliveryRange = calculateDeliveryRange(orderDate);
+    const estimatedDeliveryDate = calculateEstimatedDeliveryDate(orderDate);
+    const transitionTimes = calculateAutomaticTransitionTimes(orderDate);
+
     const order = new Order({
         user: isGuestOrder ? null : req.user._id,
         isGuestOrder,
@@ -54,6 +66,30 @@ const createOrder = asyncHandler(async (req, res) => {
         taxPrice,
         shippingPrice,
         totalPrice,
+        // Add delivery estimates
+        estimatedDeliveryDate,
+        estimatedDeliveryRange: deliveryRange,
+        // Set up automatic transitions
+        automaticTransitions: {
+            pendingToProcessing: {
+                scheduledAt: transitionTimes.pendingToProcessing,
+                isAutomatic: true,
+            },
+            processingToDelivering: {
+                scheduledAt: transitionTimes.processingToDelivering,
+                isAutomatic: true,
+            },
+        },
+        // Initialize status history
+        statusHistory: [
+            {
+                status: 'pending',
+                timestamp: orderDate,
+                comment: 'Order created',
+                changedBy: isGuestOrder ? 'guest' : req.user._id.toString(),
+                isAutomatic: false,
+            },
+        ],
     });
 
     console.log('📦 Order Creation Data:', {
@@ -73,6 +109,12 @@ const createOrder = asyncHandler(async (req, res) => {
             userId: createdOrder.user,
             isGuestOrder: createdOrder.isGuestOrder,
             totalPrice: createdOrder.totalPrice,
+            estimatedDelivery: createdOrder.estimatedDeliveryDate,
+            deliveryRange: `${createdOrder.estimatedDeliveryRange.start.toDateString()} - ${createdOrder.estimatedDeliveryRange.end.toDateString()}`,
+            automaticTransitions: {
+                pendingToProcessing: createdOrder.automaticTransitions.pendingToProcessing.scheduledAt,
+                processingToDelivering: createdOrder.automaticTransitions.processingToDelivering.scheduledAt,
+            },
         });
 
         // Send order confirmation email (don't block order creation if email fails)

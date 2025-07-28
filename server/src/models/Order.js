@@ -97,6 +97,53 @@ const OrderSchema = new Schema(
             enum: ['pending', 'processing', 'delivering', 'delivered', 'cancelled', 'refunded'],
             default: 'pending',
         },
+        // Delivery estimation fields
+        estimatedDeliveryDate: {
+            type: Date,
+        },
+        estimatedDeliveryRange: {
+            start: { type: Date },
+            end: { type: Date },
+        },
+        // Automatic transition tracking
+        automaticTransitions: {
+            pendingToProcessing: {
+                scheduledAt: { type: Date },
+                executedAt: { type: Date },
+                isAutomatic: { type: Boolean, default: false },
+            },
+            processingToDelivering: {
+                scheduledAt: { type: Date },
+                executedAt: { type: Date },
+                isAutomatic: { type: Boolean, default: false },
+            },
+        },
+        // Status history for audit trail
+        statusHistory: [
+            {
+                status: {
+                    type: String,
+                    enum: ['pending', 'processing', 'delivering', 'delivered', 'cancelled', 'refunded'],
+                    required: true,
+                },
+                timestamp: {
+                    type: Date,
+                    default: Date.now,
+                },
+                comment: {
+                    type: String,
+                    default: '',
+                },
+                changedBy: {
+                    type: String, // 'system' for automatic, user ID for manual
+                    default: 'system',
+                },
+                isAutomatic: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
     },
     {
         timestamps: true,

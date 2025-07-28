@@ -544,7 +544,10 @@
             "shipping": "Shipping",
             "tax": "Tax",
             "total": "Total"
-        }
+        },
+        "estimatedDelivery": "Estimated Delivery",
+        "deliveryRange": "Delivery window",
+        "businessDaysNote": "2-4 business days from order date"
     },
     "productDetails": {
         "stars": "stars",
@@ -992,6 +995,8 @@
             "selectStatus": "Select new status",
             "orderSummary": "Order Summary",
             "orderDate": "Order Date",
+            "estimatedDelivery": "Estimated Delivery",
+            "automaticTransitions": "Auto Transitions",
             "paid": "Paid",
             "unpaid": "Unpaid",
             "pending": "Pending",

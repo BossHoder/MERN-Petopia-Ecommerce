@@ -16,6 +16,7 @@ const __dirname = dirname(__filename);
 import routes from './routes/index.js';
 // import { seedDb } from './utils/seed.js'; // Tạm thời comment out
 import connectDB from './config/database.js';
+import orderSchedulerService from './services/orderSchedulerService.js';
 
 const app = express();
 const router = Router();
@@ -135,4 +136,8 @@ app.listen(port, '0.0.0.0', () => {
     } else {
         console.log(`🚀 Development server running at http://localhost:${port}`);
     }
+
+    // Start the order scheduler service
+    console.log('📅 Starting order scheduler service...');
+    orderSchedulerService.start();
 });

@@ -224,6 +224,35 @@ class EmailService {
 
     // Send order confirmation email
     async sendOrderConfirmationEmail(order, customerEmail, customerName) {
+        // Format delivery dates for email
+        const formatDate = (date) => {
+            return new Date(date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+        };
+
+        const estimatedDeliveryDate = order.estimatedDeliveryDate
+            ? formatDate(order.estimatedDeliveryDate)
+            : 'To be determined';
+
+        const deliveryRangeStart = order.estimatedDeliveryRange?.start
+            ? new Date(order.estimatedDeliveryRange.start).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+              })
+            : '';
+
+        const deliveryRangeEnd = order.estimatedDeliveryRange?.end
+            ? new Date(order.estimatedDeliveryRange.end).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+              })
+            : '';
+
         return await this.sendEmail({
             to: customerEmail,
             subject: `Order Confirmation - #${order.orderNumber} 📦`,
@@ -236,6 +265,10 @@ class EmailService {
                 orderItems: order.orderItems,
                 shippingAddress: order.shippingAddress,
                 supportEmail: process.env.EMAIL_SUPPORT || 'support@petopia.com',
+                // Add delivery estimate data
+                estimatedDeliveryDate,
+                deliveryRangeStart,
+                deliveryRangeEnd,
             },
         });
     }

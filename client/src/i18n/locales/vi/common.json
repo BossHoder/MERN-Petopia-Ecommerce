@@ -570,7 +570,10 @@
             "shipping": "Vận chuyển",
             "tax": "Thuế",
             "total": "Tổng cộng"
-        }
+        },
+        "estimatedDelivery": "Dự kiến giao hàng",
+        "deliveryRange": "Khung thời gian giao hàng",
+        "businessDaysNote": "2-4 ngày làm việc kể từ ngày đặt hàng"
     },
     "productDetails": {
         "stars": "sao",
@@ -1005,6 +1008,8 @@
             "selectStatus": "Chọn trạng thái mới",
             "orderSummary": "Tóm tắt đơn hàng",
             "orderDate": "Ngày đặt hàng",
+            "estimatedDelivery": "Dự kiến giao hàng",
+            "automaticTransitions": "Chuyển đổi tự động",
             "paid": "Đã thanh toán",
             "unpaid": "Chưa thanh toán",
             "pending": "Chờ xử lý",

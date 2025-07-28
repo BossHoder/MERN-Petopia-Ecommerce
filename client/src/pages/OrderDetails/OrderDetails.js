@@ -57,14 +57,49 @@ const OrderDetails = () => {
                             {order.shippingAddress.address}, {order.shippingAddress.city},{' '}
                             {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                         </p>
+                        {/* Delivery Status */}
                         {order.isDelivered ? (
                             <div className="alert alert-success">
                                 {t('orderDetails.deliveredOn', 'Delivered on')}{' '}
                                 {moment(order.deliveredAt).format('LLLL')}
                             </div>
                         ) : (
-                            <div className="alert alert-danger">
+                            <div className="alert alert-info">
                                 {t('orderDetails.notDelivered', 'Not Delivered')}
+                            </div>
+                        )}
+
+                        {/* Estimated Delivery Time */}
+                        {!order.isDelivered && order.estimatedDeliveryDate && (
+                            <div className="delivery-estimate">
+                                <h4>{t('orderDetails.estimatedDelivery', 'Estimated Delivery')}</h4>
+                                <p className="delivery-date">
+                                    <strong>
+                                        {moment(order.estimatedDeliveryDate).format(
+                                            'dddd, MMMM Do YYYY',
+                                        )}
+                                    </strong>
+                                </p>
+                                <p className="delivery-range">
+                                    {order.estimatedDeliveryRange && (
+                                        <>
+                                            {t('orderDetails.deliveryRange', 'Delivery window')}:{' '}
+                                            {moment(order.estimatedDeliveryRange.start).format(
+                                                'MMM Do',
+                                            )}{' '}
+                                            -{' '}
+                                            {moment(order.estimatedDeliveryRange.end).format(
+                                                'MMM Do, YYYY',
+                                            )}
+                                        </>
+                                    )}
+                                </p>
+                                <p className="delivery-note">
+                                    {t(
+                                        'orderDetails.businessDaysNote',
+                                        '2-4 business days from order date',
+                                    )}
+                                </p>
                             </div>
                         )}
                     </div>

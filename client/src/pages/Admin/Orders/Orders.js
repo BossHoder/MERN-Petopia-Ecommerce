@@ -155,17 +155,6 @@ const Orders = () => {
             ),
         },
         {
-            key: 'isDelivered',
-            title: t('admin.orders.deliveryStatus', 'Delivered'),
-            width: '8%',
-            align: 'center',
-            render: (value) => (
-                <span className={`delivery-status ${value ? 'delivered' : 'pending'}`}>
-                    {value ? '✅' : '❌'}
-                </span>
-            ),
-        },
-        {
             key: 'createdAt',
             title: t('admin.orders.dateCreated', 'Date Created'),
             width: '12%',
@@ -184,13 +173,6 @@ const Orders = () => {
                         title={t('admin.orders.viewDetails', 'View Details')}
                     >
                         👁️
-                    </button>
-                    <button
-                        className="table-action-btn edit"
-                        onClick={() => handleUpdateStatus(item._id)}
-                        title={t('admin.orders.updateStatus', 'Update Status')}
-                    >
-                        ✏️
                     </button>
                 </div>
             ),

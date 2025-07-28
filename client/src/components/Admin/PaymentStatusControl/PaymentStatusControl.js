@@ -108,21 +108,6 @@ const PaymentStatusControl = ({
                         <span className="sr-only">Updating...</span>
                     </div>
                 )}
-
-                {isPaymentUpdateDisabled &&
-                    (orderStatus === 'cancelled' || orderStatus === 'refunded') && (
-                        <div className="disabled-indicator">
-                            <span className="disabled-icon" aria-hidden="true">
-                                🚫
-                            </span>
-                            <span className="disabled-text">
-                                {t(
-                                    'admin.orders.paymentStatusControl.disabledForStatus',
-                                    'Payment status cannot be changed for cancelled or refunded orders',
-                                )}
-                            </span>
-                        </div>
-                    )}
             </div>
         </div>
     );
