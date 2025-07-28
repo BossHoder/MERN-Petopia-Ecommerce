@@ -1,0 +1,128 @@
+<mjml>
+  <mj-head>
+    <mj-title>Your Order is On Its Way! 🚚</mj-title>
+    <mj-preview>Your Petopia order #{{orderNumber}} has been shipped!</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section { 
+        -webkit-box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+        -moz-box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+        box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+      }
+      .tracking-box {
+        background-color: #f0f9ff;
+        border: 2px dashed #3b82f6;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <mj-section full-width="full-width" background-color="#f4f4f4" padding-bottom="0">
+      <mj-column width="100%">
+        <mj-spacer height="50px" />
+      </mj-column>
+    </mj-section>
+    
+    <mj-section background-color="#ffffff" padding-bottom="20px" padding-top="20px" css-class="body-section">
+      <mj-column width="100%">
+        <mj-text align="center" color="#ff6b35" font-size="45px" font-weight="bold" padding-bottom="30px">
+          🐾 Petopia
+        </mj-text>
+        
+        <mj-text align="center" color="#3b82f6" font-size="28px" font-weight="bold" padding-bottom="10px">
+          🚚 Your Order is On Its Way!
+        </mj-text>
+        
+        <mj-text align="center" color="#637381" font-size="16px" line-height="24px" padding-bottom="30px">
+          Hi {{customerName}}, great news! Your pet supplies have been shipped and are heading your way.
+        </mj-text>
+        
+        <!-- Shipping Status -->
+        <mj-section background-color="#ecfdf5" padding="20px" border-radius="8px">
+          <mj-column width="100%">
+            <mj-text align="center" color="#059669" font-size="18px" font-weight="bold" padding-bottom="15px">
+              📦 Shipping Status: SHIPPED
+            </mj-text>
+            
+            <mj-text align="left" color="#374151" font-size="16px" padding-bottom="10px">
+              <strong>Order Number:</strong> #{{orderNumber}}
+            </mj-text>
+            
+            <mj-text align="left" color="#374151" font-size="16px" padding-bottom="10px">
+              <strong>Shipped Date:</strong> {{shippedDate}}
+            </mj-text>
+            
+            <mj-text align="left" color="#374151" font-size="16px" padding-bottom="20px">
+              <strong>Estimated Delivery:</strong> {{estimatedDelivery}}
+            </mj-text>
+            
+            {{#if trackingNumber}}
+            <mj-text align="center" color="#3b82f6" font-size="16px" font-weight="bold" padding="15px" background-color="#f0f9ff" border-radius="8px">
+              Tracking Number: {{trackingNumber}}
+            </mj-text>
+            {{/if}}
+          </mj-column>
+        </mj-section>
+        
+        <!-- Delivery Address -->
+        <mj-section background-color="#fef3c7" padding="20px" border-radius="8px" padding-top="20px">
+          <mj-column width="100%">
+            <mj-text align="center" color="#374151" font-size="18px" font-weight="bold" padding-bottom="15px">
+              📍 Delivery Address
+            </mj-text>
+            
+            <mj-text align="left" color="#374151" font-size="14px" line-height="20px">
+              {{shippingAddress.fullName}}<br/>
+              {{shippingAddress.phoneNumber}}<br/>
+              {{shippingAddress.address}}<br/>
+              {{shippingAddress.ward}}, {{shippingAddress.district}}<br/>
+              {{shippingAddress.city}}
+            </mj-text>
+          </mj-column>
+        </mj-section>
+        
+        <!-- Delivery Instructions -->
+        <mj-text align="center" color="#637381" font-size="16px" line-height="24px" padding-top="30px" padding-bottom="20px">
+          📋 <strong>Delivery Instructions:</strong><br/>
+          • Please ensure someone is available to receive the package<br/>
+          • Have your ID ready for verification<br/>
+          • Check items immediately upon delivery<br/>
+          • Contact us if there are any issues
+        </mj-text>
+        
+        {{#if trackingUrl}}
+        <mj-button background-color="#3b82f6" color="#ffffff" font-size="16px" font-weight="bold" href="{{trackingUrl}}" width="200px" padding-top="20px" padding-bottom="20px">
+          Track Package
+        </mj-button>
+        {{/if}}
+        
+        <mj-button background-color="#ff6b35" color="#ffffff" font-size="16px" font-weight="bold" href="{{orderUrl}}" width="200px" padding-top="10px" padding-bottom="20px">
+          View Order Details
+        </mj-button>
+        
+        <mj-text align="center" color="#637381" font-size="14px" line-height="20px" padding-top="30px">
+          Questions about your delivery? Contact us at 
+          <a href="mailto:{{supportEmail}}" style="color: #ff6b35;">{{supportEmail}}</a>
+        </mj-text>
+        
+        <mj-divider border-color="#E0E0E0" border-width="1px" padding-top="30px" padding-bottom="20px" />
+        
+        <mj-text align="center" color="#9CA3AF" font-size="12px" line-height="18px">
+          We hope your pets love their new goodies!<br/>
+          © 2025 Petopia Pet Store. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    
+    <mj-section full-width="full-width" background-color="#f4f4f4" padding-top="0">
+      <mj-column width="100%">
+        <mj-spacer height="50px" />
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

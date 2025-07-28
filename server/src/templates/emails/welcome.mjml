@@ -1,0 +1,78 @@
+<mjml>
+  <mj-head>
+    <mj-title>Welcome to Petopia! 🐾</mj-title>
+    <mj-preview>Welcome to Petopia - Your one-stop shop for pet supplies!</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section { 
+        -webkit-box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+        -moz-box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+        box-shadow: 1px 4px 11px 0px rgba(37, 44, 97, 0.15); 
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f4f4f4">
+    <mj-section full-width="full-width" background-color="#f4f4f4" padding-bottom="0">
+      <mj-column width="100%">
+        <mj-spacer height="50px" />
+      </mj-column>
+    </mj-section>
+    
+    <mj-section background-color="#ffffff" padding-bottom="20px" padding-top="20px" css-class="body-section">
+      <mj-column width="100%">
+        <mj-text align="center" color="#ff6b35" font-size="45px" font-weight="bold" padding-bottom="30px">
+          🐾 Petopia
+        </mj-text>
+        
+        <mj-text align="center" color="#637381" font-size="16px" padding-bottom="10px">
+          Welcome to our pet-loving community!
+        </mj-text>
+        
+        <mj-text align="center" color="#ff6b35" font-size="28px" font-weight="bold" padding-bottom="30px">
+          Hello {{userName}}! 👋
+        </mj-text>
+        
+        <mj-text align="center" color="#637381" font-size="16px" line-height="24px" padding-bottom="20px">
+          Thank you for joining Petopia! We're excited to help you find the best products for your furry, feathered, and scaly friends.
+        </mj-text>
+        
+        <mj-text align="center" color="#637381" font-size="16px" line-height="24px" padding-bottom="30px">
+          At Petopia, we offer:
+        </mj-text>
+        
+        <mj-text align="left" color="#637381" font-size="16px" line-height="24px" padding-left="40px" padding-bottom="20px">
+          🐕 Premium pet food and treats<br/>
+          🎾 Fun toys and accessories<br/>
+          🏥 Health and wellness products<br/>
+          🛏️ Comfortable beds and furniture<br/>
+          📚 Expert pet care advice
+        </mj-text>
+        
+        <mj-button background-color="#ff6b35" color="#ffffff" font-size="16px" font-weight="bold" href="{{loginUrl}}" width="200px" padding-top="20px" padding-bottom="20px">
+          Start Shopping Now
+        </mj-button>
+        
+        <mj-text align="center" color="#637381" font-size="14px" line-height="20px" padding-top="30px">
+          Need help? Contact our friendly support team at 
+          <a href="mailto:{{supportEmail}}" style="color: #ff6b35;">{{supportEmail}}</a>
+        </mj-text>
+        
+        <mj-divider border-color="#E0E0E0" border-width="1px" padding-top="30px" padding-bottom="20px" />
+        
+        <mj-text align="center" color="#9CA3AF" font-size="12px" line-height="18px">
+          You're receiving this email because you created an account at Petopia.<br/>
+          © 2025 Petopia Pet Store. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    
+    <mj-section full-width="full-width" background-color="#f4f4f4" padding-top="0">
+      <mj-column width="100%">
+        <mj-spacer height="50px" />
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

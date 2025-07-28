@@ -55,7 +55,7 @@ Petopia Store is a comprehensive e-commerce solution built specifically for pet 
 ✅ Validation:     Joi schema validation
 📁 File Upload:    Multer middleware
 🔒 Security:       Helmet, CORS, bcrypt
-📧 Email:          Nodemailer integration
+📧 Email:          CloudMailIn + MJML templates
 ⚡ Performance:    Compression, rate limiting
 ```
 

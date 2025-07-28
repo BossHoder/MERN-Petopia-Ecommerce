@@ -2,6 +2,8 @@ import { Router } from 'express';
 import localLoginRoutes from './auth/login.js';
 import localRegisterRoutes from './auth/register.js';
 import localLogoutRoutes from './auth/logout.js';
+import passwordResetRoutes from './auth/passwordReset.js';
+import testEmailRoutes from './test-email.js';
 import googleAuthRoutes from './auth/googleAuth.js';
 import facebookAuthRoutes from './auth/facebookAuth.js';
 import apiRoutes from './api/index.js';
@@ -12,6 +14,8 @@ const router = Router();
 router.use('/auth', localLoginRoutes);
 router.use('/auth', localRegisterRoutes);
 router.use('/auth', localLogoutRoutes);
+router.use('/auth', passwordResetRoutes);
+router.use('/test', testEmailRoutes); // Test email route
 // router.use('/auth', googleAuthRoutes);
 // router.use('/auth', facebookAuthRoutes);
 router.use('/api', apiRoutes);

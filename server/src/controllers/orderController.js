@@ -1,5 +1,6 @@
 import Order from '../models/Order.js';
 import asyncHandler from '../middleware/asyncHandler.js';
+import emailService from '../services/emailService.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import {
     successResponse,
@@ -48,6 +49,21 @@ const createOrder = asyncHandler(async (req, res) => {
 
     try {
         const createdOrder = await order.save();
+
+        // Send order confirmation email (don't block order creation if email fails)
+        try {
+            const customerEmail = isGuestOrder ? guestInfo.email : req.user.email;
+            const customerName = isGuestOrder ? guestInfo.fullName : req.user.name || req.user.username;
+
+            if (customerEmail) {
+                await emailService.sendOrderConfirmationEmail(createdOrder, customerEmail, customerName);
+                console.log('✅ Order confirmation email sent successfully to:', customerEmail);
+            }
+        } catch (emailError) {
+            console.error('⚠️ Failed to send order confirmation email:', emailError);
+            // Continue with order creation success even if email fails
+        }
+
         return createdResponse(res, createdOrder);
     } catch (error) {
         // Log the full validation error to the backend console
@@ -110,13 +126,40 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @route   PUT /api/orders/:id/deliver
 // @access  Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate('user');
 
     if (order) {
         order.isDelivered = true;
         order.deliveredAt = Date.now();
 
         const updatedOrder = await order.save();
+
+        // Send shipping notification email (don't block order update if email fails)
+        try {
+            const customerEmail = order.isGuestOrder ? order.guestInfo.email : order.user?.email;
+            const customerName = order.isGuestOrder
+                ? order.guestInfo.fullName
+                : order.user?.name || order.user?.username;
+
+            if (customerEmail) {
+                // Optional: Include tracking information from request body
+                const trackingInfo = {
+                    trackingNumber: req.body.trackingNumber || null,
+                    trackingUrl: req.body.trackingUrl || null,
+                };
+
+                await emailService.sendShippingNotificationEmail(
+                    updatedOrder,
+                    customerEmail,
+                    customerName,
+                    trackingInfo,
+                );
+                console.log('✅ Shipping notification email sent successfully to:', customerEmail);
+            }
+        } catch (emailError) {
+            console.error('⚠️ Failed to send shipping notification email:', emailError);
+            // Continue with order update success even if email fails
+        }
 
         return successResponse(res, updatedOrder);
     } else {
