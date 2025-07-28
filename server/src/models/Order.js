@@ -92,6 +92,11 @@ const OrderSchema = new Schema(
         deliveredAt: {
             type: Date,
         },
+        orderStatus: {
+            type: String,
+            enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'],
+            default: 'pending',
+        },
     },
     {
         timestamps: true,

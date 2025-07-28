@@ -9,6 +9,9 @@ import {
     ADMIN_ORDER_UPDATE_REQUEST,
     ADMIN_ORDER_UPDATE_SUCCESS,
     ADMIN_ORDER_UPDATE_FAIL,
+    ADMIN_ORDER_DETAILS_REQUEST,
+    ADMIN_ORDER_DETAILS_SUCCESS,
+    ADMIN_ORDER_DETAILS_FAIL,
     ADMIN_USERS_REQUEST,
     ADMIN_USERS_SUCCESS,
     ADMIN_USERS_FAIL,
@@ -130,6 +133,27 @@ export const updateOrderStatus = (orderId, status) => async (dispatch) => {
         dispatch({
             type: ADMIN_ORDER_UPDATE_FAIL,
             payload: error.response?.data?.error?.message || 'Failed to update order status',
+        });
+    }
+};
+
+/**
+ * Get order details by ID
+ */
+export const getOrderDetails = (orderId) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_ORDER_DETAILS_REQUEST });
+
+        const response = await API.get(`/api/admin/orders/${orderId}`);
+
+        dispatch({
+            type: ADMIN_ORDER_DETAILS_SUCCESS,
+            payload: response.data.data,
+        });
+    } catch (error) {
+        dispatch({
+            type: ADMIN_ORDER_DETAILS_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to fetch order details',
         });
     }
 };

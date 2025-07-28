@@ -8,6 +8,9 @@ import {
     ADMIN_ORDER_UPDATE_REQUEST,
     ADMIN_ORDER_UPDATE_SUCCESS,
     ADMIN_ORDER_UPDATE_FAIL,
+    ADMIN_ORDER_DETAILS_REQUEST,
+    ADMIN_ORDER_DETAILS_SUCCESS,
+    ADMIN_ORDER_DETAILS_FAIL,
     ADMIN_USERS_REQUEST,
     ADMIN_USERS_SUCCESS,
     ADMIN_USERS_FAIL,
@@ -76,6 +79,8 @@ const initialState = {
     },
     ordersLoading: false,
     orderUpdateLoading: false,
+    orderDetails: null,
+    orderDetailsLoading: false,
 
     // Users Management
     users: [],
@@ -207,6 +212,28 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
                 orderUpdateLoading: false,
+                error: action.payload,
+            };
+
+        case ADMIN_ORDER_DETAILS_REQUEST:
+            return {
+                ...state,
+                orderDetailsLoading: true,
+                error: null,
+            };
+
+        case ADMIN_ORDER_DETAILS_SUCCESS:
+            return {
+                ...state,
+                orderDetailsLoading: false,
+                orderDetails: action.payload,
+                error: null,
+            };
+
+        case ADMIN_ORDER_DETAILS_FAIL:
+            return {
+                ...state,
+                orderDetailsLoading: false,
                 error: action.payload,
             };
 
