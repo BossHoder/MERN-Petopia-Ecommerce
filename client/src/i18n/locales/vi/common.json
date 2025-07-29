@@ -86,7 +86,8 @@
         "active": "Hoạt động",
         "inactive": "Không hoạt động",
         "collapse": "Thu gọn",
-        "expand": "Mở rộng"
+        "expand": "Mở rộng",
+        "close": "Đóng"
     },
     "register": {
         "title": "Đăng ký",
@@ -1010,6 +1011,22 @@
             "orderDate": "Ngày đặt hàng",
             "estimatedDelivery": "Dự kiến giao hàng",
             "automaticTransitions": "Chuyển đổi tự động",
+            "dateFilter": {
+                "title": "Lọc theo ngày",
+                "allTime": "Tất cả thời gian",
+                "today": "Hôm nay",
+                "yesterday": "Hôm qua",
+                "last7Days": "7 ngày qua",
+                "thisWeek": "Tuần này",
+                "last30Days": "30 ngày qua",
+                "thisMonth": "Tháng này",
+                "lastMonth": "Tháng trước",
+                "custom": "Tùy chỉnh",
+                "from": "Từ",
+                "to": "Đến",
+                "apply": "Áp dụng",
+                "clearFilter": "Xóa bộ lọc ngày"
+            },
             "paid": "Đã thanh toán",
             "unpaid": "Chưa thanh toán",
             "pending": "Chờ xử lý",

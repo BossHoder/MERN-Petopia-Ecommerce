@@ -212,66 +212,6 @@ const OrderDetails = ({ orderId, onClose }) => {
                             </div>
                         )}
 
-                        {/* Automatic Transition Status */}
-                        {order.automaticTransitions && (
-                            <div className="summary-item">
-                                <span className="label">
-                                    {t('admin.orders.automaticTransitions', 'Auto Transitions')}
-                                </span>
-                                <span className="value">
-                                    <div className="transition-status">
-                                        {order.automaticTransitions.pendingToProcessing && (
-                                            <div className="transition-item">
-                                                <span className="transition-label">
-                                                    Pending → Processing:
-                                                </span>
-                                                <span
-                                                    className={`transition-status ${
-                                                        order.automaticTransitions
-                                                            .pendingToProcessing.executedAt
-                                                            ? 'executed'
-                                                            : 'scheduled'
-                                                    }`}
-                                                >
-                                                    {order.automaticTransitions.pendingToProcessing
-                                                        .executedAt
-                                                        ? `✅ ${new Date(
-                                                              order.automaticTransitions.pendingToProcessing.executedAt,
-                                                          ).toLocaleString()}`
-                                                        : `⏰ ${new Date(
-                                                              order.automaticTransitions.pendingToProcessing.scheduledAt,
-                                                          ).toLocaleString()}`}
-                                                </span>
-                                            </div>
-                                        )}
-                                        {order.automaticTransitions.processingToDelivering && (
-                                            <div className="transition-item">
-                                                <span className="transition-label">
-                                                    Processing → Delivering:
-                                                </span>
-                                                <span
-                                                    className={`transition-status ${
-                                                        order.automaticTransitions
-                                                            .processingToDelivering.executedAt
-                                                            ? 'executed'
-                                                            : 'scheduled'
-                                                    }`}
-                                                >
-                                                    {order.automaticTransitions
-                                                        .processingToDelivering.executedAt
-                                                        ? `✅ ${new Date(
-                                                              order.automaticTransitions.processingToDelivering.executedAt,
-                                                          ).toLocaleString()}`
-                                                        : `⏰ ${new Date(
-                                                              order.automaticTransitions.processingToDelivering.scheduledAt,
-                                                          ).toLocaleString()}`}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </span>
-                            </div>
-                        )}
                         <div className="summary-item">
                             <span className="label">
                                 {t('admin.orders.paymentMethod', 'Payment Method')}

@@ -94,17 +94,79 @@ const getAllOrders = asyncHandler(async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         const status = req.query.status;
         const search = req.query.search;
+        const dateFrom = req.query.dateFrom;
+        const dateTo = req.query.dateTo;
+        const dateRange = req.query.dateRange; // today, yesterday, thisWeek, thisMonth, lastMonth, custom
 
         // Build query
         let query = {};
+
+        // Status filter
         if (status && status !== 'all') {
             query.orderStatus = status;
         }
+
+        // Search filter
         if (search) {
             query.$or = [
                 { orderNumber: { $regex: search, $options: 'i' } },
                 { 'guestInfo.email': { $regex: search, $options: 'i' } },
             ];
+        }
+
+        // Date filter
+        if (dateRange || dateFrom || dateTo) {
+            const now = new Date();
+            let startDate, endDate;
+
+            if (dateRange) {
+                switch (dateRange) {
+                    case 'today':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                        break;
+                    case 'yesterday':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                        endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        break;
+                    case 'thisWeek':
+                        const startOfWeek = now.getDate() - now.getDay();
+                        startDate = new Date(now.getFullYear(), now.getMonth(), startOfWeek);
+                        endDate = new Date(now.getFullYear(), now.getMonth(), startOfWeek + 7);
+                        break;
+                    case 'thisMonth':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                        break;
+                    case 'lastMonth':
+                        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                        endDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                        break;
+                    case 'last7Days':
+                        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        endDate = now;
+                        break;
+                    case 'last30Days':
+                        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        endDate = now;
+                        break;
+                }
+            } else {
+                // Custom date range
+                if (dateFrom) {
+                    startDate = new Date(dateFrom);
+                }
+                if (dateTo) {
+                    endDate = new Date(dateTo);
+                    endDate.setHours(23, 59, 59, 999); // Include the entire end date
+                }
+            }
+
+            if (startDate || endDate) {
+                query.createdAt = {};
+                if (startDate) query.createdAt.$gte = startDate;
+                if (endDate) query.createdAt.$lte = endDate;
+            }
         }
 
         const skip = (page - 1) * limit;

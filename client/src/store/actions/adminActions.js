@@ -87,7 +87,15 @@ export const getDashboardStats = () => async (dispatch) => {
  * Get all orders for admin
  */
 export const getAdminOrders =
-    (page = 1, limit = 10, status = 'all', search = '') =>
+    (
+        page = 1,
+        limit = 10,
+        status = 'all',
+        search = '',
+        dateRange = '',
+        dateFrom = '',
+        dateTo = '',
+    ) =>
     async (dispatch) => {
         try {
             dispatch({ type: ADMIN_ORDERS_REQUEST });
@@ -97,6 +105,9 @@ export const getAdminOrders =
                 limit: limit.toString(),
                 ...(status !== 'all' && { status }),
                 ...(search && { search }),
+                ...(dateRange && { dateRange }),
+                ...(dateFrom && { dateFrom }),
+                ...(dateTo && { dateTo }),
             });
 
             const response = await API.get(`/api/admin/orders?${queryParams}`);

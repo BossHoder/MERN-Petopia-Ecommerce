@@ -402,3 +402,34 @@
         transform: rotate(360deg);
     }
 }
+
+/* Date Filter Integration */
+.date-filter {
+    margin-bottom: 1rem;
+}
+
+/* Responsive adjustments for date filter */
+@media (max-width: 768px) {
+    .date-filter {
+        margin-bottom: 0.75rem;
+    }
+
+    .page-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .controls-left,
+    .controls-right {
+        width: 100%;
+    }
+
+    .search-form {
+        width: 100%;
+    }
+
+    .search-input {
+        flex: 1;
+    }
+}

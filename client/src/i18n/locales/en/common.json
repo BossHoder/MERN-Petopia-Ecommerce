@@ -81,7 +81,8 @@
         "saving": "Saving...",
         "deleting": "Deleting...",
         "updating": "Updating...",
-        "backToHome": "Back to Home"
+        "backToHome": "Back to Home",
+        "close": "Close"
     },
     "products": {
         "title": "Products",
@@ -997,6 +998,22 @@
             "orderDate": "Order Date",
             "estimatedDelivery": "Estimated Delivery",
             "automaticTransitions": "Auto Transitions",
+            "dateFilter": {
+                "title": "Filter by Date",
+                "allTime": "All Time",
+                "today": "Today",
+                "yesterday": "Yesterday",
+                "last7Days": "Last 7 Days",
+                "thisWeek": "This Week",
+                "last30Days": "Last 30 Days",
+                "thisMonth": "This Month",
+                "lastMonth": "Last Month",
+                "custom": "Custom Range",
+                "from": "From",
+                "to": "To",
+                "apply": "Apply",
+                "clearFilter": "Clear date filter"
+            },
             "paid": "Paid",
             "unpaid": "Unpaid",
             "pending": "Pending",

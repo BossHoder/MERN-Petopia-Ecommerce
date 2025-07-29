@@ -15,6 +15,7 @@ import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/Bread
 import OrderStatusBadge from '../../../components/Admin/OrderStatusBadge/OrderStatusBadge';
 import PaymentStatusControl from '../../../components/Admin/PaymentStatusControl/PaymentStatusControl';
 import OrderStatusControl from '../../../components/Admin/OrderStatusControl/OrderStatusControl';
+import DateFilter from '../../../components/Admin/DateFilter/DateFilter';
 import OrderDetails from './OrderDetails';
 import './styles.css';
 
@@ -32,6 +33,9 @@ const Orders = () => {
     const searchTerm = searchParams.get('search') || '';
     const viewMode = searchParams.get('view') || 'list';
     const orderId = searchParams.get('orderId');
+    const dateRange = searchParams.get('dateRange') || '';
+    const dateFrom = searchParams.get('dateFrom') || '';
+    const dateTo = searchParams.get('dateTo') || '';
 
     // Redux state
     const { orders, ordersPagination, ordersLoading, orderUpdateLoading, error, success } =
@@ -50,8 +54,18 @@ const Orders = () => {
 
     // Load orders on component mount and when parameters change
     useEffect(() => {
-        dispatch(getAdminOrders(currentPage, limit, statusFilter, searchTerm));
-    }, [dispatch, currentPage, limit, statusFilter, searchTerm]);
+        dispatch(
+            getAdminOrders(
+                currentPage,
+                limit,
+                statusFilter,
+                searchTerm,
+                dateRange,
+                dateFrom,
+                dateTo,
+            ),
+        );
+    }, [dispatch, currentPage, limit, statusFilter, searchTerm, dateRange, dateFrom, dateTo]);
 
     // Handle success/error messages
     useEffect(() => {
@@ -210,15 +224,63 @@ const Orders = () => {
         navigate(`${location.pathname}?${params.toString()}`);
     };
 
+    // Date filter handlers
+    const handleDateRangeChange = (range) => {
+        const params = new URLSearchParams(searchParams);
+        if (range) {
+            params.set('dateRange', range);
+            // Clear custom date params when using predefined range
+            params.delete('dateFrom');
+            params.delete('dateTo');
+        } else {
+            params.delete('dateRange');
+        }
+        params.set('page', '1'); // Reset to first page
+        navigate(`${location.pathname}?${params.toString()}`);
+    };
+
+    const handleCustomDateChange = (fromDate, toDate) => {
+        const params = new URLSearchParams(searchParams);
+        // Clear predefined range when using custom dates
+        params.delete('dateRange');
+
+        if (fromDate) {
+            params.set('dateFrom', fromDate);
+        } else {
+            params.delete('dateFrom');
+        }
+
+        if (toDate) {
+            params.set('dateTo', toDate);
+        } else {
+            params.delete('dateTo');
+        }
+
+        params.set('page', '1'); // Reset to first page
+        navigate(`${location.pathname}?${params.toString()}`);
+    };
+
+    const handleClearDateFilter = () => {
+        const params = new URLSearchParams(searchParams);
+        params.delete('dateRange');
+        params.delete('dateFrom');
+        params.delete('dateTo');
+        params.set('page', '1'); // Reset to first page
+        navigate(`${location.pathname}?${params.toString()}`);
+    };
+
     // Auto-reload function
     const reloadOrders = () => {
         dispatch(
-            getAdminOrders({
-                page: currentPage,
-                limit: 10, // Default page size
-                status: statusFilter,
-                search: searchTerm,
-            }),
+            getAdminOrders(
+                currentPage,
+                10, // Default page size
+                statusFilter,
+                searchTerm,
+                dateRange,
+                dateFrom,
+                dateTo,
+            ),
         );
     };
 
@@ -300,6 +362,16 @@ const Orders = () => {
                     </p>
                 </div>
             </div>
+
+            {/* Date Filter */}
+            <DateFilter
+                dateRange={dateRange}
+                dateFrom={dateFrom}
+                dateTo={dateTo}
+                onDateRangeChange={handleDateRangeChange}
+                onCustomDateChange={handleCustomDateChange}
+                onClearFilter={handleClearDateFilter}
+            />
 
             {/* Filters and Search */}
             <div className="page-controls">
