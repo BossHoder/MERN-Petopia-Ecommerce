@@ -97,7 +97,7 @@ const ProductCard = ({ product }) => {
                     <div className="product-rating">
                         <div className="stars">{renderStars(product.ratings || 0)}</div>
                         <span className="rating-text">
-                            ({product.numReviews || 0} {t('productCard.reviews')})
+                            ({product.numReviews || 0} {t('admin.productCard.reviews')})
                         </span>
                     </div>
                     <div className="product-price">

@@ -127,7 +127,7 @@ const SearchBox = () => {
                 value={keyword}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                placeholder={t('search.placeholder')}
+                placeholder={t('admin.search.placeholder')}
                 autoComplete="off"
             />
             {(suggestions.length > 0 || isLoading) && (

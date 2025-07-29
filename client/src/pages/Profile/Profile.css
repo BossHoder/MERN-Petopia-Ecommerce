@@ -13,6 +13,14 @@
     --profile-border-warm: #ead7cd;
     --profile-shadow: 0 2px 8px rgba(29, 18, 12, 0.08);
     --profile-shadow-hover: 0 4px 16px rgba(29, 18, 12, 0.12);
+
+    /* Order Status Colors */
+    --status-pending: #f59e0b;
+    --status-processing: #3b82f6;
+    --status-delivering: #8b5cf6;
+    --status-delivered: #10b981;
+    --status-cancelled: #ef4444;
+    --status-refunded: #6b7280;
 }
 
 /* Main Profile Container */
@@ -100,7 +108,7 @@
 /* Profile Content Area */
 .profile-content {
     background: var(--profile-card-bg);
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 12px;
     box-shadow: var(--profile-shadow);
     border: 1px solid var(--profile-border-warm);
@@ -700,5 +708,104 @@
 
     .btn {
         display: none;
+    }
+}
+
+/* Order Status Styles */
+.order-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-status-pending {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: var(--status-pending);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.order-status-processing {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--status-processing);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.order-status-delivering {
+    background-color: rgba(139, 92, 246, 0.1);
+    color: var(--status-delivering);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.order-status-delivered {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--status-delivered);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.order-status-cancelled {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--status-cancelled);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.order-status-refunded {
+    background-color: rgba(107, 114, 128, 0.1);
+    color: var(--status-refunded);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+/* Orders Header */
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--profile-border-warm);
+}
+
+.orders-header h2 {
+    margin: 0;
+    color: var(--profile-text);
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--profile-accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: #e55a2b;
+    transform: translateY(-1px);
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.refresh-btn i.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }

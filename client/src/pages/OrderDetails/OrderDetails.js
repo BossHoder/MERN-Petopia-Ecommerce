@@ -57,15 +57,49 @@ const OrderDetails = () => {
                             {order.shippingAddress.address}, {order.shippingAddress.city},{' '}
                             {order.shippingAddress.postalCode}, {order.shippingAddress.country}
                         </p>
-                        {/* Delivery Status */}
-                        {order.isDelivered ? (
-                            <div className="alert alert-success">
-                                {t('orderDetails.deliveredOn', 'Delivered on')}{' '}
-                                {moment(order.deliveredAt).format('LLLL')}
-                            </div>
-                        ) : (
-                            <div className="alert alert-info">
-                                {t('orderDetails.notDelivered', 'Not Delivered')}
+                        <p>
+                            <strong>{t('orderDetails.status', 'Status')}: </strong>
+                            <span className={`order-status order-status-${order.orderStatus}`}>
+                                {order.orderStatus?.toUpperCase()}
+                            </span>
+                        </p>
+
+                        {/* Delivery Status - Only show if delivered */}
+                        {order.orderStatus === 'delivered' &&
+                            order.isDelivered &&
+                            order.deliveredAt && (
+                                <div className="alert alert-success">
+                                    <i className="fas fa-check-circle"></i>
+                                    {t('orderDetails.deliveredOn', 'Delivered on')}{' '}
+                                    {moment(order.deliveredAt).format('LLLL')}
+                                </div>
+                            )}
+
+                        {/* Show delivery progress for non-delivered orders */}
+                        {order.orderStatus !== 'delivered' && (
+                            <div className="delivery-progress">
+                                <p className="delivery-status">
+                                    <i className="fas fa-truck"></i>
+                                    {order.orderStatus === 'pending' &&
+                                        t('orderDetails.orderPending', 'Order is being processed')}
+                                    {order.orderStatus === 'processing' &&
+                                        t(
+                                            'orderDetails.orderProcessing',
+                                            'Order is being prepared',
+                                        )}
+                                    {order.orderStatus === 'delivering' &&
+                                        t(
+                                            'orderDetails.orderDelivering',
+                                            'Order is out for delivery',
+                                        )}
+                                    {order.orderStatus === 'cancelled' &&
+                                        t(
+                                            'orderDetails.orderCancelled',
+                                            'Order has been cancelled',
+                                        )}
+                                    {order.orderStatus === 'refunded' &&
+                                        t('orderDetails.orderRefunded', 'Order has been refunded')}
+                                </p>
                             </div>
                         )}
 

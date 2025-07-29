@@ -100,6 +100,24 @@ class OrderSchedulerService {
         try {
             const now = new Date();
 
+            // Debug: Check all pending orders first
+            const allPendingOrders = await Order.find({ orderStatus: 'pending' });
+            console.log(`🔍 Debug: Found ${allPendingOrders.length} total pending orders`);
+
+            if (allPendingOrders.length > 0) {
+                console.log('🔍 Debug: Analyzing pending orders:');
+                allPendingOrders.forEach((order) => {
+                    const scheduledAt = order.automaticTransitions?.pendingToProcessing?.scheduledAt;
+                    const executedAt = order.automaticTransitions?.pendingToProcessing?.executedAt;
+                    const isEligible = scheduledAt && now >= scheduledAt && !executedAt;
+                    console.log(
+                        `   - ${order.orderNumber}: scheduled=${scheduledAt?.toISOString() || 'NONE'}, executed=${
+                            executedAt?.toISOString() || 'NO'
+                        }, eligible=${isEligible}`,
+                    );
+                });
+            }
+
             // Find orders ready for pending → processing transition
             const orders = await Order.find({
                 orderStatus: 'pending',
@@ -141,6 +159,24 @@ class OrderSchedulerService {
 
         try {
             const now = new Date();
+
+            // Debug: Check all processing orders first
+            const allProcessingOrders = await Order.find({ orderStatus: 'processing' });
+            console.log(`🔍 Debug: Found ${allProcessingOrders.length} total processing orders`);
+
+            if (allProcessingOrders.length > 0) {
+                console.log('🔍 Debug: Analyzing processing orders:');
+                allProcessingOrders.forEach((order) => {
+                    const scheduledAt = order.automaticTransitions?.processingToDelivering?.scheduledAt;
+                    const executedAt = order.automaticTransitions?.processingToDelivering?.executedAt;
+                    const isEligible = scheduledAt && now >= scheduledAt && !executedAt;
+                    console.log(
+                        `   - ${order.orderNumber}: scheduled=${scheduledAt?.toISOString() || 'NONE'}, executed=${
+                            executedAt?.toISOString() || 'NO'
+                        }, eligible=${isEligible}`,
+                    );
+                });
+            }
 
             // Find orders ready for processing → delivering transition
             const orders = await Order.find({

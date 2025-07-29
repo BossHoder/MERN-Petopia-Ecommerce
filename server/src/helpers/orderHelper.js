@@ -312,16 +312,16 @@ export const getUserOrderHistory = async (userId, options = {}) => {
     try {
         const { page = 1, limit = 10, status, sortBy = 'createdAt', sortOrder = 'desc' } = options;
 
-        const query = { username: userId };
+        const query = { user: userId };
         if (status) {
-            query.status = status;
+            query.orderStatus = status;
         }
 
         const orders = await Order.find(query)
             .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
             .skip((page - 1) * limit)
             .limit(limit)
-            .populate('username', 'name email');
+            .populate('user', 'name email');
 
         const total = await Order.countDocuments(query);
 

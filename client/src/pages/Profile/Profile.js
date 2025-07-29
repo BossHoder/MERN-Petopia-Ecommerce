@@ -330,9 +330,25 @@ const OrderHistory = () => {
         dispatch(listMyOrders());
     }, [dispatch]);
 
+    // Auto-refresh orders every 30 seconds to sync with admin updates
+    useEffect(() => {
+        const interval = setInterval(() => {
+            dispatch(listMyOrders());
+        }, 30000); // 30 seconds
+
+        return () => clearInterval(interval);
+    }, [dispatch]);
+
+    // Manual refresh function
+    const handleRefresh = () => {
+        dispatch(listMyOrders());
+    };
+
     return (
         <div>
-            <h2>{t('profile.tabs.orders', 'My Orders')}</h2>
+            <div className="orders-header">
+                <h2>{t('profile.tabs.orders', 'My Orders')}</h2>
+            </div>
             {loading ? (
                 <Loader />
             ) : error ? (
@@ -344,6 +360,8 @@ const OrderHistory = () => {
                             <th>{t('profile.orders.id', 'ID')}</th>
                             <th>{t('profile.orders.date', 'DATE')}</th>
                             <th>{t('profile.orders.total', 'TOTAL')}</th>
+                            <th>{t('profile.orders.status', 'STATUS')}</th>
+                            <th>{t('profile.orders.estimatedDelivery', 'EST. DELIVERY')}</th>
                             <th>{t('profile.orders.paid', 'PAID')}</th>
                             <th>{t('profile.orders.delivered', 'DELIVERED')}</th>
                             <th></th>
@@ -357,6 +375,26 @@ const OrderHistory = () => {
                                     <td>{moment(order.createdAt).format('YYYY-MM-DD')}</td>
                                     <td>${order.totalPrice.toFixed(2)}</td>
                                     <td>
+                                        <span
+                                            className={`order-status order-status-${order.orderStatus}`}
+                                        >
+                                            {order.orderStatus?.toUpperCase()}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {order.estimatedDeliveryDate ? (
+                                            moment(order.estimatedDeliveryDate).format(
+                                                'MMM DD, YYYY',
+                                            )
+                                        ) : order.estimatedDeliveryRange?.end ? (
+                                            `By ${moment(order.estimatedDeliveryRange.end).format(
+                                                'MMM DD',
+                                            )}`
+                                        ) : (
+                                            <span style={{ color: '#666' }}>TBD</span>
+                                        )}
+                                    </td>
+                                    <td>
                                         {order.isPaid ? (
                                             moment(order.paidAt).format('YYYY-MM-DD')
                                         ) : (
@@ -367,8 +405,15 @@ const OrderHistory = () => {
                                         )}
                                     </td>
                                     <td>
-                                        {order.isDelivered ? (
-                                            moment(order.deliveredAt).format('YYYY-MM-DD')
+                                        {order.orderStatus === 'delivered' ? (
+                                            order.deliveredAt ? (
+                                                moment(order.deliveredAt).format('YYYY-MM-DD')
+                                            ) : (
+                                                <i
+                                                    className="fas fa-check"
+                                                    style={{ color: 'green' }}
+                                                ></i>
+                                            )
                                         ) : (
                                             <i
                                                 className="fas fa-times"
@@ -388,7 +433,7 @@ const OrderHistory = () => {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="6">
+                                <td colSpan="8">
                                     {t('profile.orders.noOrders', 'You have no orders.')}
                                 </td>
                             </tr>

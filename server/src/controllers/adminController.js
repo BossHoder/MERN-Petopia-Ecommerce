@@ -234,7 +234,10 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
             orderId,
             {
                 orderStatus: status,
-                ...(status === 'delivered' && { deliveredAt: new Date() }),
+                ...(status === 'delivered' && {
+                    deliveredAt: new Date(),
+                    isDelivered: true,
+                }),
             },
             { new: true },
         ).populate('user', 'name email');
@@ -584,13 +587,33 @@ export default {
     }),
 
     updateProduct: asyncHandler(async (req, res) => {
-        // Parse JSON fields
-        if (req.body.attributes && typeof req.body.attributes === 'string') {
-            req.body.attributes = JSON.parse(req.body.attributes);
-        }
-        if (req.body.variants && typeof req.body.variants === 'string') {
-            req.body.variants = JSON.parse(req.body.variants);
-        }
+        try {
+            console.log('🔧 updateProduct called with:', {
+                productId: req.params.id,
+                bodyKeys: Object.keys(req.body),
+                hasFiles: !!req.files,
+                filesCount: req.files ? req.files.length : 0
+            });
+
+            // Parse JSON fields
+            if (req.body.attributes && typeof req.body.attributes === 'string') {
+                try {
+                    req.body.attributes = JSON.parse(req.body.attributes);
+                    console.log('✅ Parsed attributes:', req.body.attributes);
+                } catch (error) {
+                    console.error('❌ Error parsing attributes:', error);
+                    return errorResponse(res, 'Invalid attributes format', 400);
+                }
+            }
+            if (req.body.variants && typeof req.body.variants === 'string') {
+                try {
+                    req.body.variants = JSON.parse(req.body.variants);
+                    console.log('✅ Parsed variants:', req.body.variants);
+                } catch (error) {
+                    console.error('❌ Error parsing variants:', error);
+                    return errorResponse(res, 'Invalid variants format', 400);
+                }
+            }
 
         // Generate slug if not provided but name is changed
         if (!req.body.slug && req.body.name) {
