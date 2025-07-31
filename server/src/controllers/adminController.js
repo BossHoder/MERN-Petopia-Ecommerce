@@ -531,8 +531,8 @@ const getUserDetails = asyncHandler(async (req, res) => {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
-                    totalSpent: { $sum: '$totalAmount' },
-                    avgOrderValue: { $avg: '$totalAmount' },
+                    totalSpent: { $sum: '$totalPrice' },
+                    avgOrderValue: { $avg: '$totalPrice' },
                 },
             },
         ]);

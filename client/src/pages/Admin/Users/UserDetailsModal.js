@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useI18n } from '../../../hooks/useI18n';
+import Loader from '../../../components/Loader/Loader';
 import {
     getUserDetails,
     updateUserRole,
@@ -114,7 +115,12 @@ const UserDetailsModal = ({ userId, onClose }) => {
                         </button>
                     </div>
                     <div className="modal-body">
-                        <div className="loading-spinner">{t('common.loading', 'Loading...')}</div>
+                        <Loader
+                            variant="paws"
+                            size="md"
+                            color="orange"
+                            message={t('admin.users.loadingUserDetails', 'Loading user details...')}
+                        />
                     </div>
                 </div>
             </div>
@@ -225,7 +231,7 @@ const UserDetailsModal = ({ userId, onClose }) => {
                             <div className="account-settings">
                                 <div className="info-row">
                                     <label>{t('admin.users.role', 'Role')}:</label>
-                                    {isEditing ? (
+                                    {isEditing && userDetails.role !== 'ADMIN' ? (
                                         <select
                                             value={editForm.role}
                                             onChange={(e) =>
@@ -235,13 +241,20 @@ const UserDetailsModal = ({ userId, onClose }) => {
                                         >
                                             <option value="USER">User</option>
                                             <option value="STAFF">Staff</option>
-                                            <option value="ADMIN">Admin</option>
                                         </select>
                                     ) : (
                                         <span
                                             className={`role-badge role-${userDetails.role.toLowerCase()}`}
                                         >
                                             {userDetails.role}
+                                            {userDetails.role === 'ADMIN' && isEditing && (
+                                                <small className="admin-note">
+                                                    {t(
+                                                        'admin.users.adminRoleNote',
+                                                        ' (Cannot be changed)',
+                                                    )}
+                                                </small>
+                                            )}
                                         </span>
                                     )}
                                 </div>

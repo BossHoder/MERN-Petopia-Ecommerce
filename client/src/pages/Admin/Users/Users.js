@@ -151,21 +151,41 @@ const Users = () => {
         }
     };
 
-    // Handle status update
-    const handleStatusUpdate = async (userId, isActive) => {
-        try {
-            await dispatch(updateUserStatus(userId, isActive));
-            toast.success(t('admin.users.statusUpdated', 'User status updated successfully'));
-        } catch (error) {
-            toast.error(
-                error.message ||
-                    t('admin.users.statusUpdateFailed', 'Failed to update user status'),
-            );
+    // Handle status update with confirmation
+    const handleStatusUpdate = async (userId, newStatus, user) => {
+        const action = newStatus ? 'activate' : 'deactivate';
+        const roleText = user.role || 'USER';
+        const confirmMessage = t(
+            'admin.users.confirmStatusChange',
+            `Are you sure you want to ${action} this ${roleText} user?`,
+        );
+
+        if (window.confirm(confirmMessage)) {
+            try {
+                await dispatch(updateUserStatus(userId, newStatus));
+                toast.success(t('admin.users.statusUpdated', 'User status updated successfully'));
+            } catch (error) {
+                toast.error(
+                    error.message ||
+                        t('admin.users.statusUpdateFailed', 'Failed to update user status'),
+                );
+            }
         }
     };
 
-    // Handle user deletion
-    const handleDeleteUser = async (userId) => {
+    // Handle user deletion with admin protection
+    const handleDeleteUser = async (userId, user) => {
+        // Protect admin users from deletion
+        if (user && user.role === 'ADMIN') {
+            toast.error(
+                t(
+                    'admin.users.adminDeleteError',
+                    'Admin users cannot be deleted through the interface.',
+                ),
+            );
+            return;
+        }
+
         if (
             window.confirm(
                 t('admin.users.confirmDelete', 'Are you sure you want to deactivate this user?'),
@@ -186,6 +206,22 @@ const Users = () => {
     const handleBulkAction = async (action, value = null) => {
         if (selectedUsers.length === 0) {
             toast.warning(t('admin.users.selectUsers', 'Please select users first'));
+            return;
+        }
+
+        // Check if any selected users are admins and filter them out for role changes
+        const selectedUserObjects = users.filter((user) =>
+            selectedUsers.includes(user._id || user.id),
+        );
+        const adminUsers = selectedUserObjects.filter((user) => user.role === 'ADMIN');
+
+        if (action === 'role' && adminUsers.length > 0) {
+            toast.error(
+                t(
+                    'admin.users.adminRoleChangeError',
+                    'Admin users cannot have their roles changed through the interface.',
+                ),
+            );
             return;
         }
 
@@ -268,6 +304,14 @@ const Users = () => {
             title: t('admin.users.role', 'Role'),
             render: (value, user) => {
                 const userId = user._id || user.id;
+                // Don't allow role changes for admin users
+                if (user.role === 'ADMIN') {
+                    return (
+                        <span className={`role-badge role-${user.role.toLowerCase()}`}>
+                            {user.role}
+                        </span>
+                    );
+                }
                 return (
                     <select
                         value={user.role}
@@ -277,7 +321,6 @@ const Users = () => {
                     >
                         <option value="USER">User</option>
                         <option value="STAFF">Staff</option>
-                        <option value="ADMIN">Admin</option>
                     </select>
                 );
             },
@@ -287,13 +330,16 @@ const Users = () => {
             title: t('admin.users.status', 'Status'),
             render: (value, user) => {
                 const userId = user._id || user.id;
+                // Check if user is actually active (handle both boolean and string values)
+                const isUserActive = user.isActive === true || user.isActive === 'true';
+
                 return (
                     <button
-                        onClick={() => handleStatusUpdate(userId, !user.isActive)}
-                        className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
+                        onClick={() => handleStatusUpdate(userId, !isUserActive, user)}
+                        className={`status-toggle ${isUserActive ? 'active' : 'inactive'}`}
                         disabled={userUpdateLoading}
                     >
-                        {user.isActive
+                        {isUserActive
                             ? t('admin.users.active', 'Active')
                             : t('admin.users.inactive', 'Inactive')}
                     </button>
@@ -322,10 +368,17 @@ const Users = () => {
                             👁️
                         </button>
                         <button
-                            onClick={() => handleDeleteUser(userId)}
-                            className="btn-delete"
-                            title={t('admin.users.deactivate', 'Deactivate')}
-                            disabled={userDeleteLoading}
+                            onClick={() => handleDeleteUser(userId, user)}
+                            className={`btn-delete ${user.role === 'ADMIN' ? 'disabled' : ''}`}
+                            title={
+                                user.role === 'ADMIN'
+                                    ? t(
+                                          'admin.users.adminProtected',
+                                          'Admin users cannot be deleted',
+                                      )
+                                    : t('admin.users.deactivate', 'Deactivate')
+                            }
+                            disabled={userDeleteLoading || user.role === 'ADMIN'}
                         >
                             🗑️
                         </button>
@@ -425,7 +478,6 @@ const Users = () => {
                             <option value="">{t('admin.users.changeRole', 'Change Role')}</option>
                             <option value="USER">User</option>
                             <option value="STAFF">Staff</option>
-                            <option value="ADMIN">Admin</option>
                         </select>
                     </div>
                 </div>
