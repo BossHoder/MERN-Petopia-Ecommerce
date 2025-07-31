@@ -115,6 +115,9 @@ const AppNavbar = () => {
                         <Link to="/products" className="nav-link">
                             {t('navigation.products')}
                         </Link>
+                        <Link to="/coupons" className="nav-link">
+                            {t('navigation.coupons')}
+                        </Link>
                     </div>
                 </div>
                 <div className="navbar-right">

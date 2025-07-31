@@ -45,15 +45,21 @@ export const createCouponSchema = Joi.object({
             'any.required': ERROR_MESSAGES.DISCOUNT_VALUE_REQUIRED,
         }),
 
-    usageLimit: Joi.number().integer().min(1).optional().messages({
+    usageLimit: Joi.number().integer().min(1).optional().allow(null).messages({
         'number.min': ERROR_MESSAGES.USAGE_LIMIT_MIN,
     }),
 
-    minOrderAmount: Joi.number().min(0).optional().messages({
-        'number.min': ERROR_MESSAGES.MIN_ORDER_AMOUNT_NON_NEGATIVE,
+    perUserLimit: Joi.number().integer().min(1).required().messages({
+        'number.min': ERROR_MESSAGES.USAGE_LIMIT_MIN,
+        'any.required': ERROR_MESSAGES.USAGE_LIMIT_REQUIRED,
     }),
 
-    maxDiscountAmount: Joi.number().positive().optional().messages({
+    minOrderValue: Joi.number().min(0).required().messages({
+        'number.min': ERROR_MESSAGES.MIN_ORDER_AMOUNT_NON_NEGATIVE,
+        'any.required': ERROR_MESSAGES.MIN_ORDER_AMOUNT_REQUIRED,
+    }),
+
+    maxDiscountAmount: Joi.number().positive().optional().allow(null).messages({
         'number.positive': ERROR_MESSAGES.MAX_DISCOUNT_AMOUNT_POSITIVE,
     }),
 

@@ -23,3 +23,4 @@ server/MONGODB_OPTIMIZATION.md
 .cursor/rules/mern-petopia.mdc
 demo
 .augment/rules
+server/config/default.json

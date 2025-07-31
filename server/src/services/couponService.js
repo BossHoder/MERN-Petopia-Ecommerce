@@ -12,13 +12,17 @@ class CouponService {
     // Create new coupon
     async createCoupon(couponData, createdBy) {
         try {
+            console.log('🎫 CouponService: Creating coupon with data:', JSON.stringify(couponData, null, 2));
+            console.log('🎫 CouponService: Created by user:', createdBy);
+
             // Validate coupon data
             const dto = createCouponDto({ ...couponData, createdBy });
+            console.log('🎫 CouponService: DTO created:', JSON.stringify(dto, null, 2));
 
             // Check if coupon code already exists
             const existingCoupon = await Coupon.findOne({ code: dto.code });
             if (existingCoupon) {
-                throw new Error(ERROR_MESSAGES.COUPON_INVALID);
+                throw new Error(ERROR_MESSAGES.COUPON_CODE_EXISTS);
             }
 
             // Create coupon
@@ -32,6 +36,14 @@ class CouponService {
             };
         } catch (error) {
             console.error('Error creating coupon:', error);
+
+            // Handle Mongoose validation errors
+            if (error.name === 'ValidationError') {
+                const validationErrors = Object.values(error.errors).map((err) => err.message);
+                console.error('🚫 Mongoose validation errors:', validationErrors);
+                return { success: false, error: validationErrors.join(', ') };
+            }
+
             return {
                 success: false,
                 error: error.message,
@@ -44,6 +56,8 @@ class CouponService {
         try {
             const skip = (page - 1) * limit;
             const query = this.buildCouponQuery(filters);
+
+            console.log('🔍 CouponService query:', JSON.stringify(query, null, 2));
 
             const [coupons, total] = await Promise.all([
                 Coupon.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).populate('createdBy', 'name email'),
@@ -309,9 +323,19 @@ class CouponService {
             ];
         }
 
-        if (filters.validFrom && filters.validUntil) {
+        // Handle date range filters (admin use case)
+        if (filters.validFrom && filters.validUntil && typeof filters.validFrom === 'string') {
             query.validFrom = { $gte: new Date(filters.validFrom) };
             query.validUntil = { $lte: new Date(filters.validUntil) };
+        }
+
+        // Handle individual date filters (public API use case)
+        if (filters.validFrom && typeof filters.validFrom === 'object') {
+            query.validFrom = filters.validFrom;
+        }
+
+        if (filters.validUntil && typeof filters.validUntil === 'object') {
+            query.validUntil = filters.validUntil;
         }
 
         return query;

@@ -9,6 +9,13 @@ const initialState = {
     },
     preservedState: null,
     isRestored: false,
+    // Coupon state
+    coupon: {
+        applied: null,
+        discountAmount: 0,
+        loading: false,
+        error: null,
+    },
 };
 
 const checkoutReducer = (state = initialState, action) => {
@@ -59,6 +66,61 @@ const checkoutReducer = (state = initialState, action) => {
             return {
                 ...state,
                 shippingAddress: action.payload,
+            };
+
+        // ===========================================
+        // COUPON CASES
+        // ===========================================
+        case types.CHECKOUT_COUPON_APPLY_REQUEST:
+            return {
+                ...state,
+                coupon: {
+                    ...state.coupon,
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case types.CHECKOUT_COUPON_APPLY_SUCCESS:
+            return {
+                ...state,
+                coupon: {
+                    applied: action.payload.coupon,
+                    discountAmount: action.payload.discountAmount,
+                    appliedAt: action.payload.appliedAt,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case types.CHECKOUT_COUPON_APPLY_FAIL:
+            return {
+                ...state,
+                coupon: {
+                    ...state.coupon,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case types.CHECKOUT_COUPON_REMOVE:
+            return {
+                ...state,
+                coupon: {
+                    applied: null,
+                    discountAmount: 0,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case types.CHECKOUT_COUPON_CLEAR_ERRORS:
+            return {
+                ...state,
+                coupon: {
+                    ...state.coupon,
+                    error: null,
+                },
             };
 
         default:

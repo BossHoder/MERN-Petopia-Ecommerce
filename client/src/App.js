@@ -31,6 +31,7 @@ import Products from './pages/Products/Products'; // Import Products
 import ProductDetail from './pages/ProductDetail/ProductDetail'; // Import ProductDetail
 import CategoryPage from './pages/Category/CategoryPage'; // Import CategoryPage
 import SubcategoryPage from './pages/Category/SubcategoryPage'; // Import SubcategoryPage
+import Coupons from './pages/Coupons/Coupons'; // Import Coupons
 
 import Loader from './components/Loader/Loader';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
@@ -137,6 +138,7 @@ const App = () => {
                                         path="/category/:parentSlug/:categorySlug"
                                         element={<SubcategoryPage />}
                                     />
+                                    <Route path="/coupons" element={<Coupons />} />
 
                                     <Route path="/notfound" element={<NotFound />} />
 

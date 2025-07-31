@@ -1,4 +1,5 @@
 import * as types from '../types';
+import API from '../../services/api';
 
 // Action to preserve checkout state when redirecting to profile
 export const preserveCheckoutState = (checkoutData) => ({
@@ -32,4 +33,57 @@ export const updatePaymentMethod = (paymentMethod) => ({
 export const updateShippingAddress = (shippingAddress) => ({
     type: types.UPDATE_SHIPPING_ADDRESS,
     payload: shippingAddress,
+});
+
+// ===========================================
+// COUPON ACTIONS FOR CHECKOUT
+// ===========================================
+
+/**
+ * Apply coupon to checkout
+ */
+export const applyCouponToCheckout =
+    (couponCode, orderValue, userId = null) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: types.CHECKOUT_COUPON_APPLY_REQUEST });
+
+            const response = await API.post('/api/coupons/validate', {
+                code: couponCode,
+                orderValue,
+                userId,
+            });
+
+            dispatch({
+                type: types.CHECKOUT_COUPON_APPLY_SUCCESS,
+                payload: {
+                    coupon: response.data.data.coupon,
+                    discountAmount: response.data.data.discountAmount,
+                    appliedAt: new Date().toISOString(),
+                },
+            });
+
+            return response.data;
+        } catch (error) {
+            const errorMessage = error.response?.data?.error?.message || 'Failed to apply coupon';
+            dispatch({
+                type: types.CHECKOUT_COUPON_APPLY_FAIL,
+                payload: errorMessage,
+            });
+            throw error;
+        }
+    };
+
+/**
+ * Remove coupon from checkout
+ */
+export const removeCouponFromCheckout = () => ({
+    type: types.CHECKOUT_COUPON_REMOVE,
+});
+
+/**
+ * Clear coupon errors
+ */
+export const clearCheckoutCouponErrors = () => ({
+    type: types.CHECKOUT_COUPON_CLEAR_ERRORS,
 });

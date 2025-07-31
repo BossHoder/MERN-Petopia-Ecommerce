@@ -164,11 +164,13 @@ const CouponForm = ({ mode, couponId, onClose, onSuccess }) => {
                 ...values,
                 code: values.code.toUpperCase(),
                 usageLimit: values.usageLimit ? parseInt(values.usageLimit) : null,
+                perUserLimit: parseInt(values.perUserLimit) || 1,
+                minOrderValue: parseFloat(values.minOrderValue) || 0,
                 maxDiscountAmount: values.maxDiscountAmount
                     ? parseFloat(values.maxDiscountAmount)
                     : null,
-                validFrom: new Date(values.validFrom),
-                validUntil: new Date(values.validUntil),
+                validFrom: new Date(values.validFrom).toISOString(),
+                validUntil: new Date(values.validUntil).toISOString(),
             };
 
             if (mode === 'edit') {
@@ -179,7 +181,10 @@ const CouponForm = ({ mode, couponId, onClose, onSuccess }) => {
                 toast.success(t('admin.coupons.createSuccess', 'Coupon created successfully'));
             }
 
-            onSuccess();
+            // Call onSuccess after a short delay to ensure Redux state is updated
+            setTimeout(() => {
+                onSuccess();
+            }, 100);
         } catch (error) {
             console.error('Form submission error:', error);
             toast.error(

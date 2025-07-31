@@ -9,17 +9,15 @@ const NotFound = () => {
     const { t } = useI18n();
 
     return (
-        <Layout>
-            <div className="not-found-page">
-                <h1>{t('common.notFound')}</h1>
-                <p>
-                    {t('common.goBackTo')}{' '}
-                    <Link className="bold" to="/">
-                        {t('navigation.home')}
-                    </Link>
-                </p>
-            </div>
-        </Layout>
+        <div className="not-found-page">
+            <h1>{t('common.notFound')}</h1>
+            <p>
+                {t('common.goBackTo')}{' '}
+                <Link className="bold" to="/">
+                    {t('navigation.home')}
+                </Link>
+            </p>
+        </div>
     );
 };
 

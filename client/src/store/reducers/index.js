@@ -20,6 +20,7 @@ import toastReducer from './toastReducer';
 import checkoutReducer from './checkoutReducer';
 import breadcrumbReducer from './breadcrumbReducer';
 import adminReducer from './adminReducer';
+import couponReducer from './couponReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -41,4 +42,5 @@ export default combineReducers({
     checkout: checkoutReducer,
     breadcrumb: breadcrumbReducer,
     admin: adminReducer,
+    coupons: couponReducer,
 });

@@ -22,8 +22,18 @@ import orderSchedulerService from '../services/orderSchedulerService.js';
 // @route   POST /api/orders
 // @access  Public (supports both authenticated and guest users)
 const createOrder = asyncHandler(async (req, res) => {
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, guestInfo } =
-        req.body;
+    const {
+        orderItems,
+        shippingAddress,
+        paymentMethod,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+        couponDiscount,
+        appliedCoupon,
+        guestInfo,
+    } = req.body;
 
     console.log('🛒 Create Order Debug:', {
         hasUser: !!req.user,
@@ -32,10 +42,44 @@ const createOrder = asyncHandler(async (req, res) => {
         hasGuestInfo: !!guestInfo,
         guestEmail: guestInfo?.email,
         orderItemsCount: orderItems?.length || 0,
+        hasAppliedCoupon: !!appliedCoupon,
+        couponCode: appliedCoupon?.code,
+        couponDiscount: couponDiscount || 0,
     });
 
     if (!orderItems || orderItems.length === 0) {
         return validationErrorResponse(res, ERROR_MESSAGES.NO_ORDER_ITEMS);
+    }
+
+    // Determine if this is a guest order
+    const isGuestOrder = !req.user;
+
+    // Validate and process coupon if applied
+    let validatedCoupon = null;
+    if (appliedCoupon && appliedCoupon.code) {
+        try {
+            const { validateCouponForOrder } = await import('../helpers/couponHelper.js');
+            const userId = isGuestOrder ? null : req.user._id;
+
+            const couponValidation = await validateCouponForOrder(appliedCoupon.code, userId, itemsPrice, orderItems);
+
+            if (!couponValidation.isValid) {
+                return validationErrorResponse(res, couponValidation.message);
+            }
+
+            validatedCoupon = {
+                code: appliedCoupon.code,
+                discountType: appliedCoupon.discountType,
+                discountValue: appliedCoupon.discountValue,
+                discountAmount: couponValidation.discountAmount,
+                couponId: couponValidation.coupon._id,
+            };
+
+            console.log('✅ Coupon validated:', validatedCoupon);
+        } catch (error) {
+            console.error('❌ Coupon validation error:', error);
+            return validationErrorResponse(res, 'Invalid coupon code');
+        }
     }
 
     // Step 1: Validate stock availability
@@ -63,8 +107,6 @@ const createOrder = asyncHandler(async (req, res) => {
     if (!shippingAddress || !shippingAddress.address || !shippingAddress.phoneNumber) {
         return validationErrorResponse(res, 'Shipping address and phone number are required');
     }
-
-    const isGuestOrder = !req.user;
 
     // Step 2: Reserve stock before creating order
     console.log('🔒 Reserving stock for order...');
@@ -127,6 +169,18 @@ const createOrder = asyncHandler(async (req, res) => {
         taxPrice,
         shippingPrice,
         totalPrice,
+        // Add coupon information if applied
+        ...(validatedCoupon && {
+            appliedCoupon: {
+                code: validatedCoupon.code,
+                discountType: validatedCoupon.discountType,
+                discountValue: validatedCoupon.discountValue,
+                discountAmount: validatedCoupon.discountAmount,
+                couponId: validatedCoupon.couponId,
+                appliedAt: new Date(),
+            },
+            couponDiscount: validatedCoupon.discountAmount,
+        }),
         // Add delivery estimates
         estimatedDeliveryDate,
         estimatedDeliveryRange: deliveryRange,
@@ -164,12 +218,37 @@ const createOrder = asyncHandler(async (req, res) => {
     try {
         const createdOrder = await order.save();
 
+        // Track coupon usage if coupon was applied
+        if (validatedCoupon) {
+            try {
+                const Coupon = (await import('../models/Coupon.js')).default;
+                await Coupon.findByIdAndUpdate(validatedCoupon.couponId, {
+                    $inc: { usedCount: 1 },
+                    $push: {
+                        usageHistory: {
+                            userId: isGuestOrder ? null : req.user._id,
+                            orderId: createdOrder._id,
+                            discountAmount: validatedCoupon.discountAmount,
+                            usedAt: new Date(),
+                        },
+                    },
+                });
+                console.log('✅ Coupon usage tracked:', validatedCoupon.code);
+            } catch (couponError) {
+                console.error('❌ Failed to track coupon usage:', couponError);
+                // Don't fail the order creation if coupon tracking fails
+            }
+        }
+
         console.log('✅ Order created successfully:', {
             orderId: createdOrder._id,
             orderNumber: createdOrder.orderNumber,
             userId: createdOrder.user,
             isGuestOrder: createdOrder.isGuestOrder,
             totalPrice: createdOrder.totalPrice,
+            couponApplied: !!validatedCoupon,
+            couponCode: validatedCoupon?.code,
+            couponDiscount: validatedCoupon?.discountAmount || 0,
             estimatedDelivery: createdOrder.estimatedDeliveryDate,
             deliveryRange: `${createdOrder.estimatedDeliveryRange.start.toDateString()} - ${createdOrder.estimatedDeliveryRange.end.toDateString()}`,
             automaticTransitions: {

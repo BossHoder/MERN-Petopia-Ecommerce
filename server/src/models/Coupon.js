@@ -77,9 +77,20 @@ const couponSchema = new mongoose.Schema(
             required: true,
             validate: {
                 validator: function (v) {
-                    return v > this.validFrom;
+                    // Allow same day or later dates
+                    const validUntil = new Date(v);
+                    const validFrom = new Date(this.validFrom);
+                    console.log(
+                        '🗓️ Date validation - validFrom:',
+                        validFrom.toISOString(),
+                        'validUntil:',
+                        validUntil.toISOString(),
+                    );
+                    const isValid = validUntil >= validFrom;
+                    console.log('🗓️ Date validation result:', isValid);
+                    return isValid;
                 },
-                message: 'Valid until date must be after valid from date',
+                message: 'Valid until date must be on or after valid from date',
             },
         },
         // Applicable products/categories

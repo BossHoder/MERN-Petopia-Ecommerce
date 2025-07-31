@@ -19,6 +19,8 @@ import { useUrlSteps } from '../../hooks/useUrlTabs';
 import GuestCheckoutForm from '../../components/GuestCheckoutForm/GuestCheckoutForm';
 import { useTranslation } from 'react-i18next';
 import { showSuccessToast } from '../../utils/toastUtils';
+import { calculateOrderPricing, getOrderSummary } from '../../utils/checkoutUtils';
+import CouponInput from '../../components/CouponInput/CouponInput';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -58,12 +60,12 @@ const Checkout = () => {
         paymentMethod: reduxPaymentMethod,
         shippingAddress: reduxShippingAddress,
         isRestored,
+        coupon,
     } = useSelector((state) => state.checkout);
 
-    const itemsPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const shippingPrice = itemsPrice > 100 ? 0 : 10; // Giả lập
-    const taxPrice = 0.1 * itemsPrice; // Giả lập 10%
-    const totalPrice = itemsPrice + shippingPrice + taxPrice;
+    // Calculate order pricing with coupon support
+    const orderSummary = getOrderSummary(cartItems, coupon);
+    const { itemsPrice, shippingPrice, taxPrice, totalPrice, couponDiscount } = orderSummary;
 
     useEffect(() => {
         // Handle checkout business logic for both authenticated and guest users
@@ -224,7 +226,18 @@ const Checkout = () => {
             shippingPrice,
             taxPrice,
             totalPrice,
+            couponDiscount,
         };
+
+        // Add coupon information if applied
+        if (coupon.applied) {
+            orderData.appliedCoupon = {
+                code: coupon.applied.code,
+                discountType: coupon.applied.discountType,
+                discountValue: coupon.applied.discountValue,
+                discountAmount: couponDiscount,
+            };
+        }
 
         // Add guest info if user is not authenticated
         if (!isAuthenticated) {
@@ -393,22 +406,63 @@ const Checkout = () => {
                 </div>
 
                 <div className="checkout-summary">
-                    <h2>{t('cart.summaryTitle')}</h2>
-                    <div className="summary-row">
-                        <span>{t('checkout.summary.items')}:</span>
-                        <span>${itemsPrice.toFixed(2)}</span>
-                    </div>
-                    <div className="summary-row">
-                        <span>{t('checkout.summary.shipping')}:</span>
-                        <span>${shippingPrice.toFixed(2)}</span>
-                    </div>
-                    <div className="summary-row">
-                        <span>{t('checkout.summary.tax')}:</span>
-                        <span>${taxPrice.toFixed(2)}</span>
-                    </div>
-                    <div className="summary-total">
-                        <span>{t('cart.total')}:</span>
-                        <span>${totalPrice.toFixed(2)}</span>
+                    <h2>{t('cart.summaryTitle', 'Order Summary')}</h2>
+
+                    {/* Coupon Input */}
+                    <CouponInput
+                        orderValue={itemsPrice}
+                        userId={isAuthenticated ? userInfo.id : null}
+                        onCouponApplied={() => {
+                            // Coupon applied successfully - pricing will update automatically
+                        }}
+                        onCouponRemoved={() => {
+                            // Coupon removed - pricing will update automatically
+                        }}
+                    />
+
+                    {/* Order Summary */}
+                    <div className="summary-breakdown">
+                        <div className="summary-row">
+                            <span>{t('checkout.summary.items', 'Items')}:</span>
+                            <span>{itemsPrice.toLocaleString()}đ</span>
+                        </div>
+                        <div className="summary-row">
+                            <span>{t('checkout.summary.shipping', 'Shipping')}:</span>
+                            <span>
+                                {shippingPrice === 0 ? (
+                                    <span className="free-shipping">
+                                        {t('checkout.summary.freeShipping', 'Free')}
+                                    </span>
+                                ) : (
+                                    `${shippingPrice.toLocaleString()}đ`
+                                )}
+                            </span>
+                        </div>
+                        {taxPrice > 0 && (
+                            <div className="summary-row">
+                                <span>{t('checkout.summary.tax', 'Tax')}:</span>
+                                <span>{taxPrice.toLocaleString()}đ</span>
+                            </div>
+                        )}
+                        {couponDiscount > 0 && (
+                            <div className="summary-row discount-row">
+                                <span>{t('checkout.summary.discount', 'Discount')}:</span>
+                                <span className="discount-amount">
+                                    -{couponDiscount.toLocaleString()}đ
+                                </span>
+                            </div>
+                        )}
+                        <div className="summary-total">
+                            <span>{t('cart.total', 'Total')}:</span>
+                            <span className="total-amount">{totalPrice.toLocaleString()}đ</span>
+                        </div>
+                        {couponDiscount > 0 && (
+                            <div className="savings-highlight">
+                                <i className="fas fa-tag"></i>
+                                {t('checkout.summary.totalSavings', 'You save')}:{' '}
+                                {couponDiscount.toLocaleString()}đ
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

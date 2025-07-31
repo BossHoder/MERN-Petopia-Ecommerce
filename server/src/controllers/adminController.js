@@ -1275,14 +1275,20 @@ export default {
     }),
 
     createCoupon: asyncHandler(async (req, res) => {
-        const { error } = validateCreateCoupon(req.body);
+        console.log('🎫 Creating coupon with data:', JSON.stringify(req.body, null, 2));
+
+        const { error, value } = validateCreateCoupon(req.body);
         if (error) {
+            console.error('🚫 Coupon validation error:', error.details[0].message);
+            console.error('🚫 Full validation error:', JSON.stringify(error.details, null, 2));
+            console.error('🚫 Validated value:', JSON.stringify(value, null, 2));
             return errorResponse(res, error.details[0].message, 400);
         }
 
         const result = await couponService.createCoupon(req.body, req.user._id);
 
         if (!result.success) {
+            console.error('🚫 Coupon service error:', result.error);
             return errorResponse(res, result.error, 400);
         }
 

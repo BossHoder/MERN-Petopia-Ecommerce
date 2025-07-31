@@ -14,3 +14,8 @@ public/images/*
 !public/images/avatar0.jpg
 !public/images/avatar1.jpg
 !public/images/avatar2.jpg
+
+
+# Ignore sensitive config files
+config/default.json
+config/production.json
