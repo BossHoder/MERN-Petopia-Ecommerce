@@ -48,8 +48,8 @@ const Users = () => {
 
     // Breadcrumb items
     const breadcrumbItems = [
-        { label: t('admin.dashboard.title', 'Dashboard'), path: '/admin/dashboard' },
-        { label: t('admin.users.title', 'Users Management'), path: '/admin/users' },
+        { name: t('admin.dashboard.title', 'Dashboard'), path: '/admin/dashboard' },
+        { name: t('admin.users.title', 'Users Management'), path: '/admin/users' },
     ];
 
     // Load users on component mount and when filters change
@@ -161,16 +161,28 @@ const Users = () => {
         );
 
         if (window.confirm(confirmMessage)) {
-            try {
-                dispatch(updateUserStatus(userId, newStatus));
-                toast.success(t('admin.users.statusUpdated', 'User status updated successfully'));
-                window.location.reload();
-            } catch (error) {
-                toast.error(
-                    error.message ||
-                        t('admin.users.statusUpdateFailed', 'Failed to update user status'),
-                );
-            }
+            dispatch(updateUserStatus(userId, newStatus))
+                .then(() => {
+                    toast.success(
+                        t('admin.users.statusUpdated', 'User status updated successfully'),
+                    );
+                    // Refresh user list
+                    dispatch(
+                        getAdminUsers(
+                            currentPage,
+                            limit,
+                            searchTerm,
+                            roleFilter !== 'all' ? roleFilter : '',
+                            statusFilter !== 'all' ? statusFilter : '',
+                        ),
+                    );
+                })
+                .catch((error) => {
+                    toast.error(
+                        (error && error.message) ||
+                            t('admin.users.statusUpdateFailed', 'Failed to update user status'),
+                    );
+                });
         }
     };
 
