@@ -63,6 +63,18 @@ import {
     ADMIN_PRODUCT_DELETE_REQUEST,
     ADMIN_PRODUCT_DELETE_SUCCESS,
     ADMIN_PRODUCT_DELETE_FAIL,
+    ADMIN_COUPONS_REQUEST,
+    ADMIN_COUPONS_SUCCESS,
+    ADMIN_COUPONS_FAIL,
+    ADMIN_COUPON_CREATE_REQUEST,
+    ADMIN_COUPON_CREATE_SUCCESS,
+    ADMIN_COUPON_CREATE_FAIL,
+    ADMIN_COUPON_UPDATE_REQUEST,
+    ADMIN_COUPON_UPDATE_SUCCESS,
+    ADMIN_COUPON_UPDATE_FAIL,
+    ADMIN_COUPON_DELETE_REQUEST,
+    ADMIN_COUPON_DELETE_SUCCESS,
+    ADMIN_COUPON_DELETE_FAIL,
     ADMIN_CLEAR_ERRORS,
 } from '../types';
 
@@ -738,6 +750,159 @@ export const bulkDeleteProducts = (ids) => async (dispatch) => {
         dispatch({
             type: ADMIN_PRODUCT_DELETE_FAIL,
             payload: error.response?.data?.error?.message || 'Failed to delete products',
+        });
+        throw error;
+    }
+};
+
+// ===========================================
+// COUPONS MANAGEMENT ACTIONS
+// ===========================================
+
+/**
+ * Get all coupons for admin
+ */
+export const getAdminCoupons =
+    (page = 1, limit = 10, search = '', sortBy = 'createdAt', sortOrder = 'desc', filters = {}) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: ADMIN_COUPONS_REQUEST });
+
+            const queryParams = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                sort: sortBy,
+                order: sortOrder,
+                ...(search && { search }),
+                ...(filters.isActive !== undefined && { isActive: filters.isActive }),
+                ...(filters.discountType && { discountType: filters.discountType }),
+            });
+
+            const response = await API.get(`/api/admin/coupons?${queryParams}`);
+
+            dispatch({
+                type: ADMIN_COUPONS_SUCCESS,
+                payload: response.data.data,
+            });
+        } catch (error) {
+            dispatch({
+                type: ADMIN_COUPONS_FAIL,
+                payload: error.response?.data?.error?.message || 'Failed to fetch coupons',
+            });
+        }
+    };
+
+/**
+ * Create new coupon
+ */
+export const createCoupon = (couponData) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_COUPON_CREATE_REQUEST });
+
+        const response = await API.post('/api/admin/coupons', couponData);
+
+        dispatch({
+            type: ADMIN_COUPON_CREATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        return response.data;
+    } catch (error) {
+        dispatch({
+            type: ADMIN_COUPON_CREATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to create coupon',
+        });
+        throw error;
+    }
+};
+
+/**
+ * Update coupon
+ */
+export const updateCoupon = (couponId, couponData) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_COUPON_UPDATE_REQUEST });
+
+        const response = await API.put(`/api/admin/coupons/${couponId}`, couponData);
+
+        dispatch({
+            type: ADMIN_COUPON_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        return response.data;
+    } catch (error) {
+        dispatch({
+            type: ADMIN_COUPON_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to update coupon',
+        });
+        throw error;
+    }
+};
+
+/**
+ * Delete coupon
+ */
+export const deleteCoupon = (couponId) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_COUPON_DELETE_REQUEST });
+
+        await API.delete(`/api/admin/coupons/${couponId}`);
+
+        dispatch({
+            type: ADMIN_COUPON_DELETE_SUCCESS,
+            payload: couponId,
+        });
+    } catch (error) {
+        dispatch({
+            type: ADMIN_COUPON_DELETE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to delete coupon',
+        });
+        throw error;
+    }
+};
+
+/**
+ * Bulk delete coupons
+ */
+export const bulkDeleteCoupons = (ids) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_COUPON_DELETE_REQUEST });
+
+        await API.post('/api/admin/coupons/bulk-delete', { ids });
+
+        dispatch({
+            type: ADMIN_COUPON_DELETE_SUCCESS,
+            payload: ids,
+        });
+    } catch (error) {
+        dispatch({
+            type: ADMIN_COUPON_DELETE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to delete coupons',
+        });
+        throw error;
+    }
+};
+
+/**
+ * Toggle coupon status
+ */
+export const toggleCouponStatus = (couponId, isActive) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_COUPON_UPDATE_REQUEST });
+
+        const response = await API.put(`/api/admin/coupons/${couponId}/status`, { isActive });
+
+        dispatch({
+            type: ADMIN_COUPON_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        return response.data;
+    } catch (error) {
+        dispatch({
+            type: ADMIN_COUPON_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to update coupon status',
         });
         throw error;
     }

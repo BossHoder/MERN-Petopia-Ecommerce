@@ -45,6 +45,12 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
             icon: '📂',
         },
         {
+            id: 'coupons',
+            label: t('admin.coupons.title', 'Coupons'),
+            path: '/admin/coupons',
+            icon: '🎫',
+        },
+        {
             id: 'analytics',
             label: t('admin.analytics', 'Analytics'),
             path: '/admin/analytics',

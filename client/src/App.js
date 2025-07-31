@@ -22,6 +22,7 @@ import ParentCategories from './pages/Admin/ParentCategories/ParentCategories'; 
 import Categories from './pages/Admin/Categories/Categories'; // Import Categories
 import AdminProducts from './pages/Admin/Products/Products'; // Import Admin Products
 import AdminOrders from './pages/Admin/Orders/Orders'; // Import Admin Orders
+import AdminCoupons from './pages/Admin/Coupons/Coupons'; // Import Admin Coupons
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
@@ -99,6 +100,7 @@ const App = () => {
                         <Route path="categories" element={<Categories />} />
                         <Route path="products" element={<AdminProducts />} />
                         <Route path="orders" element={<AdminOrders />} />
+                        <Route path="coupons" element={<AdminCoupons />} />
                         <Route
                             path="analytics"
                             element={<div>Admin Analytics - Coming Soon</div>}

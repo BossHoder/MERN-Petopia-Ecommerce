@@ -5,9 +5,12 @@ import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import Category from '../models/Category.js';
 import ParentCategory from '../models/parentCategory.js';
+import Coupon from '../models/Coupon.js';
 import stockService from '../services/stockService.js';
+import couponService from '../services/couponService.js';
 import { logOrderStatusChange, logPaymentStatusChange, extractRequestMetadata } from '../utils/auditLogger.js';
 import { userDto, usersDto } from '../dto/userDto.js';
+import { validateCreateCoupon, validateUpdateCoupon, couponQuerySchema } from '../validations/couponValidation.js';
 
 // ===========================================
 // DASHBOARD CONTROLLERS
@@ -1214,5 +1217,138 @@ export default {
     }),
     updateSystemSettings: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'System settings updated successfully');
+    }),
+
+    // ===========================================
+    // COUPONS MANAGEMENT
+    // ===========================================
+    getAllCouponsAdmin: asyncHandler(async (req, res) => {
+        const { error, value } = couponQuerySchema.validate(req.query);
+        if (error) {
+            return errorResponse(res, error.details[0].message, 400);
+        }
+
+        const { page, limit, sort, order, isActive, discountType, search } = value;
+
+        // Build filter object
+        const filters = {};
+        if (isActive !== undefined) filters.isActive = isActive;
+        if (discountType) filters.discountType = discountType;
+        if (search) {
+            filters.$or = [
+                { code: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } },
+            ];
+        }
+
+        const result = await couponService.getAllCoupons(page, limit, filters);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, 500);
+        }
+
+        return successResponse(
+            res,
+            {
+                coupons: result.coupons,
+                pagination: {
+                    currentPage: result.pagination.page,
+                    totalPages: result.pagination.pages,
+                    totalCoupons: result.pagination.total,
+                    hasNext: result.pagination.page < result.pagination.pages,
+                    hasPrev: result.pagination.page > 1,
+                },
+            },
+            'Coupons retrieved successfully',
+        );
+    }),
+
+    getCouponById: asyncHandler(async (req, res) => {
+        const couponId = req.params.id;
+        const result = await couponService.getCouponById(couponId);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, result.error.includes('not found') ? 404 : 500);
+        }
+
+        return successResponse(res, result.coupon, 'Coupon retrieved successfully');
+    }),
+
+    createCoupon: asyncHandler(async (req, res) => {
+        const { error } = validateCreateCoupon(req.body);
+        if (error) {
+            return errorResponse(res, error.details[0].message, 400);
+        }
+
+        const result = await couponService.createCoupon(req.body, req.user._id);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, 400);
+        }
+
+        return successResponse(res, result.coupon, result.message, 201);
+    }),
+
+    updateCoupon: asyncHandler(async (req, res) => {
+        const { error } = validateUpdateCoupon(req.body);
+        if (error) {
+            return errorResponse(res, error.details[0].message, 400);
+        }
+
+        const couponId = req.params.id;
+        const result = await couponService.updateCoupon(couponId, req.body);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, result.error.includes('not found') ? 404 : 400);
+        }
+
+        return successResponse(res, result.coupon, result.message);
+    }),
+
+    deleteCoupon: asyncHandler(async (req, res) => {
+        const couponId = req.params.id;
+        const result = await couponService.deleteCoupon(couponId);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, result.error.includes('not found') ? 404 : 500);
+        }
+
+        return successResponse(res, {}, result.message);
+    }),
+
+    bulkDeleteCoupons: asyncHandler(async (req, res) => {
+        const { ids } = req.body;
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return errorResponse(res, 'Invalid coupon IDs', 400);
+        }
+
+        try {
+            const result = await Coupon.deleteMany({ _id: { $in: ids } });
+            return successResponse(res, { deletedCount: result.deletedCount }, 'Coupons deleted successfully');
+        } catch (error) {
+            console.error('Bulk delete coupons error:', error);
+            return errorResponse(res, 'Failed to delete coupons', 500);
+        }
+    }),
+
+    toggleCouponStatus: asyncHandler(async (req, res) => {
+        const couponId = req.params.id;
+        const { isActive } = req.body;
+
+        try {
+            const coupon = await Coupon.findById(couponId);
+            if (!coupon) {
+                return errorResponse(res, 'Coupon not found', 404);
+            }
+
+            coupon.isActive = isActive;
+            await coupon.save();
+
+            return successResponse(res, { isActive: coupon.isActive }, 'Coupon status updated successfully');
+        } catch (error) {
+            console.error('Toggle coupon status error:', error);
+            return errorResponse(res, 'Failed to update coupon status', 500);
+        }
     }),
 };

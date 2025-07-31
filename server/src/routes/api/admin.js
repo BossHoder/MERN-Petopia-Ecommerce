@@ -70,6 +70,15 @@ router.put('/categories/:id', adminController.updateCategory);
 router.delete('/categories/:id', adminController.deleteCategory);
 router.post('/categories/bulk-delete', adminController.bulkDeleteCategories);
 
+// Coupons Management
+router.get('/coupons', adminController.getAllCouponsAdmin);
+router.get('/coupons/:id', adminController.getCouponById);
+router.post('/coupons', adminController.createCoupon);
+router.put('/coupons/:id', adminController.updateCoupon);
+router.delete('/coupons/:id', adminController.deleteCoupon);
+router.post('/coupons/bulk-delete', adminController.bulkDeleteCoupons);
+router.put('/coupons/:id/status', adminController.toggleCouponStatus);
+
 // System Settings
 router.get('/settings', adminController.getSystemSettings);
 router.put('/settings', adminController.updateSystemSettings);

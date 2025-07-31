@@ -22,6 +22,7 @@ const coupons = [
         excludeCategories: [],
         isActive: true,
         usedBy: [],
+        createdBy: '64c8e7f1a2b3c4d5e6f7a8b9', // Example admin ObjectId
     },
     {
         code: 'FREESHIP',
@@ -41,6 +42,7 @@ const coupons = [
         excludeCategories: [],
         isActive: true,
         usedBy: [],
+        createdBy: '64c8e7f1a2b3c4d5e6f7a8b9',
     },
     {
         code: 'DOGFOOD20',
@@ -60,6 +62,7 @@ const coupons = [
         excludeCategories: [],
         isActive: true,
         usedBy: [],
+        createdBy: '64c8e7f1a2b3c4d5e6f7a8b9',
     },
     {
         code: 'FLASH50',
@@ -79,6 +82,7 @@ const coupons = [
         excludeCategories: [],
         isActive: true,
         usedBy: [],
+        createdBy: '64c8e7f1a2b3c4d5e6f7a8b9',
     },
     {
         code: 'BIRTHDAY30',
@@ -98,6 +102,7 @@ const coupons = [
         excludeCategories: [],
         isActive: true,
         usedBy: [],
+        createdBy: '64c8e7f1a2b3c4d5e6f7a8b9',
     },
 ];
 

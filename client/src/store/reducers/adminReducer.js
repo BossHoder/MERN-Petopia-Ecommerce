@@ -62,6 +62,18 @@ import {
     ADMIN_PRODUCT_DELETE_REQUEST,
     ADMIN_PRODUCT_DELETE_SUCCESS,
     ADMIN_PRODUCT_DELETE_FAIL,
+    ADMIN_COUPONS_REQUEST,
+    ADMIN_COUPONS_SUCCESS,
+    ADMIN_COUPONS_FAIL,
+    ADMIN_COUPON_CREATE_REQUEST,
+    ADMIN_COUPON_CREATE_SUCCESS,
+    ADMIN_COUPON_CREATE_FAIL,
+    ADMIN_COUPON_UPDATE_REQUEST,
+    ADMIN_COUPON_UPDATE_SUCCESS,
+    ADMIN_COUPON_UPDATE_FAIL,
+    ADMIN_COUPON_DELETE_REQUEST,
+    ADMIN_COUPON_DELETE_SUCCESS,
+    ADMIN_COUPON_DELETE_FAIL,
     ADMIN_CLEAR_ERRORS,
 } from '../types';
 
@@ -151,6 +163,20 @@ const initialState = {
     productCreateLoading: false,
     productUpdateLoading: false,
     productDeleteLoading: false,
+
+    // Coupons Management
+    coupons: [],
+    couponsPagination: {
+        currentPage: 1,
+        totalPages: 1,
+        totalCoupons: 0,
+        hasNext: false,
+        hasPrev: false,
+    },
+    couponsLoading: false,
+    couponCreateLoading: false,
+    couponUpdateLoading: false,
+    couponDeleteLoading: false,
 
     // Error handling
     error: null,
@@ -674,6 +700,105 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
                 productDeleteLoading: false,
+                error: action.payload,
+            };
+
+        // ===========================================
+        // COUPONS MANAGEMENT CASES
+        // ===========================================
+        case ADMIN_COUPONS_REQUEST:
+            return {
+                ...state,
+                couponsLoading: true,
+                error: null,
+            };
+
+        case ADMIN_COUPONS_SUCCESS:
+            return {
+                ...state,
+                couponsLoading: false,
+                coupons: action.payload.coupons,
+                couponsPagination: action.payload.pagination,
+                error: null,
+            };
+
+        case ADMIN_COUPONS_FAIL:
+            return {
+                ...state,
+                couponsLoading: false,
+                error: action.payload,
+            };
+
+        case ADMIN_COUPON_CREATE_REQUEST:
+            return {
+                ...state,
+                couponCreateLoading: true,
+                error: null,
+            };
+
+        case ADMIN_COUPON_CREATE_SUCCESS:
+            return {
+                ...state,
+                couponCreateLoading: false,
+                coupons: [action.payload, ...state.coupons],
+                error: null,
+                success: 'Coupon created successfully',
+            };
+
+        case ADMIN_COUPON_CREATE_FAIL:
+            return {
+                ...state,
+                couponCreateLoading: false,
+                error: action.payload,
+            };
+
+        case ADMIN_COUPON_UPDATE_REQUEST:
+            return {
+                ...state,
+                couponUpdateLoading: true,
+                error: null,
+            };
+
+        case ADMIN_COUPON_UPDATE_SUCCESS:
+            return {
+                ...state,
+                couponUpdateLoading: false,
+                coupons: state.coupons.map((coupon) =>
+                    coupon.id === action.payload.id ? action.payload : coupon,
+                ),
+                error: null,
+                success: 'Coupon updated successfully',
+            };
+
+        case ADMIN_COUPON_UPDATE_FAIL:
+            return {
+                ...state,
+                couponUpdateLoading: false,
+                error: action.payload,
+            };
+
+        case ADMIN_COUPON_DELETE_REQUEST:
+            return {
+                ...state,
+                couponDeleteLoading: true,
+                error: null,
+            };
+
+        case ADMIN_COUPON_DELETE_SUCCESS:
+            return {
+                ...state,
+                couponDeleteLoading: false,
+                coupons: Array.isArray(action.payload)
+                    ? state.coupons.filter((coupon) => !action.payload.includes(coupon.id))
+                    : state.coupons.filter((coupon) => coupon.id !== action.payload),
+                error: null,
+                success: 'Coupon(s) deleted successfully',
+            };
+
+        case ADMIN_COUPON_DELETE_FAIL:
+            return {
+                ...state,
+                couponDeleteLoading: false,
                 error: action.payload,
             };
 
