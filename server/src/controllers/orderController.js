@@ -1,6 +1,8 @@
 import Order from '../models/Order.js';
+import Product from '../models/Product.js';
 import asyncHandler from '../middleware/asyncHandler.js';
 import emailService from '../services/emailService.js';
+import stockService from '../services/stockService.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import {
     successResponse,
@@ -36,6 +38,27 @@ const createOrder = asyncHandler(async (req, res) => {
         return validationErrorResponse(res, ERROR_MESSAGES.NO_ORDER_ITEMS);
     }
 
+    // Step 1: Validate stock availability
+    console.log('📦 Validating stock availability...');
+    const itemsForValidation = orderItems.map((item) => ({
+        product: item.product?._id || item.productId,
+        productId: item.product?._id || item.productId,
+        variantId: item.variantId || null,
+        quantity: item.quantity,
+    }));
+
+    const stockValidation = await stockService.validateStockAvailability(itemsForValidation);
+
+    if (!stockValidation.success) {
+        console.log('❌ Stock validation failed:', stockValidation.errors);
+        return validationErrorResponse(res, 'Stock validation failed', {
+            errors: stockValidation.errors,
+            details: 'One or more items in your order are not available in the requested quantity',
+        });
+    }
+
+    console.log('✅ Stock validation passed');
+
     // Validate shipping address for both authenticated and guest users
     if (!shippingAddress || !shippingAddress.address || !shippingAddress.phoneNumber) {
         return validationErrorResponse(res, 'Shipping address and phone number are required');
@@ -43,23 +66,61 @@ const createOrder = asyncHandler(async (req, res) => {
 
     const isGuestOrder = !req.user;
 
+    // Step 2: Reserve stock before creating order
+    console.log('🔒 Reserving stock for order...');
+    const stockReservation = await stockService.reserveStock(itemsForValidation);
+
+    if (!stockReservation.success) {
+        console.log('❌ Stock reservation failed:', stockReservation.error);
+        return errorResponse(res, 'Failed to reserve stock for order', 400, {
+            error: stockReservation.error,
+            details: 'Stock reservation failed. Please try again.',
+        });
+    }
+
+    console.log('✅ Stock reserved successfully');
+
     // Calculate delivery estimates
     const orderDate = new Date();
     const deliveryRange = calculateDeliveryRange(orderDate);
     const estimatedDeliveryDate = calculateEstimatedDeliveryDate(orderDate);
     const transitionTimes = calculateAutomaticTransitionTimes(orderDate);
 
+    // Step 3: Create order with enhanced order items including variant information
+    const enhancedOrderItems = await Promise.all(
+        orderItems.map(async (item) => {
+            const product = await Product.findById(item.product?._id || item.productId);
+            let variantName = null;
+
+            if (item.variantId && product) {
+                const variant = product.variants.find((v) => v.sku === item.variantId);
+                if (variant) {
+                    variantName = `${variant.name}: ${variant.value}`;
+                }
+            }
+
+            return {
+                name: item.product?.name || product?.name || 'Unknown Product',
+                quantity: item.quantity,
+                image:
+                    item.product?.images && item.product.images.length > 0
+                        ? item.product.images[0]
+                        : product?.images && product.images.length > 0
+                        ? product.images[0]
+                        : '/placeholder.jpg',
+                price: item.price,
+                product: item.product?._id || item.productId,
+                variantId: item.variantId || null,
+                variantName: variantName,
+            };
+        }),
+    );
+
     const order = new Order({
         user: isGuestOrder ? null : req.user._id,
         isGuestOrder,
         guestInfo: isGuestOrder ? guestInfo : null,
-        orderItems: orderItems.map((item) => ({
-            name: item.product.name,
-            quantity: item.quantity,
-            image: item.product.images && item.product.images.length > 0 ? item.product.images[0] : '/placeholder.jpg',
-            price: item.price,
-            product: item.product._id,
-        })),
+        orderItems: enhancedOrderItems,
         shippingAddress,
         paymentMethod,
         itemsPrice,
@@ -133,8 +194,21 @@ const createOrder = asyncHandler(async (req, res) => {
 
         return createdResponse(res, createdOrder);
     } catch (error) {
-        // Log the full validation error to the backend console
+        // If order creation fails, restore the reserved stock
         console.error('❌ Error saving order:', error);
+        console.log('🔄 Restoring reserved stock due to order creation failure...');
+
+        try {
+            const restoreResult = await stockService.restoreStock(itemsForValidation);
+            if (restoreResult.success) {
+                console.log('✅ Stock restored successfully after order creation failure');
+            } else {
+                console.error('❌ Failed to restore stock after order creation failure:', restoreResult.error);
+            }
+        } catch (restoreError) {
+            console.error('❌ Critical error: Failed to restore stock after order creation failure:', restoreError);
+        }
+
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 400, error.message);
     }
 });

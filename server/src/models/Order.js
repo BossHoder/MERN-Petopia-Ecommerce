@@ -11,6 +11,17 @@ const OrderItemSchema = new Schema({
         required: true,
         ref: 'Product',
     },
+    // Add variant support for proper stock management
+    variantId: {
+        type: String,
+        required: false, // Optional - only for products with variants
+        trim: true,
+    },
+    variantName: {
+        type: String,
+        required: false, // Optional - for display purposes
+        trim: true,
+    },
 });
 
 const ShippingAddressSchema = new Schema({

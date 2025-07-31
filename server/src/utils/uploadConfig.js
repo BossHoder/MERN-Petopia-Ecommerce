@@ -51,7 +51,7 @@ const upload = multer({
     storage: storage,
     limits: {
         fileSize: 5 * 1024 * 1024, // 5MB
-        files: 1, // Only 1 file at a time
+        files: 15, // Allow multiple files (main product images + variant images)
     },
     fileFilter: (req, file, cb) => {
         console.log('Uploading file:', file.originalname, 'Type:', file.mimetype);

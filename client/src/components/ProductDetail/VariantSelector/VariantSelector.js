@@ -1,9 +1,21 @@
 import React from 'react';
 import { useI18n } from '../../../hooks/useI18n';
+import {
+    getVariantDisplayName,
+    isVariantAvailable,
+    getVariantImage,
+} from '../../../utils/variantUtils';
 import './styles.css';
 
 const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) => {
     const { t } = useI18n();
+
+    console.log('🔍 VariantSelector Debug:', {
+        variantsCount: variants.length,
+        variants,
+        selectedVariant,
+        hasOnVariantChange: typeof onVariantChange === 'function',
+    });
 
     // Group variants by attribute type for better organization
     const groupVariantsByAttribute = () => {
@@ -35,48 +47,31 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         );
     };
 
-    // Check if variant is available (in stock and active)
-    const isVariantAvailable = (variant) => {
+    // Check if variant is available (in stock and active) - enhanced version
+    const isVariantAvailableEnhanced = (variant) => {
         return (
-            variant && variant.isActive !== false && (variant.stockQuantity || variant.stock) > 0
+            variant && variant.isActive !== false && isVariantAvailable(variant) // Use imported function for stock check
         );
-    };
-
-    // Get variant display name
-    const getVariantDisplayName = (variant) => {
-        if (variant.name) return variant.name;
-
-        if (variant.attributes) {
-            const attrs = Object.values(variant.attributes).filter(Boolean);
-            if (attrs.length > 0) {
-                return attrs.join(' / ');
-            }
-        }
-
-        return t('product.variant', 'Variant');
-    };
-
-    // Get variant image for preview
-    const getVariantImage = (variant) => {
-        if (variant.images && variant.images.length > 0) {
-            const image = variant.images[0];
-            if (typeof image === 'string') {
-                return image.startsWith('http')
-                    ? image
-                    : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${image}`;
-            }
-            return image?.url || image?.preview;
-        }
-        return null;
     };
 
     const attributeGroups = groupVariantsByAttribute();
 
     return (
         <div className="variant-selector">
-            <h3 className="variant-selector-title">
-                {t('product.selectVariant', 'Select Options')}
-            </h3>
+            <div className="variant-selector-header">
+                <h3 className="variant-selector-title">
+                    {t('product.selectVariant', 'Select Options')}
+                </h3>
+                {selectedVariant && (
+                    <button
+                        className="clear-selection-btn"
+                        onClick={() => onVariantChange(null)}
+                        title={t('product.clearSelection', 'Clear selection')}
+                    >
+                        {t('product.clearSelection', 'Clear')}
+                    </button>
+                )}
+            </div>
 
             {/* Attribute-based Selection */}
             {Object.keys(attributeGroups).length > 0 && (
@@ -91,7 +86,7 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
                                     const variant = getVariantByAttributes(attributeKey, value);
                                     const isSelected =
                                         selectedVariant?.attributes?.[attributeKey] === value;
-                                    const isAvailable = isVariantAvailable(variant);
+                                    const isAvailable = isVariantAvailableEnhanced(variant);
 
                                     return (
                                         <button
@@ -99,7 +94,16 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
                                             className={`variant-option ${
                                                 isSelected ? 'selected' : ''
                                             } ${!isAvailable ? 'unavailable' : ''}`}
-                                            onClick={() => isAvailable && onVariantChange(variant)}
+                                            onClick={() => {
+                                                if (isAvailable) {
+                                                    // Allow deselection by clicking the same variant
+                                                    if (isSelected) {
+                                                        onVariantChange(null);
+                                                    } else {
+                                                        onVariantChange(variant);
+                                                    }
+                                                }
+                                            }}
                                             disabled={!isAvailable}
                                             title={
                                                 !isAvailable
@@ -132,7 +136,7 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
                 <div className="variant-list">
                     {variants.map((variant, index) => {
                         const isSelected = selectedVariant?.id === variant.id;
-                        const isAvailable = isVariantAvailable(variant);
+                        const isAvailable = isVariantAvailableEnhanced(variant);
                         const variantImage = getVariantImage(variant);
 
                         return (

@@ -5,6 +5,7 @@ import Product from '../models/Product.js';
 import Order from '../models/Order.js';
 import Category from '../models/Category.js';
 import ParentCategory from '../models/parentCategory.js';
+import stockService from '../services/stockService.js';
 import { logOrderStatusChange, logPaymentStatusChange, extractRequestMetadata } from '../utils/auditLogger.js';
 
 // ===========================================
@@ -214,6 +215,11 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
         const oldStatus = currentOrder.orderStatus;
 
+        // Check if stock restoration is needed
+        const stockRestorationStatuses = ['cancelled', 'refunded'];
+        const needsStockRestoration =
+            stockRestorationStatuses.includes(status) && !stockRestorationStatuses.includes(oldStatus);
+
         // Validate payment requirements for delivering/delivered status
         if (
             (status === 'delivering' || status === 'delivered') &&
@@ -241,6 +247,33 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
             },
             { new: true },
         ).populate('user', 'name email');
+
+        // Restore stock if order is cancelled or refunded
+        if (needsStockRestoration) {
+            console.log(`🔄 Restoring stock for order ${order.orderNumber} (status: ${oldStatus} → ${status})`);
+
+            // Prepare order items for stock restoration
+            const itemsForRestoration = order.orderItems.map((item) => ({
+                product: item.product,
+                productId: item.product,
+                variantId: item.variantId || null,
+                quantity: item.quantity,
+            }));
+
+            try {
+                const restoreResult = await stockService.restoreStock(itemsForRestoration);
+
+                if (restoreResult.success) {
+                    console.log(`✅ Stock restored successfully for order ${order.orderNumber}`);
+                } else {
+                    console.error(`❌ Failed to restore stock for order ${order.orderNumber}:`, restoreResult.error);
+                    // Log this as a warning but don't fail the status update
+                }
+            } catch (restoreError) {
+                console.error(`❌ Critical error restoring stock for order ${order.orderNumber}:`, restoreError);
+                // Log this as a critical error but don't fail the status update
+            }
+        }
 
         // Log the status change for audit trail
         const requestMetadata = extractRequestMetadata(req);
@@ -553,11 +586,16 @@ export default {
 
         req.body.images = images;
 
-        // Handle variant images
-        if (req.body.variants && typeof req.body.variants === 'string') {
-            const variants = JSON.parse(req.body.variants);
+        // Handle variant images and transform variant data
+        if (req.body.variants) {
+            let variants;
+            if (typeof req.body.variants === 'string') {
+                variants = JSON.parse(req.body.variants);
+            } else {
+                variants = req.body.variants;
+            }
 
-            // Process variant images
+            // Process variant images and transform data structure
             const processedVariants = variants.map((variant, index) => {
                 const variantImages = [...(variant.images || [])];
 
@@ -571,9 +609,16 @@ export default {
                     }
                 }
 
+                // Transform variant data to match schema
                 return {
-                    ...variant,
+                    name: variant.name,
+                    value: variant.name, // Use name as value for now
+                    price: parseFloat(variant.price) || 0,
+                    stockQuantity: parseInt(variant.stock) || 0, // Transform 'stock' to 'stockQuantity'
+                    sku: variant.sku,
                     images: variantImages,
+                    attributes: variant.attributes || {},
+                    isActive: variant.isActive !== false, // Default to true
                 };
             });
 
@@ -592,7 +637,8 @@ export default {
                 productId: req.params.id,
                 bodyKeys: Object.keys(req.body),
                 hasFiles: !!req.files,
-                filesCount: req.files ? req.files.length : 0
+                filesCount: req.files ? req.files.length : 0,
+                fileDetails: req.files ? req.files.map((f) => ({ fieldname: f.fieldname, filename: f.filename })) : [],
             });
 
             // Parse JSON fields
@@ -615,73 +661,103 @@ export default {
                 }
             }
 
-        // Generate slug if not provided but name is changed
-        if (!req.body.slug && req.body.name) {
-            req.body.slug = req.body.name
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
-                .trim();
-        }
+            // Generate slug if not provided but name is changed
+            if (!req.body.slug && req.body.name) {
+                req.body.slug = req.body.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
+                    .trim();
+            }
 
-        // Handle images
-        let images = [];
+            // Handle images
+            let images = [];
 
-        // Add existing images if provided
-        if (req.body.existingImages && typeof req.body.existingImages === 'string') {
-            const existingImages = JSON.parse(req.body.existingImages);
-            images = [...existingImages];
-        }
+            // Add existing images if provided
+            if (req.body.existingImages && typeof req.body.existingImages === 'string') {
+                const existingImages = JSON.parse(req.body.existingImages);
+                images = [...existingImages];
+            }
 
-        // Add new uploaded images
-        if (req.files && req.files.length > 0) {
-            const newImages = req.files.map((file) => `/public/images/${file.filename}`);
-            images = [...images, ...newImages];
-        }
+            // Add new uploaded images
+            if (req.files && req.files.length > 0) {
+                const newImages = req.files.map((file) => `/public/images/${file.filename}`);
+                images = [...images, ...newImages];
+            }
 
-        // Only update images if we have new data
-        if (images.length > 0 || req.body.existingImages) {
-            req.body.images = images;
-        }
+            // Only update images if we have new data
+            if (images.length > 0 || req.body.existingImages) {
+                req.body.images = images;
+            }
 
-        // Handle variant images
-        if (req.body.variants && typeof req.body.variants === 'string') {
-            const variants = JSON.parse(req.body.variants);
-
-            // Process variant images
-            const processedVariants = variants.map((variant, index) => {
-                const variantImages = [...(variant.images || [])];
-
-                // Check for new variant images
-                const variantImageField = `variantImages_${index}`;
-                if (req.files) {
-                    const variantFiles = req.files.filter((file) => file.fieldname === variantImageField);
-                    if (variantFiles.length > 0) {
-                        const newVariantImages = variantFiles.map((file) => `/public/images/${file.filename}`);
-                        variantImages.push(...newVariantImages);
-                    }
+            // Handle variant images and transform variant data
+            if (req.body.variants) {
+                let variants;
+                if (typeof req.body.variants === 'string') {
+                    variants = JSON.parse(req.body.variants);
+                } else {
+                    variants = req.body.variants;
                 }
 
-                return {
-                    ...variant,
-                    images: variantImages,
-                };
+                // Process variant images and transform data structure
+                const processedVariants = variants.map((variant, index) => {
+                    const variantImages = [...(variant.images || [])];
+
+                    // Check for new variant images
+                    const variantImageField = `variantImages_${index}`;
+                    if (req.files) {
+                        const variantFiles = req.files.filter((file) => file.fieldname === variantImageField);
+                        if (variantFiles.length > 0) {
+                            const newVariantImages = variantFiles.map((file) => `/public/images/${file.filename}`);
+                            variantImages.push(...newVariantImages);
+                        }
+                    }
+
+                    // Transform variant data to match schema
+                    return {
+                        name: variant.name,
+                        value: variant.name, // Use name as value for now
+                        price: parseFloat(variant.price) || 0,
+                        stockQuantity: parseInt(variant.stock) || 0, // Transform 'stock' to 'stockQuantity'
+                        sku: variant.sku,
+                        images: variantImages,
+                        attributes: variant.attributes || {},
+                        isActive: variant.isActive !== false, // Default to true
+                    };
+                });
+
+                req.body.variants = processedVariants;
+                console.log('✅ Processed variants:', processedVariants);
+            }
+
+            console.log('🔄 Updating product with data:', {
+                productId: req.params.id,
+                updateFields: Object.keys(req.body),
+                variantsCount: req.body.variants ? req.body.variants.length : 0,
             });
 
-            req.body.variants = processedVariants;
+            const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+                new: true,
+                runValidators: true,
+            }).populate('category', 'name');
+
+            if (!product) {
+                console.log('❌ Product not found:', req.params.id);
+                return errorResponse(res, 'Product not found', 404);
+            }
+
+            console.log('✅ Product updated successfully:', product._id);
+            return successResponse(res, { product }, 'Product updated successfully');
+        } catch (error) {
+            console.error('❌ Error in updateProduct:', {
+                error: error.message,
+                stack: error.stack,
+                productId: req.params.id,
+                body: req.body,
+            });
+            return errorResponse(res, `Failed to update product: ${error.message}`, 500);
         }
-
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        }).populate('category', 'name');
-
-        if (!product) {
-            return errorResponse(res, 'Product not found', 404);
-        }
-
-        return successResponse(res, { product }, 'Product updated successfully');
     }),
 
     deleteProduct: asyncHandler(async (req, res) => {

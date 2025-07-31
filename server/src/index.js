@@ -83,6 +83,25 @@ console.log('🔗 Access via: http://localhost:5000/public/images/filename');
 // Routes come after static files
 app.use('/', routes);
 
+// Global error handler - must come after routes
+app.use((err, req, res, next) => {
+    console.error('🚨 Global Error Handler:', {
+        error: err.message,
+        stack: err.stack,
+        url: req.url,
+        method: req.method,
+        body: req.body,
+        params: req.params,
+    });
+
+    res.status(500).json({
+        success: false,
+        message: 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
+        timestamp: new Date().toISOString(),
+    });
+});
+
 // Debug static paths
 console.log('Public images path:', join(__dirname, '../public/images'));
 

@@ -2,7 +2,14 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useI18n } from '../../../hooks/useI18n';
 import './styles.css';
 
-const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productName = '' }) => {
+const ImageGallery = ({
+    images = [],
+    selectedIndex = 0,
+    onImageSelect,
+    productName = '',
+    selectedVariant = null,
+    productImages = [],
+}) => {
     const { t } = useI18n();
     const [isZoomed, setIsZoomed] = useState(false);
     const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
@@ -67,6 +74,40 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
         return imageUrl;
     };
 
+    // Check if current image is variant-specific (only in variant images, not in main product images)
+    const isVariantImage = (imageIndex) => {
+        if (!selectedVariant || !selectedVariant.images || !productImages) {
+            console.log('🔍 Badge Debug: Missing data', {
+                hasSelectedVariant: !!selectedVariant,
+                hasVariantImages: !!selectedVariant?.images,
+                hasProductImages: !!productImages,
+            });
+            return false;
+        }
+
+        const currentImageUrl = getImageUrl(images[imageIndex]);
+        const isInProductImages = productImages.some((img) => getImageUrl(img) === currentImageUrl);
+        const isInVariantImages = selectedVariant.images.some(
+            (img) => getImageUrl(img) === currentImageUrl,
+        );
+
+        const shouldShowBadge = isInVariantImages && !isInProductImages;
+
+        console.log('🔍 Badge Debug: Image check', {
+            imageIndex,
+            currentImageUrl,
+            isInProductImages,
+            isInVariantImages,
+            shouldShowBadge,
+            selectedVariant: selectedVariant.name,
+            variantImages: selectedVariant.images.map((img) => getImageUrl(img)),
+            productImages: productImages.map((img) => getImageUrl(img)),
+        });
+
+        // Image is variant-specific if it's in variant images but NOT in main product images
+        return shouldShowBadge;
+    };
+
     // Handle thumbnail scroll
     const scrollThumbnails = (direction) => {
         if (!thumbnailsRef.current) return;
@@ -122,6 +163,13 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
                         e.target.src = '/placeholder-image.svg';
                     }}
                 />
+
+                {/* Variant Badge - Only show on variant-specific images */}
+                {selectedVariant && isVariantImage(selectedIndex) && (
+                    <div className="variant-badge">
+                        {selectedVariant.name || t('product.variant', 'Variant')}
+                    </div>
+                )}
 
                 {/* Navigation Arrows */}
                 {images.length > 1 && (
@@ -200,6 +248,13 @@ const ImageGallery = ({ images = [], selectedIndex = 0, onImageSelect, productNa
                                             e.target.src = '/placeholder-image.svg';
                                         }}
                                     />
+                                    {/* Variant Badge for Thumbnails - Only on variant-specific images */}
+                                    {selectedVariant && isVariantImage(index) && (
+                                        <div className="thumbnail-variant-badge">
+                                            {selectedVariant.name?.charAt(0) ||
+                                                t('product.variant', 'V')}
+                                        </div>
+                                    )}
                                 </button>
                             ))}
                         </div>

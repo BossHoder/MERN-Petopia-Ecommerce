@@ -7,14 +7,38 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.variant-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
 .variant-selector-title {
     font-size: 20px;
     font-weight: 700;
     color: var(--text-primary, #1f2937);
-    margin-bottom: 20px;
+    margin: 0;
     border-bottom: 2px solid var(--brand-orange, #ff6b35);
     padding-bottom: 8px;
     display: inline-block;
+}
+
+.clear-selection-btn {
+    background: var(--bg-gray-100, #f3f4f6);
+    color: var(--text-secondary, #6b7280);
+    border: 1px solid var(--border-light, #e5e7eb);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-selection-btn:hover {
+    background: var(--bg-gray-200, #e5e7eb);
+    color: var(--text-primary, #1f2937);
 }
 
 /* Attribute-based Selection */

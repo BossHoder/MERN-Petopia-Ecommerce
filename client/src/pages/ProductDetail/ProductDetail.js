@@ -11,6 +11,7 @@ import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import { getProductBySlug } from '../../store/actions/productActions';
 import { addToCart } from '../../store/actions/cartActions';
+import { renderValue } from '../../utils/displayUtils';
 import './styles.css';
 
 const ProductDetail = () => {
@@ -38,10 +39,13 @@ const ProductDetail = () => {
     // Update images when product or selected variant changes
     useEffect(() => {
         if (product) {
-            // Reset selected variant if product changes
-            if (!selectedVariant && product.variants && product.variants.length > 0) {
-                setSelectedVariant(product.variants[0]);
-            }
+            console.log('🔍 Product Debug:', {
+                hasVariants: !!(product.variants && product.variants.length > 0),
+                variantsCount: product.variants?.length || 0,
+                variants: product.variants,
+                selectedVariant,
+                productImages: product.images,
+            });
 
             // Determine which images to show
             let imagesToShow = [];
@@ -163,6 +167,24 @@ const ProductDetail = () => {
         : product.stockQuantity;
     const isInStock = currentStock > 0;
 
+    // Get current attributes (merge product attributes with variant attributes)
+    const getCurrentAttributes = () => {
+        if (!product.attributes) return {};
+
+        const baseAttributes = { ...product.attributes };
+
+        // If a variant is selected, override with variant-specific attributes
+        if (selectedVariant && selectedVariant.attributes) {
+            Object.entries(selectedVariant.attributes).forEach(([key, value]) => {
+                baseAttributes[key] = value;
+            });
+        }
+
+        return baseAttributes;
+    };
+
+    const currentAttributes = getCurrentAttributes();
+
     return (
         <>
             {/* SEO Meta Tags */}
@@ -191,6 +213,8 @@ const ProductDetail = () => {
                                 selectedIndex={selectedImageIndex}
                                 onImageSelect={setSelectedImageIndex}
                                 productName={product.name}
+                                selectedVariant={selectedVariant}
+                                productImages={product.images || []}
                             />
                         </div>
 
@@ -228,14 +252,16 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Product Attributes */}
-                    {product.attributes && Object.keys(product.attributes).length > 0 && (
+                    {currentAttributes && Object.keys(currentAttributes).length > 0 && (
                         <div className="product-detail-attributes">
                             <h2>{t('product.specifications', 'Specifications')}</h2>
                             <div className="product-attributes-grid">
-                                {Object.entries(product.attributes).map(([key, value]) => (
+                                {Object.entries(currentAttributes).map(([key, value]) => (
                                     <div key={key} className="product-attribute-item">
                                         <span className="attribute-label">{key}:</span>
-                                        <span className="attribute-value">{value}</span>
+                                        <span className="attribute-value">
+                                            {renderValue(value, key)}
+                                        </span>
                                     </div>
                                 ))}
                             </div>

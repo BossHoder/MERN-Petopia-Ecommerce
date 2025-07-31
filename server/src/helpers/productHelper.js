@@ -61,7 +61,7 @@ export const isLowStock = (product, variantId = null) => {
     return product.stockQuantity <= product.lowStockThreshold;
 };
 
-// Update product stock after order
+// Update product stock after order (DEPRECATED - Use stockService instead)
 export const updateStock = async (productId, variantId = null, quantity) => {
     try {
         const product = await Product.findById(productId);
@@ -74,8 +74,23 @@ export const updateStock = async (productId, variantId = null, quantity) => {
             if (!variant) {
                 throw new Error(ERROR_MESSAGES.VARIANT_NOT_FOUND);
             }
+
+            // Prevent negative stock
+            if (variant.stockQuantity < quantity) {
+                throw new Error(
+                    `Insufficient stock for variant ${variantId}. Available: ${variant.stockQuantity}, Requested: ${quantity}`,
+                );
+            }
+
             variant.stockQuantity -= quantity;
         } else {
+            // Prevent negative stock
+            if (product.stockQuantity < quantity) {
+                throw new Error(
+                    `Insufficient stock for product ${product.name}. Available: ${product.stockQuantity}, Requested: ${quantity}`,
+                );
+            }
+
             product.stockQuantity -= quantity;
         }
 
@@ -92,12 +107,17 @@ export const updateStock = async (productId, variantId = null, quantity) => {
     }
 };
 
-// Restock product
+// Restock product (DEPRECATED - Use stockService instead)
 export const restockProduct = async (productId, variantId = null, quantity) => {
     try {
         const product = await Product.findById(productId);
         if (!product) {
             throw new Error(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+        }
+
+        // Validate quantity is positive
+        if (quantity <= 0) {
+            throw new Error('Restock quantity must be positive');
         }
 
         if (variantId) {
