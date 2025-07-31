@@ -40,6 +40,8 @@ router.get('/users', adminController.getAllUsers);
 router.put('/users/:id/role', adminController.updateUserRole);
 router.put('/users/:id/status', adminController.updateUserStatus);
 router.get('/users/:id', adminController.getUserDetails);
+router.post('/users/bulk-update', adminController.bulkUpdateUsers);
+router.delete('/users/:id', adminController.deleteUser);
 
 // Products Management (Enhanced)
 router.get('/products', adminController.getAllProductsAdmin);

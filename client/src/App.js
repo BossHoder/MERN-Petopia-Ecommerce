@@ -14,7 +14,7 @@ import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
-import Users from './pages/Users/Users';
+import AdminUsers from './pages/Admin/Users/Users';
 import Admin from './pages/Admin/Admin';
 import AdminLayout from './components/Admin/AdminLayout/AdminLayout'; // Import AdminLayout
 import Dashboard from './pages/Admin/Dashboard/Dashboard'; // Import Dashboard
@@ -94,7 +94,7 @@ const App = () => {
                     >
                         <Route index element={<Dashboard />} />
                         <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="users" element={<Users />} />
+                        <Route path="users" element={<AdminUsers />} />
                         <Route path="parentcategories" element={<ParentCategories />} />
                         <Route path="categories" element={<Categories />} />
                         <Route path="products" element={<AdminProducts />} />
@@ -135,14 +135,7 @@ const App = () => {
                                         path="/category/:parentSlug/:categorySlug"
                                         element={<SubcategoryPage />}
                                     />
-                                    <Route
-                                        path="/users"
-                                        element={
-                                            <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                                                <Users />
-                                            </ProtectedRoute>
-                                        }
-                                    />
+
                                     <Route path="/notfound" element={<NotFound />} />
 
                                     {/* Legacy admin route for backward compatibility */}

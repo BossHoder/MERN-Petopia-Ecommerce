@@ -15,6 +15,18 @@ import {
     ADMIN_USERS_REQUEST,
     ADMIN_USERS_SUCCESS,
     ADMIN_USERS_FAIL,
+    ADMIN_USER_DETAILS_REQUEST,
+    ADMIN_USER_DETAILS_SUCCESS,
+    ADMIN_USER_DETAILS_FAIL,
+    ADMIN_USER_UPDATE_REQUEST,
+    ADMIN_USER_UPDATE_SUCCESS,
+    ADMIN_USER_UPDATE_FAIL,
+    ADMIN_USER_DELETE_REQUEST,
+    ADMIN_USER_DELETE_SUCCESS,
+    ADMIN_USER_DELETE_FAIL,
+    ADMIN_USERS_BULK_UPDATE_REQUEST,
+    ADMIN_USERS_BULK_UPDATE_SUCCESS,
+    ADMIN_USERS_BULK_UPDATE_FAIL,
     ADMIN_PARENT_CATEGORIES_REQUEST,
     ADMIN_PARENT_CATEGORIES_SUCCESS,
     ADMIN_PARENT_CATEGORIES_FAIL,
@@ -201,7 +213,7 @@ export const getOrderDetails = (orderId) => async (dispatch) => {
  * Get all users for admin
  */
 export const getAdminUsers =
-    (page = 1, limit = 10, search = '') =>
+    (page = 1, limit = 10, search = '', role = '', status = '') =>
     async (dispatch) => {
         try {
             dispatch({ type: ADMIN_USERS_REQUEST });
@@ -210,6 +222,8 @@ export const getAdminUsers =
                 page: page.toString(),
                 limit: limit.toString(),
                 ...(search && { search }),
+                ...(role && { role }),
+                ...(status && { status }),
             });
 
             const response = await API.get(`/api/admin/users?${queryParams}`);
@@ -225,6 +239,126 @@ export const getAdminUsers =
             });
         }
     };
+
+/**
+ * Get user details
+ */
+export const getUserDetails = (userId) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_USER_DETAILS_REQUEST });
+
+        const response = await API.get(`/api/admin/users/${userId}`);
+
+        dispatch({
+            type: ADMIN_USER_DETAILS_SUCCESS,
+            payload: response.data.data,
+        });
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USER_DETAILS_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to fetch user details',
+        });
+    }
+};
+
+/**
+ * Update user role
+ */
+export const updateUserRole = (userId, role) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_USER_UPDATE_REQUEST });
+
+        const response = await API.put(`/api/admin/users/${userId}/role`, { role });
+
+        dispatch({
+            type: ADMIN_USER_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        // Refresh users list after update
+        dispatch(getAdminUsers());
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USER_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to update user role',
+        });
+    }
+};
+
+/**
+ * Update user status
+ */
+export const updateUserStatus = (userId, isActive) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_USER_UPDATE_REQUEST });
+
+        const response = await API.put(`/api/admin/users/${userId}/status`, { isActive });
+
+        dispatch({
+            type: ADMIN_USER_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        // Refresh users list after update
+        dispatch(getAdminUsers());
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USER_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to update user status',
+        });
+    }
+};
+
+/**
+ * Delete user
+ */
+export const deleteUser = (userId) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_USER_DELETE_REQUEST });
+
+        const response = await API.delete(`/api/admin/users/${userId}`);
+
+        dispatch({
+            type: ADMIN_USER_DELETE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        // Refresh users list after delete
+        dispatch(getAdminUsers());
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USER_DELETE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to delete user',
+        });
+    }
+};
+
+/**
+ * Bulk update users
+ */
+export const bulkUpdateUsers = (userIds, updates) => async (dispatch) => {
+    try {
+        dispatch({ type: ADMIN_USERS_BULK_UPDATE_REQUEST });
+
+        const response = await API.post('/api/admin/users/bulk-update', {
+            userIds,
+            updates,
+        });
+
+        dispatch({
+            type: ADMIN_USERS_BULK_UPDATE_SUCCESS,
+            payload: response.data.data,
+        });
+
+        // Refresh users list after bulk update
+        dispatch(getAdminUsers());
+    } catch (error) {
+        dispatch({
+            type: ADMIN_USERS_BULK_UPDATE_FAIL,
+            payload: error.response?.data?.error?.message || 'Failed to bulk update users',
+        });
+    }
+};
 
 // ===========================================
 // PARENT CATEGORIES MANAGEMENT ACTIONS

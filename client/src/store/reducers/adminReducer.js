@@ -14,6 +14,18 @@ import {
     ADMIN_USERS_REQUEST,
     ADMIN_USERS_SUCCESS,
     ADMIN_USERS_FAIL,
+    ADMIN_USER_DETAILS_REQUEST,
+    ADMIN_USER_DETAILS_SUCCESS,
+    ADMIN_USER_DETAILS_FAIL,
+    ADMIN_USER_UPDATE_REQUEST,
+    ADMIN_USER_UPDATE_SUCCESS,
+    ADMIN_USER_UPDATE_FAIL,
+    ADMIN_USER_DELETE_REQUEST,
+    ADMIN_USER_DELETE_SUCCESS,
+    ADMIN_USER_DELETE_FAIL,
+    ADMIN_USERS_BULK_UPDATE_REQUEST,
+    ADMIN_USERS_BULK_UPDATE_SUCCESS,
+    ADMIN_USERS_BULK_UPDATE_FAIL,
     ADMIN_PARENT_CATEGORIES_REQUEST,
     ADMIN_PARENT_CATEGORIES_SUCCESS,
     ADMIN_PARENT_CATEGORIES_FAIL,
@@ -92,6 +104,11 @@ const initialState = {
         hasPrev: false,
     },
     usersLoading: false,
+    userDetails: null,
+    userDetailsLoading: false,
+    userUpdateLoading: false,
+    userDeleteLoading: false,
+    usersBulkUpdateLoading: false,
 
     // Parent Categories Management
     parentCategories: [],
@@ -260,6 +277,95 @@ const adminReducer = (state = initialState, action) => {
             return {
                 ...state,
                 usersLoading: false,
+                error: action.payload,
+            };
+
+        // User Details Cases
+        case ADMIN_USER_DETAILS_REQUEST:
+            return {
+                ...state,
+                userDetailsLoading: true,
+                error: null,
+            };
+
+        case ADMIN_USER_DETAILS_SUCCESS:
+            return {
+                ...state,
+                userDetailsLoading: false,
+                userDetails: action.payload,
+                error: null,
+            };
+
+        case ADMIN_USER_DETAILS_FAIL:
+            return {
+                ...state,
+                userDetailsLoading: false,
+                error: action.payload,
+            };
+
+        // User Update Cases
+        case ADMIN_USER_UPDATE_REQUEST:
+            return {
+                ...state,
+                userUpdateLoading: true,
+                error: null,
+            };
+
+        case ADMIN_USER_UPDATE_SUCCESS:
+            return {
+                ...state,
+                userUpdateLoading: false,
+                error: null,
+            };
+
+        case ADMIN_USER_UPDATE_FAIL:
+            return {
+                ...state,
+                userUpdateLoading: false,
+                error: action.payload,
+            };
+
+        // User Delete Cases
+        case ADMIN_USER_DELETE_REQUEST:
+            return {
+                ...state,
+                userDeleteLoading: true,
+                error: null,
+            };
+
+        case ADMIN_USER_DELETE_SUCCESS:
+            return {
+                ...state,
+                userDeleteLoading: false,
+                error: null,
+            };
+
+        case ADMIN_USER_DELETE_FAIL:
+            return {
+                ...state,
+                userDeleteLoading: false,
+                error: action.payload,
+            };
+
+        // Bulk Update Cases
+        case ADMIN_USERS_BULK_UPDATE_REQUEST:
+            return {
+                ...state,
+                usersBulkUpdateLoading: true,
+                error: null,
+            };
+
+        case ADMIN_USERS_BULK_UPDATE_SUCCESS:
+            return {
+                ...state,
+                usersBulkUpdateLoading: false,
+                error: null,
+            };
+
+        case ADMIN_USERS_BULK_UPDATE_FAIL:
+            return {
+                ...state,
+                usersBulkUpdateLoading: false,
                 error: action.payload,
             };
 

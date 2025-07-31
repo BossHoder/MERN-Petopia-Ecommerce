@@ -404,14 +404,28 @@ const getAllUsers = asyncHandler(async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const search = req.query.search;
+        const role = req.query.role;
+        const status = req.query.status;
 
         let query = {};
+
+        // Search filter
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
                 { email: { $regex: search, $options: 'i' } },
                 { username: { $regex: search, $options: 'i' } },
             ];
+        }
+
+        // Role filter
+        if (role) {
+            query.role = role;
+        }
+
+        // Status filter
+        if (status) {
+            query.isActive = status === 'true';
         }
 
         const skip = (page - 1) * limit;
@@ -433,6 +447,180 @@ const getAllUsers = asyncHandler(async (req, res) => {
     } catch (error) {
         console.error('Get all users error:', error);
         return errorResponse(res, 'Failed to retrieve users', 500);
+    }
+});
+
+/**
+ * @desc    Update user role
+ * @route   PUT /api/admin/users/:id/role
+ * @access  Private/Admin
+ */
+const updateUserRole = asyncHandler(async (req, res) => {
+    try {
+        const { role } = req.body;
+        const userId = req.params.id;
+
+        // Validate role
+        const validRoles = ['USER', 'ADMIN'];
+        if (!validRoles.includes(role)) {
+            return errorResponse(res, 'Invalid user role', 400);
+        }
+
+        // Find and update user
+        const user = await User.findByIdAndUpdate(userId, { role }, { new: true }).select('-password');
+
+        if (!user) {
+            return errorResponse(res, 'User not found', 404);
+        }
+
+        return successResponse(res, user, 'User role updated successfully');
+    } catch (error) {
+        console.error('Update user role error:', error);
+        return errorResponse(res, 'Failed to update user role', 500);
+    }
+});
+
+/**
+ * @desc    Update user status
+ * @route   PUT /api/admin/users/:id/status
+ * @access  Private/Admin
+ */
+const updateUserStatus = asyncHandler(async (req, res) => {
+    try {
+        const { isActive } = req.body;
+        const userId = req.params.id;
+
+        // Find and update user
+        const user = await User.findByIdAndUpdate(userId, { isActive }, { new: true }).select('-password');
+
+        if (!user) {
+            return errorResponse(res, 'User not found', 404);
+        }
+
+        return successResponse(res, user, 'User status updated successfully');
+    } catch (error) {
+        console.error('Update user status error:', error);
+        return errorResponse(res, 'Failed to update user status', 500);
+    }
+});
+
+/**
+ * @desc    Get user details
+ * @route   GET /api/admin/users/:id
+ * @access  Private/Admin
+ */
+const getUserDetails = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId).select('-password').populate('wishlist', 'name slug images price');
+
+        if (!user) {
+            return errorResponse(res, 'User not found', 404);
+        }
+
+        // Get user's order statistics
+        const orderStats = await Order.aggregate([
+            { $match: { user: user._id } },
+            {
+                $group: {
+                    _id: null,
+                    totalOrders: { $sum: 1 },
+                    totalSpent: { $sum: '$totalAmount' },
+                    avgOrderValue: { $avg: '$totalAmount' },
+                },
+            },
+        ]);
+
+        const userDetails = {
+            ...user.toJSON(),
+            orderStats: orderStats[0] || {
+                totalOrders: 0,
+                totalSpent: 0,
+                avgOrderValue: 0,
+            },
+        };
+
+        return successResponse(res, userDetails, 'User details retrieved successfully');
+    } catch (error) {
+        console.error('Get user details error:', error);
+        return errorResponse(res, 'Failed to retrieve user details', 500);
+    }
+});
+
+/**
+ * @desc    Bulk update users
+ * @route   POST /api/admin/users/bulk-update
+ * @access  Private/Admin
+ */
+const bulkUpdateUsers = asyncHandler(async (req, res) => {
+    try {
+        const { userIds, updates } = req.body;
+
+        if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+            return errorResponse(res, 'User IDs are required', 400);
+        }
+
+        if (!updates || typeof updates !== 'object') {
+            return errorResponse(res, 'Updates are required', 400);
+        }
+
+        // Validate updates
+        const allowedUpdates = ['role', 'isActive'];
+        const updateKeys = Object.keys(updates);
+        const isValidUpdate = updateKeys.every((key) => allowedUpdates.includes(key));
+
+        if (!isValidUpdate) {
+            return errorResponse(res, 'Invalid update fields', 400);
+        }
+
+        // Validate role if provided
+        if (updates.role && !['USER', 'ADMIN'].includes(updates.role)) {
+            return errorResponse(res, 'Invalid user role', 400);
+        }
+
+        // Perform bulk update
+        const result = await User.updateMany({ _id: { $in: userIds } }, { $set: updates });
+
+        return successResponse(
+            res,
+            {
+                modifiedCount: result.modifiedCount,
+                matchedCount: result.matchedCount,
+            },
+            'Users updated successfully',
+        );
+    } catch (error) {
+        console.error('Bulk update users error:', error);
+        return errorResponse(res, 'Failed to update users', 500);
+    }
+});
+
+/**
+ * @desc    Delete user (soft delete by deactivating)
+ * @route   DELETE /api/admin/users/:id
+ * @access  Private/Admin
+ */
+const deleteUser = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        // Prevent admin from deleting themselves
+        if (userId === req.user._id.toString()) {
+            return errorResponse(res, 'Cannot delete your own account', 400);
+        }
+
+        // Soft delete by deactivating the user
+        const user = await User.findByIdAndUpdate(userId, { isActive: false }, { new: true }).select('-password');
+
+        if (!user) {
+            return errorResponse(res, 'User not found', 404);
+        }
+
+        return successResponse(res, user, 'User deactivated successfully');
+    } catch (error) {
+        console.error('Delete user error:', error);
+        return errorResponse(res, 'Failed to delete user', 500);
     }
 });
 
@@ -463,6 +651,11 @@ export default {
     }),
     getSalesAnalytics,
     getAllUsers,
+    updateUserRole,
+    updateUserStatus,
+    getUserDetails,
+    bulkUpdateUsers,
+    deleteUser,
     // Placeholder functions for future implementation
     getProductAnalytics: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'Product analytics retrieved successfully');
@@ -472,15 +665,6 @@ export default {
     }),
     getOrderAnalytics: asyncHandler(async (req, res) => {
         return successResponse(res, {}, 'Order analytics retrieved successfully');
-    }),
-    updateUserRole: asyncHandler(async (req, res) => {
-        return successResponse(res, {}, 'User role updated successfully');
-    }),
-    updateUserStatus: asyncHandler(async (req, res) => {
-        return successResponse(res, {}, 'User status updated successfully');
-    }),
-    getUserDetails: asyncHandler(async (req, res) => {
-        return successResponse(res, {}, 'User details retrieved successfully');
     }),
     // ===========================================
     // PRODUCTS MANAGEMENT
