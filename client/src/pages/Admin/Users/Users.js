@@ -141,23 +141,35 @@ const Users = () => {
 
     // Handle role update
     const handleRoleUpdate = (userId, newRole) => {
-        try {
-            dispatch(updateUserRole(userId, newRole));
-            toast.success(t('admin.users.roleUpdated', 'User role updated successfully'));
-        } catch (error) {
-            toast.error(
-                error.message || t('admin.users.roleUpdateFailed', 'Failed to update user role'),
-            );
-        }
+        dispatch(updateUserRole(userId, newRole))
+            .then(() => {
+                toast.success(t('admin.users.roleUpdated', 'User role updated successfully'));
+                // Refresh user list
+                dispatch(
+                    getAdminUsers(
+                        currentPage,
+                        limit,
+                        searchTerm,
+                        roleFilter !== 'all' ? roleFilter : '',
+                        statusFilter !== 'all' ? statusFilter : '',
+                    ),
+                );
+            })
+            .catch((error) => {
+                toast.error(
+                    (error && error.message) ||
+                        t('admin.users.roleUpdateFailed', 'Failed to update user role'),
+                );
+            });
     };
 
     // Handle status update with confirmation
     const handleStatusUpdate = (userId, newStatus, user) => {
-        const action = newStatus ? 'activate' : 'deactivate';
+        const action = newStatus ? 'kích hoạt' : 'huỷ kích hoạt';
         const roleText = user.role || 'USER';
         const confirmMessage = t(
             'admin.users.confirmStatusChange',
-            `Are you sure you want to ${action} this ${roleText} user?`,
+            `Bạn có muốn ${action} người dùng ${roleText} không?`,
         );
 
         if (window.confirm(confirmMessage)) {
@@ -410,6 +422,12 @@ const Users = () => {
         },
     ];
 
+    // Users Table
+    const getRowKey = (user, idx) => {
+        // Ưu tiên _id, nếu không có thì dùng id, nếu vẫn trùng thì thêm index
+        return (user._id || user.id) + '_' + idx;
+    };
+
     return (
         <div className="admin-users-page">
             {/* Breadcrumb Navigation */}
@@ -515,6 +533,7 @@ const Users = () => {
                 loading={usersLoading}
                 emptyMessage={t('admin.users.noUsers', 'No users found')}
                 className="users-table"
+                getRowKey={getRowKey}
             />
 
             {/* Pagination */}

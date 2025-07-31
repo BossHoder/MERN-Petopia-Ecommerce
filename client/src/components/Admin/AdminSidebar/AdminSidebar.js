@@ -22,13 +22,13 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
         },
         {
             id: 'orders',
-            label: t('admin.orders', 'Orders'),
+            label: t('admin.orders.title', 'Orders'),
             path: '/admin/orders',
             icon: '📦',
         },
         {
             id: 'users',
-            label: t('admin.users', 'Users'),
+            label: t('admin.users.title', 'Users'),
             path: '/admin/users',
             icon: '👥',
         },

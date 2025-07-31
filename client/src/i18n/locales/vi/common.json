@@ -106,12 +106,6 @@
         "emailPlaceholder": "Nhập email",
         "passwordPlaceholder": "Nhập mật khẩu"
     },
-    "filter": "Lọc",
-    "sort": "Sắp xếp",
-    "language": "Ngôn ngữ",
-    "backTo": "quay lại",
-    "notFound": "404 - Không tìm thấy trang",
-    "goBackTo": "Quay lại",
     "products": {
         "title": "Sản phẩm",
         "bestsellers": "Sản Phẩm Bán Chạy",
@@ -714,7 +708,7 @@
         "manageCategories": "Quản lý Danh mục",
         "manageOrders": "Quản lý Đơn hàng",
         "manageCoupons": "Quản lý Mã giảm giá",
-        "dashboard": "Bảng điều khiển",
+        "dashboardNav": "Bảng điều khiển",
         "products": "Sản phẩm",
         "orders": "Đơn hàng",
         "users": "Người dùng",
@@ -959,6 +953,441 @@
             "selectAll": "Chọn tất cả mục",
             "selectItem": "Chọn mục"
         },
+        "pagination": {
+            "navigation": "Phân trang",
+            "showing": "Hiển thị",
+            "of": "trong",
+            "results": "kết quả",
+            "previous": "Trang trước",
+            "next": "Trang tiếp theo"
+        },
+        "orders": {
+            "title": "Quản Lý Đơn Hàng",
+            "subtitle": "Quản lý đơn hàng khách hàng, cập nhật trạng thái và theo dõi giao hàng",
+            "orderNumber": "Đơn hàng #",
+            "customer": "Khách hàng",
+            "status": {
+                "title": "Trạng thái",
+                "all": "Tất cả đơn hàng",
+                "pending": "Chờ xử lý",
+                "processing": "Đang xử lý",
+                "delivering": "Đang giao",
+                "delivered": "Đã giao",
+                "cancelled": "Đã hủy",
+                "refunded": "Đã hoàn tiền"
+            },
+            "total": "Tổng tiền",
+            "paymentMethod": "Thanh toán",
+            "paymentStatus": "Đã thanh toán",
+            "deliveryStatus": "Đã giao hàng",
+            "dateCreated": "Ngày tạo",
+            "actions": "Thao tác",
+            "guest": "Khách vãng lai",
+            "registered": "Đã đăng ký",
+            "payment": {
+                "COD": "COD",
+                "CREDIT_CARD": "Thẻ tín dụng",
+                "BANK_TRANSFER": "Chuyển khoản",
+                "MOMO": "MoMo",
+                "ZALOPAY": "ZaloPay"
+            },
+            "filterByStatus": "Lọc theo trạng thái",
+            "searchPlaceholder": "Tìm theo mã đơn hàng hoặc email khách hàng...",
+            "selectedCount": "đơn hàng đã chọn",
+            "bulkUpdateStatus": "Cập nhật trạng thái",
+            "noData": "Không tìm thấy đơn hàng. Đơn hàng sẽ xuất hiện ở đây khi khách hàng bắt đầu đặt hàng.",
+            "viewDetails": "Xem chi tiết",
+            "updateStatus": "Cập nhật trạng thái",
+            "orderDetails": "Chi tiết đơn hàng",
+            "loadingDetails": "Đang tải chi tiết đơn hàng...",
+            "orderNotFound": "Không tìm thấy đơn hàng",
+            "newStatus": "Trạng thái mới",
+            "selectStatus": "Chọn trạng thái mới",
+            "orderSummary": "Tóm tắt đơn hàng",
+            "orderDate": "Ngày đặt hàng",
+            "estimatedDelivery": "Dự kiến giao hàng",
+            "automaticTransitions": "Chuyển đổi tự động",
+            "dateFilter": {
+                "title": "Lọc theo ngày",
+                "allTime": "Tất cả thời gian",
+                "today": "Hôm nay",
+                "yesterday": "Hôm qua",
+                "last7Days": "7 ngày qua",
+                "thisWeek": "Tuần này",
+                "last30Days": "30 ngày qua",
+                "thisMonth": "Tháng này",
+                "lastMonth": "Tháng trước",
+                "custom": "Tùy chỉnh",
+                "from": "Từ",
+                "to": "Đến",
+                "apply": "Áp dụng",
+                "clearFilter": "Xóa bộ lọc ngày"
+            },
+            "paid": "Đã thanh toán",
+            "unpaid": "Chưa thanh toán",
+            "pending": "Chờ xử lý",
+            "delivered": "Đã giao hàng",
+            "customerInfo": "Thông tin khách hàng",
+            "customerName": "Tên",
+            "customerEmail": "Email",
+            "customerPhone": "Điện thoại",
+            "customerType": "Loại khách hàng",
+            "shippingAddress": "Địa chỉ giao hàng",
+            "phone": "Điện thoại",
+            "orderItems": "Sản phẩm đặt hàng",
+            "orderTotals": "Tổng đơn hàng",
+            "subtotal": "Tạm tính",
+            "shipping": "Vận chuyển",
+            "tax": "Thuế",
+            "paymentStatusControl": {
+                "title": "Trạng thái thanh toán",
+                "paid": "Đã thanh toán",
+                "unpaid": "Chưa thanh toán",
+                "updatePaymentStatus": "Cập nhật trạng thái thanh toán",
+                "selectPaymentStatus": "Chọn trạng thái thanh toán",
+                "updateSuccess": "Cập nhật trạng thái thanh toán thành công",
+                "updateError": "Cập nhật trạng thái thanh toán thất bại",
+                "disabledForStatus": "Không thể thay đổi trạng thái thanh toán cho đơn hàng đã hủy hoặc hoàn tiền"
+            },
+            "confirmStatusChange": "Xác nhận thay đổi trạng thái",
+            "currentStatus": "Hiện tại",
+            "criticalChangeWarning": "Hành động này không thể hoàn tác.",
+            "noTransitionsAvailable": "Không có chuyển đổi trạng thái nào",
+            "statusUpdateSuccess": "Cập nhật trạng thái đơn hàng thành công",
+            "statusUpdateError": "Cập nhật trạng thái đơn hàng thất bại",
+            "paymentRequiredForDelivering": "Đơn hàng phải được thanh toán trước khi bắt đầu giao hàng. Chỉ đơn COD mới có thể đánh dấu đang giao mà không cần thanh toán.",
+            "paymentRequiredForDelivered": "Đơn hàng phải được thanh toán trước khi đánh dấu đã giao. Chỉ đơn COD mới có thể đánh dấu đã giao mà không cần thanh toán."
+        },
+        "messages": {
+            "title": "Tin nhắn",
+            "writeMessage": "Viết tin nhắn",
+            "placeholder": "Viết tin nhắn",
+            "addMessage": "Thêm tin nhắn"
+        },
+        "errors": {
+            "validation": "Dữ liệu không hợp lệ. Vui lòng kiểm tra thông tin nhập.",
+            "productNotFound": "Không tìm thấy sản phẩm.",
+            "cartNotFound": "Không tìm thấy giỏ hàng.",
+            "orderNotFound": "Không tìm thấy đơn hàng.",
+            "userNotFound": "Không tìm thấy người dùng.",
+            "categoryNotFound": "Không tìm thấy danh mục.",
+            "couponNotFound": "Không tìm thấy mã giảm giá.",
+            "unauthorized": "Bạn cần đăng nhập.",
+            "forbidden": "Bạn không có quyền thực hiện hành động này.",
+            "internal": "Đã xảy ra lỗi nội bộ. Vui lòng thử lại sau.",
+            "notEnoughStock": "Không đủ sản phẩm trong kho.",
+            "alreadyReviewed": "Bạn đã đánh giá sản phẩm này rồi.",
+            "skuExists": "Mã SKU đã tồn tại.",
+            "slugExists": "Slug đã tồn tại.",
+            "couponInvalid": "Mã giảm giá không hợp lệ hoặc đã hết hạn.",
+            "accessDenied": "Truy cập bị từ chối.",
+            "addressNotFound": "Không tìm thấy địa chỉ.",
+            "tooManyRequests": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
+            "serviceUnavailable": "Dịch vụ tạm thời không khả dụng. Vui lòng thử lại sau."
+        },
+        "footer": {
+            "aboutUs": "Giới thiệu",
+            "contact": "Liên hệ",
+            "faq": "Câu hỏi thường gặp",
+            "privacyPolicy": "Chính sách bảo mật",
+            "termsOfService": "Điều khoản dịch vụ",
+            "copyright": "© 2024 Petopia. Tất cả quyền được bảo lưu.",
+            "socialMedia": {
+                "facebook": "Facebook",
+                "twitter": "Twitter",
+                "instagram": "Instagram"
+            }
+        },
+        "search": {
+            "placeholder": "Tìm kiếm sản phẩm, danh mục...",
+            "searching": "Đang tìm kiếm...",
+            "noResults": "Không tìm thấy kết quả",
+            "suggestions": "Gợi ý"
+        },
+        "auth": {
+            "login": {
+                "title": "Chào mừng trở lại!",
+                "subtitle": "Đăng nhập để tiếp tục vào tài khoản của bạn.",
+                "email": "Địa chỉ email",
+                "emailPlaceholder": "you@example.com",
+                "password": "Mật khẩu",
+                "passwordPlaceholder": "••••••••",
+                "forgotPassword": "Quên mật khẩu?",
+                "submit": "Đăng nhập",
+                "submitting": "Đang đăng nhập...",
+                "socialLogin": "Hoặc tiếp tục với",
+                "google": "Google",
+                "facebook": "Facebook",
+                "noAccount": "Chưa có tài khoản?",
+                "signUp": "Đăng ký",
+                "success": "Đăng nhập thành công!",
+                "failed": "Đăng nhập thất bại!",
+                "invalidCredentials": "Email hoặc mật khẩu không hợp lệ",
+                "tokenExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+                "adminAccessDenied": "Truy cập admin bị từ chối. Không đủ quyền.",
+                "sessionExpired": "Phiên đăng nhập đã hết hạn",
+                "authenticationFailed": "Xác thực thất bại",
+                "invalidToken": "Token không hợp lệ từ máy chủ",
+                "malformedToken": "Phát hiện token bị lỗi",
+                "noTokenFound": "Không tìm thấy token xác thực"
+            },
+            "debug": {
+                "loadMeDebug": "Debug loadMe()",
+                "noTokenSkipApi": "Không tìm thấy token - bỏ qua gọi API",
+                "makingApiCall": "Đang gọi API loadMe()...",
+                "apiCallFailed": "Gọi API loadMe() thất bại",
+                "invalidTokenClearing": "Phát hiện token không hợp lệ - xóa trạng thái auth",
+                "loginResponseStructure": "Cấu trúc phản hồi đăng nhập",
+                "loginSuccessStoring": "Đăng nhập thành công, lưu token",
+                "oauthLoginResponse": "Phản hồi đăng nhập OAuth",
+                "expectedUnauthorized": "Mong đợi 401 (không có token khi khởi động)",
+                "unexpectedUnauthorized": "401 không mong đợi - xóa auth và chuyển hướng",
+                "expectedNotRedirecting": "401 mong đợi - không chuyển hướng"
+            },
+            "register": {
+                "title": "Tham gia gia đình Petopia!",
+                "subtitle": "Tạo tài khoản và khám phá mọi thứ thú cưng của bạn cần.",
+                "createAccount": "Tạo tài khoản của bạn",
+                "fullName": "Họ tên",
+                "fullNamePlaceholder": "Họ tên",
+                "username": "Tên đăng nhập",
+                "usernamePlaceholder": "Tên đăng nhập",
+                "email": "Địa chỉ email",
+                "emailPlaceholder": "you@example.com",
+                "password": "Mật khẩu",
+                "passwordPlaceholder": "••••••••",
+                "confirmPassword": "Xác nhận mật khẩu",
+                "confirmPasswordPlaceholder": "••••••••",
+                "submit": "Tạo tài khoản",
+                "submitting": "Đang tạo tài khoản...",
+                "hasAccount": "Đã có tài khoản?",
+                "signIn": "Đăng nhập"
+            },
+            "hero": {
+                "welcomeTitle": "Chào mừng đến với Petopia",
+                "welcomeSubtitle": "Cửa hàng một cửa cho mọi thứ thú cưng của bạn cần."
+            }
+        },
+        "validation": {
+            "name": {
+                "required": "Tên là bắt buộc",
+                "minLength": "Tên phải có ít nhất 2 ký tự",
+                "maxLength": "Tên không được vượt quá 50 ký tự"
+            },
+            "username": {
+                "required": "Tên đăng nhập là bắt buộc",
+                "minLength": "Tên đăng nhập phải có ít nhất 3 ký tự",
+                "maxLength": "Tên đăng nhập không được vượt quá 20 ký tự",
+                "invalid": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới"
+            },
+            "email": {
+                "invalid": "Địa chỉ email không hợp lệ",
+                "required": "Email là bắt buộc",
+                "minLength": "Email phải có ít nhất 5 ký tự",
+                "maxLength": "Email không được vượt quá 255 ký tự"
+            },
+            "password": {
+                "required": "Mật khẩu là bắt buộc",
+                "minLength": "Mật khẩu phải có ít nhất 6 ký tự",
+                "maxLength": "Mật khẩu không được vượt quá 255 ký tự",
+                "weak": "Mật khẩu quá yếu"
+            },
+            "confirmPassword": {
+                "required": "Xác nhận mật khẩu là bắt buộc",
+                "match": "Mật khẩu xác nhận không khớp"
+            },
+            "phoneNumber": {
+                "required": "Số điện thoại là bắt buộc",
+                "invalid": "Số điện thoại không hợp lệ",
+                "minLength": "Số điện thoại phải có ít nhất 10 ký tự",
+                "maxLength": "Số điện thoại không được vượt quá 15 ký tự"
+            },
+            "address": {
+                "required": "Địa chỉ là bắt buộc",
+                "minLength": "Địa chỉ phải có ít nhất 10 ký tự",
+                "maxLength": "Địa chỉ không được vượt quá 255 ký tự"
+            },
+            "city": {
+                "required": "Thành phố là bắt buộc",
+                "minLength": "Thành phố phải có ít nhất 2 ký tự",
+                "maxLength": "Thành phố không được vượt quá 50 ký tự"
+            },
+            "postalCode": {
+                "required": "Mã bưu điện là bắt buộc",
+                "invalid": "Mã bưu điện không hợp lệ"
+            },
+            "productName": {
+                "required": "Tên sản phẩm là bắt buộc",
+                "minLength": "Tên sản phẩm phải có ít nhất 3 ký tự",
+                "maxLength": "Tên sản phẩm không được vượt quá 100 ký tự"
+            },
+            "productDescription": {
+                "required": "Mô tả sản phẩm là bắt buộc",
+                "minLength": "Mô tả sản phẩm phải có ít nhất 10 ký tự",
+                "maxLength": "Mô tả sản phẩm không được vượt quá 2000 ký tự"
+            },
+            "price": {
+                "required": "Giá là bắt buộc",
+                "min": "Giá phải lớn hơn 0",
+                "max": "Giá không được vượt quá 10,000,000",
+                "invalid": "Giá không hợp lệ"
+            },
+            "stock": {
+                "required": "Số lượng tồn kho là bắt buộc",
+                "min": "Số lượng tồn kho phải lớn hơn hoặc bằng 0",
+                "max": "Số lượng tồn kho không được vượt quá 10,000",
+                "invalid": "Số lượng tồn kho không hợp lệ"
+            },
+            "category": {
+                "required": "Danh mục là bắt buộc"
+            },
+            "brand": {
+                "required": "Thương hiệu là bắt buộc",
+                "minLength": "Thương hiệu phải có ít nhất 2 ký tự",
+                "maxLength": "Thương hiệu không được vượt quá 50 ký tự"
+            },
+            "sku": {
+                "required": "Mã SKU là bắt buộc",
+                "minLength": "Mã SKU phải có ít nhất 3 ký tự",
+                "maxLength": "Mã SKU không được vượt quá 50 ký tự",
+                "invalid": "Mã SKU chỉ được chứa chữ cái, số và dấu gạch ngang",
+                "exists": "Mã SKU đã tồn tại"
+            },
+            "slug": {
+                "required": "Slug là bắt buộc",
+                "invalid": "Slug chỉ được chứa chữ cái thường, số và dấu gạch ngang",
+                "exists": "Slug đã tồn tại"
+            },
+            "images": {
+                "required": "Ít nhất một hình ảnh là bắt buộc",
+                "maxCount": "Tối đa 5 hình ảnh được phép",
+                "invalidFormat": "Định dạng hình ảnh không hợp lệ",
+                "fileTooLarge": "Kích thước file quá lớn (tối đa 5MB)"
+            },
+            "couponCode": {
+                "required": "Mã giảm giá là bắt buộc",
+                "minLength": "Mã giảm giá phải có ít nhất 3 ký tự",
+                "maxLength": "Mã giảm giá không được vượt quá 20 ký tự",
+                "invalid": "Mã giảm giá chỉ được chứa chữ cái và số",
+                "exists": "Mã giảm giá đã tồn tại"
+            },
+            "discountValue": {
+                "required": "Giá trị giảm giá là bắt buộc",
+                "min": "Giá trị giảm giá phải lớn hơn 0",
+                "max": "Giá trị giảm giá không được vượt quá 100% hoặc 10,000,000",
+                "invalid": "Giá trị giảm giá không hợp lệ"
+            },
+            "dateRange": {
+                "required": "Khoảng thời gian là bắt buộc",
+                "invalidStart": "Ngày bắt đầu không hợp lệ",
+                "invalidEnd": "Ngày kết thúc không hợp lệ",
+                "endBeforeStart": "Ngày kết thúc phải sau ngày bắt đầu"
+            },
+            "orderStatus": {
+                "required": "Trạng thái đơn hàng là bắt buộc",
+                "invalid": "Trạng thái đơn hàng không hợp lệ"
+            },
+            "paymentMethod": {
+                "required": "Phương thức thanh toán là bắt buộc",
+                "invalid": "Phương thức thanh toán không hợp lệ"
+            },
+            "shippingAddress": {
+                "required": "Địa chỉ giao hàng là bắt buộc",
+                "incomplete": "Thông tin địa chỉ giao hàng không đầy đủ"
+            },
+            "quantity": {
+                "required": "Số lượng là bắt buộc",
+                "min": "Số lượng phải lớn hơn 0",
+                "max": "Số lượng vượt quá tồn kho",
+                "invalid": "Số lượng không hợp lệ"
+            },
+            "rating": {
+                "required": "Đánh giá là bắt buộc",
+                "min": "Đánh giá phải từ 1 đến 5 sao",
+                "max": "Đánh giá phải từ 1 đến 5 sao",
+                "invalid": "Đánh giá không hợp lệ"
+            },
+            "comment": {
+                "required": "Bình luận là bắt buộc",
+                "minLength": "Bình luận phải có ít nhất 10 ký tự",
+                "maxLength": "Bình luận không được vượt quá 500 ký tự"
+            },
+            "file": {
+                "required": "File là bắt buộc",
+                "invalidFormat": "Định dạng file không hợp lệ",
+                "fileTooLarge": "Kích thước file quá lớn",
+                "uploadFailed": "Tải file lên thất bại"
+            },
+            "search": {
+                "minLength": "Từ khóa tìm kiếm phải có ít nhất 2 ký tự",
+                "maxLength": "Từ khóa tìm kiếm không được vượt quá 100 ký tự"
+            },
+            "general": {
+                "required": "Trường này là bắt buộc",
+                "invalid": "Giá trị không hợp lệ",
+                "tooShort": "Quá ngắn",
+                "tooLong": "Quá dài",
+                "mustBeNumber": "Phải là số",
+                "mustBePositive": "Phải là số dương",
+                "mustBeEmail": "Phải là email hợp lệ",
+                "mustBeUrl": "Phải là URL hợp lệ",
+                "mustBeDate": "Phải là ngày hợp lệ",
+                "mustBeBoolean": "Phải là true hoặc false",
+                "mustBeArray": "Phải là mảng",
+                "mustBeObject": "Phải là đối tượng",
+                "mustBeString": "Phải là chuỗi",
+                "mustBeInteger": "Phải là số nguyên",
+                "mustBeDecimal": "Phải là số thập phân",
+                "mustMatch": "Không khớp",
+                "mustBeUnique": "Phải là duy nhất",
+                "mustBeSelected": "Phải được chọn",
+                "mustBeChecked": "Phải được đánh dấu",
+                "mustBeUnchecked": "Phải bỏ đánh dấu",
+                "mustBeAccepted": "Phải được chấp nhận",
+                "mustBeRejected": "Phải bị từ chối",
+                "mustBeConfirmed": "Phải được xác nhận",
+                "mustBeDenied": "Phải bị từ chối",
+                "mustBeApproved": "Phải được phê duyệt",
+                "mustBeDeclined": "Phải bị từ chối",
+                "mustBeActive": "Phải đang hoạt động",
+                "mustBeInactive": "Phải không hoạt động",
+                "mustBeEnabled": "Phải được bật",
+                "mustBeDisabled": "Phải bị tắt",
+                "mustBeVisible": "Phải hiển thị",
+                "mustBeHidden": "Phải ẩn",
+                "mustBePublic": "Phải công khai",
+                "mustBePrivate": "Phải riêng tư",
+                "mustBePublished": "Phải được xuất bản",
+                "mustBeUnpublished": "Phải chưa xuất bản",
+                "mustBeFeatured": "Phải được đặc trưng",
+                "mustBeUnfeatured": "Phải không được đặc trưng",
+                "mustBeAvailable": "Phải có sẵn",
+                "mustBeUnavailable": "Phải không có sẵn",
+                "mustBeInStock": "Phải còn hàng",
+                "mustBeOutOfStock": "Phải hết hàng",
+                "mustBeOnSale": "Phải đang giảm giá",
+                "mustBeNotOnSale": "Phải không giảm giá",
+                "mustBeNew": "Phải là mới",
+                "mustBeUsed": "Phải đã sử dụng",
+                "mustBeRefurbished": "Phải được tân trang",
+                "mustBeDamaged": "Phải bị hỏng",
+                "mustBeRepaired": "Phải được sửa chữa",
+                "mustBeReplaced": "Phải được thay thế",
+                "mustBeReturned": "Phải được trả lại",
+                "mustBeRefunded": "Phải được hoàn tiền",
+                "mustBeExchanged": "Phải được đổi",
+                "mustBeCancelled": "Phải bị hủy",
+                "mustBeCompleted": "Phải hoàn thành",
+                "mustBePending": "Phải đang chờ",
+                "mustBeProcessing": "Phải đang xử lý",
+                "mustBeShipped": "Phải được giao",
+                "mustBeDelivered": "Phải được giao",
+                "mustBePaid": "Phải được thanh toán",
+                "mustBeUnpaid": "Phải chưa thanh toán",
+                "mustBeVerified": "Phải được xác minh",
+                "mustBeUnverified": "Phải chưa xác minh"
+            }
+        },
         "users": {
             "title": "Quản lý người dùng",
             "avatar": "Ảnh đại diện",
@@ -994,241 +1423,43 @@
             "orderStatistics": "Thống kê đơn hàng",
             "totalOrders": "Tổng số đơn hàng",
             "totalSpent": "Tổng chi tiêu",
-            "avgOrderValue": "Giá trị đơn TB"
+            "avgOrderValue": "Giá trị đơn TB",
+            "statusUpdated": "Cập nhật trạng thái người dùng thành công",
+            "statusUpdateFailed": "Cập nhật trạng thái người dùng thất bại",
+            "roleUpdated": "Cập nhật vai trò người dùng thành công",
+            "roleUpdateFailed": "Cập nhật vai trò người dùng thất bại",
+            "confirmStatusChange": "Bạn có muốn thay đổi trạng thái người dùng này không?",
+            "confirmDelete": "Bạn có chắc chắn muốn vô hiệu hóa người dùng này?",
+            "userDeleted": "Đã vô hiệu hóa người dùng thành công",
+            "deleteFailed": "Vô hiệu hóa người dùng thất bại",
+            "selectUsers": "Vui lòng chọn người dùng trước",
+            "adminDeleteError": "Không thể xóa người dùng quản trị qua giao diện.",
+            "adminRoleChangeError": "Không thể thay đổi vai trò của người dùng quản trị qua giao diện.",
+            "confirmBulkActivate": "Kích hoạt các người dùng đã chọn?",
+            "confirmBulkDeactivate": "Vô hiệu hóa các người dùng đã chọn?",
+            "confirmBulkRole": "Thay đổi vai trò cho các người dùng đã chọn?",
+            "bulkUpdateSuccess": "Cập nhật người dùng thành công",
+            "bulkUpdateFailed": "Cập nhật người dùng thất bại",
+            "usersSelected": "người dùng đã chọn",
+            "bulkActivate": "Kích hoạt",
+            "bulkDeactivate": "Vô hiệu hóa",
+            "changeRole": "Thay đổi vai trò"
         }
     },
-    "messages": {
-        "title": "Tin nhắn",
-        "writeMessage": "Viết tin nhắn",
-        "placeholder": "Viết tin nhắn",
-        "addMessage": "Thêm tin nhắn"
-    },
-    "footer": {
-        "aboutUs": "Giới thiệu",
-        "contact": "Liên hệ",
-        "faq": "Câu hỏi thường gặp",
-        "privacyPolicy": "Chính sách bảo mật",
-        "termsOfService": "Điều khoản dịch vụ",
-        "copyright": "© 2024 Petopia. Tất cả quyền được bảo lưu.",
-        "socialMedia": {
-            "facebook": "Facebook",
-            "twitter": "Twitter",
-            "instagram": "Instagram"
-        }
-    },
-    "search": {
-        "placeholder": "Tìm kiếm sản phẩm, danh mục...",
-        "searching": "Đang tìm kiếm...",
-        "noResults": "Không tìm thấy kết quả",
-        "suggestions": "Gợi ý"
-    },
-    "auth": {
-        "login": {
-            "title": "Chào mừng trở lại!",
-            "subtitle": "Đăng nhập để tiếp tục vào tài khoản của bạn.",
-            "email": "Địa chỉ Email",
-            "emailPlaceholder": "you@example.com",
-            "password": "Mật khẩu",
-            "passwordPlaceholder": "••••••••",
-            "forgotPassword": "Quên mật khẩu?",
-            "submit": "Đăng nhập",
-            "submitting": "Đang đăng nhập...",
-            "socialLogin": "Hoặc tiếp tục với",
-            "google": "Google",
-            "facebook": "Facebook",
-            "noAccount": "Chưa có tài khoản?",
-            "signUp": "Đăng ký",
-            "success": "Đăng nhập thành công!",
-            "failed": "Đăng nhập thất bại!",
-            "invalidCredentials": "Email hoặc mật khẩu không hợp lệ",
-            "tokenExpired": "Phiên của bạn đã hết hạn. Vui lòng đăng nhập lại.",
-            "adminAccessDenied": "Từ chối truy cập Admin. Không đủ quyền.",
-            "sessionExpired": "Phiên của bạn đã hết hạn",
-            "authenticationFailed": "Xác thực thất bại",
-            "invalidToken": "Token không hợp lệ từ máy chủ",
-            "malformedToken": "Phát hiện token bị lỗi",
-            "noTokenFound": "Không tìm thấy token xác thực",
-            "forgotPassword": "Quên mật khẩu?",
-            "emailPlaceholder": "Nhập địa chỉ email của bạn",
-            "passwordPlaceholder": "Nhập mật khẩu của bạn",
-            "signUp": "Đăng ký"
-        },
-        "debug": {
-            "loadMeDebug": "Debug loadMe()",
-            "noTokenSkipApi": "Không tìm thấy token - bỏ qua gọi API",
-            "makingApiCall": "Đang thực hiện gọi API loadMe()...",
-            "apiCallFailed": "Gọi API loadMe() thất bại",
-            "invalidTokenClearing": "Phát hiện token không hợp lệ - xóa trạng thái xác thực",
-            "loginResponseStructure": "Cấu trúc phản hồi đăng nhập",
-            "loginSuccessStoring": "Đăng nhập thành công, lưu token",
-            "oauthLoginResponse": "Phản hồi đăng nhập OAuth",
-            "expectedUnauthorized": "401 dự kiến (không có token khi khởi động)",
-            "unexpectedUnauthorized": "401 không mong đợi - xóa xác thực và chuyển hướng",
-            "expectedNotRedirecting": "401 dự kiến - không chuyển hướng"
-        },
-        "register": {
-            "title": "Tham gia gia đình Petopia!",
-            "subtitle": "Tạo tài khoản và khám phá mọi thứ thú cưng của bạn cần.",
-            "createAccount": "Tạo tài khoản của bạn",
-            "fullName": "Họ và tên",
-            "fullNamePlaceholder": "Họ và tên",
-            "username": "Tên người dùng",
-            "usernamePlaceholder": "Tên người dùng",
-            "email": "Địa chỉ Email",
-            "emailPlaceholder": "you@example.com",
-            "password": "Mật khẩu",
-            "passwordPlaceholder": "••••••••",
-            "confirmPassword": "Xác nhận mật khẩu",
-            "confirmPasswordPlaceholder": "••••••••",
-            "submit": "Tạo tài khoản",
-            "submitting": "Đang tạo tài khoản...",
-            "hasAccount": "Đã có tài khoản?",
-            "signIn": "Đăng nhập"
-        },
-        "hero": {
-            "welcomeTitle": "Chào mừng đến với Petopia",
-            "welcomeSubtitle": "Cửa hàng một cửa cho mọi thứ thú cưng của bạn cần."
-        }
-    },
-    "validation": {
-        "name": {
-            "required": "Tên là bắt buộc",
-            "minLength": "Tên phải có ít nhất 2 ký tự",
-            "maxLength": "Tên không được quá 50 ký tự"
-        },
-        "username": {
-            "required": "Tên đăng nhập là bắt buộc",
-            "minLength": "Tên đăng nhập phải có ít nhất 3 ký tự",
-            "maxLength": "Tên đăng nhập không được quá 20 ký tự",
-            "invalid": "Tên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới"
-        },
-        "email": {
-            "invalid": "Địa chỉ email không hợp lệ",
-            "required": "Email là bắt buộc",
-            "minLength": "Email phải có ít nhất 5 ký tự",
-            "maxLength": "Email phải có tối đa 255 ký tự"
-        },
-        "password": {
-            "required": "Mật khẩu là bắt buộc",
-            "minLength": "Mật khẩu phải có ít nhất 6 ký tự",
-            "maxLength": "Mật khẩu phải có tối đa 255 ký tự",
-            "weak": "Mật khẩu quá yếu"
-        },
-        "name": {
-            "required": "Tên là bắt buộc",
-            "minLength": "Tên phải có ít nhất 2 ký tự",
-            "maxLength": "Tên phải có tối đa 50 ký tự"
-        },
-        "username": {
-            "required": "Tên người dùng là bắt buộc",
-            "minLength": "Tên người dùng phải có ít nhất 3 ký tự",
-            "maxLength": "Tên người dùng phải có tối đa 30 ký tự",
-            "invalid": "Tên người dùng chỉ có thể chứa chữ cái, số và dấu gạch dưới"
-        },
-        "confirmPassword": {
-            "required": "Vui lòng xác nhận mật khẩu",
-            "match": "Mật khẩu phải khớp"
-        },
-        "message": {
-            "required": "Tin nhắn là bắt buộc",
-            "minLength": "Tin nhắn phải có ít nhất 5 ký tự",
-            "maxLength": "Tin nhắn phải có tối đa 300 ký tự"
-        },
-        "parentCategory": {
-            "nameRequired": "Tên là bắt buộc",
-            "nameMin": "Tên phải có ít nhất 2 ký tự",
-            "nameMax": "Tên không được vượt quá 100 ký tự",
-            "slugPattern": "Đường dẫn chỉ có thể chứa chữ cái thường, số và dấu gạch ngang",
-            "slugMin": "Đường dẫn phải có ít nhất 2 ký tự",
-            "slugMax": "Đường dẫn không được vượt quá 100 ký tự",
-            "descriptionRequired": "Mô tả là bắt buộc",
-            "descriptionMax": "Mô tả không được vượt quá 500 ký tự",
-            "imageRequired": "URL hình ảnh là bắt buộc",
-            "imageUrl": "Vui lòng nhập URL hình ảnh hợp lệ"
-        },
-        "category": {
-            "nameRequired": "Tên là bắt buộc",
-            "nameMin": "Tên phải có ít nhất 2 ký tự",
-            "nameMax": "Tên không được vượt quá 100 ký tự",
-            "slugPattern": "Đường dẫn chỉ có thể chứa chữ cái thường, số và dấu gạch ngang",
-            "slugMin": "Đường dẫn phải có ít nhất 2 ký tự",
-            "slugMax": "Đường dẫn không được vượt quá 100 ký tự",
-            "parentCategoryRequired": "Danh mục cha là bắt buộc",
-            "descriptionMax": "Mô tả không được vượt quá 500 ký tự",
-            "iconRequired": "URL biểu tượng là bắt buộc",
-            "iconUrl": "Vui lòng nhập URL biểu tượng hợp lệ"
-        },
-        "product": {
-            "nameRequired": "Tên là bắt buộc",
-            "nameMin": "Tên phải có ít nhất 2 ký tự",
-            "nameMax": "Tên không được vượt quá 200 ký tự",
-            "slugPattern": "Đường dẫn chỉ có thể chứa chữ thường, số và dấu gạch ngang",
-            "slugMin": "Đường dẫn phải có ít nhất 2 ký tự",
-            "slugMax": "Đường dẫn không được vượt quá 200 ký tự",
-            "descriptionRequired": "Mô tả là bắt buộc",
-            "descriptionMin": "Mô tả phải có ít nhất 10 ký tự",
-            "priceRequired": "Giá là bắt buộc",
-            "priceMin": "Giá phải lớn hơn 0",
-            "categoryRequired": "Danh mục là bắt buộc",
-            "stockRequired": "Tồn kho là bắt buộc",
-            "stockMin": "Tồn kho không thể âm",
-            "stockInteger": "Tồn kho phải là số nguyên",
-            "imagesRequired": "Ít nhất một hình ảnh là bắt buộc",
-            "imageUrl": "Vui lòng nhập URL hình ảnh hợp lệ",
-            "skuMax": "SKU không được vượt quá 100 ký tự",
-            "brandMax": "Thương hiệu không được vượt quá 100 ký tự"
-        }
-    },
-    "newsletter": {
-        "title": "Đăng ký nhận tin",
-        "description": "Nhận thông tin khuyến mãi và tips chăm sóc thú cưng mới nhất",
-        "placeholder": "Nhập email của bạn...",
-        "subscribe": "Đăng ký",
-        "submitting": "Đang đăng ký...",
-        "success": "Cảm ơn bạn đã đăng ký!"
-    },
-    "brandPromise": {
-        "title": "Tại sao chọn Petopia?",
-        "subtitle": "Cam kết mang đến trải nghiệm mua sắm tốt nhất cho bạn và thú cưng",
-        "safety": {
-            "title": "An toàn & Chất lượng",
-            "desc": "Tất cả sản phẩm được kiểm tra chất lượng nghiêm ngặt"
-        },
-        "delivery": {
-            "title": "Giao hàng nhanh",
-            "desc": "Giao hàng toàn quốc trong 1-3 ngày"
-        },
-        "support": {
-            "title": "Hỗ trợ 24/7",
-            "desc": "Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ"
-        },
-        "reviews": {
-            "title": "Đánh giá tích cực",
-            "desc": "Hàng ngàn khách hàng hài lòng và tin tưởng"
-        }
-    },
-    "productCard": {
-        "addToWishlist": "Thêm vào yêu thích",
-        "outOfStock": "Hết hàng",
-        "reviews": "đánh giá",
-        "addedToCart": "Đã thêm vào giỏ hàng thành công!",
-        "addToCartError": "Không thể thêm vào giỏ hàng. Vui lòng thử lại."
-    },
-    "wishlist": {
-        "addToWishlist": "Thêm vào yêu thích",
-        "removeFromWishlist": "Xóa khỏi yêu thích",
-        "addedToWishlist": "Đã thêm vào yêu thích",
-        "removedFromWishlist": "Đã xóa khỏi yêu thích"
-    },
-    "breadcrumb": {
-        "cartNavigation": "Điều hướng giỏ hàng",
-        "productNavigation": "Điều hướng sản phẩm",
+    "breadcrumbNavigation": {
+        "home": "Điều hướng trang chủ",
+        "products": "Điều hướng sản phẩm",
+        "categories": "Điều hướng danh mục",
+        "productDetails": "Điều hướng chi tiết sản phẩm",
+        "cart": "Điều hướng giỏ hàng",
+        "profile": "Điều hướng hồ sơ",
+        "orders": "Điều hướng đơn hàng",
         "categoryNavigation": "Điều hướng danh mục",
         "checkoutNavigation": "Điều hướng thanh toán",
         "navigation": "Điều hướng breadcrumb",
         "goTo": "Đi tới",
-        "adminNavigation": "Điều hướng Admin",
-        "adminDashboard": "Điều hướng bảng điều khiển Admin",
+        "adminNavigation": "Điều hướng admin",
+        "adminDashboard": "Điều hướng bảng điều khiển admin",
         "ordersManagement": "Điều hướng quản lý đơn hàng",
         "orderDetails": "Điều hướng chi tiết đơn hàng"
     }
