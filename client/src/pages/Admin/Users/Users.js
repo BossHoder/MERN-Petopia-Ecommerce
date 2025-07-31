@@ -73,6 +73,16 @@ const Users = () => {
         );
     }, [dispatch, currentPage, limit, searchTerm, roleFilter, statusFilter]);
 
+    // Debug users data structure
+    useEffect(() => {
+        if (users && users.length > 0) {
+            console.log('Users data structure:', users[0]);
+            console.log('First user keys:', Object.keys(users[0]));
+            console.log('First user _id:', users[0]._id);
+            console.log('First user id:', users[0].id);
+        }
+    }, [users]);
+
     // Handle search
     const handleSearch = (e) => {
         e.preventDefault();
@@ -229,11 +239,11 @@ const Users = () => {
             render: (value, user) => (
                 <div className="user-avatar-cell">
                     <img
-                        src={user.avatar || '/images/avatar0.jpg'}
+                        src={user.avatar || '/user-icon.png'}
                         alt={user.name}
                         className="user-avatar-small"
                         onError={(e) => {
-                            e.target.src = '/images/avatar0.jpg';
+                            e.target.src = '/user-icon.png';
                         }}
                     />
                 </div>
@@ -256,32 +266,39 @@ const Users = () => {
         {
             key: 'role',
             title: t('admin.users.role', 'Role'),
-            render: (value, user) => (
-                <select
-                    value={user.role}
-                    onChange={(e) => handleRoleUpdate(user._id, e.target.value)}
-                    className={`role-select role-${user.role.toLowerCase()}`}
-                    disabled={userUpdateLoading}
-                >
-                    <option value="USER">User</option>
-                    <option value="ADMIN">Admin</option>
-                </select>
-            ),
+            render: (value, user) => {
+                const userId = user._id || user.id;
+                return (
+                    <select
+                        value={user.role}
+                        onChange={(e) => handleRoleUpdate(userId, e.target.value)}
+                        className={`role-select role-${user.role.toLowerCase()}`}
+                        disabled={userUpdateLoading}
+                    >
+                        <option value="USER">User</option>
+                        <option value="STAFF">Staff</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                );
+            },
         },
         {
             key: 'isActive',
             title: t('admin.users.status', 'Status'),
-            render: (value, user) => (
-                <button
-                    onClick={() => handleStatusUpdate(user._id, !user.isActive)}
-                    className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
-                    disabled={userUpdateLoading}
-                >
-                    {user.isActive
-                        ? t('admin.users.active', 'Active')
-                        : t('admin.users.inactive', 'Inactive')}
-                </button>
-            ),
+            render: (value, user) => {
+                const userId = user._id || user.id;
+                return (
+                    <button
+                        onClick={() => handleStatusUpdate(userId, !user.isActive)}
+                        className={`status-toggle ${user.isActive ? 'active' : 'inactive'}`}
+                        disabled={userUpdateLoading}
+                    >
+                        {user.isActive
+                            ? t('admin.users.active', 'Active')
+                            : t('admin.users.inactive', 'Inactive')}
+                    </button>
+                );
+            },
         },
         {
             key: 'createdAt',
@@ -293,25 +310,28 @@ const Users = () => {
             title: t('admin.users.actions', 'Actions'),
             width: '120px',
             align: 'center',
-            render: (value, user) => (
-                <div className="user-actions">
-                    <button
-                        onClick={() => handleViewUser(user._id)}
-                        className="btn-view"
-                        title={t('admin.users.viewDetails', 'View Details')}
-                    >
-                        👁️
-                    </button>
-                    <button
-                        onClick={() => handleDeleteUser(user._id)}
-                        className="btn-delete"
-                        title={t('admin.users.deactivate', 'Deactivate')}
-                        disabled={userDeleteLoading}
-                    >
-                        🗑️
-                    </button>
-                </div>
-            ),
+            render: (value, user) => {
+                const userId = user._id || user.id;
+                return (
+                    <div className="user-actions">
+                        <button
+                            onClick={() => handleViewUser(userId)}
+                            className="btn-view"
+                            title={t('admin.users.viewDetails', 'View Details')}
+                        >
+                            👁️
+                        </button>
+                        <button
+                            onClick={() => handleDeleteUser(userId)}
+                            className="btn-delete"
+                            title={t('admin.users.deactivate', 'Deactivate')}
+                            disabled={userDeleteLoading}
+                        >
+                            🗑️
+                        </button>
+                    </div>
+                );
+            },
         },
     ];
 
@@ -404,6 +424,7 @@ const Users = () => {
                         >
                             <option value="">{t('admin.users.changeRole', 'Change Role')}</option>
                             <option value="USER">User</option>
+                            <option value="STAFF">Staff</option>
                             <option value="ADMIN">Admin</option>
                         </select>
                     </div>

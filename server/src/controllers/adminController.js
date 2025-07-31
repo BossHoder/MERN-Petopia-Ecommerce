@@ -461,7 +461,7 @@ const updateUserRole = asyncHandler(async (req, res) => {
         const userId = req.params.id;
 
         // Validate role
-        const validRoles = ['USER', 'ADMIN'];
+        const validRoles = ['USER', 'ADMIN', 'STAFF'];
         if (!validRoles.includes(role)) {
             return errorResponse(res, 'Invalid user role', 400);
         }
@@ -512,6 +512,11 @@ const updateUserStatus = asyncHandler(async (req, res) => {
 const getUserDetails = asyncHandler(async (req, res) => {
     try {
         const userId = req.params.id;
+
+        // Validate ObjectId
+        if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return errorResponse(res, 'Invalid user ID', 400);
+        }
 
         const user = await User.findById(userId).select('-password').populate('wishlist', 'name slug images price');
 
@@ -575,7 +580,7 @@ const bulkUpdateUsers = asyncHandler(async (req, res) => {
         }
 
         // Validate role if provided
-        if (updates.role && !['USER', 'ADMIN'].includes(updates.role)) {
+        if (updates.role && !['USER', 'ADMIN', 'STAFF'].includes(updates.role)) {
             return errorResponse(res, 'Invalid user role', 400);
         }
 

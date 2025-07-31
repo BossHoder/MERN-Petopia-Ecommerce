@@ -189,10 +189,10 @@ const UserDetailsModal = ({ userId, onClose }) => {
                             <div className="user-profile">
                                 <div className="user-avatar-large">
                                     <img
-                                        src={userDetails.avatar || '/images/avatar0.jpg'}
+                                        src={userDetails.avatar || '/user-icon.png'}
                                         alt={userDetails.name}
                                         onError={(e) => {
-                                            e.target.src = '/images/avatar0.jpg';
+                                            e.target.src = '/user-icon.png';
                                         }}
                                     />
                                 </div>
@@ -234,6 +234,7 @@ const UserDetailsModal = ({ userId, onClose }) => {
                                             className={`role-select role-${editForm.role.toLowerCase()}`}
                                         >
                                             <option value="USER">User</option>
+                                            <option value="STAFF">Staff</option>
                                             <option value="ADMIN">Admin</option>
                                         </select>
                                     ) : (

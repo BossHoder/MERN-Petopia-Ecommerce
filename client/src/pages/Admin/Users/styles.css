@@ -1,7 +1,7 @@
 /* Admin Users Management Styles */
 .admin-users-page {
     padding: 0;
-    background-color: var(--brand-cream, #FCF9F8);
+    background-color: var(--brand-cream, #fcf9f8);
     min-height: 100vh;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .page-header h1 {
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-size: 2rem;
     font-weight: 600;
     margin: 0;
@@ -30,9 +30,9 @@
     background: white;
     padding: 8px 16px;
     border-radius: 8px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     font-size: 0.9rem;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-weight: 500;
 }
 
@@ -46,7 +46,7 @@
     padding: 20px;
     background: white;
     border-radius: 12px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     box-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
 }
 
@@ -60,22 +60,22 @@
 .search-input {
     flex: 1;
     padding: 10px 16px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     border-radius: 8px;
     font-size: 0.95rem;
-    background: var(--brand-cream, #FCF9F8);
-    color: var(--brand-brown, #8B4513);
+    background: var(--brand-cream, #fcf9f8);
+    color: var(--brand-brown, #8b4513);
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--brand-orange, #FF8C00);
+    border-color: var(--brand-orange, #ff8c00);
     box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
 }
 
 .search-btn {
     padding: 10px 20px;
-    background: var(--brand-orange, #FF8C00);
+    background: var(--brand-orange, #ff8c00);
     color: white;
     border: none;
     border-radius: 8px;
@@ -85,7 +85,7 @@
 }
 
 .search-btn:hover {
-    background: var(--brand-dark-orange, #FF7F00);
+    background: var(--brand-dark-orange, #ff7f00);
 }
 
 .filter-controls {
@@ -95,10 +95,10 @@
 
 .filter-select {
     padding: 10px 16px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     border-radius: 8px;
     background: white;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-size: 0.95rem;
     cursor: pointer;
     min-width: 120px;
@@ -106,7 +106,7 @@
 
 .filter-select:focus {
     outline: none;
-    border-color: var(--brand-orange, #FF8C00);
+    border-color: var(--brand-orange, #ff8c00);
 }
 
 /* Bulk Actions */
@@ -115,15 +115,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    background: var(--brand-light-orange, #FFE4B5);
-    border: 1px solid var(--brand-orange, #FF8C00);
+    background: var(--brand-light-orange, #ffe4b5);
+    border: 1px solid var(--brand-orange, #ff8c00);
     border-radius: 8px;
     margin-bottom: 16px;
 }
 
 .selected-count {
     font-weight: 600;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
 }
 
 .bulk-action-buttons {
@@ -162,10 +162,10 @@
 
 .bulk-role-select {
     padding: 8px 12px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     border-radius: 6px;
     background: white;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-size: 0.9rem;
     cursor: pointer;
 }
@@ -182,7 +182,7 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--brand-light-brown, #D2B48C);
+    border: 2px solid var(--brand-light-brown, #d2b48c);
 }
 
 .user-name-cell {
@@ -193,7 +193,7 @@
 
 .user-name {
     font-weight: 600;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
 }
 
 .user-username {
@@ -203,7 +203,7 @@
 
 .role-select {
     padding: 6px 12px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     border-radius: 6px;
     font-size: 0.9rem;
     font-weight: 500;
@@ -212,14 +212,20 @@
 }
 
 .role-select.role-admin {
-    background: var(--brand-orange, #FF8C00);
+    background: var(--brand-orange, #ff8c00);
     color: white;
-    border-color: var(--brand-orange, #FF8C00);
+    border-color: var(--brand-orange, #ff8c00);
+}
+
+.role-select.role-staff {
+    background: var(--info-color, #17a2b8);
+    color: white;
+    border-color: var(--info-color, #17a2b8);
 }
 
 .role-select.role-user {
-    background: var(--brand-light-brown, #D2B48C);
-    color: var(--brand-brown, #8B4513);
+    background: var(--brand-light-brown, #d2b48c);
+    color: var(--brand-brown, #8b4513);
 }
 
 .status-toggle {
@@ -266,7 +272,7 @@
 }
 
 .btn-view:hover {
-    background: var(--brand-light-brown, #D2B48C);
+    background: var(--brand-light-brown, #d2b48c);
 }
 
 .btn-delete:hover {
@@ -304,13 +310,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--brand-light-brown, #D2B48C);
-    background: var(--brand-cream, #FCF9F8);
+    border-bottom: 1px solid var(--brand-light-brown, #d2b48c);
+    background: var(--brand-cream, #fcf9f8);
     border-radius: 12px 12px 0 0;
 }
 
 .modal-header h2 {
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
@@ -335,7 +341,7 @@
 }
 
 .btn-edit {
-    background: var(--brand-orange, #FF8C00);
+    background: var(--brand-orange, #ff8c00);
     color: white;
 }
 
@@ -354,14 +360,14 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     padding: 4px 8px;
     border-radius: 4px;
     transition: background-color 0.2s ease;
 }
 
 .modal-close-btn:hover {
-    background: var(--brand-light-brown, #D2B48C);
+    background: var(--brand-light-brown, #d2b48c);
 }
 
 .modal-body {
@@ -375,18 +381,18 @@
 }
 
 .details-section {
-    background: var(--brand-cream, #FCF9F8);
+    background: var(--brand-cream, #fcf9f8);
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
 }
 
 .details-section h3 {
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     margin: 0 0 16px 0;
     font-size: 1.2rem;
     font-weight: 600;
-    border-bottom: 2px solid var(--brand-orange, #FF8C00);
+    border-bottom: 2px solid var(--brand-orange, #ff8c00);
     padding-bottom: 8px;
 }
 
@@ -405,7 +411,7 @@
     height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--brand-orange, #FF8C00);
+    border: 3px solid var(--brand-orange, #ff8c00);
 }
 
 .user-basic-info {
@@ -423,7 +429,7 @@
 
 .info-row label {
     font-weight: 600;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     min-width: 120px;
 }
 
@@ -443,18 +449,23 @@
 }
 
 .provider-badge {
-    background: var(--brand-light-brown, #D2B48C);
-    color: var(--brand-brown, #8B4513);
+    background: var(--brand-light-brown, #d2b48c);
+    color: var(--brand-brown, #8b4513);
 }
 
 .role-badge.role-admin {
-    background: var(--brand-orange, #FF8C00);
+    background: var(--brand-orange, #ff8c00);
+    color: white;
+}
+
+.role-badge.role-staff {
+    background: var(--info-color, #17a2b8);
     color: white;
 }
 
 .role-badge.role-user {
-    background: var(--brand-light-brown, #D2B48C);
-    color: var(--brand-brown, #8B4513);
+    background: var(--brand-light-brown, #d2b48c);
+    color: var(--brand-brown, #8b4513);
 }
 
 .status-badge.active {
@@ -474,7 +485,7 @@
 
 .verification-badge.unverified {
     background: var(--warning-color, #ffc107);
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
 }
 
 .order-stats {
@@ -487,20 +498,20 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
     text-align: center;
 }
 
 .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--brand-orange, #FF8C00);
+    color: var(--brand-orange, #ff8c00);
     margin-bottom: 4px;
 }
 
 .stat-label {
     font-size: 0.9rem;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-weight: 500;
 }
 
@@ -508,7 +519,7 @@
     background: white;
     padding: 16px;
     border-radius: 8px;
-    border: 1px solid var(--brand-light-brown, #D2B48C);
+    border: 1px solid var(--brand-light-brown, #d2b48c);
 }
 
 .user-bio p {
@@ -521,7 +532,7 @@
 .error-message {
     text-align: center;
     padding: 40px 20px;
-    color: var(--brand-brown, #8B4513);
+    color: var(--brand-brown, #8b4513);
     font-size: 1.1rem;
 }
 

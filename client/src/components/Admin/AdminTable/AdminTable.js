@@ -19,7 +19,7 @@ const AdminTable = ({
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
-            onSelectAll(data.map((item) => item._id));
+            onSelectAll(data.map((item) => item._id || item.id));
         } else {
             onSelectAll([]);
         }
@@ -91,36 +91,39 @@ const AdminTable = ({
                         </tr>
                     </thead>
                     <tbody className="admin-table-body">
-                        {data.map((item) => (
-                            <tr
-                                key={item._id}
-                                className={`admin-table-row ${
-                                    selectedItems.includes(item._id) ? 'selected' : ''
-                                }`}
-                            >
-                                <td className="admin-table-checkbox-cell">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedItems.includes(item._id)}
-                                        onChange={() => handleSelectItem(item._id)}
-                                        className="admin-table-checkbox"
-                                        aria-label={t('table.selectItem', 'Select item')}
-                                    />
-                                </td>
-                                {columns.map((column) => (
-                                    <td
-                                        key={column.key}
-                                        className={`admin-table-cell ${
-                                            column.align ? `text-${column.align}` : ''
-                                        }`}
-                                    >
-                                        {column.render
-                                            ? column.render(item[column.key], item)
-                                            : item[column.key] || '-'}
+                        {data.map((item) => {
+                            const itemId = item._id || item.id;
+                            return (
+                                <tr
+                                    key={itemId}
+                                    className={`admin-table-row ${
+                                        selectedItems.includes(itemId) ? 'selected' : ''
+                                    }`}
+                                >
+                                    <td className="admin-table-checkbox-cell">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedItems.includes(itemId)}
+                                            onChange={() => handleSelectItem(itemId)}
+                                            className="admin-table-checkbox"
+                                            aria-label={t('table.selectItem', 'Select item')}
+                                        />
                                     </td>
-                                ))}
-                            </tr>
-                        ))}
+                                    {columns.map((column) => (
+                                        <td
+                                            key={column.key}
+                                            className={`admin-table-cell ${
+                                                column.align ? `text-${column.align}` : ''
+                                            }`}
+                                        >
+                                            {column.render
+                                                ? column.render(item[column.key], item)
+                                                : item[column.key] || '-'}
+                                        </td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
