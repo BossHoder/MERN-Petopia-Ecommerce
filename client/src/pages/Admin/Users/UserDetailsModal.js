@@ -37,7 +37,7 @@ const UserDetailsModal = ({ userId, onClose }) => {
         if (userDetails) {
             setEditForm({
                 role: userDetails.role || 'USER',
-                isActive: userDetails.isActive !== false,
+                isActive: Boolean(userDetails.isActive),
             });
         }
     }, [userDetails]);
@@ -55,19 +55,16 @@ const UserDetailsModal = ({ userId, onClose }) => {
         try {
             // Update role if changed
             if (editForm.role !== userDetails.role) {
-                await dispatch(updateUserRole(userId, editForm.role));
+                dispatch(updateUserRole(userId, editForm.role));
             }
 
             // Update status if changed
-            if (editForm.isActive !== userDetails.isActive) {
-                await dispatch(updateUserStatus(userId, editForm.isActive));
+            if (editForm.isActive !== Boolean(userDetails.isActive)) {
+                dispatch(updateUserStatus(userId, editForm.isActive));
             }
 
             toast.success(t('admin.users.updateSuccess', 'User updated successfully'));
             setIsEditing(false);
-
-            // Refresh user details
-            dispatch(getUserDetails(userId));
         } catch (error) {
             toast.error(error.message || t('admin.users.updateFailed', 'Failed to update user'));
         }
@@ -283,10 +280,12 @@ const UserDetailsModal = ({ userId, onClose }) => {
                                     ) : (
                                         <span
                                             className={`status-badge ${
-                                                userDetails.isActive ? 'active' : 'inactive'
+                                                Boolean(userDetails.isActive)
+                                                    ? 'active'
+                                                    : 'inactive'
                                             }`}
                                         >
-                                            {userDetails.isActive
+                                            {Boolean(userDetails.isActive)
                                                 ? t('admin.users.active', 'Active')
                                                 : t('admin.users.inactive', 'Inactive')}
                                         </span>

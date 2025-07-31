@@ -316,6 +316,15 @@ const adminReducer = (state = initialState, action) => {
                 ...state,
                 userUpdateLoading: false,
                 error: null,
+                // Update userDetails if it exists and matches the updated user
+                userDetails:
+                    state.userDetails && state.userDetails._id === action.payload._id
+                        ? action.payload
+                        : state.userDetails,
+                // Update the user in the users list as well
+                users: state.users.map((user) =>
+                    user._id === action.payload._id ? action.payload : user,
+                ),
             };
 
         case ADMIN_USER_UPDATE_FAIL:

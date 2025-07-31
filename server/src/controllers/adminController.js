@@ -7,6 +7,7 @@ import Category from '../models/Category.js';
 import ParentCategory from '../models/parentCategory.js';
 import stockService from '../services/stockService.js';
 import { logOrderStatusChange, logPaymentStatusChange, extractRequestMetadata } from '../utils/auditLogger.js';
+import { userDto, usersDto } from '../dto/userDto.js';
 
 // ===========================================
 // DASHBOARD CONTROLLERS
@@ -443,7 +444,10 @@ const getAllUsers = asyncHandler(async (req, res) => {
             hasPrev: page > 1,
         };
 
-        return successResponse(res, { users, pagination }, 'Users retrieved successfully');
+        // Use DTO to format user data consistently
+        const formattedUsers = usersDto(users);
+
+        return successResponse(res, { users: formattedUsers, pagination }, 'Users retrieved successfully');
     } catch (error) {
         console.error('Get all users error:', error);
         return errorResponse(res, 'Failed to retrieve users', 500);
@@ -473,7 +477,10 @@ const updateUserRole = asyncHandler(async (req, res) => {
             return errorResponse(res, 'User not found', 404);
         }
 
-        return successResponse(res, user, 'User role updated successfully');
+        // Use DTO to format user data consistently
+        const formattedUser = userDto(user);
+
+        return successResponse(res, formattedUser, 'User role updated successfully');
     } catch (error) {
         console.error('Update user role error:', error);
         return errorResponse(res, 'Failed to update user role', 500);
@@ -497,7 +504,10 @@ const updateUserStatus = asyncHandler(async (req, res) => {
             return errorResponse(res, 'User not found', 404);
         }
 
-        return successResponse(res, user, 'User status updated successfully');
+        // Use DTO to format user data consistently
+        const formattedUser = userDto(user);
+
+        return successResponse(res, formattedUser, 'User status updated successfully');
     } catch (error) {
         console.error('Update user status error:', error);
         return errorResponse(res, 'Failed to update user status', 500);
@@ -537,8 +547,11 @@ const getUserDetails = asyncHandler(async (req, res) => {
             },
         ]);
 
+        // Use DTO to format user data consistently
+        const formattedUser = userDto(user);
+
         const userDetails = {
-            ...user.toJSON(),
+            ...formattedUser,
             orderStats: orderStats[0] || {
                 totalOrders: 0,
                 totalSpent: 0,

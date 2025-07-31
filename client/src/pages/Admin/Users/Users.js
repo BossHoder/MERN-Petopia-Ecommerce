@@ -140,9 +140,9 @@ const Users = () => {
     };
 
     // Handle role update
-    const handleRoleUpdate = async (userId, newRole) => {
+    const handleRoleUpdate = (userId, newRole) => {
         try {
-            await dispatch(updateUserRole(userId, newRole));
+            dispatch(updateUserRole(userId, newRole));
             toast.success(t('admin.users.roleUpdated', 'User role updated successfully'));
         } catch (error) {
             toast.error(
@@ -152,7 +152,7 @@ const Users = () => {
     };
 
     // Handle status update with confirmation
-    const handleStatusUpdate = async (userId, newStatus, user) => {
+    const handleStatusUpdate = (userId, newStatus, user) => {
         const action = newStatus ? 'activate' : 'deactivate';
         const roleText = user.role || 'USER';
         const confirmMessage = t(
@@ -162,8 +162,9 @@ const Users = () => {
 
         if (window.confirm(confirmMessage)) {
             try {
-                await dispatch(updateUserStatus(userId, newStatus));
+                dispatch(updateUserStatus(userId, newStatus));
                 toast.success(t('admin.users.statusUpdated', 'User status updated successfully'));
+                window.location.reload();
             } catch (error) {
                 toast.error(
                     error.message ||
@@ -174,7 +175,7 @@ const Users = () => {
     };
 
     // Handle user deletion with admin protection
-    const handleDeleteUser = async (userId, user) => {
+    const handleDeleteUser = (userId, user) => {
         // Protect admin users from deletion
         if (user && user.role === 'ADMIN') {
             toast.error(
@@ -192,7 +193,7 @@ const Users = () => {
             )
         ) {
             try {
-                await dispatch(deleteUser(userId));
+                dispatch(deleteUser(userId));
                 toast.success(t('admin.users.userDeleted', 'User deactivated successfully'));
             } catch (error) {
                 toast.error(
@@ -203,7 +204,7 @@ const Users = () => {
     };
 
     // Handle bulk actions
-    const handleBulkAction = async (action, value = null) => {
+    const handleBulkAction = (action, value = null) => {
         if (selectedUsers.length === 0) {
             toast.warning(t('admin.users.selectUsers', 'Please select users first'));
             return;
@@ -253,7 +254,7 @@ const Users = () => {
 
         if (window.confirm(confirmMessage)) {
             try {
-                await dispatch(bulkUpdateUsers(selectedUsers, updates));
+                dispatch(bulkUpdateUsers(selectedUsers, updates));
                 toast.success(t('admin.users.bulkUpdateSuccess', 'Users updated successfully'));
                 setSelectedUsers([]);
                 setShowBulkActions(false);
@@ -330,8 +331,17 @@ const Users = () => {
             title: t('admin.users.status', 'Status'),
             render: (value, user) => {
                 const userId = user._id || user.id;
-                // Check if user is actually active (handle both boolean and string values)
-                const isUserActive = user.isActive === true || user.isActive === 'true';
+                const isUserActive = Boolean(user.isActive);
+
+                // Debug logging
+                console.log('User status debug:', {
+                    userId,
+                    username: user.username,
+                    isActive: user.isActive,
+                    isActiveType: typeof user.isActive,
+                    isUserActive,
+                    fullUser: user,
+                });
 
                 return (
                     <button

@@ -228,6 +228,10 @@ export const getAdminUsers =
 
             const response = await API.get(`/api/admin/users?${queryParams}`);
 
+            // Debug logging
+            console.log('Admin users API response:', response.data);
+            console.log('Users data:', response.data.data.users);
+
             dispatch({
                 type: ADMIN_USERS_SUCCESS,
                 payload: response.data.data,
@@ -274,9 +278,6 @@ export const updateUserRole = (userId, role) => async (dispatch) => {
             type: ADMIN_USER_UPDATE_SUCCESS,
             payload: response.data.data,
         });
-
-        // Refresh users list after update
-        dispatch(getAdminUsers());
     } catch (error) {
         dispatch({
             type: ADMIN_USER_UPDATE_FAIL,
@@ -292,16 +293,16 @@ export const updateUserStatus = (userId, isActive) => async (dispatch) => {
     try {
         dispatch({ type: ADMIN_USER_UPDATE_REQUEST });
 
+        console.log('Updating user status:', { userId, isActive });
         const response = await API.put(`/api/admin/users/${userId}/status`, { isActive });
+        console.log('Update status response:', response.data);
 
         dispatch({
             type: ADMIN_USER_UPDATE_SUCCESS,
             payload: response.data.data,
         });
-
-        // Refresh users list after update
-        dispatch(getAdminUsers());
     } catch (error) {
+        console.error('Update status error:', error);
         dispatch({
             type: ADMIN_USER_UPDATE_FAIL,
             payload: error.response?.data?.error?.message || 'Failed to update user status',
