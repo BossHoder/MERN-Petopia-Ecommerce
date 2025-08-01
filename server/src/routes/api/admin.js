@@ -46,6 +46,7 @@ router.delete('/users/:id', adminController.deleteUser);
 // Products Management (Enhanced)
 router.get('/products', adminController.getAllProductsAdmin);
 router.get('/products/check-slug/:slug', adminController.checkProductSlugExists);
+router.get('/products/check-sku/:sku', adminController.checkProductSkuExists);
 router.get('/products/:id', adminController.getProductById);
 router.post('/products', upload.any(), adminController.createProduct);
 router.put('/products/:id', upload.any(), adminController.updateProduct);

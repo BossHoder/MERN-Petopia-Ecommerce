@@ -24,7 +24,7 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
 
         try {
             const response = await API.get(`/api/admin/parent-categories/check-slug/${slug}`);
-            return response.data.exists;
+            return response.data.data.exists;
         } catch (error) {
             console.warn('Error checking parent category slug:', error);
             return false;

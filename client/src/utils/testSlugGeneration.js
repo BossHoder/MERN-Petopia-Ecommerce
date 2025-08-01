@@ -3,7 +3,12 @@
  * Run this in browser console to test the slug generation
  */
 
-import { generateSlug, testVietnameseSlugGeneration } from './slugUtils.js';
+import {
+    generateSlug,
+    generateSku,
+    testVietnameseSlugGeneration,
+    testVietnameseSkuGeneration,
+} from './slugUtils.js';
 
 // Test the specific case mentioned in the issue
 console.log('=== TESTING VIETNAMESE SLUG GENERATION ===');
@@ -19,6 +24,39 @@ console.log(`✅ Test ${actualSlug === expectedSlug ? 'PASSED' : 'FAILED'}`);
 
 // Run comprehensive tests
 testVietnameseSlugGeneration();
+
+// Test SKU generation
+console.log('\n=== TESTING VIETNAMESE SKU GENERATION ===');
+
+const skuTestCase = 'Đồ cho mèo';
+const expectedSkuPattern = /^DCM\d{3}$/;
+const actualSku = generateSku(skuTestCase);
+
+console.log(`Input: "${skuTestCase}"`);
+console.log(`Expected Pattern: ${expectedSkuPattern}`);
+console.log(`Actual: "${actualSku}"`);
+console.log(`✅ Test ${expectedSkuPattern.test(actualSku) ? 'PASSED' : 'FAILED'}`);
+
+// Test deterministic generation (same input should produce same output)
+const sku1 = generateSku(skuTestCase);
+const sku2 = generateSku(skuTestCase);
+console.log(`\n=== TESTING DETERMINISTIC GENERATION ===`);
+console.log(`First generation: "${sku1}"`);
+console.log(`Second generation: "${sku2}"`);
+console.log(`✅ Deterministic: ${sku1 === sku2 ? 'PASSED' : 'FAILED'}`);
+
+// Test different names produce different SKUs
+const name1 = 'Andrew';
+const name2 = 'Andrew Test';
+const sku_name1 = generateSku(name1);
+const sku_name2 = generateSku(name2);
+console.log(`\n=== TESTING DIFFERENT NAMES ===`);
+console.log(`"${name1}" → "${sku_name1}"`);
+console.log(`"${name2}" → "${sku_name2}"`);
+console.log(`✅ Different SKUs: ${sku_name1 !== sku_name2 ? 'PASSED' : 'FAILED'}`);
+
+// Run comprehensive SKU tests
+testVietnameseSkuGeneration();
 
 // Additional test cases
 const additionalTests = [
@@ -36,7 +74,11 @@ console.log('\n=== ADDITIONAL TEST CASES ===');
 additionalTests.forEach(({ input, expected }) => {
     const result = generateSlug(input);
     const passed = result === expected;
-    console.log(`${passed ? '✅' : '❌'} "${input}" → "${result}" ${passed ? '' : `(expected: "${expected}")`}`);
+    console.log(
+        `${passed ? '✅' : '❌'} "${input}" → "${result}" ${
+            passed ? '' : `(expected: "${expected}")`
+        }`,
+    );
 });
 
-export { generateSlug, testVietnameseSlugGeneration };
+export { generateSlug, generateSku, testVietnameseSlugGeneration, testVietnameseSkuGeneration };

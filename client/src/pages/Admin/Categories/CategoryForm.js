@@ -25,7 +25,7 @@ const CategoryForm = ({ mode, categoryId, onClose, onSuccess }) => {
 
         try {
             const response = await API.get(`/api/admin/categories/check-slug/${slug}`);
-            return response.data.exists;
+            return response.data.data.exists;
         } catch (error) {
             console.warn('Error checking category slug:', error);
             return false;

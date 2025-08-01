@@ -1,0 +1,352 @@
+/* ===========================================
+   SLUG SKU INPUT COMPONENT STYLES
+   =========================================== */
+
+.slug-sku-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.slug-sku-input-wrapper {
+    position: relative;
+}
+
+.slug-sku-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary, #1f2937);
+    font-size: 0.9rem;
+}
+
+.slug-sku-input-group {
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: 1px solid var(--border-color, #d1d5db);
+    border-radius: 6px;
+    background: var(--input-background, #ffffff);
+    transition: all 0.2s ease;
+}
+
+.slug-sku-input-group:focus-within {
+    border-color: var(--primary-color, #ed6b2a);
+    box-shadow: 0 0 0 3px rgba(237, 107, 42, 0.1);
+}
+
+.slug-sku-input-group.error {
+    border-color: var(--error-color, #ef4444);
+}
+
+.slug-sku-input-group.error:focus-within {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* ===========================================
+   INPUT FIELD
+   =========================================== */
+
+.slug-sku-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    background: transparent;
+    font-size: 0.95rem;
+    color: var(--text-primary, #1f2937);
+    outline: none;
+}
+
+.slug-sku-input::placeholder {
+    color: var(--text-placeholder, #9ca3af);
+    font-style: italic;
+}
+
+.slug-sku-input.error {
+    color: var(--error-color, #ef4444);
+}
+
+.slug-sku-input:disabled {
+    background: var(--disabled-background, #f3f4f6);
+    color: var(--text-disabled, #9ca3af);
+    cursor: not-allowed;
+}
+
+/* SKU specific styling */
+#sku.slug-sku-input {
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===========================================
+   ACTION BUTTONS
+   =========================================== */
+
+.slug-sku-input-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+}
+
+.slug-sku-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary, #6b7280);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slug-sku-action-btn:hover:not(:disabled) {
+    background: var(--hover-background, #f3f4f6);
+    color: var(--text-primary, #1f2937);
+}
+
+.slug-sku-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.regenerate-btn:hover:not(:disabled) {
+    color: var(--primary-color, #ed6b2a);
+}
+
+.clear-btn:hover:not(:disabled) {
+    color: var(--error-color, #ef4444);
+}
+
+/* ===========================================
+   STATUS INDICATORS
+   =========================================== */
+
+.slug-sku-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    min-height: 1.25rem;
+}
+
+.slug-sku-status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.slug-sku-status-item i {
+    font-size: 0.75rem;
+}
+
+.slug-sku-status-item.generating {
+    color: var(--primary-color, #ed6b2a);
+}
+
+.slug-sku-status-item.checking {
+    color: var(--info-color, #3b82f6);
+}
+
+.slug-sku-status-item.auto-generated {
+    color: var(--success-color, #10b981);
+}
+
+/* ===========================================
+   VALIDATION MESSAGE
+   =========================================== */
+
+.slug-sku-validation-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.slug-sku-validation-message.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error-color, #ef4444);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.slug-sku-validation-message.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color, #10b981);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.slug-sku-validation-message i {
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* ===========================================
+   HELP TEXT
+   =========================================== */
+
+.slug-sku-help-text {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary, #6b7280);
+    line-height: 1.4;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+
+@media (max-width: 768px) {
+    .slug-sku-input-container {
+        gap: 1.25rem;
+    }
+    
+    .slug-sku-input {
+        padding: 0.625rem;
+        font-size: 0.9rem;
+    }
+    
+    .slug-sku-action-btn {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+    
+    .slug-sku-status {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .slug-sku-validation-message {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .slug-sku-help-text {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .slug-sku-input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .slug-sku-input {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color, #e5e7eb);
+    }
+    
+    .slug-sku-input-actions {
+        justify-content: center;
+        padding: 0.5rem;
+        background: var(--light-background, #f9fafb);
+        border-radius: 0 0 6px 6px;
+    }
+}
+
+/* ===========================================
+   DARK MODE SUPPORT
+   =========================================== */
+
+@media (prefers-color-scheme: dark) {
+    .slug-sku-input-group {
+        background: var(--dark-input-background, #374151);
+        border-color: var(--dark-border-color, #4b5563);
+    }
+    
+    .slug-sku-input {
+        color: var(--dark-text-primary, #f9fafb);
+    }
+    
+    .slug-sku-input::placeholder {
+        color: var(--dark-text-placeholder, #9ca3af);
+    }
+    
+    .slug-sku-action-btn:hover:not(:disabled) {
+        background: var(--dark-hover-background, #4b5563);
+    }
+    
+    .slug-sku-help-text {
+        color: var(--dark-text-secondary, #d1d5db);
+    }
+    
+    .slug-sku-label {
+        color: var(--dark-text-primary, #f9fafb);
+    }
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   =========================================== */
+
+.slug-sku-input:focus,
+.slug-sku-action-btn:focus {
+    outline: 2px solid var(--focus-color, #3b82f6);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .slug-sku-input-group {
+        border-width: 2px;
+    }
+    
+    .slug-sku-validation-message.error {
+        background: #fef2f2;
+        border-color: #ef4444;
+    }
+    
+    .slug-sku-validation-message.success {
+        background: #f0fdf4;
+        border-color: #10b981;
+    }
+}
+
+/* ===========================================
+   ANIMATION
+   =========================================== */
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Smooth transitions for status changes */
+.slug-sku-status-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.slug-sku-validation-message {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

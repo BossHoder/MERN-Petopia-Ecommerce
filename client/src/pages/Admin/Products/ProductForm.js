@@ -13,7 +13,7 @@ import { getAllCategories } from '../../../store/actions/categoryActions';
 import ImageUpload from '../../../components/Admin/ImageUpload';
 import AttributesManager from '../../../components/Admin/AttributesManager';
 import VariantsManager from '../../../components/Admin/VariantsManager';
-import SlugInput from '../../../components/SlugInput/SlugInput';
+import SlugSkuInput from '../../../components/SlugSkuInput/SlugSkuInput';
 import API from '../../../services/api';
 
 const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
@@ -28,9 +28,22 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
 
         try {
             const response = await API.get(`/api/admin/products/check-slug/${slug}`);
-            return response.data.exists;
+            return response.data.data.exists;
         } catch (error) {
             console.warn('Error checking product slug:', error);
+            return false;
+        }
+    };
+
+    // Check if product SKU exists
+    const checkProductSkuExists = async (sku) => {
+        if (!sku || sku === initialData?.sku) return false;
+
+        try {
+            const response = await API.get(`/api/admin/products/check-sku/${sku}`);
+            return response.data.data.exists;
+        } catch (error) {
+            console.warn('Error checking product SKU:', error);
             return false;
         }
     };
@@ -137,6 +150,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
             // Add basic fields
             formData.append('name', values.name);
             formData.append('slug', values.slug || '');
+            formData.append('sku', values.sku || '');
             formData.append('description', values.description);
             formData.append('price', values.price);
             formData.append('category', values.category);
@@ -311,23 +325,29 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                                 />
                             </div>
 
-                            {/* Slug Field */}
+                            {/* Slug and SKU Fields */}
                             <div className="admin-form-group">
-                                <label htmlFor="slug" className="admin-form-label">
-                                    {t('admin.products.slug', 'Slug')}
-                                </label>
-                                <SlugInput
+                                <SlugSkuInput
                                     nameValue={values.name}
                                     slugValue={values.slug}
+                                    skuValue={values.sku}
                                     onSlugChange={(slug) => setFieldValue('slug', slug)}
+                                    onSkuChange={(sku) => setFieldValue('sku', sku)}
                                     checkSlugExists={checkProductSlugExists}
+                                    checkSkuExists={checkProductSkuExists}
                                     disabled={isSubmitting}
                                     required={false}
                                     showValidation={true}
-                                    autoGenerate={true}
+                                    autoGenerateSlug={true}
+                                    autoGenerateSku={true}
                                 />
                                 <ErrorMessage
                                     name="slug"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
+                                <ErrorMessage
+                                    name="sku"
                                     component="div"
                                     className="admin-form-error"
                                 />

@@ -1406,4 +1406,19 @@ export default {
 
         successResponse(res, { exists: !!existingProduct }, 'Slug check completed');
     }),
+
+    // Check if product SKU exists
+    checkProductSkuExists: asyncHandler(async (req, res) => {
+        const { sku } = req.params;
+        const { id } = req.query; // Optional: exclude current product when editing
+
+        const query = { sku };
+        if (id) {
+            query._id = { $ne: id };
+        }
+
+        const existingProduct = await Product.findOne(query);
+
+        successResponse(res, { exists: !!existingProduct }, 'SKU check completed');
+    }),
 };
