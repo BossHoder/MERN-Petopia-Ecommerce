@@ -495,7 +495,9 @@
         "subtotal": "Tổng phụ",
         "items": "sản phẩm",
         "total": "Tổng cộng",
-        "checkout": "Tiến hành thanh toán"
+        "checkout": "Tiến hành thanh toán",
+        "quantityError": "Không đủ số lượng sản phẩm trong kho",
+        "cannotCheck": "Không thể kiểm tra tồn kho"
     },
     "checkout": {
         "title": "Thanh toán",

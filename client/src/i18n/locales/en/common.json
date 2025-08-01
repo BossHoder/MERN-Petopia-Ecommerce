@@ -471,7 +471,9 @@
         "subtotal": "Subtotal",
         "items": "items",
         "total": "Total",
-        "checkout": "Proceed to Checkout"
+        "checkout": "Proceed to Checkout",
+        "quantityError": "not enough items in stock",
+        "cannotCheck": "Cannot check stock"
     },
     "checkout": {
         "title": "Checkout",

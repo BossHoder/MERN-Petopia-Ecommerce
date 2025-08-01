@@ -8,6 +8,7 @@ import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import './Cart.css';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -43,6 +44,11 @@ const Cart = () => {
     };
 
     const handleCheckout = () => {
+        const invalidItems = items.filter((item) => item.quantity > item.product.countInStock);
+        if (invalidItems.length > 0) {
+            toast.error(t('cart.quantityError'));
+            return;
+        }
         navigate('/checkout');
     };
 
