@@ -18,8 +18,8 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         hasOnVariantChange: typeof onVariantChange === 'function',
     });
 
-    // Group variants by their name (attribute type) for dropdown organization
-    const groupVariantsByName = () => {
+    // Parse comma-separated values and create individual options
+    const parseVariantOptions = () => {
         const groups = {};
 
         variants.forEach((variant) => {
@@ -27,31 +27,74 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
             if (!groups[attributeName]) {
                 groups[attributeName] = [];
             }
-            groups[attributeName].push(variant);
+
+            // Check if the value contains comma-separated options
+            if (variant.value && variant.value.includes(',')) {
+                console.log(
+                    `🔍 Parsing comma-separated variant: ${variant.name} = "${variant.value}"`,
+                );
+
+                // Split by comma and create separate options
+                const options = variant.value
+                    .split(',')
+                    .map((option) => option.trim())
+                    .filter((option) => option);
+
+                console.log(`📝 Parsed options for ${variant.name}:`, options);
+
+                options.forEach((option) => {
+                    // Check if this option already exists to avoid duplicates
+                    const existingOption = groups[attributeName].find(
+                        (existing) => existing.value === option,
+                    );
+
+                    if (!existingOption) {
+                        // Create a virtual variant for each option
+                        groups[attributeName].push({
+                            ...variant,
+                            value: option,
+                            originalValue: variant.value, // Keep reference to original
+                            isParsedOption: true,
+                        });
+                        console.log(`✅ Added parsed option: ${attributeName} = "${option}"`);
+                    } else {
+                        console.log(`⚠️ Skipped duplicate option: ${attributeName} = "${option}"`);
+                    }
+                });
+            } else {
+                // Single value variant - check for duplicates
+                const existingOption = groups[attributeName].find(
+                    (existing) => existing.value === variant.value,
+                );
+
+                if (!existingOption) {
+                    groups[attributeName].push({
+                        ...variant,
+                        originalValue: variant.value,
+                        isParsedOption: false,
+                    });
+                }
+            }
         });
 
         return groups;
     };
 
-    // Find the selected variant based on current attribute selections
-    const findSelectedVariant = () => {
-        if (Object.keys(selectedAttributes).length === 0) return null;
-
-        // For single attribute selection, find the variant that matches
-        const entries = Object.entries(selectedAttributes);
-        if (entries.length === 1) {
-            const [attrName, attrValue] = entries[0];
-            return variants.find(
-                (variant) => variant.name === attrName && variant.value === attrValue,
-            );
-        }
-
-        // For multiple attributes, this would need more complex logic
-        // For now, return the first matching variant
+    // Find the original variant that contains the selected value
+    const findOriginalVariant = (attributeName, selectedValue) => {
         return variants.find((variant) => {
-            return Object.entries(selectedAttributes).some(([attrName, attrValue]) => {
-                return variant.name === attrName && variant.value === attrValue;
-            });
+            if (variant.name !== attributeName) return false;
+
+            // Check if it's a direct match
+            if (variant.value === selectedValue) return true;
+
+            // Check if the selected value is part of a comma-separated list
+            if (variant.value && variant.value.includes(',')) {
+                const options = variant.value.split(',').map((option) => option.trim());
+                return options.includes(selectedValue);
+            }
+
+            return false;
         });
     };
 
@@ -62,25 +105,38 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         if (value === '') {
             // Remove selection if empty value
             delete newSelections[attributeName];
+            setSelectedAttributes(newSelections);
+            onVariantChange(null);
         } else {
             newSelections[attributeName] = value;
+            setSelectedAttributes(newSelections);
+
+            // Find the original variant that contains this value
+            const originalVariant = findOriginalVariant(attributeName, value);
+
+            if (originalVariant) {
+                // Create a variant object with the selected specific value
+                const selectedVariant = {
+                    ...originalVariant,
+                    value: value, // Use the specific selected value
+                    selectedOption: value, // Keep track of what was selected
+                    originalValue: originalVariant.value, // Keep the original comma-separated value
+                };
+
+                onVariantChange(selectedVariant);
+            } else {
+                onVariantChange(null);
+            }
         }
-
-        setSelectedAttributes(newSelections);
-
-        // Find the variant that matches the new selection
-        const matchingVariant = variants.find(
-            (variant) => variant.name === attributeName && variant.value === value,
-        );
-
-        onVariantChange(matchingVariant || null);
     };
 
     // Update selected attributes when selectedVariant changes externally
     useEffect(() => {
         if (selectedVariant) {
+            // Use the selectedOption if available, otherwise use value
+            const valueToUse = selectedVariant.selectedOption || selectedVariant.value;
             setSelectedAttributes({
-                [selectedVariant.name]: selectedVariant.value,
+                [selectedVariant.name]: valueToUse,
             });
         } else {
             setSelectedAttributes({});
@@ -94,7 +150,10 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         );
     };
 
-    const variantGroups = groupVariantsByName();
+    const variantGroups = parseVariantOptions();
+
+    // Debug logging
+    console.log('🔍 Parsed variant groups:', variantGroups);
 
     if (!variants || variants.length === 0) {
         return (
@@ -158,11 +217,12 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
                                 <option value="">
                                     {t('product.selectOption', `Select ${attributeName}`)}
                                 </option>
-                                {attributeVariants.map((variant) => {
+                                {attributeVariants.map((variant, index) => {
                                     const isAvailable = isVariantAvailableEnhanced(variant);
+                                    const uniqueKey = `${attributeName}-${variant.value}-${index}`;
                                     return (
                                         <option
-                                            key={variant.value}
+                                            key={uniqueKey}
                                             value={variant.value}
                                             disabled={!isAvailable}
                                         >
