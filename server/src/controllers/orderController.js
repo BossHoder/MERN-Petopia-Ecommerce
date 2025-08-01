@@ -67,12 +67,16 @@ const createOrder = asyncHandler(async (req, res) => {
                 return validationErrorResponse(res, couponValidation.message);
             }
 
+            // Get the full coupon document to get the ID
+            const Coupon = (await import('../models/Coupon.js')).default;
+            const couponDoc = await Coupon.findOne({ code: appliedCoupon.code.toUpperCase() });
+
             validatedCoupon = {
                 code: appliedCoupon.code,
                 discountType: appliedCoupon.discountType,
                 discountValue: appliedCoupon.discountValue,
                 discountAmount: couponValidation.discountAmount,
-                couponId: couponValidation.coupon._id,
+                couponId: couponDoc._id,
             };
 
             console.log('✅ Coupon validated:', validatedCoupon);

@@ -1357,4 +1357,53 @@ export default {
             return errorResponse(res, 'Failed to update coupon status', 500);
         }
     }),
+
+    // ===========================================
+    // SLUG VALIDATION ENDPOINTS
+    // ===========================================
+
+    // Check if category slug exists
+    checkCategorySlugExists: asyncHandler(async (req, res) => {
+        const { slug } = req.params;
+        const { id } = req.query; // Optional: exclude current category when editing
+
+        const query = { slug };
+        if (id) {
+            query._id = { $ne: id };
+        }
+
+        const existingCategory = await Category.findOne(query);
+
+        successResponse(res, { exists: !!existingCategory }, 'Slug check completed');
+    }),
+
+    // Check if parent category slug exists
+    checkParentCategorySlugExists: asyncHandler(async (req, res) => {
+        const { slug } = req.params;
+        const { id } = req.query; // Optional: exclude current parent category when editing
+
+        const query = { slug };
+        if (id) {
+            query._id = { $ne: id };
+        }
+
+        const existingParentCategory = await ParentCategory.findOne(query);
+
+        successResponse(res, { exists: !!existingParentCategory }, 'Slug check completed');
+    }),
+
+    // Check if product slug exists
+    checkProductSlugExists: asyncHandler(async (req, res) => {
+        const { slug } = req.params;
+        const { id } = req.query; // Optional: exclude current product when editing
+
+        const query = { slug };
+        if (id) {
+            query._id = { $ne: id };
+        }
+
+        const existingProduct = await Product.findOne(query);
+
+        successResponse(res, { exists: !!existingProduct }, 'Slug check completed');
+    }),
 };

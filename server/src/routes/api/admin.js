@@ -45,6 +45,7 @@ router.delete('/users/:id', adminController.deleteUser);
 
 // Products Management (Enhanced)
 router.get('/products', adminController.getAllProductsAdmin);
+router.get('/products/check-slug/:slug', adminController.checkProductSlugExists);
 router.get('/products/:id', adminController.getProductById);
 router.post('/products', upload.any(), adminController.createProduct);
 router.put('/products/:id', upload.any(), adminController.updateProduct);
@@ -56,6 +57,7 @@ router.put('/products/:id/publish', adminController.toggleProductPublish);
 
 // Parent Categories Management
 router.get('/parent-categories', adminController.getAllParentCategoriesAdmin);
+router.get('/parent-categories/check-slug/:slug', adminController.checkParentCategorySlugExists);
 router.get('/parent-categories/:id', adminController.getParentCategoryById);
 router.post('/parent-categories', adminController.createParentCategory);
 router.put('/parent-categories/:id', adminController.updateParentCategory);
@@ -64,6 +66,7 @@ router.post('/parent-categories/bulk-delete', adminController.bulkDeleteParentCa
 
 // Categories Management
 router.get('/categories', adminController.getAllCategoriesAdmin);
+router.get('/categories/check-slug/:slug', adminController.checkCategorySlugExists);
 router.get('/categories/:id', adminController.getCategoryById);
 router.post('/categories', adminController.createCategory);
 router.put('/categories/:id', adminController.updateCategory);

@@ -7,8 +7,9 @@ import { useI18n } from '../../../hooks/useI18n';
 import {
     createParentCategory,
     updateParentCategory,
-    clearAdminErrors
+    clearAdminErrors,
 } from '../../../store/actions/adminActions';
+import SlugInput from '../../../components/SlugInput/SlugInput';
 import API from '../../../services/api';
 
 const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
@@ -17,11 +18,22 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
     const [initialData, setInitialData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const {
-        parentCategoryCreateLoading,
-        parentCategoryUpdateLoading,
-        error
-    } = useSelector(state => state.admin);
+    // Check if parent category slug exists
+    const checkParentCategorySlugExists = async (slug) => {
+        if (!slug || slug === initialData?.slug) return false;
+
+        try {
+            const response = await API.get(`/api/admin/parent-categories/check-slug/${slug}`);
+            return response.data.exists;
+        } catch (error) {
+            console.warn('Error checking parent category slug:', error);
+            return false;
+        }
+    };
+
+    const { parentCategoryCreateLoading, parentCategoryUpdateLoading, error } = useSelector(
+        (state) => state.admin,
+    );
 
     // Validation schema based on server model
     const validationSchema = Yup.object({
@@ -29,22 +41,36 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
             .min(2, t('validation.parentCategory.nameMin', 'Name must be at least 2 characters'))
             .max(100, t('validation.parentCategory.nameMax', 'Name cannot exceed 100 characters'))
             .required(t('validation.parentCategory.nameRequired', 'Name is required')),
-        
+
         slug: Yup.string()
-            .matches(/^[a-z0-9-]+$/, t('validation.parentCategory.slugPattern', 'Slug can only contain lowercase letters, numbers, and hyphens'))
+            .matches(
+                /^[a-z0-9-]+$/,
+                t(
+                    'validation.parentCategory.slugPattern',
+                    'Slug can only contain lowercase letters, numbers, and hyphens',
+                ),
+            )
             .min(2, t('validation.parentCategory.slugMin', 'Slug must be at least 2 characters'))
             .max(100, t('validation.parentCategory.slugMax', 'Slug cannot exceed 100 characters')),
-        
+
         description: Yup.string()
-            .max(500, t('validation.parentCategory.descriptionMax', 'Description cannot exceed 500 characters'))
-            .required(t('validation.parentCategory.descriptionRequired', 'Description is required')),
-        
+            .max(
+                500,
+                t(
+                    'validation.parentCategory.descriptionMax',
+                    'Description cannot exceed 500 characters',
+                ),
+            )
+            .required(
+                t('validation.parentCategory.descriptionRequired', 'Description is required'),
+            ),
+
         image: Yup.string()
             .url(t('validation.parentCategory.imageUrl', 'Please enter a valid image URL'))
             .required(t('validation.parentCategory.imageRequired', 'Image URL is required')),
-        
+
         isPublished: Yup.boolean(),
-        sortOrder: Yup.number().integer().min(0)
+        sortOrder: Yup.number().integer().min(0),
     });
 
     // Load existing data for edit mode
@@ -53,10 +79,17 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
             const loadParentCategory = async () => {
                 try {
                     setLoading(true);
-                    const response = await API.get(`/api/admin/parent-categories/${parentCategoryId}`);
+                    const response = await API.get(
+                        `/api/admin/parent-categories/${parentCategoryId}`,
+                    );
                     setInitialData(response.data.data.parentCategory);
                 } catch (error) {
-                    toast.error(t('admin.parentCategories.loadError', 'Failed to load parent category data'));
+                    toast.error(
+                        t(
+                            'admin.parentCategories.loadError',
+                            'Failed to load parent category data',
+                        ),
+                    );
                     onClose();
                 } finally {
                     setLoading(false);
@@ -71,10 +104,20 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
         try {
             if (mode === 'addnew') {
                 await dispatch(createParentCategory(values));
-                toast.success(t('admin.parentCategories.createSuccess', 'Parent category created successfully'));
+                toast.success(
+                    t(
+                        'admin.parentCategories.createSuccess',
+                        'Parent category created successfully',
+                    ),
+                );
             } else {
                 await dispatch(updateParentCategory(parentCategoryId, values));
-                toast.success(t('admin.parentCategories.updateSuccess', 'Parent category updated successfully'));
+                toast.success(
+                    t(
+                        'admin.parentCategories.updateSuccess',
+                        'Parent category updated successfully',
+                    ),
+                );
             }
             onSuccess();
         } catch (error) {
@@ -84,15 +127,7 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
         }
     };
 
-    // Generate slug from name
-    const generateSlug = (name) => {
-        return name
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-    };
+    // Slug will be handled by SlugInput component
 
     const initialValues = initialData || {
         name: '',
@@ -100,7 +135,7 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
         description: '',
         image: '',
         isPublished: true,
-        sortOrder: 0
+        sortOrder: 0,
     };
 
     if (loading) {
@@ -118,10 +153,9 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
         <div className="admin-form-container">
             <div className="admin-form-header">
                 <h2>
-                    {mode === 'addnew' 
+                    {mode === 'addnew'
                         ? t('admin.parentCategories.addNew', 'Add New Parent Category')
-                        : t('admin.parentCategories.edit', 'Edit Parent Category')
-                    }
+                        : t('admin.parentCategories.edit', 'Edit Parent Category')}
                 </h2>
                 <button className="admin-form-close" onClick={onClose}>
                     ✕
@@ -146,17 +180,19 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                                     type="text"
                                     id="name"
                                     name="name"
-                                    className={`admin-form-input ${errors.name && touched.name ? 'error' : ''}`}
-                                    placeholder={t('admin.parentCategories.namePlaceholder', 'Enter parent category name')}
-                                    onChange={(e) => {
-                                        setFieldValue('name', e.target.value);
-                                        // Auto-generate slug if it's empty or matches the previous name
-                                        if (!values.slug || values.slug === generateSlug(values.name)) {
-                                            setFieldValue('slug', generateSlug(e.target.value));
-                                        }
-                                    }}
+                                    className={`admin-form-input ${
+                                        errors.name && touched.name ? 'error' : ''
+                                    }`}
+                                    placeholder={t(
+                                        'admin.parentCategories.namePlaceholder',
+                                        'Enter parent category name',
+                                    )}
                                 />
-                                <ErrorMessage name="name" component="div" className="admin-form-error" />
+                                <ErrorMessage
+                                    name="name"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
                             </div>
 
                             {/* Slug Field */}
@@ -164,17 +200,21 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                                 <label htmlFor="slug" className="admin-form-label">
                                     {t('admin.parentCategories.slug', 'Slug')}
                                 </label>
-                                <Field
-                                    type="text"
-                                    id="slug"
-                                    name="slug"
-                                    className={`admin-form-input ${errors.slug && touched.slug ? 'error' : ''}`}
-                                    placeholder={t('admin.parentCategories.slugPlaceholder', 'URL-friendly version (auto-generated)')}
+                                <SlugInput
+                                    nameValue={values.name}
+                                    slugValue={values.slug}
+                                    onSlugChange={(slug) => setFieldValue('slug', slug)}
+                                    checkSlugExists={checkParentCategorySlugExists}
+                                    disabled={isSubmitting}
+                                    required={false}
+                                    showValidation={true}
+                                    autoGenerate={true}
                                 />
-                                <ErrorMessage name="slug" component="div" className="admin-form-error" />
-                                <div className="admin-form-help">
-                                    {t('admin.parentCategories.slugHelp', 'Leave empty to auto-generate from name')}
-                                </div>
+                                <ErrorMessage
+                                    name="slug"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
                             </div>
 
                             {/* Description Field */}
@@ -187,10 +227,19 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                                     id="description"
                                     name="description"
                                     rows="4"
-                                    className={`admin-form-textarea ${errors.description && touched.description ? 'error' : ''}`}
-                                    placeholder={t('admin.parentCategories.descriptionPlaceholder', 'Describe this parent category...')}
+                                    className={`admin-form-textarea ${
+                                        errors.description && touched.description ? 'error' : ''
+                                    }`}
+                                    placeholder={t(
+                                        'admin.parentCategories.descriptionPlaceholder',
+                                        'Describe this parent category...',
+                                    )}
                                 />
-                                <ErrorMessage name="description" component="div" className="admin-form-error" />
+                                <ErrorMessage
+                                    name="description"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
                             </div>
 
                             {/* Image URL Field */}
@@ -202,13 +251,26 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                                     type="url"
                                     id="image"
                                     name="image"
-                                    className={`admin-form-input ${errors.image && touched.image ? 'error' : ''}`}
-                                    placeholder={t('admin.parentCategories.imagePlaceholder', 'https://example.com/image.jpg')}
+                                    className={`admin-form-input ${
+                                        errors.image && touched.image ? 'error' : ''
+                                    }`}
+                                    placeholder={t(
+                                        'admin.parentCategories.imagePlaceholder',
+                                        'https://example.com/image.jpg',
+                                    )}
                                 />
-                                <ErrorMessage name="image" component="div" className="admin-form-error" />
+                                <ErrorMessage
+                                    name="image"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
                                 {values.image && (
                                     <div className="admin-form-image-preview">
-                                        <img src={values.image} alt="Preview" onError={(e) => e.target.style.display = 'none'} />
+                                        <img
+                                            src={values.image}
+                                            alt="Preview"
+                                            onError={(e) => (e.target.style.display = 'none')}
+                                        />
                                     </div>
                                 )}
                             </div>
@@ -240,12 +302,21 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                                     id="sortOrder"
                                     name="sortOrder"
                                     min="0"
-                                    className={`admin-form-input ${errors.sortOrder && touched.sortOrder ? 'error' : ''}`}
+                                    className={`admin-form-input ${
+                                        errors.sortOrder && touched.sortOrder ? 'error' : ''
+                                    }`}
                                     placeholder="0"
                                 />
-                                <ErrorMessage name="sortOrder" component="div" className="admin-form-error" />
+                                <ErrorMessage
+                                    name="sortOrder"
+                                    component="div"
+                                    className="admin-form-error"
+                                />
                                 <div className="admin-form-help">
-                                    {t('admin.parentCategories.sortOrderHelp', 'Lower numbers appear first')}
+                                    {t(
+                                        'admin.parentCategories.sortOrderHelp',
+                                        'Lower numbers appear first',
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -263,14 +334,17 @@ const ParentCategoryForm = ({ mode, parentCategoryId, onClose, onSuccess }) => {
                             <button
                                 type="submit"
                                 className="admin-btn admin-btn-primary"
-                                disabled={isSubmitting || parentCategoryCreateLoading || parentCategoryUpdateLoading}
-                            >
-                                {isSubmitting 
-                                    ? t('common.saving', 'Saving...')
-                                    : mode === 'addnew' 
-                                        ? t('admin.parentCategories.create', 'Create Parent Category')
-                                        : t('admin.parentCategories.update', 'Update Parent Category')
+                                disabled={
+                                    isSubmitting ||
+                                    parentCategoryCreateLoading ||
+                                    parentCategoryUpdateLoading
                                 }
+                            >
+                                {isSubmitting
+                                    ? t('common.saving', 'Saving...')
+                                    : mode === 'addnew'
+                                    ? t('admin.parentCategories.create', 'Create Parent Category')
+                                    : t('admin.parentCategories.update', 'Update Parent Category')}
                             </button>
                         </div>
                     </Form>

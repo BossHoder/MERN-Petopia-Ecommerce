@@ -13,6 +13,7 @@ import { getAllCategories } from '../../../store/actions/categoryActions';
 import ImageUpload from '../../../components/Admin/ImageUpload';
 import AttributesManager from '../../../components/Admin/AttributesManager';
 import VariantsManager from '../../../components/Admin/VariantsManager';
+import SlugInput from '../../../components/SlugInput/SlugInput';
 import API from '../../../services/api';
 
 const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
@@ -20,6 +21,19 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
     const dispatch = useDispatch();
     const [initialData, setInitialData] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    // Check if product slug exists
+    const checkProductSlugExists = async (slug) => {
+        if (!slug || slug === initialData?.slug) return false;
+
+        try {
+            const response = await API.get(`/api/admin/products/check-slug/${slug}`);
+            return response.data.exists;
+        } catch (error) {
+            console.warn('Error checking product slug:', error);
+            return false;
+        }
+    };
 
     const { productCreateLoading, productUpdateLoading, error } = useSelector(
         (state) => state.admin,
@@ -122,7 +136,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
 
             // Add basic fields
             formData.append('name', values.name);
-            formData.append('slug', values.slug || generateSlug(values.name));
+            formData.append('slug', values.slug || '');
             formData.append('description', values.description);
             formData.append('price', values.price);
             formData.append('category', values.category);
@@ -202,15 +216,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
         }
     };
 
-    // Generate slug from name
-    const generateSlug = (name) => {
-        return name
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-    };
+    // Slug will be handled by SlugInput component
 
     // Process initial data to fix loading issues
     const processInitialData = (data) => {
@@ -297,16 +303,6 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                                         'admin.products.namePlaceholder',
                                         'Enter product name',
                                     )}
-                                    onChange={(e) => {
-                                        setFieldValue('name', e.target.value);
-                                        // Auto-generate slug if it's empty or matches the previous name
-                                        if (
-                                            !values.slug ||
-                                            values.slug === generateSlug(values.name)
-                                        ) {
-                                            setFieldValue('slug', generateSlug(e.target.value));
-                                        }
-                                    }}
                                 />
                                 <ErrorMessage
                                     name="name"
@@ -320,29 +316,21 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                                 <label htmlFor="slug" className="admin-form-label">
                                     {t('admin.products.slug', 'Slug')}
                                 </label>
-                                <Field
-                                    type="text"
-                                    id="slug"
-                                    name="slug"
-                                    className={`admin-form-input ${
-                                        errors.slug && touched.slug ? 'error' : ''
-                                    }`}
-                                    placeholder={t(
-                                        'admin.products.slugPlaceholder',
-                                        'URL-friendly version (auto-generated)',
-                                    )}
+                                <SlugInput
+                                    nameValue={values.name}
+                                    slugValue={values.slug}
+                                    onSlugChange={(slug) => setFieldValue('slug', slug)}
+                                    checkSlugExists={checkProductSlugExists}
+                                    disabled={isSubmitting}
+                                    required={false}
+                                    showValidation={true}
+                                    autoGenerate={true}
                                 />
                                 <ErrorMessage
                                     name="slug"
                                     component="div"
                                     className="admin-form-error"
                                 />
-                                <div className="admin-form-help">
-                                    {t(
-                                        'admin.products.slugHelp',
-                                        'Leave empty to auto-generate from name',
-                                    )}
-                                </div>
                             </div>
 
                             {/* SKU Field */}

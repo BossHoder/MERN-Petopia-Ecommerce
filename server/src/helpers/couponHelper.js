@@ -93,6 +93,7 @@ export const validateCouponForOrder = async (couponCode, userId, orderValue, car
                 description: coupon.description,
                 discountType: coupon.discountType,
                 discountValue: coupon.discountValue,
+                maxDiscountAmount: coupon.maxDiscountAmount,
             },
         };
     } catch (error) {

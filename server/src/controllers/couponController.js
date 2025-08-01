@@ -181,7 +181,7 @@ const validateCoupon = asyncHandler(async (req, res) => {
     }
 
     try {
-        const result = await couponService.validateCouponForOrder(code.toUpperCase(), orderValue, userId);
+        const result = await couponService.validateCoupon(code.toUpperCase(), userId, orderValue);
 
         if (!result.success) {
             return errorResponse(res, result.error, 400);
@@ -192,13 +192,13 @@ const validateCoupon = asyncHandler(async (req, res) => {
             {
                 valid: true,
                 coupon: {
-                    id: result.coupon.id,
-                    code: result.coupon.code,
-                    discountType: result.coupon.discountType,
-                    discountValue: result.coupon.discountValue,
-                    maxDiscountAmount: result.coupon.maxDiscountAmount,
+                    code: result.validation.coupon.code,
+                    description: result.validation.coupon.description,
+                    discountType: result.validation.coupon.discountType,
+                    discountValue: result.validation.coupon.discountValue,
+                    maxDiscountAmount: result.validation.coupon.maxDiscountAmount,
                 },
-                discountAmount: result.discountAmount,
+                discountAmount: result.validation.discountAmount,
             },
             'Coupon is valid',
         );
