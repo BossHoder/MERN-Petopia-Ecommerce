@@ -1,266 +1,179 @@
-import mongoose from 'mongoose';
-
-// ===========================================
-// SAMPLE CATEGORIES DATA
-// ===========================================
-// Updated to match Category model schema requirements
-// Note: parentCategory will be populated with actual ObjectIds during seeding
-
 const sampleCategories = [
-    // DOG CATEGORIES
+    // Categories cho chó
     {
-        name: 'Dry Dog Food',
-        slug: 'dry-dog-food',
-        // parentCategory will be set to Dog Supplies ObjectId during seeding
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dry-dog-food-icon.png',
-        description: 'Premium dry food for dogs of all ages and sizes',
+        name: 'Đồ chơi cho chó',
+        slug: 'do-choi-cho-cho',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-toys.png',
+        description: 'Các loại đồ chơi vui nhộn và an toàn cho chó',
         isPublished: true,
         sortOrder: 1,
     },
     {
-        name: 'Wet Dog Food',
-        slug: 'wet-dog-food',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/wet-dog-food-icon.png',
-        description: 'Nutritious wet food and canned meals for dogs',
+        name: 'Đồ huấn luyện',
+        slug: 'do-huan-luyen',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/training-tools.png',
+        description: 'Dụng cụ hỗ trợ huấn luyện chó hiệu quả',
         isPublished: true,
         sortOrder: 2,
     },
     {
-        name: 'Dog Bones & Treats',
-        slug: 'dog-bones-treats',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-bones-treats-icon.png',
-        description: 'Healthy treats, bones and chews for training and rewards',
+        name: 'Thức ăn hạt khô cho chó',
+        slug: 'thuc-an-hat-kho-cho-cho',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-dry-food.png',
+        description: 'Thức ăn hạt khô dinh dưỡng cho chó mọi lứa tuổi',
         isPublished: true,
         sortOrder: 3,
     },
     {
-        name: 'Dog Vitamins & Supplements',
-        slug: 'dog-vitamins-supplements',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-vitamins-supplements-icon.png',
-        description: 'Health supplements and vitamins for optimal dog wellness',
+        name: 'Thức ăn hạt mềm cho chó',
+        slug: 'thuc-an-hat-mem-cho-cho',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-wet-food.png',
+        description: 'Thức ăn hạt mềm thơm ngon cho chó',
         isPublished: true,
         sortOrder: 4,
     },
     {
-        name: 'Dog Toys',
-        slug: 'dog-toys',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-toys-icon.png',
-        description: 'Interactive toys, balls and entertainment for dogs',
+        name: 'Xương, bánh thưởng',
+        slug: 'xuong-banh-thuong',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-treats.png',
+        description: 'Xương và bánh thưởng bổ dưỡng cho chó',
         isPublished: true,
         sortOrder: 5,
     },
     {
-        name: 'Dog Collars & Leashes',
-        slug: 'dog-collars-leashes',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-collars-leashes-icon.png',
-        description: 'Collars, leashes, harnesses and walking accessories',
+        name: 'Pate - Súp thưởng cho chó',
+        slug: 'pate-sup-thuong-cho-cho',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-pate.png',
+        description: 'Pate và súp thưởng thơm ngon cho chó',
         isPublished: true,
         sortOrder: 6,
     },
     {
-        name: 'Dog Clothing & Fashion Accessories',
-        slug: 'dog-clothing-fashion-accessories',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-clothing-fashion-accessories-icon.png',
-        description: 'Stylish clothing, costumes and fashion accessories for dogs',
+        name: 'Khay vệ sinh, hót phân',
+        slug: 'khay-ve-sinh-hot-phan',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-toilet.png',
+        description: 'Khay vệ sinh và dụng cụ hót phân cho chó',
         isPublished: true,
         sortOrder: 7,
     },
-
-    // CAT CATEGORIES
     {
-        name: 'Dry Cat Food',
-        slug: 'dry-cat-food',
-        parentCategory: null, // Will be populated by seed script (Cat Supplies)
-        iconUrl: 'https://example.com/icons/dry-cat-food-icon.png',
-        description: 'Premium dry kibble for cats of all life stages',
+        name: 'Tã lót, bỉm',
+        slug: 'ta-lot-bim',
+        parentCategoryName: 'Dành cho chó',
+        iconUrl: '/images/categories/dog-diapers.png',
+        description: 'Tã lót và bỉm vệ sinh cho chó',
         isPublished: true,
         sortOrder: 8,
     },
+
+    // Categories cho mèo
     {
-        name: 'Wet Cat Food',
-        slug: 'wet-cat-food',
-        parentCategory: null, // Will be populated by seed script (Cat Supplies)
-        iconUrl: 'https://example.com/icons/wet-cat-food-icon.png',
-        description: 'Delicious wet food and pate for cats',
+        name: 'Thức ăn hạt khô cho mèo',
+        slug: 'thuc-an-hat-kho-cho-meo',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-dry-food.png',
+        description: 'Thức ăn hạt khô dinh dưỡng cho mèo',
         isPublished: true,
-        sortOrder: 9,
+        sortOrder: 1,
     },
     {
-        name: 'Cat Treats',
-        slug: 'cat-treats',
-        parentCategory: null, // Will be populated by seed script (Cat Supplies)
-        iconUrl: 'https://example.com/icons/cat-treats-icon.png',
-        description: 'Tasty treats and snacks for cats',
+        name: 'Pate - Súp thưởng cho mèo',
+        slug: 'pate-sup-thuong-cho-meo',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-pate.png',
+        description: 'Pate và súp thưởng thơm ngon cho mèo',
         isPublished: true,
-        sortOrder: 10,
+        sortOrder: 2,
     },
     {
-        name: 'Cat Toys',
-        slug: 'cat-toys',
-        parentCategory: null, // Will be populated by seed script (Cat Supplies)
-        iconUrl: 'https://example.com/icons/cat-toys-icon.png',
-        description: 'Interactive toys, mice and entertainment for cats',
+        name: 'Bóng, chuột, cần câu',
+        slug: 'bong-chuot-can-cau',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-toys.png',
+        description: 'Đồ chơi bóng, chuột giả và cần câu cho mèo',
         isPublished: true,
-        sortOrder: 11,
+        sortOrder: 3,
     },
     {
-        name: 'Cat Litter & Accessories',
-        slug: 'cat-litter-accessories',
-        parentCategory: null, // Will be populated by seed script (Cat Supplies)
-        iconUrl: 'https://example.com/icons/cat-litter-accessories-icon.png',
-        description: 'Cat litter, litter boxes and cleaning accessories',
+        name: 'Bàn cào, trụ cào móng',
+        slug: 'ban-cao-tru-cao-mong',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-scratching.png',
+        description: 'Bàn cào và trụ cào móng cho mèo',
         isPublished: true,
-        sortOrder: 12,
+        sortOrder: 4,
+    },
+    {
+        name: 'Cát vệ sinh',
+        slug: 'cat-ve-sinh',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-litter.png',
+        description: 'Cát vệ sinh chất lượng cao cho mèo',
+        isPublished: true,
+        sortOrder: 5,
+    },
+    {
+        name: 'Khay, xẻng, nhà vệ sinh',
+        slug: 'khay-xeng-nha-ve-sinh',
+        parentCategoryName: 'Dành cho mèo',
+        iconUrl: '/images/categories/cat-toilet.png',
+        description: 'Khay, xẻng và nhà vệ sinh cho mèo',
+        isPublished: true,
+        sortOrder: 6,
     },
 
-    // BIRD CATEGORIES
+    // Categories cho chó mèo
     {
-        name: 'Bird Food',
-        slug: 'bird-food',
-        parentCategory: null, // Will be populated by seed script (Bird Supplies)
-        iconUrl: 'https://example.com/icons/bird-food-icon.png',
-        description: 'Nutritious seeds, pellets and food for all bird species',
+        name: 'Bát ăn và uống',
+        slug: 'bat-an-va-uong',
+        parentCategoryName: 'Dành cho chó mèo',
+        iconUrl: '/images/categories/pet-bowls.png',
+        description: 'Bát ăn và uống cho chó mèo',
         isPublished: true,
-        sortOrder: 13,
+        sortOrder: 1,
     },
     {
-        name: 'Bird Cages & Accessories',
-        slug: 'bird-cages-accessories',
-        parentCategory: null, // Will be populated by seed script (Bird Supplies)
-        iconUrl: 'https://example.com/icons/bird-cages-accessories-icon.png',
-        description: 'Cages, perches, feeders and habitat accessories for birds',
+        name: 'Vòng cổ, yếm và dây dắt',
+        slug: 'vong-co-yem-va-day-dat',
+        parentCategoryName: 'Dành cho chó mèo',
+        iconUrl: '/images/categories/pet-collars.png',
+        description: 'Vòng cổ, yếm và dây dắt cho thú cưng',
         isPublished: true,
-        sortOrder: 14,
-    },
-
-    // FISH CATEGORIES
-    {
-        name: 'Fish Food',
-        slug: 'fish-food',
-        parentCategory: null, // Will be populated by seed script (Fish Supplies)
-        iconUrl: 'https://example.com/icons/fish-food-icon.png',
-        description: 'Specialized food for freshwater and saltwater fish',
-        isPublished: true,
-        sortOrder: 15,
+        sortOrder: 2,
     },
     {
-        name: 'Aquarium Equipment',
-        slug: 'aquarium-equipment',
-        parentCategory: null, // Will be populated by seed script (Fish Supplies)
-        iconUrl: 'https://example.com/icons/aquarium-equipment-icon.png',
-        description: 'Tanks, filters, heaters and aquarium maintenance equipment',
+        name: 'Lồng, Balo',
+        slug: 'long-balo',
+        parentCategoryName: 'Dành cho chó mèo',
+        iconUrl: '/images/categories/pet-carriers.png',
+        description: 'Lồng và balo vận chuyển thú cưng',
         isPublished: true,
-        sortOrder: 16,
-    },
-
-    // MISSING DOG CATEGORIES
-    {
-        name: 'Dog Crates, Beds & Houses',
-        slug: 'dog-crates-beds-houses',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-crates-beds-houses-icon.png',
-        description: 'Comfortable crates, beds, houses and sleeping solutions for dogs',
-        isPublished: true,
-        sortOrder: 17,
+        sortOrder: 3,
     },
     {
-        name: 'Dog Food Bowls & Waterers',
-        slug: 'dog-food-bowls-waterers',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-food-bowls-waterers-icon.png',
-        description: 'Food bowls, water dispensers and feeding accessories for dogs',
+        name: 'Ổ, giường',
+        slug: 'o-giuong',
+        parentCategoryName: 'Dành cho chó mèo',
+        iconUrl: '/images/categories/pet-beds.png',
+        description: 'Ổ và giường thoải mái cho thú cưng',
         isPublished: true,
-        sortOrder: 18,
+        sortOrder: 4,
     },
     {
-        name: 'Dog Shampoos & Grooming Products',
-        slug: 'dog-shampoos-grooming-products',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/dog-shampoos-grooming-products-icon.png',
-        description: 'Shampoos, conditioners, brushes and grooming supplies for dogs',
+        name: 'Trang phục',
+        slug: 'trang-phuc',
+        parentCategoryName: 'Dành cho chó mèo',
+        iconUrl: '/images/categories/pet-clothes.png',
+        description: 'Trang phục thời trang cho thú cưng',
         isPublished: true,
-        sortOrder: 19,
-    },
-
-    // MISSING CAT CATEGORIES
-    {
-        name: 'Cat Dry Food & Kibble',
-        slug: 'cat-dry-food-kibble',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-dry-food-kibble-icon.png',
-        description: 'Premium dry kibble and crunchy food for cats',
-        isPublished: true,
-        sortOrder: 20,
-    },
-    {
-        name: 'Cat Wet Food & Pate',
-        slug: 'cat-wet-food-pate',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-wet-food-pate-icon.png',
-        description: 'Delicious wet food, pate and canned meals for cats',
-        isPublished: true,
-        sortOrder: 21,
-    },
-    {
-        name: 'Cat Catnip & Snacks',
-        slug: 'cat-catnip-snacks',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-catnip-snacks-icon.png',
-        description: 'Catnip, treats and healthy snacks for cats',
-        isPublished: true,
-        sortOrder: 22,
-    },
-    {
-        name: 'Cat Toys & Teasers',
-        slug: 'cat-toys-teasers',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-toys-teasers-icon.png',
-        description: 'Interactive toys, teasers and play accessories for cats',
-        isPublished: true,
-        sortOrder: 23,
-    },
-    {
-        name: 'Cat Scratching Posts & Cat Trees',
-        slug: 'cat-scratching-posts-cat-trees',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-scratching-posts-cat-trees-icon.png',
-        description: 'Scratching posts, cat trees and climbing structures',
-        isPublished: true,
-        sortOrder: 24,
-    },
-    {
-        name: 'Cat Litter & Litter Boxes',
-        slug: 'cat-litter-litter-boxes',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-litter-litter-boxes-icon.png',
-        description: 'Cat litter, litter boxes and waste management supplies',
-        isPublished: true,
-        sortOrder: 25,
-    },
-    {
-        name: 'Cat Carriers & Travel Bags',
-        slug: 'cat-carriers-travel-bags',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-carriers-travel-bags-icon.png',
-        description: 'Safe and comfortable carriers for cat travel',
-        isPublished: true,
-        sortOrder: 26,
-    },
-    {
-        name: 'Cat Crates, Beds & Houses',
-        slug: 'cat-crates-beds-houses',
-        parentCategory: null, // Will be populated by seed script
-        iconUrl: 'https://example.com/icons/cat-crates-beds-houses-icon.png',
-        description: 'Comfortable beds, houses and resting places for cats',
-        isPublished: true,
-        sortOrder: 27,
+        sortOrder: 5,
     },
 ];
 
