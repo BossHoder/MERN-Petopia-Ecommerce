@@ -483,6 +483,26 @@
         "email": {
             "required": "Email là bắt buộc",
             "invalid": "Email không hợp lệ"
+        },
+        "product": {
+            "nameRequired": "Tên là bắt buộc",
+            "nameMin": "Tên phải có ít nhất 2 ký tự",
+            "nameMax": "Tên không được vượt quá 200 ký tự",
+            "slugPattern": "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
+            "slugMin": "Slug phải có ít nhất 2 ký tự",
+            "slugMax": "Slug không được vượt quá 200 ký tự",
+            "descriptionRequired": "Mô tả là bắt buộc",
+            "descriptionMin": "Mô tả phải có ít nhất 10 ký tự",
+            "priceRequired": "Giá là bắt buộc",
+            "priceMin": "Giá phải lớn hơn 0",
+            "categoryRequired": "Danh mục là bắt buộc",
+            "stockRequired": "Tồn kho là bắt buộc",
+            "stockMin": "Tồn kho không được âm",
+            "stockInteger": "Tồn kho phải là số nguyên",
+            "imagesRequired": "Ít nhất một hình ảnh là bắt buộc",
+            "imageUrl": "Vui lòng nhập URL hình ảnh hợp lệ",
+            "skuMax": "SKU không được vượt quá 100 ký tự",
+            "brandMax": "Thương hiệu không được vượt quá 100 ký tự"
         }
     },
     "cart": {

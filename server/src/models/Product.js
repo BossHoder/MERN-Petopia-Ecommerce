@@ -29,11 +29,6 @@ const variantSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    // Variant-specific attributes (size, color, material, etc.)
-    attributes: {
-        type: mongoose.Schema.Types.Mixed,
-        default: {},
-    },
     // Variant images
     images: [
         {

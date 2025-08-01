@@ -16,7 +16,6 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
             sku: '',
             price: basePrice,
             stock: 0,
-            attributes: {},
             images: [],
             isActive: true,
         };
@@ -42,36 +41,6 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
             ...updatedVariants[index],
             [field]: value,
         };
-        onVariantsChange(updatedVariants);
-    };
-
-    // Update variant attribute
-    const updateVariantAttribute = (index, attributeKey, value) => {
-        const updatedVariants = [...variants];
-        const currentAttributes = { ...updatedVariants[index].attributes };
-
-        if (value === '' || value === null || value === undefined) {
-            // Remove the attribute if value is empty
-            delete currentAttributes[attributeKey];
-        } else {
-            // Set the attribute value
-            currentAttributes[attributeKey] = value;
-        }
-
-        updatedVariants[index] = {
-            ...updatedVariants[index],
-            attributes: currentAttributes,
-        };
-
-        // Debug logging (can be removed in production)
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`🔧 Updated variant ${index} attribute ${attributeKey}:`, {
-                value,
-                allAttributes: currentAttributes,
-                variant: updatedVariants[index],
-            });
-        }
-
         onVariantsChange(updatedVariants);
     };
 
@@ -337,84 +306,6 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                                                 className="form-input"
                                                 placeholder="0"
                                             />
-                                        </div>
-                                    </div>
-
-                                    {/* Variant Attributes */}
-                                    <div className="variant-attributes">
-                                        <label className="form-label">
-                                            {t(
-                                                'admin.products.variants.attributes',
-                                                'Variant Attributes',
-                                            )}
-                                        </label>
-                                        <div className="attributes-grid">
-                                            <div className="attribute-group">
-                                                <label className="attribute-label">
-                                                    {t('admin.products.variants.size', 'Size')}
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={variant.attributes?.size || ''}
-                                                    onChange={(e) =>
-                                                        updateVariantAttribute(
-                                                            index,
-                                                            'size',
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="attribute-input"
-                                                    placeholder={t(
-                                                        'admin.products.variants.sizePlaceholder',
-                                                        'e.g., S, M, L, XL',
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="attribute-group">
-                                                <label className="attribute-label">
-                                                    {t('admin.products.variants.color', 'Color')}
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={variant.attributes?.color || ''}
-                                                    onChange={(e) =>
-                                                        updateVariantAttribute(
-                                                            index,
-                                                            'color',
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="attribute-input"
-                                                    placeholder={t(
-                                                        'admin.products.variants.colorPlaceholder',
-                                                        'e.g., Red, Blue, Green',
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="attribute-group">
-                                                <label className="attribute-label">
-                                                    {t(
-                                                        'admin.products.variants.material',
-                                                        'Material',
-                                                    )}
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={variant.attributes?.material || ''}
-                                                    onChange={(e) =>
-                                                        updateVariantAttribute(
-                                                            index,
-                                                            'material',
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                    className="attribute-input"
-                                                    placeholder={t(
-                                                        'admin.products.variants.materialPlaceholder',
-                                                        'e.g., Cotton, Leather',
-                                                    )}
-                                                />
-                                            </div>
                                         </div>
                                     </div>
 

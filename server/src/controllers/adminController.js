@@ -815,9 +815,6 @@ export default {
                     hasStockQuantity: !!variant.stockQuantity,
                     stockValue: variant.stock,
                     stockQuantityValue: variant.stockQuantity,
-                    hasAttributes: !!variant.attributes,
-                    attributesKeys: variant.attributes ? Object.keys(variant.attributes) : [],
-                    attributesValues: variant.attributes,
                 });
 
                 const variantImages = [...(variant.images || [])];
@@ -840,7 +837,6 @@ export default {
                     stockQuantity: parseInt(variant.stock || variant.stockQuantity) || 0, // Support both field names
                     sku: variant.sku,
                     images: variantImages,
-                    attributes: variant.attributes || {},
                     isActive: variant.isActive !== false, // Default to true
                 };
 
@@ -858,8 +854,7 @@ export default {
                 index: i,
                 name: v.name,
                 value: v.value,
-                attributes: v.attributes,
-                hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
+                stockQuantity: v.stockQuantity,
             })),
         });
 
@@ -873,7 +868,6 @@ export default {
                 index: i,
                 name: v.name,
                 value: v.value,
-                attributes: v.attributes,
                 stockQuantity: v.stockQuantity,
             })),
         });
@@ -965,9 +959,6 @@ export default {
                         hasStockQuantity: !!variant.stockQuantity,
                         stockValue: variant.stock,
                         stockQuantityValue: variant.stockQuantity,
-                        hasAttributes: !!variant.attributes,
-                        attributesKeys: variant.attributes ? Object.keys(variant.attributes) : [],
-                        attributesValues: variant.attributes,
                     });
 
                     const variantImages = [...(variant.images || [])];
@@ -990,7 +981,6 @@ export default {
                         stockQuantity: parseInt(variant.stock || variant.stockQuantity) || 0, // Support both field names
                         sku: variant.sku,
                         images: variantImages,
-                        attributes: variant.attributes || {},
                         isActive: variant.isActive !== false, // Default to true
                     };
 
@@ -1010,8 +1000,6 @@ export default {
                     index: i,
                     name: v.name,
                     value: v.value,
-                    attributes: v.attributes,
-                    hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
                     stockQuantity: v.stockQuantity,
                 })),
             });
@@ -1033,9 +1021,7 @@ export default {
                     index: i,
                     name: v.name,
                     value: v.value,
-                    attributes: v.attributes,
                     stockQuantity: v.stockQuantity,
-                    hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
                 })),
             });
 

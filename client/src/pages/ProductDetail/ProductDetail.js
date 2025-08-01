@@ -186,20 +186,9 @@ const ProductDetail = () => {
         : product.stockQuantity;
     const isInStock = currentStock > 0;
 
-    // Get current attributes (merge product attributes with variant attributes)
+    // Get current attributes (just use product attributes)
     const getCurrentAttributes = () => {
-        if (!product.attributes) return {};
-
-        const baseAttributes = { ...product.attributes };
-
-        // If a variant is selected, override with variant-specific attributes
-        if (selectedVariant && selectedVariant.attributes) {
-            Object.entries(selectedVariant.attributes).forEach(([key, value]) => {
-                baseAttributes[key] = value;
-            });
-        }
-
-        return baseAttributes;
+        return product.attributes || {};
     };
 
     const currentAttributes = getCurrentAttributes();
