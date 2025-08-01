@@ -45,7 +45,7 @@ export const getCart = () => async (dispatch, getState) => {
 
 // Add item to cart (supports both authenticated and guest users)
 export const addToCart =
-    (productId, quantity, productData = null) =>
+    (productId, quantity, productData = null, variantId = null) =>
     async (dispatch, getState) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -56,8 +56,12 @@ export const addToCart =
 
                 if (isAuthenticated) {
                     // Add to server cart for authenticated users
-                    console.log('🛒 Adding to cart:', { productId, quantity });
-                    const { data } = await api.post('/api/cart', { productId, quantity });
+                    console.log('🛒 Adding to cart:', { productId, quantity, variantId });
+                    const requestData = { productId, quantity };
+                    if (variantId) {
+                        requestData.variantId = variantId;
+                    }
+                    const { data } = await api.post('/api/cart', requestData);
                     dispatch({
                         type: types.ADD_TO_CART_SUCCESS,
                         payload: data.data,
@@ -70,7 +74,7 @@ export const addToCart =
                         productData = productResponse.data.data;
                     }
 
-                    const updatedCart = addItemToGuestCart(productData, quantity);
+                    const updatedCart = addItemToGuestCart(productData, quantity, variantId);
                     dispatch({
                         type: types.ADD_TO_CART_SUCCESS,
                         payload: updatedCart,
@@ -90,66 +94,77 @@ export const addToCart =
     };
 
 // Remove item from cart (supports both authenticated and guest users)
-export const removeFromCart = (productId) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: types.CART_LOADING });
+export const removeFromCart =
+    (productId, variantId = null) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: types.CART_LOADING });
 
-        const { auth } = getState();
-        const isAuthenticated = auth.me && auth.token;
+            const { auth } = getState();
+            const isAuthenticated = auth.me && auth.token;
 
-        if (isAuthenticated) {
-            // Remove from server cart for authenticated users
-            const { data } = await api.delete(`/api/cart/items/${productId}`);
+            if (isAuthenticated) {
+                // Remove from server cart for authenticated users
+                const url = variantId
+                    ? `/api/cart/items/${productId}?variantId=${variantId}`
+                    : `/api/cart/items/${productId}`;
+                const { data } = await api.delete(url);
+                dispatch({
+                    type: types.REMOVE_FROM_CART_SUCCESS,
+                    payload: data.data,
+                });
+            } else {
+                // Remove from guest cart in localStorage
+                const updatedCart = removeItemFromGuestCart(productId, variantId);
+                dispatch({
+                    type: types.REMOVE_FROM_CART_SUCCESS,
+                    payload: updatedCart,
+                });
+            }
+        } catch (error) {
             dispatch({
-                type: types.REMOVE_FROM_CART_SUCCESS,
-                payload: data.data,
-            });
-        } else {
-            // Remove from guest cart in localStorage
-            const updatedCart = removeItemFromGuestCart(productId);
-            dispatch({
-                type: types.REMOVE_FROM_CART_SUCCESS,
-                payload: updatedCart,
+                type: types.REMOVE_FROM_CART_FAIL,
+                payload: error.response?.data?.message || error.message,
             });
         }
-    } catch (error) {
-        dispatch({
-            type: types.REMOVE_FROM_CART_FAIL,
-            payload: error.response?.data?.message || error.message,
-        });
-    }
-};
+    };
 
 // Update item quantity (supports both authenticated and guest users)
-export const updateCartItemQuantity = (productId, quantity) => async (dispatch, getState) => {
-    try {
-        dispatch({ type: types.CART_LOADING });
+export const updateCartItemQuantity =
+    (productId, quantity, variantId = null) =>
+    async (dispatch, getState) => {
+        try {
+            dispatch({ type: types.CART_LOADING });
 
-        const { auth } = getState();
-        const isAuthenticated = auth.me && auth.token;
+            const { auth } = getState();
+            const isAuthenticated = auth.me && auth.token;
 
-        if (isAuthenticated) {
-            // Update server cart for authenticated users
-            const { data } = await api.put(`/api/cart/items/${productId}`, { quantity });
+            if (isAuthenticated) {
+                // Update server cart for authenticated users
+                const requestData = { quantity };
+                if (variantId) {
+                    requestData.variantId = variantId;
+                }
+                const { data } = await api.put(`/api/cart/items/${productId}`, requestData);
+                dispatch({
+                    type: types.UPDATE_CART_ITEM_SUCCESS,
+                    payload: data.data,
+                });
+            } else {
+                // Update guest cart in localStorage
+                const updatedCart = updateGuestCartItemQuantity(productId, quantity, variantId);
+                dispatch({
+                    type: types.UPDATE_CART_ITEM_SUCCESS,
+                    payload: updatedCart,
+                });
+            }
+        } catch (error) {
             dispatch({
-                type: types.UPDATE_CART_ITEM_SUCCESS,
-                payload: data.data,
-            });
-        } else {
-            // Update guest cart in localStorage
-            const updatedCart = updateGuestCartItemQuantity(productId, quantity);
-            dispatch({
-                type: types.UPDATE_CART_ITEM_SUCCESS,
-                payload: updatedCart,
+                type: types.UPDATE_CART_ITEM_FAIL,
+                payload: error.response?.data?.message || error.message,
             });
         }
-    } catch (error) {
-        dispatch({
-            type: types.UPDATE_CART_ITEM_FAIL,
-            payload: error.response?.data?.message || error.message,
-        });
-    }
-};
+    };
 
 // Clear entire cart (supports both authenticated and guest users)
 export const clearCart = () => async (dispatch, getState) => {

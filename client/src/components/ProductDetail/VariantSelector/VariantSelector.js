@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useI18n } from '../../../hooks/useI18n';
 import {
     getVariantDisplayName,
@@ -9,6 +9,7 @@ import './styles.css';
 
 const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) => {
     const { t } = useI18n();
+    const [selectedAttributes, setSelectedAttributes] = useState({});
 
     console.log('🔍 VariantSelector Debug:', {
         variantsCount: variants.length,
@@ -17,35 +18,74 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         hasOnVariantChange: typeof onVariantChange === 'function',
     });
 
-    // Group variants by attribute type for better organization
-    const groupVariantsByAttribute = () => {
+    // Group variants by their name (attribute type) for dropdown organization
+    const groupVariantsByName = () => {
         const groups = {};
 
         variants.forEach((variant) => {
-            if (variant.attributes) {
-                Object.entries(variant.attributes).forEach(([key, value]) => {
-                    if (!groups[key]) {
-                        groups[key] = new Set();
-                    }
-                    groups[key].add(value);
-                });
+            const attributeName = variant.name;
+            if (!groups[attributeName]) {
+                groups[attributeName] = [];
             }
-        });
-
-        // Convert Sets to Arrays
-        Object.keys(groups).forEach((key) => {
-            groups[key] = Array.from(groups[key]);
+            groups[attributeName].push(variant);
         });
 
         return groups;
     };
 
-    // Get variant by specific attribute combination
-    const getVariantByAttributes = (attributeKey, attributeValue) => {
-        return variants.find(
-            (variant) => variant.attributes && variant.attributes[attributeKey] === attributeValue,
-        );
+    // Find the selected variant based on current attribute selections
+    const findSelectedVariant = () => {
+        if (Object.keys(selectedAttributes).length === 0) return null;
+
+        // For single attribute selection, find the variant that matches
+        const entries = Object.entries(selectedAttributes);
+        if (entries.length === 1) {
+            const [attrName, attrValue] = entries[0];
+            return variants.find(
+                (variant) => variant.name === attrName && variant.value === attrValue,
+            );
+        }
+
+        // For multiple attributes, this would need more complex logic
+        // For now, return the first matching variant
+        return variants.find((variant) => {
+            return Object.entries(selectedAttributes).some(([attrName, attrValue]) => {
+                return variant.name === attrName && variant.value === attrValue;
+            });
+        });
     };
+
+    // Handle dropdown selection change
+    const handleAttributeChange = (attributeName, value) => {
+        const newSelections = { ...selectedAttributes };
+
+        if (value === '') {
+            // Remove selection if empty value
+            delete newSelections[attributeName];
+        } else {
+            newSelections[attributeName] = value;
+        }
+
+        setSelectedAttributes(newSelections);
+
+        // Find the variant that matches the new selection
+        const matchingVariant = variants.find(
+            (variant) => variant.name === attributeName && variant.value === value,
+        );
+
+        onVariantChange(matchingVariant || null);
+    };
+
+    // Update selected attributes when selectedVariant changes externally
+    useEffect(() => {
+        if (selectedVariant) {
+            setSelectedAttributes({
+                [selectedVariant.name]: selectedVariant.value,
+            });
+        } else {
+            setSelectedAttributes({});
+        }
+    }, [selectedVariant]);
 
     // Check if variant is available (in stock and active) - enhanced version
     const isVariantAvailableEnhanced = (variant) => {
@@ -54,7 +94,19 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
         );
     };
 
-    const attributeGroups = groupVariantsByAttribute();
+    const variantGroups = groupVariantsByName();
+
+    if (!variants || variants.length === 0) {
+        return (
+            <div className="variant-selector">
+                <div className="variant-selector-header">
+                    <h3 className="variant-selector-title">
+                        {t('product.noVariants', 'No variants available')}
+                    </h3>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="variant-selector">
@@ -63,133 +115,76 @@ const VariantSelector = ({ variants = [], selectedVariant, onVariantChange }) =>
                     {t('product.selectVariant', 'Select Options')}
                 </h3>
                 {selectedVariant && (
-                    <button
-                        className="clear-selection-btn"
-                        onClick={() => onVariantChange(null)}
-                        title={t('product.clearSelection', 'Clear selection')}
-                    >
-                        {t('product.clearSelection', 'Clear')}
-                    </button>
+                    <div className="selected-variant-info">
+                        <span className="selected-variant-name">
+                            {getVariantDisplayName(selectedVariant)}
+                        </span>
+                        <span className="selected-variant-price">
+                            ${selectedVariant.price?.toFixed(2)}
+                        </span>
+                        <button
+                            className="clear-selection-btn"
+                            onClick={() => onVariantChange(null)}
+                            title={t('product.clearSelection', 'Clear selection')}
+                        >
+                            {t('product.clearSelection', 'Clear')}
+                        </button>
+                    </div>
                 )}
             </div>
 
-            {/* Attribute-based Selection */}
-            {Object.keys(attributeGroups).length > 0 && (
-                <div className="variant-attributes">
-                    {Object.entries(attributeGroups).map(([attributeKey, values]) => (
-                        <div key={attributeKey} className="variant-attribute-group">
-                            <label className="variant-attribute-label">
-                                {t(`product.attributes.${attributeKey}`, attributeKey)}:
-                            </label>
-                            <div className="variant-attribute-options">
-                                {values.map((value) => {
-                                    const variant = getVariantByAttributes(attributeKey, value);
-                                    const isSelected =
-                                        selectedVariant?.attributes?.[attributeKey] === value;
-                                    const isAvailable = isVariantAvailableEnhanced(variant);
+            {/* Dropdown-based Selection */}
+            <div className="variant-dropdowns">
+                {Object.entries(variantGroups).map(([attributeName, attributeVariants]) => {
+                    const currentSelection = selectedAttributes[attributeName] || '';
 
+                    return (
+                        <div key={attributeName} className="variant-dropdown-group">
+                            <label
+                                className="variant-dropdown-label"
+                                htmlFor={`variant-${attributeName}`}
+                            >
+                                {t(`product.attributes.${attributeName}`, attributeName)}:
+                            </label>
+                            <select
+                                id={`variant-${attributeName}`}
+                                className="variant-dropdown"
+                                value={currentSelection}
+                                onChange={(e) =>
+                                    handleAttributeChange(attributeName, e.target.value)
+                                }
+                                aria-label={`Select ${attributeName}`}
+                            >
+                                <option value="">
+                                    {t('product.selectOption', `Select ${attributeName}`)}
+                                </option>
+                                {attributeVariants.map((variant) => {
+                                    const isAvailable = isVariantAvailableEnhanced(variant);
                                     return (
-                                        <button
-                                            key={value}
-                                            className={`variant-option ${
-                                                isSelected ? 'selected' : ''
-                                            } ${!isAvailable ? 'unavailable' : ''}`}
-                                            onClick={() => {
-                                                if (isAvailable) {
-                                                    // Allow deselection by clicking the same variant
-                                                    if (isSelected) {
-                                                        onVariantChange(null);
-                                                    } else {
-                                                        onVariantChange(variant);
-                                                    }
-                                                }
-                                            }}
+                                        <option
+                                            key={variant.value}
+                                            value={variant.value}
                                             disabled={!isAvailable}
-                                            title={
-                                                !isAvailable
-                                                    ? t('product.outOfStock', 'Out of stock')
-                                                    : ''
-                                            }
                                         >
-                                            {/* Color swatch for color attributes */}
-                                            {attributeKey.toLowerCase() === 'color' && (
-                                                <div
-                                                    className="color-swatch"
-                                                    style={{ backgroundColor: value.toLowerCase() }}
-                                                />
-                                            )}
-                                            <span className="variant-option-text">{value}</span>
-                                            {!isAvailable && (
-                                                <span className="unavailable-indicator">✕</span>
-                                            )}
-                                        </button>
+                                            {variant.value} {!isAvailable ? '(Out of stock)' : ''}
+                                        </option>
                                     );
                                 })}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* Variant List (fallback for complex variants) */}
-            {Object.keys(attributeGroups).length === 0 && (
-                <div className="variant-list">
-                    {variants.map((variant, index) => {
-                        const isSelected = selectedVariant?.id === variant.id;
-                        const isAvailable = isVariantAvailableEnhanced(variant);
-                        const variantImage = getVariantImage(variant);
-
-                        return (
-                            <button
-                                key={variant.id || index}
-                                className={`variant-item ${isSelected ? 'selected' : ''} ${
-                                    !isAvailable ? 'unavailable' : ''
-                                }`}
-                                onClick={() => isAvailable && onVariantChange(variant)}
-                                disabled={!isAvailable}
-                            >
-                                {/* Variant Image */}
-                                {variantImage && (
-                                    <div className="variant-image">
-                                        <img
-                                            src={variantImage}
-                                            alt={getVariantDisplayName(variant)}
-                                            onError={(e) => {
-                                                e.target.style.display = 'none';
-                                            }}
-                                        />
-                                    </div>
-                                )}
-
-                                {/* Variant Info */}
-                                <div className="variant-info">
-                                    <div className="variant-name">
-                                        {getVariantDisplayName(variant)}
-                                    </div>
-                                    <div className="variant-price">
-                                        ${variant.price?.toFixed(2) || '0.00'}
-                                    </div>
-                                    <div className="variant-stock">
-                                        {isAvailable ? (
-                                            <span className="in-stock">
-                                                {t('product.inStock', 'In Stock')} (
-                                                {variant.stockQuantity || variant.stock || 0})
-                                            </span>
-                                        ) : (
-                                            <span className="out-of-stock">
-                                                {t('product.outOfStock', 'Out of Stock')}
-                                            </span>
-                                        )}
-                                    </div>
+                            </select>
+                            {/* Color swatch for color attributes */}
+                            {attributeName.toLowerCase() === 'color' && currentSelection && (
+                                <div className="color-swatch-display">
+                                    <div
+                                        className="color-swatch"
+                                        style={{ backgroundColor: currentSelection.toLowerCase() }}
+                                        title={currentSelection}
+                                    />
                                 </div>
-
-                                {/* Selection Indicator */}
-                                {isSelected && <div className="selection-indicator">✓</div>}
-                            </button>
-                        );
-                    })}
-                </div>
-            )}
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
 
             {/* Selected Variant Summary */}
             {selectedVariant && (

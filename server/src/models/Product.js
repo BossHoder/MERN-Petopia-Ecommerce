@@ -29,6 +29,22 @@ const variantSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    // Variant-specific attributes (size, color, material, etc.)
+    attributes: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {},
+    },
+    // Variant images
+    images: [
+        {
+            type: String,
+        },
+    ],
+    // Whether this variant is active/available
+    isActive: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 // ===========================================
@@ -151,7 +167,7 @@ const productSchema = new mongoose.Schema(
             },
             petType: {
                 type: String,
-                enum: ['dog', 'cat', 'bird', 'fish', 'other'],
+                enum: ['dog', 'cat', 'bird', 'fish', 'dog and cat', 'other', 'dog and cat'],
             },
         },
         // SEO fields

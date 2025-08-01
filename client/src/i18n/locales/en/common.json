@@ -471,7 +471,8 @@
         "subtotal": "Subtotal",
         "items": "items",
         "total": "Total",
-        "checkout": "Proceed to Checkout"
+        "checkout": "Proceed to Checkout",
+        "dogAndCat": "Dog and Cat"
     },
     "checkout": {
         "title": "Checkout",
@@ -895,6 +896,7 @@
                 "selectPetType": "Select pet type",
                 "dog": "Dog",
                 "cat": "Cat",
+                "dogAndCat": "Dog and Cat",
                 "bird": "Bird",
                 "fish": "Fish",
                 "other": "Other",

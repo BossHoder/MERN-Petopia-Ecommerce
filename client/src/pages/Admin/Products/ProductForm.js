@@ -155,7 +155,6 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
             formData.append('price', values.price);
             formData.append('category', values.category);
             formData.append('stockQuantity', values.stock); // Map stock to stockQuantity for database
-            formData.append('sku', values.sku || '');
             formData.append('brand', values.brand || '');
             formData.append('isPublished', values.isPublished);
             formData.append('isFeatured', values.isFeatured);
@@ -212,6 +211,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                     return variantData;
                 });
 
+                console.log('🚀 Sending variants to backend:', processedVariants);
                 formData.append('variants', JSON.stringify(processedVariants));
             }
 
@@ -236,6 +236,36 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
     const processInitialData = (data) => {
         if (!data) return null;
 
+        // Process variants to ensure proper name/value structure
+        const processedVariants = (data.variants || []).map((variant) => {
+            // If variant only has name field, try to split it into name and value
+            if (variant.name && !variant.value) {
+                // Try to detect if the name contains both type and value (e.g., "Size: Large", "Color: Red")
+                const colonIndex = variant.name.indexOf(':');
+                if (colonIndex > 0) {
+                    return {
+                        ...variant,
+                        name: variant.name.substring(0, colonIndex).trim(),
+                        value: variant.name.substring(colonIndex + 1).trim(),
+                        stock: variant.stock || variant.stockQuantity || 0,
+                    };
+                } else {
+                    // If no colon, use the name as value and set a generic name
+                    return {
+                        ...variant,
+                        name: 'Variant',
+                        value: variant.name,
+                        stock: variant.stock || variant.stockQuantity || 0,
+                    };
+                }
+            }
+            // If variant already has both name and value, just ensure stock field
+            return {
+                ...variant,
+                stock: variant.stock || variant.stockQuantity || 0,
+            };
+        });
+
         return {
             ...data,
             price: data.price || 0,
@@ -243,7 +273,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
             category: data.category?._id || data.category || '',
             images: data.images || [],
             attributes: data.attributes || {},
-            variants: data.variants || [],
+            variants: processedVariants,
             slug: data.slug || '',
             sku: data.sku || '',
             brand: data.brand || '',

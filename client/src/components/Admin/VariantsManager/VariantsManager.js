@@ -12,6 +12,7 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
         const newVariant = {
             id: Date.now().toString(),
             name: '',
+            value: '',
             sku: '',
             price: basePrice,
             stock: 0,
@@ -47,13 +48,30 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
     // Update variant attribute
     const updateVariantAttribute = (index, attributeKey, value) => {
         const updatedVariants = [...variants];
+        const currentAttributes = { ...updatedVariants[index].attributes };
+
+        if (value === '' || value === null || value === undefined) {
+            // Remove the attribute if value is empty
+            delete currentAttributes[attributeKey];
+        } else {
+            // Set the attribute value
+            currentAttributes[attributeKey] = value;
+        }
+
         updatedVariants[index] = {
             ...updatedVariants[index],
-            attributes: {
-                ...updatedVariants[index].attributes,
-                [attributeKey]: value === '' ? undefined : value,
-            },
+            attributes: currentAttributes,
         };
+
+        // Debug logging (can be removed in production)
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`🔧 Updated variant ${index} attribute ${attributeKey}:`, {
+                value,
+                allAttributes: currentAttributes,
+                variant: updatedVariants[index],
+            });
+        }
+
         onVariantsChange(updatedVariants);
     };
 
@@ -113,11 +131,14 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                                 <div className="variant-summary">
                                     <div className="variant-title">
                                         <span className="variant-name">
-                                            {variant.name ||
-                                                t(
-                                                    'admin.products.variants.unnamedVariant',
-                                                    `Variant ${index + 1}`,
-                                                )}
+                                            {variant.name && variant.value
+                                                ? `${variant.name}: ${variant.value}`
+                                                : variant.name ||
+                                                  variant.value ||
+                                                  t(
+                                                      'admin.products.variants.unnamedVariant',
+                                                      `Variant ${index + 1}`,
+                                                  )}
                                         </span>
                                         <span
                                             className={`variant-status ${
@@ -194,10 +215,10 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                             {expandedVariant === index && (
                                 <div className="variant-form">
                                     <div className="variant-form-grid">
-                                        {/* Variant Name */}
+                                        {/* Variant Type (Name) */}
                                         <div className="form-group">
                                             <label className="form-label">
-                                                {t('admin.products.variants.name', 'Variant Name')}{' '}
+                                                {t('admin.products.variants.type', 'Variant Type')}{' '}
                                                 *
                                             </label>
                                             <input
@@ -208,8 +229,31 @@ const VariantsManager = ({ variants = [], onVariantsChange, basePrice = 0, error
                                                 }
                                                 className="form-input"
                                                 placeholder={t(
-                                                    'admin.products.variants.namePlaceholder',
-                                                    'e.g., Large Red, Small Blue',
+                                                    'admin.products.variants.typePlaceholder',
+                                                    'e.g., Size, Color, Material',
+                                                )}
+                                            />
+                                        </div>
+
+                                        {/* Variant Value */}
+                                        <div className="form-group">
+                                            <label className="form-label">
+                                                {t(
+                                                    'admin.products.variants.value',
+                                                    'Variant Value',
+                                                )}{' '}
+                                                *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={variant.value || ''}
+                                                onChange={(e) =>
+                                                    updateVariant(index, 'value', e.target.value)
+                                                }
+                                                className="form-input"
+                                                placeholder={t(
+                                                    'admin.products.variants.valuePlaceholder',
+                                                    'e.g., Large, Red, Cotton',
                                                 )}
                                             />
                                         </div>

@@ -756,6 +756,11 @@ export default {
     }),
 
     createProduct: asyncHandler(async (req, res) => {
+        // Fix duplicate SKU field issue (FormData creates arrays for duplicate field names)
+        if (Array.isArray(req.body.sku)) {
+            req.body.sku = req.body.sku[0]; // Take the first value
+        }
+
         // Parse JSON fields
         if (req.body.attributes && typeof req.body.attributes === 'string') {
             req.body.attributes = JSON.parse(req.body.attributes);
@@ -802,6 +807,19 @@ export default {
 
             // Process variant images and transform data structure
             const processedVariants = variants.map((variant, index) => {
+                console.log(`📝 Creating variant ${index}:`, {
+                    originalVariant: variant,
+                    hasName: !!variant.name,
+                    hasValue: !!variant.value,
+                    hasStock: !!variant.stock,
+                    hasStockQuantity: !!variant.stockQuantity,
+                    stockValue: variant.stock,
+                    stockQuantityValue: variant.stockQuantity,
+                    hasAttributes: !!variant.attributes,
+                    attributesKeys: variant.attributes ? Object.keys(variant.attributes) : [],
+                    attributesValues: variant.attributes,
+                });
+
                 const variantImages = [...(variant.images || [])];
 
                 // Check for new variant images
@@ -815,24 +833,51 @@ export default {
                 }
 
                 // Transform variant data to match schema
-                return {
+                const processedVariant = {
                     name: variant.name,
-                    value: variant.name, // Use name as value for now
+                    value: variant.value || variant.name, // Use value if provided, fallback to name
                     price: parseFloat(variant.price) || 0,
-                    stockQuantity: parseInt(variant.stock) || 0, // Transform 'stock' to 'stockQuantity'
+                    stockQuantity: parseInt(variant.stock || variant.stockQuantity) || 0, // Support both field names
                     sku: variant.sku,
                     images: variantImages,
                     attributes: variant.attributes || {},
                     isActive: variant.isActive !== false, // Default to true
                 };
+
+                console.log(`✅ Created variant ${index}:`, processedVariant);
+                return processedVariant;
             });
 
             req.body.variants = processedVariants;
         }
 
         const product = new Product(req.body);
+        console.log('💾 Saving product with variants:', {
+            variantsCount: product.variants?.length || 0,
+            variants: product.variants?.map((v, i) => ({
+                index: i,
+                name: v.name,
+                value: v.value,
+                attributes: v.attributes,
+                hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
+            })),
+        });
+
         await product.save();
         await product.populate('category', 'name');
+
+        console.log('✅ Product saved successfully with variants:', {
+            productId: product._id,
+            variantsCount: product.variants?.length || 0,
+            savedVariants: product.variants?.map((v, i) => ({
+                index: i,
+                name: v.name,
+                value: v.value,
+                attributes: v.attributes,
+                stockQuantity: v.stockQuantity,
+            })),
+        });
+
         return successResponse(res, { product }, 'Product created successfully');
     }),
 
@@ -845,6 +890,11 @@ export default {
                 filesCount: req.files ? req.files.length : 0,
                 fileDetails: req.files ? req.files.map((f) => ({ fieldname: f.fieldname, filename: f.filename })) : [],
             });
+
+            // Fix duplicate SKU field issue (FormData creates arrays for duplicate field names)
+            if (Array.isArray(req.body.sku)) {
+                req.body.sku = req.body.sku[0]; // Take the first value
+            }
 
             // Parse JSON fields
             if (req.body.attributes && typeof req.body.attributes === 'string') {
@@ -907,6 +957,19 @@ export default {
 
                 // Process variant images and transform data structure
                 const processedVariants = variants.map((variant, index) => {
+                    console.log(`📝 Processing variant ${index}:`, {
+                        originalVariant: variant,
+                        hasName: !!variant.name,
+                        hasValue: !!variant.value,
+                        hasStock: !!variant.stock,
+                        hasStockQuantity: !!variant.stockQuantity,
+                        stockValue: variant.stock,
+                        stockQuantityValue: variant.stockQuantity,
+                        hasAttributes: !!variant.attributes,
+                        attributesKeys: variant.attributes ? Object.keys(variant.attributes) : [],
+                        attributesValues: variant.attributes,
+                    });
+
                     const variantImages = [...(variant.images || [])];
 
                     // Check for new variant images
@@ -920,16 +983,19 @@ export default {
                     }
 
                     // Transform variant data to match schema
-                    return {
+                    const processedVariant = {
                         name: variant.name,
-                        value: variant.name, // Use name as value for now
+                        value: variant.value || variant.name, // Use value if provided, fallback to name
                         price: parseFloat(variant.price) || 0,
-                        stockQuantity: parseInt(variant.stock) || 0, // Transform 'stock' to 'stockQuantity'
+                        stockQuantity: parseInt(variant.stock || variant.stockQuantity) || 0, // Support both field names
                         sku: variant.sku,
                         images: variantImages,
                         attributes: variant.attributes || {},
                         isActive: variant.isActive !== false, // Default to true
                     };
+
+                    console.log(`✅ Processed variant ${index}:`, processedVariant);
+                    return processedVariant;
                 });
 
                 req.body.variants = processedVariants;
@@ -940,6 +1006,14 @@ export default {
                 productId: req.params.id,
                 updateFields: Object.keys(req.body),
                 variantsCount: req.body.variants ? req.body.variants.length : 0,
+                variantsData: req.body.variants?.map((v, i) => ({
+                    index: i,
+                    name: v.name,
+                    value: v.value,
+                    attributes: v.attributes,
+                    hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
+                    stockQuantity: v.stockQuantity,
+                })),
             });
 
             const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -952,7 +1026,19 @@ export default {
                 return errorResponse(res, 'Product not found', 404);
             }
 
-            console.log('✅ Product updated successfully:', product._id);
+            console.log('✅ Product updated successfully with variants:', {
+                productId: product._id,
+                variantsCount: product.variants?.length || 0,
+                updatedVariants: product.variants?.map((v, i) => ({
+                    index: i,
+                    name: v.name,
+                    value: v.value,
+                    attributes: v.attributes,
+                    stockQuantity: v.stockQuantity,
+                    hasAttributes: !!v.attributes && Object.keys(v.attributes).length > 0,
+                })),
+            });
+
             return successResponse(res, { product }, 'Product updated successfully');
         } catch (error) {
             console.error('❌ Error in updateProduct:', {

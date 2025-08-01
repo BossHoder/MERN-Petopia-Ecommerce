@@ -90,22 +90,41 @@ const ProductDetail = () => {
                 name: product.name,
                 price: currentPrice,
                 image: currentImages[0] || '/placeholder-image.svg',
+                // Include variant information if selected
+                ...(selectedVariant && {
+                    variant: {
+                        id: selectedVariant.id || selectedVariant.sku,
+                        name: selectedVariant.name,
+                        value: selectedVariant.value,
+                        price: selectedVariant.price,
+                        displayName: `${selectedVariant.name}: ${selectedVariant.value}`,
+                    },
+                }),
             };
 
             // Get product ID (use id field from server DTO)
             const productId = product.id;
+            // Get variant ID if variant is selected
+            const variantId = selectedVariant ? selectedVariant.id || selectedVariant.sku : null;
+
             console.log('🛒 Using productId:', productId);
+            console.log('🛒 Using variantId:', variantId);
             console.log('🛒 ProductDetail - Adding to cart:', {
                 productId,
+                variantId,
                 quantity,
                 productData,
+                selectedVariant,
             });
 
-            // Dispatch add to cart action
-            await dispatch(addToCart(productId, quantity, productData));
+            // Dispatch add to cart action with variant information
+            await dispatch(addToCart(productId, quantity, productData, variantId));
 
-            // Show success message
-            toast.success(t('product.addedToCart', 'Added to cart successfully!'));
+            // Show success message with variant info
+            const variantText = selectedVariant
+                ? ` (${selectedVariant.name}: ${selectedVariant.value})`
+                : '';
+            toast.success(t('product.addedToCart', 'Added to cart successfully!') + variantText);
         } catch (error) {
             console.error('Error adding to cart:', error);
             toast.error(t('product.addToCartError', 'Failed to add to cart. Please try again.'));

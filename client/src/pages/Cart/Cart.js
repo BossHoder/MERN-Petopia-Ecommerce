@@ -31,16 +31,16 @@ const Cart = () => {
         }
     }, [dispatch, appLoaded]);
 
-    const handleQuantityChange = (productId, quantity) => {
+    const handleQuantityChange = (productId, quantity, variantId = null) => {
         if (quantity <= 0) {
-            dispatch(removeFromCart(productId));
+            dispatch(removeFromCart(productId, variantId));
         } else {
-            dispatch(updateCartItemQuantity(productId, quantity));
+            dispatch(updateCartItemQuantity(productId, quantity, variantId));
         }
     };
 
-    const handleRemoveItem = (productId) => {
-        dispatch(removeFromCart(productId));
+    const handleRemoveItem = (productId, variantId = null) => {
+        dispatch(removeFromCart(productId, variantId));
     };
 
     const handleCheckout = () => {
@@ -77,55 +77,77 @@ const Cart = () => {
             ) : (
                 <div className="cart-content">
                     <div className="cart-items-list">
-                        {items.map((item) => (
-                            <div key={item.product._id} className="cart-item">
-                                <img
-                                    src={item.product.image || '/images/placeholder.jpg'}
-                                    alt={item.product.name}
-                                    className="cart-item-image"
-                                />
-                                <div className="cart-item-details">
-                                    <Link to={`/product/${item.product.slug || item.product._id}`}>
-                                        {item.product.name}
-                                    </Link>
-                                    <p>
-                                        {t('cart.price')}: ${item.price.toFixed(2)}
-                                    </p>
+                        {items.map((item) => {
+                            // Create a unique key that includes variant information
+                            const itemKey = item.variantId
+                                ? `${item.product._id}-${item.variantId}`
+                                : item.product._id;
+
+                            return (
+                                <div key={itemKey} className="cart-item">
+                                    <img
+                                        src={item.product.image || '/images/placeholder.jpg'}
+                                        alt={item.product.name}
+                                        className="cart-item-image"
+                                    />
+                                    <div className="cart-item-details">
+                                        <Link
+                                            to={`/product/${item.product.slug || item.product._id}`}
+                                        >
+                                            {item.product.name}
+                                        </Link>
+                                        {/* Display variant information if available */}
+                                        {(item.variant || item.variantId) && (
+                                            <div className="cart-item-variant">
+                                                {item.variant?.displayName ||
+                                                    (item.variant
+                                                        ? `${item.variant.name}: ${item.variant.value}`
+                                                        : `Variant: ${item.variantId}`)}
+                                            </div>
+                                        )}
+                                        <p>
+                                            {t('cart.price')}: ${item.price.toFixed(2)}
+                                        </p>
+                                    </div>
+                                    <div className="cart-item-actions">
+                                        <button
+                                            onClick={() =>
+                                                handleQuantityChange(
+                                                    item.product._id,
+                                                    item.quantity - 1,
+                                                    item.variantId,
+                                                )
+                                            }
+                                        >
+                                            -
+                                        </button>
+                                        <span>{item.quantity}</span>
+                                        <button
+                                            onClick={() =>
+                                                handleQuantityChange(
+                                                    item.product._id,
+                                                    item.quantity + 1,
+                                                    item.variantId,
+                                                )
+                                            }
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                    <div className="cart-item-total">
+                                        <p>${(item.quantity * item.price).toFixed(2)}</p>
+                                        <button
+                                            className="remove-btn"
+                                            onClick={() =>
+                                                handleRemoveItem(item.product._id, item.variantId)
+                                            }
+                                        >
+                                            {t('cart.remove')}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="cart-item-actions">
-                                    <button
-                                        onClick={() =>
-                                            handleQuantityChange(
-                                                item.product._id,
-                                                item.quantity - 1,
-                                            )
-                                        }
-                                    >
-                                        -
-                                    </button>
-                                    <span>{item.quantity}</span>
-                                    <button
-                                        onClick={() =>
-                                            handleQuantityChange(
-                                                item.product._id,
-                                                item.quantity + 1,
-                                            )
-                                        }
-                                    >
-                                        +
-                                    </button>
-                                </div>
-                                <div className="cart-item-total">
-                                    <p>${(item.quantity * item.price).toFixed(2)}</p>
-                                    <button
-                                        className="remove-btn"
-                                        onClick={() => handleRemoveItem(item.product._id)}
-                                    >
-                                        {t('cart.remove')}
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     <div className="cart-summary">

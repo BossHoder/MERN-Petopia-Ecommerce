@@ -30,7 +30,7 @@ export const getGuestSessionId = () => {
  */
 const isExpired = (timestamp) => {
     const now = new Date().getTime();
-    const expiryTime = timestamp + (GUEST_CART_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+    const expiryTime = timestamp + GUEST_CART_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
     return now > expiryTime;
 };
 
@@ -46,12 +46,12 @@ export const getGuestCart = () => {
                 total: 0,
                 sessionId: getGuestSessionId(),
                 createdAt: new Date().getTime(),
-                updatedAt: new Date().getTime()
+                updatedAt: new Date().getTime(),
             };
         }
 
         const parsedCart = JSON.parse(cartData);
-        
+
         // Check if cart has expired
         if (isExpired(parsedCart.createdAt)) {
             clearGuestCart();
@@ -60,7 +60,7 @@ export const getGuestCart = () => {
                 total: 0,
                 sessionId: getGuestSessionId(),
                 createdAt: new Date().getTime(),
-                updatedAt: new Date().getTime()
+                updatedAt: new Date().getTime(),
             };
         }
 
@@ -72,7 +72,7 @@ export const getGuestCart = () => {
             total: 0,
             sessionId: getGuestSessionId(),
             createdAt: new Date().getTime(),
-            updatedAt: new Date().getTime()
+            updatedAt: new Date().getTime(),
         };
     }
 };
@@ -85,12 +85,15 @@ export const saveGuestCart = (cartData) => {
         const cartToSave = {
             ...cartData,
             sessionId: getGuestSessionId(),
-            updatedAt: new Date().getTime()
+            updatedAt: new Date().getTime(),
         };
-        
+
         // Calculate total
-        cartToSave.total = cartToSave.items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        
+        cartToSave.total = cartToSave.items.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0,
+        );
+
         localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cartToSave));
         return cartToSave;
     } catch (error) {
@@ -102,16 +105,21 @@ export const saveGuestCart = (cartData) => {
 /**
  * Add item to guest cart
  */
-export const addItemToGuestCart = (product, quantity = 1) => {
+export const addItemToGuestCart = (product, quantity = 1, variantId = null) => {
     const cart = getGuestCart();
-    const existingItemIndex = cart.items.findIndex(item => item.product._id === product._id);
+
+    // Find existing item considering both product ID and variant ID
+    const existingItemIndex = cart.items.findIndex(
+        (item) =>
+            item.product._id === product._id && (item.variantId || null) === (variantId || null),
+    );
 
     if (existingItemIndex > -1) {
         // Update existing item quantity
         cart.items[existingItemIndex].quantity += quantity;
     } else {
         // Add new item
-        cart.items.push({
+        const cartItem = {
             product: {
                 _id: product._id,
                 name: product.name,
@@ -119,11 +127,28 @@ export const addItemToGuestCart = (product, quantity = 1) => {
                 price: product.price,
                 slug: product.slug,
                 inStock: product.inStock,
-                stockQuantity: product.stockQuantity
+                stockQuantity: product.stockQuantity,
             },
             quantity,
-            price: product.price
-        });
+            price: product.price,
+        };
+
+        // Add variant information if provided
+        if (variantId && product.variant) {
+            cartItem.variantId = variantId;
+            cartItem.variant = {
+                id: product.variant.id,
+                name: product.variant.name,
+                value: product.variant.value,
+                displayName: product.variant.displayName,
+            };
+            // Use variant price if available
+            if (product.variant.price) {
+                cartItem.price = product.variant.price;
+            }
+        }
+
+        cart.items.push(cartItem);
     }
 
     return saveGuestCart(cart);
@@ -132,18 +157,24 @@ export const addItemToGuestCart = (product, quantity = 1) => {
 /**
  * Remove item from guest cart
  */
-export const removeItemFromGuestCart = (productId) => {
+export const removeItemFromGuestCart = (productId, variantId = null) => {
     const cart = getGuestCart();
-    cart.items = cart.items.filter(item => item.product._id !== productId);
+    cart.items = cart.items.filter(
+        (item) =>
+            !(item.product._id === productId && (item.variantId || null) === (variantId || null)),
+    );
     return saveGuestCart(cart);
 };
 
 /**
  * Update item quantity in guest cart
  */
-export const updateGuestCartItemQuantity = (productId, quantity) => {
+export const updateGuestCartItemQuantity = (productId, quantity, variantId = null) => {
     const cart = getGuestCart();
-    const itemIndex = cart.items.findIndex(item => item.product._id === productId);
+    const itemIndex = cart.items.findIndex(
+        (item) =>
+            item.product._id === productId && (item.variantId || null) === (variantId || null),
+    );
 
     if (itemIndex > -1) {
         if (quantity <= 0) {
@@ -166,7 +197,7 @@ export const clearGuestCart = () => {
         total: 0,
         sessionId: getGuestSessionId(),
         createdAt: new Date().getTime(),
-        updatedAt: new Date().getTime()
+        updatedAt: new Date().getTime(),
     };
 };
 
@@ -187,13 +218,13 @@ export const getGuestCartForMigration = () => {
     if (cart.items.length === 0) {
         return null;
     }
-    
+
     return {
-        items: cart.items.map(item => ({
+        items: cart.items.map((item) => ({
             productId: item.product._id,
             quantity: item.quantity,
-            price: item.price
-        }))
+            price: item.price,
+        })),
     };
 };
 

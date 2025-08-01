@@ -72,6 +72,18 @@
     font-size: 0.9rem;
 }
 
+.cart-item-variant {
+    font-size: 0.85rem;
+    color: var(--text-secondary, #6b7280);
+    background: var(--bg-gray-100, #f3f4f6);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 0.25rem 0;
+    display: inline-block;
+    font-weight: 500;
+    border: 1px solid var(--border-light, #e5e7eb);
+}
+
 .cart-item-actions {
     display: flex;
     align-items: center;

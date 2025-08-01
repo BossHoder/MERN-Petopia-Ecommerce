@@ -4,18 +4,14 @@ import './styles.css';
 
 const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }) => {
     const { t } = useI18n();
-    const [customAttributes, setCustomAttributes] = useState(
-        attributes.custom || []
-    );
+    const [customAttributes, setCustomAttributes] = useState(attributes.custom || []);
 
     // Predefined attribute options
     const petTypeOptions = [
         { value: '', label: t('admin.products.attributes.selectPetType', 'Select pet type') },
         { value: 'dog', label: t('admin.products.attributes.dog', 'Dog') },
         { value: 'cat', label: t('admin.products.attributes.cat', 'Cat') },
-        { value: 'bird', label: t('admin.products.attributes.bird', 'Bird') },
-        { value: 'fish', label: t('admin.products.attributes.fish', 'Fish') },
-        { value: 'other', label: t('admin.products.attributes.other', 'Other') }
+        { value: 'dog and cat', label: t('admin.products.attributes.dogAndCat', 'Dog and Cat') },
     ];
 
     const ageGroupOptions = [
@@ -23,14 +19,14 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
         { value: 'puppy', label: t('admin.products.attributes.puppy', 'Puppy/Kitten') },
         { value: 'adult', label: t('admin.products.attributes.adult', 'Adult') },
         { value: 'senior', label: t('admin.products.attributes.senior', 'Senior') },
-        { value: 'all', label: t('admin.products.attributes.all', 'All Ages') }
+        { value: 'all', label: t('admin.products.attributes.all', 'All Ages') },
     ];
 
     // Handle predefined attribute changes
     const handleAttributeChange = (key, value) => {
         const updatedAttributes = {
             ...attributes,
-            [key]: value === '' ? undefined : value
+            [key]: value === '' ? undefined : value,
         };
         onAttributesChange(updatedAttributes);
     };
@@ -41,8 +37,8 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
             ...attributes,
             dimensions: {
                 ...attributes.dimensions,
-                [dimension]: value === '' ? undefined : parseFloat(value) || undefined
-            }
+                [dimension]: value === '' ? undefined : parseFloat(value) || undefined,
+            },
         };
         onAttributesChange(updatedAttributes);
     };
@@ -52,13 +48,13 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
         const updatedCustom = [...customAttributes];
         updatedCustom[index] = {
             ...updatedCustom[index],
-            [field]: value
+            [field]: value,
         };
         setCustomAttributes(updatedCustom);
-        
+
         const updatedAttributes = {
             ...attributes,
-            custom: updatedCustom.filter(attr => attr.key && attr.value)
+            custom: updatedCustom.filter((attr) => attr.key && attr.value),
         };
         onAttributesChange(updatedAttributes);
     };
@@ -73,10 +69,10 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
     const removeCustomAttribute = (index) => {
         const updatedCustom = customAttributes.filter((_, i) => i !== index);
         setCustomAttributes(updatedCustom);
-        
+
         const updatedAttributes = {
             ...attributes,
-            custom: updatedCustom.filter(attr => attr.key && attr.value)
+            custom: updatedCustom.filter((attr) => attr.key && attr.value),
         };
         onAttributesChange(updatedAttributes);
     };
@@ -86,7 +82,7 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
             <label className="attributes-label">
                 {t('admin.products.attributes.title', 'Product Attributes')}
             </label>
-            
+
             {error && <div className="attributes-error">{error}</div>}
 
             <div className="attributes-grid">
@@ -100,7 +96,7 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         onChange={(e) => handleAttributeChange('petType', e.target.value)}
                         className="attribute-select"
                     >
-                        {petTypeOptions.map(option => (
+                        {petTypeOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
@@ -118,7 +114,7 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         onChange={(e) => handleAttributeChange('ageGroup', e.target.value)}
                         className="attribute-select"
                     >
-                        {ageGroupOptions.map(option => (
+                        {ageGroupOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
@@ -136,7 +132,12 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         step="0.01"
                         min="0"
                         value={attributes.weight || ''}
-                        onChange={(e) => handleAttributeChange('weight', e.target.value === '' ? undefined : parseFloat(e.target.value))}
+                        onChange={(e) =>
+                            handleAttributeChange(
+                                'weight',
+                                e.target.value === '' ? undefined : parseFloat(e.target.value),
+                            )
+                        }
                         className="attribute-input"
                         placeholder="0.00"
                     />
@@ -152,7 +153,10 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         value={attributes.color || ''}
                         onChange={(e) => handleAttributeChange('color', e.target.value)}
                         className="attribute-input"
-                        placeholder={t('admin.products.attributes.colorPlaceholder', 'e.g., Red, Blue, Multi-color')}
+                        placeholder={t(
+                            'admin.products.attributes.colorPlaceholder',
+                            'e.g., Red, Blue, Multi-color',
+                        )}
                     />
                 </div>
 
@@ -166,7 +170,10 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         value={attributes.material || ''}
                         onChange={(e) => handleAttributeChange('material', e.target.value)}
                         className="attribute-input"
-                        placeholder={t('admin.products.attributes.materialPlaceholder', 'e.g., Cotton, Plastic, Metal')}
+                        placeholder={t(
+                            'admin.products.attributes.materialPlaceholder',
+                            'e.g., Cotton, Plastic, Metal',
+                        )}
                     />
                 </div>
             </div>
@@ -242,16 +249,26 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
                         <input
                             type="text"
                             value={attr.key || ''}
-                            onChange={(e) => handleCustomAttributeChange(index, 'key', e.target.value)}
+                            onChange={(e) =>
+                                handleCustomAttributeChange(index, 'key', e.target.value)
+                            }
                             className="custom-attribute-key"
-                            placeholder={t('admin.products.attributes.keyPlaceholder', 'Attribute name')}
+                            placeholder={t(
+                                'admin.products.attributes.keyPlaceholder',
+                                'Attribute name',
+                            )}
                         />
                         <input
                             type="text"
                             value={attr.value || ''}
-                            onChange={(e) => handleCustomAttributeChange(index, 'value', e.target.value)}
+                            onChange={(e) =>
+                                handleCustomAttributeChange(index, 'value', e.target.value)
+                            }
                             className="custom-attribute-value"
-                            placeholder={t('admin.products.attributes.valuePlaceholder', 'Attribute value')}
+                            placeholder={t(
+                                'admin.products.attributes.valuePlaceholder',
+                                'Attribute value',
+                            )}
                         />
                         <button
                             type="button"
@@ -266,7 +283,9 @@ const AttributesManager = ({ attributes = {}, onAttributesChange, error = null }
 
                 {customAttributes.length === 0 && (
                     <div className="no-custom-attributes">
-                        <p>{t('admin.products.attributes.noCustom', 'No custom attributes added')}</p>
+                        <p>
+                            {t('admin.products.attributes.noCustom', 'No custom attributes added')}
+                        </p>
                     </div>
                 )}
             </div>

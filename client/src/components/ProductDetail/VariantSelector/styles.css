@@ -10,8 +10,10 @@
 .variant-selector-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .variant-selector-title {
@@ -22,6 +24,24 @@
     border-bottom: 2px solid var(--brand-orange, #ff6b35);
     padding-bottom: 8px;
     display: inline-block;
+}
+
+.selected-variant-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.selected-variant-name {
+    font-weight: 600;
+    color: var(--text-primary, #1f2937);
+}
+
+.selected-variant-price {
+    font-weight: 700;
+    color: var(--brand-orange, #ff6b35);
+    font-size: 18px;
 }
 
 .clear-selection-btn {
@@ -41,7 +61,75 @@
     color: var(--text-primary, #1f2937);
 }
 
-/* Attribute-based Selection */
+/* Dropdown-based Selection */
+.variant-dropdowns {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.variant-dropdown-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.variant-dropdown-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #1f2937);
+    text-transform: capitalize;
+    margin: 0;
+}
+
+.variant-dropdown {
+    padding: 12px 16px;
+    border: 2px solid var(--border-light, #e5e7eb);
+    border-radius: 8px;
+    background: var(--bg-white, #ffffff);
+    color: var(--text-primary, #1f2937);
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+.variant-dropdown:hover {
+    border-color: var(--brand-orange, #ff6b35);
+}
+
+.variant-dropdown:focus {
+    outline: none;
+    border-color: var(--brand-orange, #ff6b35);
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.variant-dropdown option:disabled {
+    color: var(--text-disabled, #9ca3af);
+    background-color: var(--bg-gray-50, #f9fafb);
+}
+
+.color-swatch-display {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-light, #e5e7eb);
+    display: inline-block;
+}
+
+/* Attribute-based Selection (Legacy - keeping for fallback) */
 .variant-attributes {
     display: flex;
     flex-direction: column;
@@ -458,11 +546,45 @@
     .preview-more {
         font-size: 10px;
     }
+
+    /* Mobile dropdown styles */
+    .variant-selector-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .selected-variant-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .variant-dropdowns {
+        gap: 16px;
+    }
+
+    .variant-dropdown {
+        padding: 10px 14px;
+        font-size: 14px;
+        padding-right: 36px;
+        background-size: 14px;
+        background-position: right 10px center;
+    }
+
+    .variant-dropdown-label {
+        font-size: 14px;
+    }
+
+    .color-swatch {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 /* Focus and accessibility */
 .variant-option:focus,
-.variant-item:focus {
+.variant-item:focus,
+.variant-dropdown:focus-visible {
     outline: 2px solid var(--brand-orange, #ff6b35);
     outline-offset: 2px;
 }
@@ -472,22 +594,38 @@
     cursor: not-allowed;
 }
 
+.clear-selection-btn:focus-visible {
+    outline: 2px solid var(--brand-orange, #ff6b35);
+    outline-offset: 2px;
+}
+
 /* High contrast mode */
 @media (prefers-contrast: high) {
     .variant-option,
-    .variant-item {
+    .variant-item,
+    .variant-dropdown {
         border-width: 3px;
+    }
+
+    .variant-dropdown:focus {
+        box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.3);
     }
 
     .selected-variant-summary {
         border-width: 2px;
+    }
+
+    .color-swatch {
+        border-width: 3px;
     }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     .variant-option,
-    .variant-item {
+    .variant-item,
+    .variant-dropdown,
+    .clear-selection-btn {
         transition: none;
     }
 }
