@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useI18n } from '../../hooks/useI18n';
 import ImageGallery from '../../components/ProductDetail/ImageGallery';
 import VariantSelector from '../../components/ProductDetail/VariantSelector';
+import EnhancedVariantSelector from '../../components/ProductDetail/EnhancedVariantSelector';
 import ProductInfo from '../../components/ProductDetail/ProductInfo';
 import LoadingSpinner from '../../components/Common/LoadingSpinner';
 import ErrorMessage from '../../components/Common/ErrorMessage';
@@ -25,6 +26,9 @@ const ProductDetail = () => {
 
     // Local state
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const [selectedVariantCombination, setSelectedVariantCombination] = useState(null);
+    const [currentPrice, setCurrentPrice] = useState(0);
+    const [currentStock, setCurrentStock] = useState(0);
     const [currentImages, setCurrentImages] = useState([]);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
@@ -35,6 +39,14 @@ const ProductDetail = () => {
             dispatch(getProductBySlug(slug));
         }
     }, [dispatch, slug]);
+
+    // Initialize price and stock when product loads
+    useEffect(() => {
+        if (product) {
+            setCurrentPrice(product.salePrice || product.price);
+            setCurrentStock(product.stockQuantity || 0);
+        }
+    }, [product]);
 
     // Update images when product or selected variant changes
     useEffect(() => {
@@ -64,10 +76,26 @@ const ProductDetail = () => {
         }
     }, [product, selectedVariant]);
 
-    // Handle variant selection
+    // Handle variant selection (legacy system)
     const handleVariantChange = (variant) => {
         setSelectedVariant(variant);
         setQuantity(1); // Reset quantity when variant changes
+    };
+
+    // Handle enhanced variant selection
+    const handleEnhancedVariantChange = (combination) => {
+        setSelectedVariantCombination(combination);
+        setQuantity(1); // Reset quantity when variant changes
+    };
+
+    // Handle price change from enhanced variant selector
+    const handlePriceChange = (price) => {
+        setCurrentPrice(price);
+    };
+
+    // Handle stock change from enhanced variant selector
+    const handleStockChange = (stock) => {
+        setCurrentStock(stock);
     };
 
     // Handle quantity change
@@ -85,27 +113,52 @@ const ProductDetail = () => {
         if (!product) return;
 
         try {
+            // Check if product has new variant system
+            const hasNewVariantSystem =
+                product.variantAttributes && product.variantAttributes.length > 0;
+
+            let variantId = null;
+            let variantDisplayName = '';
+
+            if (hasNewVariantSystem) {
+                // New variant system - check if all required attributes are selected
+                if (!selectedVariantCombination) {
+                    toast.error(
+                        t(
+                            'product.selectVariantsFirst',
+                            'Please select all required options first',
+                        ),
+                    );
+                    return;
+                }
+
+                variantId = selectedVariantCombination.sku;
+                variantDisplayName = selectedVariantCombination.attributes
+                    .map((attr) => `${attr.attributeName}: ${attr.attributeValue}`)
+                    .join(', ');
+            } else if (selectedVariant) {
+                // Legacy variant system
+                variantId = selectedVariant.id || selectedVariant.sku;
+                variantDisplayName = `${selectedVariant.name}: ${selectedVariant.value}`;
+            }
+
             // Prepare minimal product data for cart (only for guest users)
             const productData = {
                 name: product.name,
                 price: currentPrice,
                 image: currentImages[0] || '/placeholder-image.svg',
                 // Include variant information if selected
-                ...(selectedVariant && {
+                ...(variantDisplayName && {
                     variant: {
-                        id: selectedVariant.id || selectedVariant.sku,
-                        name: selectedVariant.name,
-                        value: selectedVariant.value,
-                        price: selectedVariant.price,
-                        displayName: `${selectedVariant.name}: ${selectedVariant.value}`,
+                        id: variantId,
+                        displayName: variantDisplayName,
+                        price: currentPrice,
                     },
                 }),
             };
 
             // Get product ID (use id field from server DTO)
             const productId = product.id;
-            // Get variant ID if variant is selected
-            const variantId = selectedVariant ? selectedVariant.id || selectedVariant.sku : null;
 
             console.log('🛒 Using productId:', productId);
             console.log('🛒 Using variantId:', variantId);
@@ -121,9 +174,7 @@ const ProductDetail = () => {
             await dispatch(addToCart(productId, quantity, productData, variantId));
 
             // Show success message with variant info
-            const variantText = selectedVariant
-                ? ` (${selectedVariant.name}: ${selectedVariant.value})`
-                : '';
+            const variantText = variantDisplayName ? ` (${variantDisplayName})` : '';
             toast.success(t('product.addedToCart', 'Added to cart successfully!') + variantText);
         } catch (error) {
             console.error('Error adding to cart:', error);
@@ -179,11 +230,7 @@ const ProductDetail = () => {
         );
     }
 
-    // Get current price and stock
-    const currentPrice = selectedVariant ? selectedVariant.price : product.price;
-    const currentStock = selectedVariant
-        ? selectedVariant.stockQuantity || selectedVariant.stock || 0
-        : product.stockQuantity;
+    // Calculate current values based on variant selection
     const isInStock = currentStock > 0;
 
     // Get current attributes (just use product attributes)
@@ -240,16 +287,31 @@ const ProductDetail = () => {
                                 onBuyNow={handleBuyNow}
                             />
 
-                            {/* Variant Selector */}
-                            {product.variants && product.variants.length > 0 && (
+                            {/* Enhanced Variant Selector (New System) */}
+                            {product.variantAttributes && product.variantAttributes.length > 0 && (
                                 <div className="product-detail-variants">
-                                    <VariantSelector
-                                        variants={product.variants}
-                                        selectedVariant={selectedVariant}
-                                        onVariantChange={handleVariantChange}
+                                    <EnhancedVariantSelector
+                                        product={product}
+                                        onVariantChange={handleEnhancedVariantChange}
+                                        onPriceChange={handlePriceChange}
+                                        onStockChange={handleStockChange}
+                                        disabled={loading}
                                     />
                                 </div>
                             )}
+
+                            {/* Legacy Variant Selector */}
+                            {!product.variantAttributes &&
+                                product.variants &&
+                                product.variants.length > 0 && (
+                                    <div className="product-detail-variants">
+                                        <VariantSelector
+                                            variants={product.variants}
+                                            selectedVariant={selectedVariant}
+                                            onVariantChange={handleVariantChange}
+                                        />
+                                    </div>
+                                )}
                         </div>
                     </div>
 

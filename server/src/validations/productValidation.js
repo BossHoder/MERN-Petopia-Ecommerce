@@ -85,6 +85,60 @@ export const createProductSchema = Joi.object({
         'any.required': ERROR_MESSAGES.BRAND_REQUIRED,
     }),
 
+    // New variant system
+    variantAttributes: Joi.array()
+        .items(
+            Joi.object({
+                name: Joi.string().trim().required(),
+                displayName: Joi.string().trim().required(),
+                values: Joi.array()
+                    .items(
+                        Joi.object({
+                            value: Joi.string().trim().required(),
+                            displayName: Joi.string().trim().required(),
+                            colorCode: Joi.string().trim().optional(),
+                            isActive: Joi.boolean().default(true),
+                        }),
+                    )
+                    .min(1)
+                    .required(),
+                isRequired: Joi.boolean().default(true),
+                sortOrder: Joi.number().integer().default(0),
+            }),
+        )
+        .optional(),
+
+    variantCombinations: Joi.array()
+        .items(
+            Joi.object({
+                combinationKey: Joi.string().trim().required(),
+                attributes: Joi.array()
+                    .items(
+                        Joi.object({
+                            attributeName: Joi.string().trim().required(),
+                            attributeValue: Joi.string().trim().required(),
+                        }),
+                    )
+                    .min(1)
+                    .required(),
+                sku: Joi.string().trim().required(),
+                price: Joi.number().positive().optional(),
+                salePrice: Joi.number().positive().optional(),
+                stockQuantity: Joi.number().integer().min(0).required(),
+                lowStockThreshold: Joi.number().integer().min(0).default(5),
+                images: Joi.array().items(Joi.string().trim()).optional(),
+                isActive: Joi.boolean().default(true),
+                weight: Joi.number().positive().optional(),
+                dimensions: Joi.object({
+                    length: Joi.number().positive().optional(),
+                    width: Joi.number().positive().optional(),
+                    height: Joi.number().positive().optional(),
+                }).optional(),
+            }),
+        )
+        .optional(),
+
+    // Legacy variants (for backward compatibility)
     variants: Joi.array()
         .items(
             Joi.object({

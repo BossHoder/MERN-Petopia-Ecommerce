@@ -13,14 +13,17 @@ import { getAllCategories } from '../../../store/actions/categoryActions';
 import ImageUpload from '../../../components/Admin/ImageUpload';
 import AttributesManager from '../../../components/Admin/AttributesManager';
 import VariantsManager from '../../../components/Admin/VariantsManager';
+import EnhancedVariantsManager from '../../../components/Admin/EnhancedVariantsManager';
 import SlugSkuInput from '../../../components/SlugSkuInput/SlugSkuInput';
 import API from '../../../services/api';
+import './styles.css';
 
 const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
     const { t } = useI18n();
     const dispatch = useDispatch();
     const [initialData, setInitialData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [variantSystemType, setVariantSystemType] = useState('legacy'); // 'legacy' or 'enhanced'
 
     // Check if product slug exists
     const checkProductSlugExists = async (slug) => {
@@ -122,6 +125,17 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
         dispatch(getAllCategories());
     }, [dispatch]);
 
+    // Set initial variant system type based on data
+    useEffect(() => {
+        if (initialData) {
+            if (initialData.variantAttributes && initialData.variantAttributes.length > 0) {
+                setVariantSystemType('enhanced');
+            } else {
+                setVariantSystemType('legacy');
+            }
+        }
+    }, [initialData]);
+
     // Load existing data for edit mode
     useEffect(() => {
         if (mode === 'edit' && productId) {
@@ -185,8 +199,60 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                 formData.append('existingImages', JSON.stringify(existingImages));
             }
 
-            // Handle variant images
-            if (values.variants && values.variants.length > 0) {
+            // Handle Enhanced Variant System
+            if (
+                variantSystemType === 'enhanced' &&
+                values.variantAttributes &&
+                values.variantAttributes.length > 0
+            ) {
+                console.log('🚀 Sending enhanced variants to backend:', {
+                    variantAttributes: values.variantAttributes,
+                    variantCombinations: values.variantCombinations,
+                });
+
+                // Send variant attributes
+                formData.append('variantAttributes', JSON.stringify(values.variantAttributes));
+
+                // Process variant combinations with images
+                if (values.variantCombinations && values.variantCombinations.length > 0) {
+                    const processedCombinations = values.variantCombinations.map(
+                        (combination, combinationIndex) => {
+                            const combinationData = { ...combination };
+                            const existingCombinationImages = [];
+
+                            if (combination.images && combination.images.length > 0) {
+                                combination.images.forEach((image, imageIndex) => {
+                                    if (image.isNew && image.file) {
+                                        // New combination image file to upload
+                                        formData.append(
+                                            `combinationImages_${combinationIndex}`,
+                                            image.file,
+                                        );
+                                    } else if (typeof image === 'string') {
+                                        // Existing combination image URL
+                                        existingCombinationImages.push(image);
+                                    } else if (image.url) {
+                                        // Existing combination image object
+                                        existingCombinationImages.push(image.url);
+                                    }
+                                });
+                            }
+
+                            // Replace images array with existing images only
+                            combinationData.images = existingCombinationImages;
+                            return combinationData;
+                        },
+                    );
+
+                    formData.append('variantCombinations', JSON.stringify(processedCombinations));
+                }
+            }
+            // Handle Legacy Variant System
+            else if (
+                variantSystemType === 'legacy' &&
+                values.variants &&
+                values.variants.length > 0
+            ) {
                 const processedVariants = values.variants.map((variant, variantIndex) => {
                     const variantData = { ...variant };
                     const existingVariantImages = [];
@@ -211,7 +277,7 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
                     return variantData;
                 });
 
-                console.log('🚀 Sending variants to backend:', processedVariants);
+                console.log('🚀 Sending legacy variants to backend:', processedVariants);
                 formData.append('variants', JSON.stringify(processedVariants));
             }
 
@@ -293,7 +359,9 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
         sku: '',
         brand: '',
         attributes: {},
-        variants: [],
+        variants: [], // Legacy variants
+        variantAttributes: [], // New variant system
+        variantCombinations: [], // New variant system
         isPublished: true,
         isFeatured: false,
     };
@@ -557,12 +625,119 @@ const ProductForm = ({ mode, productId, onClose, onSuccess }) => {
 
                         {/* Variants Section */}
                         <div className="admin-form-section">
-                            <VariantsManager
-                                variants={values.variants}
-                                onVariantsChange={(variants) => setFieldValue('variants', variants)}
-                                basePrice={values.price}
-                                error={errors.variants && touched.variants ? errors.variants : null}
-                            />
+                            <div className="variants-system-toggle">
+                                <label className="admin-form-label">
+                                    {t('admin.products.variants.system', 'Variant System')}
+                                </label>
+                                <div className="variant-system-options">
+                                    <label className="radio-option">
+                                        <input
+                                            type="radio"
+                                            name="variantSystem"
+                                            value="enhanced"
+                                            checked={variantSystemType === 'enhanced'}
+                                            onChange={() => {
+                                                // Switch to enhanced system
+                                                if (values.variants && values.variants.length > 0) {
+                                                    if (
+                                                        window.confirm(
+                                                            t(
+                                                                'admin.products.variants.switchConfirm',
+                                                                'Switching will clear existing variants. Continue?',
+                                                            ),
+                                                        )
+                                                    ) {
+                                                        setFieldValue('variants', []);
+                                                        setVariantSystemType('enhanced');
+                                                        // Initialize enhanced system with empty array to trigger the UI
+                                                        setFieldValue('variantAttributes', []);
+                                                        setFieldValue('variantCombinations', []);
+                                                    }
+                                                } else {
+                                                    setVariantSystemType('enhanced');
+                                                    // Initialize enhanced system with empty array to trigger the UI
+                                                    setFieldValue('variantAttributes', []);
+                                                    setFieldValue('variantCombinations', []);
+                                                }
+                                            }}
+                                        />
+                                        {t(
+                                            'admin.products.variants.enhanced',
+                                            'Enhanced (Combinations)',
+                                        )}
+                                    </label>
+                                    <label className="radio-option">
+                                        <input
+                                            type="radio"
+                                            name="variantSystem"
+                                            value="legacy"
+                                            checked={variantSystemType === 'legacy'}
+                                            onChange={() => {
+                                                // Switch to legacy system
+                                                if (
+                                                    values.variantAttributes &&
+                                                    values.variantAttributes.length > 0
+                                                ) {
+                                                    if (
+                                                        window.confirm(
+                                                            t(
+                                                                'admin.products.variants.switchConfirm',
+                                                                'Switching will clear existing variants. Continue?',
+                                                            ),
+                                                        )
+                                                    ) {
+                                                        setVariantSystemType('legacy');
+                                                        setFieldValue('variantAttributes', []);
+                                                        setFieldValue('variantCombinations', []);
+                                                    }
+                                                } else {
+                                                    setVariantSystemType('legacy');
+                                                }
+                                                // Ensure legacy system is active
+                                                if (!values.variants) {
+                                                    setFieldValue('variants', []);
+                                                }
+                                            }}
+                                        />
+                                        {t('admin.products.variants.legacy', 'Legacy (Simple)')}
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Enhanced Variant System */}
+                            {variantSystemType === 'enhanced' && (
+                                <EnhancedVariantsManager
+                                    variantAttributes={values.variantAttributes || []}
+                                    variantCombinations={values.variantCombinations || []}
+                                    onVariantAttributesChange={(attributes) =>
+                                        setFieldValue('variantAttributes', attributes)
+                                    }
+                                    onVariantCombinationsChange={(combinations) =>
+                                        setFieldValue('variantCombinations', combinations)
+                                    }
+                                    basePrice={values.price}
+                                    baseSku={values.sku}
+                                    error={
+                                        errors.variantAttributes && touched.variantAttributes
+                                            ? errors.variantAttributes
+                                            : null
+                                    }
+                                />
+                            )}
+
+                            {/* Legacy Variant System */}
+                            {variantSystemType === 'legacy' && (
+                                <VariantsManager
+                                    variants={values.variants || []}
+                                    onVariantsChange={(variants) =>
+                                        setFieldValue('variants', variants)
+                                    }
+                                    basePrice={values.price}
+                                    error={
+                                        errors.variants && touched.variants ? errors.variants : null
+                                    }
+                                />
+                            )}
                         </div>
 
                         {/* Status and Settings */}

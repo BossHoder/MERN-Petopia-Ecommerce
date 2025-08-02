@@ -977,6 +977,9 @@
                 "totalStock": "Tổng Tồn Kho",
                 "priceRange": "Khoảng Giá",
                 "images": "Hình Ảnh Biến Thể",
+                "system": "Hệ thống biến thể",
+                "enhanced": "Nâng cao (Kết hợp)",
+                "legacy": "Cơ bản (Đơn giản)",
                 "imageUpload": {
                     "dropText": "Thả hình ảnh biến thể hoặc nhấp",
                     "supportText": "Tối đa 3 hình, mỗi hình 5MB",

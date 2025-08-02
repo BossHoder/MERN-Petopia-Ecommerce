@@ -8,6 +8,14 @@ import { ERROR_MESSAGES } from '../constants/errorMessages.js';
 import { productDto, productsDto, productCardDto } from '../dto/productDto.js';
 import { createProductSchema, updateProductSchema, productQuerySchema } from '../validations/productValidation.js';
 import { productHelper, responseHelper } from '../helpers/productHelper.js';
+import {
+    generateCombinationKey,
+    findVariantCombination,
+    getAvailableAttributeValues,
+    calculateTotalStock,
+    getEffectivePrice,
+    isProductInStock,
+} from '../utils/variantUtils.js';
 
 class ProductController {
     async getAllProducts(req, res) {
@@ -257,11 +265,66 @@ class ProductController {
     // Create new product (Admin only)
     async createProduct(req, res, next) {
         try {
-            console.log('createProduct called with:', req.body);
+            console.log('🔧 createProduct called with:', {
+                bodyKeys: Object.keys(req.body),
+                hasFiles: !!req.files,
+                filesCount: req.files ? Object.keys(req.files).length : 0,
+            });
 
-            // Validate request body
-            const { error, value } = createProductSchema.validate(req.body);
+            // Parse JSON strings for variant data
+            const requestData = { ...req.body };
+
+            if (req.body.variantAttributes) {
+                try {
+                    requestData.variantAttributes = JSON.parse(req.body.variantAttributes);
+                    console.log('📊 Enhanced variant attributes received:', requestData.variantAttributes);
+                } catch (e) {
+                    console.log('❌ Error parsing variantAttributes:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variantAttributes format');
+                }
+            }
+
+            if (req.body.variantCombinations) {
+                try {
+                    requestData.variantCombinations = JSON.parse(req.body.variantCombinations);
+                    console.log('🔗 Enhanced variant combinations received:', requestData.variantCombinations);
+                } catch (e) {
+                    console.log('❌ Error parsing variantCombinations:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variantCombinations format');
+                }
+            }
+
+            if (req.body.variants) {
+                try {
+                    requestData.variants = JSON.parse(req.body.variants);
+                    console.log('🔄 Legacy variants received:', requestData.variants);
+                } catch (e) {
+                    console.log('❌ Error parsing variants:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variants format');
+                }
+            }
+
+            // Parse other JSON fields
+            if (req.body.attributes) {
+                try {
+                    requestData.attributes = JSON.parse(req.body.attributes);
+                } catch (e) {
+                    console.log('❌ Error parsing attributes:', e.message);
+                }
+            }
+
+            if (req.body.existingImages) {
+                try {
+                    requestData.existingImages = JSON.parse(req.body.existingImages);
+                } catch (e) {
+                    console.log('❌ Error parsing existingImages:', e.message);
+                }
+            }
+
+            // Validate request body with parsed data
+            const { error, value } = createProductSchema.validate(requestData);
             if (error) {
+                console.log('❌ Validation error:', error.details[0].message);
                 return responseHelper.validationError(res, error.details[0].message);
             }
 
@@ -305,11 +368,68 @@ class ProductController {
     async updateProduct(req, res, next) {
         try {
             const { id } = req.params;
-            console.log('updateProduct called with id:', id, 'body:', req.body);
+            console.log('🔧 updateProduct called with:', {
+                productId: id,
+                bodyKeys: Object.keys(req.body),
+                hasFiles: !!req.files,
+                filesCount: req.files ? Object.keys(req.files).length : 0,
+                fileDetails: req.files ? Object.keys(req.files) : [],
+            });
 
-            // Validate request body
-            const { error, value } = updateProductSchema.validate(req.body);
+            // Parse JSON strings for variant data
+            const requestData = { ...req.body };
+
+            if (req.body.variantAttributes) {
+                try {
+                    requestData.variantAttributes = JSON.parse(req.body.variantAttributes);
+                    console.log('📊 Enhanced variant attributes received:', requestData.variantAttributes);
+                } catch (e) {
+                    console.log('❌ Error parsing variantAttributes:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variantAttributes format');
+                }
+            }
+
+            if (req.body.variantCombinations) {
+                try {
+                    requestData.variantCombinations = JSON.parse(req.body.variantCombinations);
+                    console.log('🔗 Enhanced variant combinations received:', requestData.variantCombinations);
+                } catch (e) {
+                    console.log('❌ Error parsing variantCombinations:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variantCombinations format');
+                }
+            }
+
+            if (req.body.variants) {
+                try {
+                    requestData.variants = JSON.parse(req.body.variants);
+                    console.log('🔄 Legacy variants received:', requestData.variants);
+                } catch (e) {
+                    console.log('❌ Error parsing variants:', e.message);
+                    return responseHelper.badRequest(res, 'Invalid variants format');
+                }
+            }
+
+            // Parse other JSON fields
+            if (req.body.attributes) {
+                try {
+                    requestData.attributes = JSON.parse(req.body.attributes);
+                } catch (e) {
+                    console.log('❌ Error parsing attributes:', e.message);
+                }
+            }
+
+            if (req.body.existingImages) {
+                try {
+                    requestData.existingImages = JSON.parse(req.body.existingImages);
+                } catch (e) {
+                    console.log('❌ Error parsing existingImages:', e.message);
+                }
+            }
+
+            // Validate request body with parsed data
+            const { error, value } = updateProductSchema.validate(requestData);
             if (error) {
+                console.log('❌ Validation error:', error.details[0].message);
                 return responseHelper.validationError(res, error.details[0].message);
             }
 
@@ -342,6 +462,24 @@ class ProductController {
             })
                 .populate('category', 'name slug')
                 .lean();
+
+            // Debug what was actually saved
+            console.log('✅ Product updated successfully:', {
+                productId: updatedProduct._id,
+                hasVariantAttributes: !!(
+                    updatedProduct.variantAttributes && updatedProduct.variantAttributes.length > 0
+                ),
+                variantAttributesCount: updatedProduct.variantAttributes ? updatedProduct.variantAttributes.length : 0,
+                hasVariantCombinations: !!(
+                    updatedProduct.variantCombinations && updatedProduct.variantCombinations.length > 0
+                ),
+                variantCombinationsCount: updatedProduct.variantCombinations
+                    ? updatedProduct.variantCombinations.length
+                    : 0,
+                hasLegacyVariants: !!(updatedProduct.variants && updatedProduct.variants.length > 0),
+                legacyVariantsCount: updatedProduct.variants ? updatedProduct.variants.length : 0,
+            });
+
             // Cập nhật productCount cho category
             await Category.updateAllProductCounts();
 
@@ -526,6 +664,179 @@ class ProductController {
             });
         } catch (error) {
             console.error('Error fetching brands:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ===========================================
+    // VARIANT COMBINATION METHODS
+    // ===========================================
+
+    // Get available variant options based on current selections
+    async getVariantOptions(req, res) {
+        try {
+            const { id } = req.params;
+            const { selections = {} } = req.query;
+
+            // Parse selections if it's a string
+            const currentSelections = typeof selections === 'string' ? JSON.parse(selections) : selections;
+
+            const product = await Product.findOne({
+                $or: [{ _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }, { slug: id }],
+                isPublished: true,
+            }).lean();
+
+            if (!product) {
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+            }
+
+            if (!product.variantAttributes || product.variantAttributes.length === 0) {
+                return responseHelper.success(res, {
+                    hasVariants: false,
+                    availableOptions: {},
+                });
+            }
+
+            // Get available options for each attribute
+            const availableOptions = {};
+
+            product.variantAttributes.forEach((attr) => {
+                availableOptions[attr.name] = getAvailableAttributeValues(
+                    product.variantAttributes,
+                    product.variantCombinations,
+                    currentSelections,
+                    attr.name,
+                );
+            });
+
+            return responseHelper.success(res, {
+                hasVariants: true,
+                variantAttributes: product.variantAttributes,
+                availableOptions,
+                currentSelections,
+            });
+        } catch (error) {
+            console.error('Error in getVariantOptions:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Get specific variant combination details
+    async getVariantCombination(req, res) {
+        try {
+            const { id } = req.params;
+            const { attributes } = req.body;
+
+            if (!attributes || Object.keys(attributes).length === 0) {
+                return responseHelper.badRequest(res, 'Attribute selections are required');
+            }
+
+            const product = await Product.findOne({
+                $or: [{ _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }, { slug: id }],
+                isPublished: true,
+            }).lean();
+
+            if (!product) {
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+            }
+
+            const combination = findVariantCombination(product.variantCombinations, attributes);
+
+            if (!combination) {
+                return responseHelper.notFound(res, 'Variant combination not found');
+            }
+
+            const effectivePrice = getEffectivePrice(product, combination);
+            const inStock = combination.isActive && combination.stockQuantity > 0;
+
+            return responseHelper.success(res, {
+                combination,
+                effectivePrice,
+                inStock,
+                stockQuantity: combination.stockQuantity,
+                isLowStock: combination.stockQuantity <= combination.lowStockThreshold,
+            });
+        } catch (error) {
+            console.error('Error in getVariantCombination:', error);
+            return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Validate variant selections for add to cart
+    async validateVariantSelections(req, res) {
+        try {
+            const { id } = req.params;
+            const { attributes, quantity = 1 } = req.body;
+
+            const product = await Product.findOne({
+                $or: [{ _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }, { slug: id }],
+                isPublished: true,
+            }).lean();
+
+            if (!product) {
+                return responseHelper.notFound(res, ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+            }
+
+            // Check if product has variants
+            if (product.variantAttributes && product.variantAttributes.length > 0) {
+                // Validate all required attributes are selected
+                const requiredAttributes = product.variantAttributes.filter((attr) => attr.isRequired);
+                const missingAttributes = requiredAttributes.filter((attr) => !attributes[attr.name]);
+
+                if (missingAttributes.length > 0) {
+                    return responseHelper.badRequest(res, {
+                        message: 'Missing required variant selections',
+                        missingAttributes: missingAttributes.map((attr) => ({
+                            name: attr.name,
+                            displayName: attr.displayName,
+                        })),
+                    });
+                }
+
+                // Find the specific combination
+                const combination = findVariantCombination(product.variantCombinations, attributes);
+
+                if (!combination) {
+                    return responseHelper.badRequest(res, 'Invalid variant combination');
+                }
+
+                if (!combination.isActive) {
+                    return responseHelper.badRequest(res, 'This variant is not available');
+                }
+
+                if (combination.stockQuantity < quantity) {
+                    return responseHelper.badRequest(res, {
+                        message: 'Not enough stock available',
+                        availableStock: combination.stockQuantity,
+                        requestedQuantity: quantity,
+                    });
+                }
+
+                return responseHelper.success(res, {
+                    isValid: true,
+                    combination,
+                    effectivePrice: getEffectivePrice(product, combination),
+                    availableStock: combination.stockQuantity,
+                });
+            } else {
+                // Product without variants
+                if (product.stockQuantity < quantity) {
+                    return responseHelper.badRequest(res, {
+                        message: 'Not enough stock available',
+                        availableStock: product.stockQuantity,
+                        requestedQuantity: quantity,
+                    });
+                }
+
+                return responseHelper.success(res, {
+                    isValid: true,
+                    combination: null,
+                    effectivePrice: product.salePrice || product.price,
+                    availableStock: product.stockQuantity,
+                });
+            }
+        } catch (error) {
+            console.error('Error in validateVariantSelections:', error);
             return responseHelper.serverError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
         }
     }

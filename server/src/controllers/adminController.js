@@ -910,6 +910,27 @@ export default {
                 }
             }
 
+            // Parse enhanced variant system fields
+            if (req.body.variantAttributes && typeof req.body.variantAttributes === 'string') {
+                try {
+                    req.body.variantAttributes = JSON.parse(req.body.variantAttributes);
+                    console.log('📊 Enhanced variant attributes received:', req.body.variantAttributes);
+                } catch (error) {
+                    console.error('❌ Error parsing variantAttributes:', error);
+                    return errorResponse(res, 'Invalid variantAttributes format', 400);
+                }
+            }
+
+            if (req.body.variantCombinations && typeof req.body.variantCombinations === 'string') {
+                try {
+                    req.body.variantCombinations = JSON.parse(req.body.variantCombinations);
+                    console.log('🔗 Enhanced variant combinations received:', req.body.variantCombinations);
+                } catch (error) {
+                    console.error('❌ Error parsing variantCombinations:', error);
+                    return errorResponse(res, 'Invalid variantCombinations format', 400);
+                }
+            }
+
             // Generate slug if not provided but name is changed
             if (!req.body.slug && req.body.name) {
                 req.body.slug = req.body.name
@@ -1014,15 +1035,22 @@ export default {
                 return errorResponse(res, 'Product not found', 404);
             }
 
-            console.log('✅ Product updated successfully with variants:', {
+            console.log('✅ Product updated successfully:', {
                 productId: product._id,
-                variantsCount: product.variants?.length || 0,
+                // Legacy variants
+                hasLegacyVariants: !!(product.variants && product.variants.length > 0),
+                legacyVariantsCount: product.variants?.length || 0,
                 updatedVariants: product.variants?.map((v, i) => ({
                     index: i,
                     name: v.name,
                     value: v.value,
                     stockQuantity: v.stockQuantity,
                 })),
+                // Enhanced variant system
+                hasVariantAttributes: !!(product.variantAttributes && product.variantAttributes.length > 0),
+                variantAttributesCount: product.variantAttributes?.length || 0,
+                hasVariantCombinations: !!(product.variantCombinations && product.variantCombinations.length > 0),
+                variantCombinationsCount: product.variantCombinations?.length || 0,
             });
 
             return successResponse(res, { product }, 'Product updated successfully');

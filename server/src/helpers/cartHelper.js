@@ -46,10 +46,44 @@ export const addItemToCart = async (cartId, productId, quantity = 1, variantId =
             throw new Error(ERROR_MESSAGES.PRODUCT_NOT_AVAILABLE);
         }
 
-        // Check stock availability
-        const availableStock = variantId
-            ? product.variants.find((v) => v.sku === variantId)?.stockQuantity || 0
-            : product.stockQuantity;
+        // Determine variant system and get stock/price
+        let availableStock = product.stockQuantity;
+        let price = product.salePrice || product.price;
+        let variantInfo = null;
+
+        if (variantId) {
+            // Check new variant system first
+            if (product.variantCombinations && product.variantCombinations.length > 0) {
+                const combination = product.variantCombinations.find((combo) => combo.sku === variantId);
+                if (combination) {
+                    availableStock = combination.stockQuantity;
+                    price = combination.salePrice || combination.price || product.salePrice || product.price;
+                    variantInfo = {
+                        type: 'combination',
+                        sku: combination.sku,
+                        attributes: combination.attributes,
+                        combinationKey: combination.combinationKey,
+                    };
+                }
+            } else if (product.variants && product.variants.length > 0) {
+                // Legacy variant system
+                const variant = product.variants.find((v) => v.sku === variantId);
+                if (variant) {
+                    availableStock = variant.stockQuantity;
+                    price = variant.price;
+                    variantInfo = {
+                        type: 'legacy',
+                        sku: variant.sku,
+                        name: variant.name,
+                        value: variant.value,
+                    };
+                }
+            }
+
+            if (!variantInfo) {
+                throw new Error('Selected variant not found or not available');
+            }
+        }
 
         if (availableStock < quantity) {
             throw new Error(`Only ${availableStock} items available in stock`);
@@ -69,16 +103,12 @@ export const addItemToCart = async (cartId, productId, quantity = 1, variantId =
             }
         }
 
-        // Get product price (variant price if applicable)
-        const price = variantId
-            ? product.variants.find((v) => v.sku === variantId)?.price || product.price
-            : product.salePrice || product.price;
-
-        // Add item to cart
+        // Add item to cart with variant information
         await cart.addItem(productId, quantity, variantId, {
             name: product.name,
             image: product.images[0],
             price: price,
+            variantInfo: variantInfo, // Include variant details for display
         });
 
         return {

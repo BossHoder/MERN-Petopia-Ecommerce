@@ -74,7 +74,12 @@ router.get(
     }),
 );
 
-// These routes must come AFTER /suggest to avoid conflicts
+// Variant-related routes (must come before generic :id routes)
+router.get('/:id/variant-options', ProductController.getVariantOptions);
+router.post('/:id/variant-combination', ProductController.getVariantCombination);
+router.post('/:id/validate-variants', ProductController.validateVariantSelections);
+
+// These routes must come AFTER /suggest and variant routes to avoid conflicts
 router.get('/category/:categorySlug', ProductController.getProductsByCategory);
 router.get('/slug/:slug', ProductController.getProductBySlug);
 router.get('/:id', ProductController.getProductById);
