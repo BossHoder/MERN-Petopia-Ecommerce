@@ -769,6 +769,27 @@ export default {
             req.body.variants = JSON.parse(req.body.variants);
         }
 
+        // Parse enhanced variant system fields
+        if (req.body.variantAttributes && typeof req.body.variantAttributes === 'string') {
+            try {
+                req.body.variantAttributes = JSON.parse(req.body.variantAttributes);
+                console.log('📊 Enhanced variant attributes received:', req.body.variantAttributes);
+            } catch (error) {
+                console.error('❌ Error parsing variantAttributes:', error);
+                return errorResponse(res, 'Invalid variantAttributes format', 400);
+            }
+        }
+
+        if (req.body.variantCombinations && typeof req.body.variantCombinations === 'string') {
+            try {
+                req.body.variantCombinations = JSON.parse(req.body.variantCombinations);
+                console.log('🔗 Enhanced variant combinations received:', req.body.variantCombinations);
+            } catch (error) {
+                console.error('❌ Error parsing variantCombinations:', error);
+                return errorResponse(res, 'Invalid variantCombinations format', 400);
+            }
+        }
+
         // Generate slug if not provided
         if (!req.body.slug && req.body.name) {
             req.body.slug = req.body.name

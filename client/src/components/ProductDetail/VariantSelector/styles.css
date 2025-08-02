@@ -1,6 +1,5 @@
 /* Variant Selector Component Styles */
 .variant-selector {
-    padding: 24px;
     background: var(--bg-white, #ffffff);
     border-radius: 12px;
     border: 1px solid var(--border-light, #e5e7eb);

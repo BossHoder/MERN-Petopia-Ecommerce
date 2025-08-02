@@ -23,6 +23,8 @@ export const productDto = (product) => {
         brand: product.brand,
         petSpecifics: product.petSpecifics,
         variants: product.variants,
+        variantAttributes: product.variantAttributes,
+        variantCombinations: product.variantCombinations,
         attributes: product.attributes,
         tags: product.tags,
         isPublished: product.isPublished,
