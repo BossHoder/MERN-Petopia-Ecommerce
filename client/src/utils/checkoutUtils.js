@@ -121,12 +121,12 @@ export const calculateOrderPricing = (cartItems, coupon = null, options = {}) =>
 /**
  * Format price for display
  * @param {number} price - Price amount
- * @param {string} currency - Currency symbol (default: 'đ')
+ * @param {string} currency - Currency symbol (default: '₫')
  * @returns {string} Formatted price string
  */
-export const formatPrice = (price, currency = 'đ') => {
+export const formatPrice = (price, currency = '₫') => {
     if (typeof price !== 'number' || isNaN(price)) return `0${currency}`;
-    return `${price.toLocaleString()}${currency}`;
+    return `${price.toLocaleString('vi-VN')}${currency}`;
 };
 
 /**

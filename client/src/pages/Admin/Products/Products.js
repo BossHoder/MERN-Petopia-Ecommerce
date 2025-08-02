@@ -13,6 +13,7 @@ import AdminTable from '../../../components/Admin/AdminTable/AdminTable';
 import AdminPagination from '../../../components/Admin/AdminPagination/AdminPagination';
 import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/BreadcrumbNavigation';
 import ProductForm from './ProductForm';
+import { formatPrice } from '../../../utils/displayUtils';
 import './styles.css';
 
 const Products = () => {
@@ -85,7 +86,7 @@ const Products = () => {
             title: t('admin.products.price', 'Price'),
             width: '10%',
             align: 'right',
-            render: (value) => `$${value?.toFixed(2) || '0.00'}`,
+            render: (value) => formatPrice(value || 0),
         },
         {
             key: 'stock',

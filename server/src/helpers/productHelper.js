@@ -361,8 +361,8 @@ export const productHelper = {
         return stockQuantity <= threshold && stockQuantity > 0;
     },
 
-    formatPrice: (price, currency = 'USD') => {
-        return new Intl.NumberFormat('en-US', {
+    formatPrice: (price, currency = 'VND') => {
+        return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: currency,
         }).format(price);

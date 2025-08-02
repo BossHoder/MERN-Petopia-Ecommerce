@@ -179,6 +179,12 @@ const EnhancedVariantsManager = ({
             .join(', ');
     };
 
+    // Format price for display
+    const formatPrice = (price) => {
+        if (!price) return '';
+        return price.toLocaleString('vi-VN');
+    };
+
     return (
         <div className="enhanced-variants-manager">
             <div className="variants-manager-header">
@@ -507,6 +513,26 @@ const EnhancedVariantsManager = ({
                                         <span className="combination-sku">
                                             SKU: {combination.sku}
                                         </span>
+                                        <span className="combination-pricing">
+                                            {combination.price ? (
+                                                <>
+                                                    {formatPrice(combination.price)}₫
+                                                    {combination.salePrice && (
+                                                        <span className="sale-price">
+                                                            {' '}
+                                                            → {formatPrice(combination.salePrice)}₫
+                                                        </span>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <span className="base-price">
+                                                    Base: {formatPrice(basePrice)}₫
+                                                </span>
+                                            )}
+                                        </span>
+                                        <span className="combination-stock">
+                                            Stock: {combination.stockQuantity || 0}
+                                        </span>
                                         <span
                                             className={`combination-status ${
                                                 combination.isActive ? 'active' : 'inactive'
@@ -550,9 +576,11 @@ const EnhancedVariantsManager = ({
                                                         )
                                                     }
                                                     className="form-input"
-                                                    placeholder={`Base price: ${basePrice}`}
+                                                    placeholder={`Base price: ${basePrice.toLocaleString(
+                                                        'vi-VN',
+                                                    )}₫`}
                                                     min="0"
-                                                    step="0.01"
+                                                    step="1"
                                                 />
                                             </div>
 
@@ -576,15 +604,16 @@ const EnhancedVariantsManager = ({
                                                         )
                                                     }
                                                     className="form-input"
+                                                    placeholder="Optional sale price"
                                                     min="0"
-                                                    step="0.01"
+                                                    step="1"
                                                 />
                                             </div>
 
                                             <div className="form-group">
                                                 <label className="form-label">
                                                     {t(
-                                                        'admin.products.variants.stock',
+                                                        'admin.products.variants.stockQuantity',
                                                         'Stock Quantity',
                                                     )}{' '}
                                                     *
@@ -601,6 +630,7 @@ const EnhancedVariantsManager = ({
                                                     }
                                                     className="form-input"
                                                     min="0"
+                                                    required
                                                 />
                                             </div>
 
@@ -630,7 +660,7 @@ const EnhancedVariantsManager = ({
                                                 <label className="checkbox-label">
                                                     <input
                                                         type="checkbox"
-                                                        checked={combination.isActive !== false}
+                                                        checked={combination.isActive}
                                                         onChange={(e) =>
                                                             updateVariantCombination(
                                                                 index,

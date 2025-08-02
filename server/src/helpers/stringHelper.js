@@ -75,12 +75,12 @@ export const capitalizeWords = (text) => {
 /**
  * Format price for display
  * @param {number} price - Price number
- * @param {string} currency - Currency symbol (default: '$')
+ * @param {string} currency - Currency symbol (default: '₫')
  * @returns {string} - Formatted price
  */
-export const formatPrice = (price, currency = '$') => {
-    if (typeof price !== 'number') return `${currency}0.00`;
-    return `${currency}${price.toFixed(2)}`;
+export const formatPrice = (price, currency = '₫') => {
+    if (typeof price !== 'number') return `0${currency}`;
+    return `${price.toLocaleString('vi-VN')}${currency}`;
 };
 
 /**

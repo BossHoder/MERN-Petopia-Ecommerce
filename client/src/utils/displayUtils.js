@@ -39,10 +39,8 @@ export const renderValue = (value, key = '') => {
         try {
             const entries = Object.entries(value);
             if (entries.length === 0) return '';
-            
-            return entries
-                .map(([k, v]) => `${k}: ${renderValue(v)}`)
-                .join(', ');
+
+            return entries.map(([k, v]) => `${k}: ${renderValue(v)}`).join(', ');
         } catch (error) {
             return JSON.stringify(value);
         }
@@ -66,7 +64,7 @@ export const formatProductAttributes = (attributes) => {
         key,
         label: key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'),
         value: renderValue(value, key),
-        rawValue: value
+        rawValue: value,
     }));
 };
 
@@ -84,7 +82,7 @@ export const formatDimensions = (dimensions) => {
     if (dimensions.length) dims.push(`${dimensions.length}cm`);
     if (dimensions.width) dims.push(`${dimensions.width}cm`);
     if (dimensions.height) dims.push(`${dimensions.height}cm`);
-    
+
     return dims.length > 0 ? dims.join(' × ') : '';
 };
 
@@ -114,16 +112,28 @@ export const getNestedValue = (obj, path, defaultValue = '') => {
 };
 
 /**
- * Format price with currency
+ * Format price with Vietnamese Dong currency
  * @param {number} price - Price value
- * @param {string} currency - Currency symbol (default: '$')
+ * @returns {string} - Formatted price string with Vietnamese Dong
+ */
+export const formatPrice = (price) => {
+    if (typeof price !== 'number' || isNaN(price)) {
+        return '0₫';
+    }
+    return `${price.toLocaleString('vi-VN')}₫`;
+};
+
+/**
+ * Format price with currency (legacy support)
+ * @param {number} price - Price value
+ * @param {string} currency - Currency symbol (default: '₫')
  * @returns {string} - Formatted price string
  */
-export const formatPrice = (price, currency = '$') => {
+export const formatPriceWithCurrency = (price, currency = '₫') => {
     if (typeof price !== 'number' || isNaN(price)) {
-        return `${currency}0.00`;
+        return `0${currency}`;
     }
-    return `${currency}${price.toFixed(2)}`;
+    return `${price.toLocaleString('vi-VN')}${currency}`;
 };
 
 /**
@@ -137,10 +147,10 @@ export const truncateText = (text, maxLength, suffix = '...') => {
     if (!text || typeof text !== 'string') {
         return '';
     }
-    
+
     if (text.length <= maxLength) {
         return text;
     }
-    
+
     return text.substring(0, maxLength - suffix.length) + suffix;
 };

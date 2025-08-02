@@ -12,7 +12,7 @@ const CouponCard = ({ coupon }) => {
         if (coupon.discountType === 'percentage') {
             return `${coupon.discountValue}%`;
         } else {
-            return `${coupon.discountValue.toLocaleString()}đ`;
+            return `${coupon.discountValue.toLocaleString('vi-VN')}₫`;
         }
     };
 

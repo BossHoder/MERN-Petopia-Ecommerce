@@ -222,7 +222,7 @@
     cursor: pointer;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
     margin: 0;
 }
 
@@ -354,6 +354,32 @@
     border-radius: 4px;
 }
 
+.combination-pricing {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #007bff;
+}
+
+.combination-pricing .sale-price {
+    color: #28a745;
+    font-weight: 700;
+}
+
+.combination-pricing .base-price {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.combination-stock {
+    font-size: 0.85rem;
+    color: #495057;
+    font-weight: 500;
+    padding: 2px 8px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
 .combination-status {
     font-size: 0.8rem;
     padding: 2px 8px;
@@ -390,6 +416,44 @@
     margin-bottom: 16px;
 }
 
+/* Ensure proper layout for 5 fields */
+@media (min-width: 1200px) {
+    .combination-form-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .combination-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Pricing and Stock Field Styling */
+.form-group input[type='number'] {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+}
+
+.form-group input[placeholder*='Base price'] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.form-group input[placeholder*='sale price'] {
+    border-color: #28a745;
+}
+
+.form-group input[placeholder*='sale price']:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-label:has(+ input[placeholder*='Stock Quantity']) {
+    color: #dc3545;
+    font-weight: 600;
+}
+
 .combination-images {
     margin-top: 16px;
     padding-top: 16px;
@@ -415,28 +479,28 @@
         align-items: flex-start;
         gap: 12px;
     }
-    
+
     .variants-tabs {
         width: 100%;
         justify-content: center;
     }
-    
+
     .tab-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 12px;
     }
-    
+
     .attribute-form-grid,
     .combination-form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .value-item {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .combination-info {
         flex-direction: column;
         align-items: flex-start;
@@ -449,12 +513,12 @@
         padding: 12px;
         margin: 12px 0;
     }
-    
+
     .attribute-header,
     .combination-header {
         padding: 12px;
     }
-    
+
     .attribute-form,
     .combination-form {
         padding: 12px;

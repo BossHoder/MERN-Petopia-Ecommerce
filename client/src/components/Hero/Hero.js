@@ -26,37 +26,6 @@ const Hero = () => {
                 <div className="hero-content">
                     <h1 className="hero-title">{t('hero.title')}</h1>
                     <p className="hero-subtitle">{t('hero.subtitle')}</p>
-
-                    <form className="hero-search-form" onSubmit={handleSearch}>
-                        <div className="hero-search-container">
-                            <span className="hero-search-icon" aria-hidden="true">
-                                {/* Simple search icon SVG, no extra library */}
-                                <svg
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="#9a664c"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <circle cx="11" cy="11" r="8" />
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                                </svg>
-                            </span>
-                            <input
-                                type="text"
-                                placeholder={t('hero.searchPlaceholder')}
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="hero-search-input"
-                            />
-                            <button type="submit" className="hero-search-btn">
-                                {t('hero.search')}
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </section>

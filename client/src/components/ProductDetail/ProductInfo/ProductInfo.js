@@ -1,5 +1,6 @@
 import React from 'react';
 import { useI18n } from '../../../hooks/useI18n';
+import { formatPrice } from '../../../utils/displayUtils';
 import './styles.css';
 
 const ProductInfo = ({
@@ -23,9 +24,9 @@ const ProductInfo = ({
         return 0;
     };
 
-    // Format price with currency
-    const formatPrice = (price) => {
-        return `$${price?.toFixed(2) || '0.00'}`;
+    // Format price with Vietnamese Dong currency
+    const formatPriceVND = (price) => {
+        return formatPrice(price);
     };
 
     // Get stock status text and class
@@ -69,11 +70,11 @@ const ProductInfo = ({
                 {/* Price Section */}
                 <div className="product-price-section">
                     <div className="price-main">
-                        <span className="current-price">{formatPrice(currentPrice)}</span>
+                        <span className="current-price">{formatPriceVND(currentPrice)}</span>
 
                         {/* Original price if there's a discount */}
                         {discountPercentage > 0 && (
-                            <span className="original-price">{formatPrice(product.price)}</span>
+                            <span className="original-price">{formatPriceVND(product.price)}</span>
                         )}
 
                         {/* Discount badge */}
@@ -85,7 +86,7 @@ const ProductInfo = ({
                     {/* Price per unit if applicable */}
                     {product.unit && (
                         <div className="price-per-unit">
-                            {formatPrice(currentPrice)} {t('product.per', 'per')} {product.unit}
+                            {formatPriceVND(currentPrice)} {t('product.per', 'per')} {product.unit}
                         </div>
                     )}
                 </div>

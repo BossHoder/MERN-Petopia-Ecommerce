@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../../utils/displayUtils';
 import './ProductCard.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/actions/cartActions';
@@ -12,11 +13,9 @@ const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useSelector((state) => state.auth);
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-        }).format(price);
+    // Use centralized price formatting function
+    const formatPriceVND = (price) => {
+        return formatPrice(price);
     };
 
     const renderStars = (rating) => {
@@ -104,13 +103,15 @@ const ProductCard = ({ product }) => {
                         {product.salePrice ? (
                             <>
                                 <span className="current-price">
-                                    {formatPrice(product.salePrice)}
+                                    {formatPriceVND(product.salePrice)}
                                 </span>
-                                <span className="original-price">{formatPrice(product.price)}</span>
+                                <span className="original-price">
+                                    {formatPriceVND(product.price)}
+                                </span>
                             </>
                         ) : (
                             <span className="current-price">
-                                {formatPrice(product.finalPrice || product.price)}
+                                {formatPriceVND(product.finalPrice || product.price)}
                             </span>
                         )}
                     </div>

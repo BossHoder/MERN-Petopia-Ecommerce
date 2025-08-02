@@ -7,6 +7,7 @@ import Message from '../../components/Message/Message';
 import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../../utils/displayUtils';
 import './Cart.css';
 import { toast } from 'react-toastify';
 
@@ -106,7 +107,7 @@ const Cart = () => {
                                             </div>
                                         )}
                                         <p>
-                                            {t('cart.price')}: ${item.price.toFixed(2)}
+                                            {t('cart.price')}: {formatPrice(item.price)}
                                         </p>
                                     </div>
                                     <div className="cart-item-actions">
@@ -135,7 +136,7 @@ const Cart = () => {
                                         </button>
                                     </div>
                                     <div className="cart-item-total">
-                                        <p>${(item.quantity * item.price).toFixed(2)}</p>
+                                        <p>{formatPrice(item.quantity * item.price)}</p>
                                         <button
                                             className="remove-btn"
                                             onClick={() =>
@@ -158,12 +159,12 @@ const Cart = () => {
                                 {items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
                                 {t('cart.items')})
                             </span>
-                            <span>${subtotal.toFixed(2)}</span>
+                            <span>{formatPrice(subtotal)}</span>
                         </div>
                         {/* Logic for shipping, tax, etc. can be added here */}
                         <div className="summary-total">
                             <span>{t('cart.total')}</span>
-                            <span>${subtotal.toFixed(2)}</span>
+                            <span>{formatPrice(subtotal)}</span>
                         </div>
                         <button className="btn btn-primary btn-block" onClick={handleCheckout}>
                             {t('cart.checkout')}

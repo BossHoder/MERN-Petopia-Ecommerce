@@ -161,7 +161,7 @@ const CouponInput = ({ orderValue, userId, onCouponApplied, onCouponRemoved }) =
         if (applied.discountType === 'percentage') {
             return `${applied.discountValue}%`;
         } else {
-            return `${discountAmount.toLocaleString()}đ`;
+            return `${discountAmount.toLocaleString('vi-VN')}₫`;
         }
     };
 

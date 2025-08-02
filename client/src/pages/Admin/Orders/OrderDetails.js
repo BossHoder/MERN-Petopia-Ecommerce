@@ -11,6 +11,7 @@ import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation/Bread
 import OrderStatusBadge from '../../../components/Admin/OrderStatusBadge/OrderStatusBadge';
 import OrderStatusControl from '../../../components/Admin/OrderStatusControl/OrderStatusControl';
 import PaymentStatusControl from '../../../components/Admin/PaymentStatusControl/PaymentStatusControl';
+import { formatPrice } from '../../../utils/displayUtils';
 import './OrderDetails.css';
 
 const OrderDetails = ({ orderId, onClose }) => {
@@ -331,11 +332,11 @@ const OrderDetails = ({ orderId, onClose }) => {
                                     <h3 className="item-name">{item.name}</h3>
                                     <div className="item-meta">
                                         <span className="item-price">
-                                            ${item.price?.toFixed(2)}
+                                            {formatPrice(item.price)}
                                         </span>
                                         <span className="item-quantity">x{item.quantity}</span>
                                         <span className="item-total">
-                                            ${(item.price * item.quantity)?.toFixed(2)}
+                                            {formatPrice(item.price * item.quantity)}
                                         </span>
                                     </div>
                                 </div>
@@ -352,19 +353,19 @@ const OrderDetails = ({ orderId, onClose }) => {
                     <div className="order-totals">
                         <div className="total-item">
                             <span className="label">{t('admin.orders.subtotal', 'Subtotal')}</span>
-                            <span className="value">${order.itemsPrice?.toFixed(2)}</span>
+                            <span className="value">{formatPrice(order.itemsPrice)}</span>
                         </div>
                         <div className="total-item">
                             <span className="label">{t('admin.orders.shipping', 'Shipping')}</span>
-                            <span className="value">${order.shippingPrice?.toFixed(2)}</span>
+                            <span className="value">{formatPrice(order.shippingPrice)}</span>
                         </div>
                         <div className="total-item">
                             <span className="label">{t('admin.orders.tax', 'Tax')}</span>
-                            <span className="value">${order.taxPrice?.toFixed(2)}</span>
+                            <span className="value">{formatPrice(order.taxPrice)}</span>
                         </div>
                         <div className="total-item total">
                             <span className="label">{t('admin.orders.total', 'Total')}</span>
-                            <span className="value">${order.totalPrice?.toFixed(2)}</span>
+                            <span className="value">{formatPrice(order.totalPrice)}</span>
                         </div>
                     </div>
                 </div>

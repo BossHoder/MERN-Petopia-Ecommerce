@@ -5,6 +5,7 @@ import StatsCard from '../../../components/Admin/StatsCard/StatsCard';
 import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
 import { useI18n } from '../../../hooks/useI18n';
+import { formatPrice } from '../../../utils/displayUtils';
 import './styles.css';
 
 const Dashboard = () => {
@@ -32,7 +33,7 @@ const Dashboard = () => {
         },
         {
             title: t('admin.dashboard.totalRevenue', 'Total Revenue'),
-            value: `$${dashboardStats.totalRevenue || 0}`,
+            value: formatPrice(dashboardStats.totalRevenue || 0),
             icon: '💰',
             trend: 'up',
             trendValue: dashboardStats.growth?.revenue || 0,

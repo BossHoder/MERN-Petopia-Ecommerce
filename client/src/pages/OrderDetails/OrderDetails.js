@@ -7,6 +7,7 @@ import Loader from '../../components/Loader/Loader';
 import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
+import { formatPrice } from '../../utils/displayUtils';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
@@ -168,8 +169,8 @@ const OrderDetails = () => {
                                         <Link to={`/product/${item.product}`}>{item.name}</Link>
                                     </div>
                                     <div className="order-item-total">
-                                        {item.quantity} x ${item.price.toFixed(2)} = $
-                                        {(item.quantity * item.price).toFixed(2)}
+                                        {item.quantity} x {formatPrice(item.price)} ={' '}
+                                        {formatPrice(item.quantity * item.price)}
                                     </div>
                                 </div>
                             ))}
@@ -182,19 +183,19 @@ const OrderDetails = () => {
                     <ul className="summary-list">
                         <li>
                             <span>{t('orderDetails.summary.items', 'Items')}</span>
-                            <span>${order.itemsPrice.toFixed(2)}</span>
+                            <span>{formatPrice(order.itemsPrice)}</span>
                         </li>
                         <li>
                             <span>{t('orderDetails.summary.shipping', 'Shipping')}</span>
-                            <span>${order.shippingPrice.toFixed(2)}</span>
+                            <span>{formatPrice(order.shippingPrice)}</span>
                         </li>
                         <li>
                             <span>{t('orderDetails.summary.tax', 'Tax')}</span>
-                            <span>${order.taxPrice.toFixed(2)}</span>
+                            <span>{formatPrice(order.taxPrice)}</span>
                         </li>
                         <li>
                             <span>{t('orderDetails.summary.total', 'Total')}</span>
-                            <span>${order.totalPrice.toFixed(2)}</span>
+                            <span>{formatPrice(order.totalPrice)}</span>
                         </li>
                     </ul>
                     {/* PayPal Button will go here */}

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { showSuccessToast } from '../../utils/toastUtils';
 import { calculateOrderPricing, getOrderSummary } from '../../utils/checkoutUtils';
 import CouponInput from '../../components/CouponInput/CouponInput';
+import { formatPrice } from '../../utils/displayUtils';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -424,7 +425,7 @@ const Checkout = () => {
                     <div className="summary-breakdown">
                         <div className="summary-row">
                             <span>{t('checkout.summary.items', 'Items')}:</span>
-                            <span>{itemsPrice.toLocaleString()}đ</span>
+                            <span>{formatPrice(itemsPrice)}</span>
                         </div>
                         <div className="summary-row">
                             <span>{t('checkout.summary.shipping', 'Shipping')}:</span>
@@ -434,33 +435,33 @@ const Checkout = () => {
                                         {t('checkout.summary.freeShipping', 'Free')}
                                     </span>
                                 ) : (
-                                    `${shippingPrice.toLocaleString()}đ`
+                                    formatPrice(shippingPrice)
                                 )}
                             </span>
                         </div>
                         {taxPrice > 0 && (
                             <div className="summary-row">
                                 <span>{t('checkout.summary.tax', 'Tax')}:</span>
-                                <span>{taxPrice.toLocaleString()}đ</span>
+                                <span>{formatPrice(taxPrice)}</span>
                             </div>
                         )}
                         {couponDiscount > 0 && (
                             <div className="summary-row discount-row">
                                 <span>{t('checkout.summary.discount', 'Discount')}:</span>
                                 <span className="discount-amount">
-                                    -{couponDiscount.toLocaleString()}đ
+                                    -{formatPrice(couponDiscount)}
                                 </span>
                             </div>
                         )}
                         <div className="summary-total">
                             <span>{t('cart.total', 'Total')}:</span>
-                            <span className="total-amount">{totalPrice.toLocaleString()}đ</span>
+                            <span className="total-amount">{formatPrice(totalPrice)}</span>
                         </div>
                         {couponDiscount > 0 && (
                             <div className="savings-highlight">
                                 <i className="fas fa-tag"></i>
                                 {t('checkout.summary.totalSavings', 'You save')}:{' '}
-                                {couponDiscount.toLocaleString()}đ
+                                {formatPrice(couponDiscount)}
                             </div>
                         )}
                     </div>
