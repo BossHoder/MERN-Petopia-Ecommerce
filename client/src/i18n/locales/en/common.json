@@ -698,7 +698,8 @@
             "forgotPassword": "Forgot password?",
             "emailPlaceholder": "Enter your email address",
             "passwordPlaceholder": "Enter your password",
-            "signUp": "Sign up"
+            "signUp": "Sign up",
+            "success": "Login successful"
         },
         "register": {
             "validation": {

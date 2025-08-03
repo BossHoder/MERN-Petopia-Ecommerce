@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../Loader';
 import {
     FaBox,
     FaGift,
@@ -241,7 +242,7 @@ const NotificationItem = ({ notification, onClick, showActions = true }) => {
             {/* Loading Overlay */}
             {(isDeleting || loading.deleting) && (
                 <div className={styles.loadingOverlay}>
-                    <div className={styles.loadingSpinner} />
+                    <Loader size="sm" />
                 </div>
             )}
         </div>

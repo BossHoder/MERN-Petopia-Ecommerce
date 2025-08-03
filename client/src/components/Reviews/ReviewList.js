@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { getProductReviews } from '../../store/actions/reviewActions';
 import ReviewItem from './ReviewItem';
-import LoadingSpinner from '../Common/LoadingSpinner';
+import Loader from '../Loader';
 import './ReviewList.css';
 
 const ReviewList = ({ productId }) => {
@@ -20,8 +20,7 @@ const ReviewList = ({ productId }) => {
     if (loading) {
         return (
             <div className="review-list-loading">
-                <LoadingSpinner size="medium" />
-                <p>{t('reviews.loading', 'Đang tải đánh giá...')}</p>
+                <Loader size="md" message={t('reviews.loading', 'Đang tải đánh giá...')} />
             </div>
         );
     }

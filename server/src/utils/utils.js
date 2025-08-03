@@ -7,7 +7,7 @@ export const deleteAllAvatars = async (absoluteFolderPath) => {
     try {
         const files = await readdir(absoluteFolderPath);
         const unlinkPromises = files.map((filename) => {
-            if (!['avatar0.jpg', 'avatar1.jpg', 'avatar2.jpg'].includes(filename)) {
+            if (!['avatar0.jpg', 'avatar1.jpg', 'avatar2.jpg', 'user-icon.png'].includes(filename)) {
                 console.log('Deleting avatar: ', filename);
                 unlink(`${absoluteFolderPath}/${filename}`);
             }

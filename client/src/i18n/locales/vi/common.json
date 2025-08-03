@@ -107,7 +107,9 @@
         "namePlaceholder": "Nhập họ tên",
         "usernamePlaceholder": "Nhập tên đăng nhập",
         "emailPlaceholder": "Nhập email",
-        "passwordPlaceholder": "Nhập mật khẩu"
+        "passwordPlaceholder": "Nhập mật khẩu",
+        "signUp": "Đăng ký",
+        "success": "Đăng ký thành công"
     },
     "products": {
         "title": "Sản phẩm",
@@ -717,7 +719,12 @@
             "email": "Địa chỉ email",
             "password": "Mật khẩu",
             "submit": "Đăng nhập ngay",
-            "noAccount": "Chưa có tài khoản?"
+            "noAccount": "Chưa có tài khoản?",
+            "forgotPassword": "Quên mật khẩu?",
+            "emailPlaceholder": "Nhập địa chỉ email",
+            "passwordPlaceholder": "Nhập mật khẩu",
+            "signUp": "Đăng ký",
+            "success": "Đăng nhập thành công"
         },
         "register": {
             "validation": {

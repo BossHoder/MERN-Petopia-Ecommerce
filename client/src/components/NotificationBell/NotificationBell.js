@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBell } from 'react-icons/fa';
 import styles from './NotificationBell.module.css';
+import Loader from '../Loader';
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown';
 import { getNotificationSummary } from '../../store/actions/notificationActions';
 
@@ -118,7 +119,11 @@ const NotificationBell = () => {
                 )}
 
                 {/* Loading Indicator */}
-                {loading.summary && <div className={styles.loadingSpinner} />}
+                {loading.summary && (
+                    <div className={styles.loadingContainer}>
+                        <Loader size="sm" />
+                    </div>
+                )}
             </button>
 
             {/* Notification Dropdown */}

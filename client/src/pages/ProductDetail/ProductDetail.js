@@ -8,7 +8,7 @@ import ImageGallery from '../../components/ProductDetail/ImageGallery';
 import VariantSelector from '../../components/ProductDetail/VariantSelector';
 import EnhancedVariantSelector from '../../components/ProductDetail/EnhancedVariantSelector';
 import ProductInfo from '../../components/ProductDetail/ProductInfo';
-import LoadingSpinner from '../../components/Common/LoadingSpinner';
+import Loader from '../../components/Loader';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import { getProductBySlug } from '../../store/actions/productActions';
 import { addToCart } from '../../store/actions/cartActions';
@@ -246,8 +246,7 @@ const ProductDetail = () => {
     if (loading) {
         return (
             <div className="product-detail-loading">
-                <LoadingSpinner size="large" />
-                <p>{t('product.loading', 'Loading product...')}</p>
+                <Loader size="lg" message={t('product.loading', 'Loading product...')} />
             </div>
         );
     }
