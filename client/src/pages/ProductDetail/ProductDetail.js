@@ -176,6 +176,23 @@ const ProductDetail = () => {
             // Get product ID (use id field from server DTO)
             const productId = product.id;
 
+            // Create selectedVariants object for new variant system
+            let selectedVariantsData = null;
+            if (selectedVariantCombination) {
+                selectedVariantsData = {
+                    variantId: selectedVariantCombination.sku,
+                    attributes: selectedVariantCombination.attributes.map((attr) => ({
+                        attributeName: attr.attributeName,
+                        attributeDisplayName: attr.attributeDisplayName || attr.attributeName,
+                        attributeValue: attr.attributeValue,
+                        valueDisplayName: attr.valueDisplayName || attr.attributeValue,
+                        colorCode: attr.colorCode || null,
+                    })),
+                    combinationKey: selectedVariantCombination.combinationKey,
+                    images: selectedVariantCombination.images || [],
+                };
+            }
+
             console.log('🛒 Using productId:', productId);
             console.log('🛒 Using variantId:', variantId);
             console.log('🛒 ProductDetail - Adding to cart:', {
@@ -184,10 +201,13 @@ const ProductDetail = () => {
                 quantity,
                 productData,
                 selectedVariant,
+                selectedVariantsData,
             });
 
             // Dispatch add to cart action with variant information
-            await dispatch(addToCart(productId, quantity, productData, variantId));
+            await dispatch(
+                addToCart(productId, quantity, productData, variantId, selectedVariantsData),
+            );
 
             // Track add to cart event
             analytics.trackAddToCart({

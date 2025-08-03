@@ -318,6 +318,11 @@ const productSchema = new mongoose.Schema(
             min: 0,
             max: 5,
         },
+        numReviews: {
+            type: Number,
+            default: 0,
+            min: 0,
+        },
         viewCount: {
             type: Number,
             default: 0,

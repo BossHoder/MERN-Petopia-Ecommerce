@@ -361,12 +361,47 @@ reviewSchema.statics.getProductRatingStats = function (productId) {
 // ===========================================
 // Update product rating when review is saved
 reviewSchema.post('save', async function () {
+    console.log('📝 Review saved - updating product stats...', {
+        reviewId: this._id,
+        productId: this.product,
+        status: this.status,
+        isVisible: this.isVisible,
+    });
+
     if (this.status === 'approved' && this.isVisible) {
         const Product = mongoose.model('Product');
         const stats = await this.constructor.getProductRatingStats(this.product);
 
+        console.log('📊 Product stats calculated:', stats);
+
         if (stats.length > 0) {
-            await Product.findByIdAndUpdate(this.product, {
+            const updateResult = await Product.findByIdAndUpdate(this.product, {
+                ratings: stats[0].averageRating,
+                numReviews: stats[0].totalReviews,
+            });
+
+            console.log('✅ Product updated with new stats:', {
+                productId: this.product,
+                newRatings: stats[0].averageRating,
+                newNumReviews: stats[0].totalReviews,
+                updateResult: !!updateResult,
+            });
+        } else {
+            console.log('⚠️ No stats found for product:', this.product);
+        }
+    } else {
+        console.log('⏭️ Review not approved or not visible, skipping product update');
+    }
+});
+
+// Update product rating when review is updated
+reviewSchema.post('findOneAndUpdate', async function (doc) {
+    if (doc && doc.status === 'approved' && doc.isVisible) {
+        const Product = mongoose.model('Product');
+        const stats = await doc.constructor.getProductRatingStats(doc.product);
+
+        if (stats.length > 0) {
+            await Product.findByIdAndUpdate(doc.product, {
                 ratings: stats[0].averageRating,
                 numReviews: stats[0].totalReviews,
             });

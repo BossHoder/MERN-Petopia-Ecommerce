@@ -25,6 +25,20 @@ const Cart = () => {
 
     // Debug log
     console.log('userInfo in Cart:', userInfo, 'appLoaded:', appLoaded);
+    console.log('🛒 Cart items debug:', items);
+
+    // Debug each item's variant data
+    items?.forEach((item, index) => {
+        console.log(`🛒 Item ${index}:`, {
+            name: item.product?.name,
+            hasSelectedVariants: !!item.selectedVariants,
+            selectedVariants: item.selectedVariants,
+            hasVariant: !!item.variant,
+            variant: item.variant,
+            hasVariantId: !!item.variantId,
+            variantId: item.variantId,
+        });
+    });
 
     useEffect(() => {
         if (appLoaded) {
@@ -42,10 +56,11 @@ const Cart = () => {
     };
 
     const handleRemoveItem = (productId, variantId = null) => {
-        const item = items.find(
-            (item) =>
-                item.product._id === productId && (item.variantId || null) === (variantId || null),
-        );
+        const item = items.find((item) => {
+            const productMatch = item.product._id === productId;
+            const effectiveVariantId = item.selectedVariants?.variantId || item.variantId || null;
+            return productMatch && effectiveVariantId === (variantId || null);
+        });
 
         if (item) {
             // Track remove from cart event
@@ -119,14 +134,20 @@ const Cart = () => {
                     <div className="cart-items-list">
                         {items.map((item) => {
                             // Create a unique key that includes variant information
-                            const itemKey = item.variantId
-                                ? `${item.product._id}-${item.variantId}`
+                            const effectiveVariantId =
+                                item.selectedVariants?.variantId || item.variantId;
+                            const itemKey = effectiveVariantId
+                                ? `${item.product._id}-${effectiveVariantId}`
                                 : item.product._id;
 
                             return (
                                 <div key={itemKey} className="cart-item">
                                     <img
-                                        src={item.product.image || '/images/placeholder.jpg'}
+                                        src={
+                                            item.product.images?.[0] ||
+                                            item.product.image ||
+                                            '/images/placeholder.jpg'
+                                        }
                                         alt={item.product.name}
                                         className="cart-item-image"
                                     />
@@ -137,12 +158,79 @@ const Cart = () => {
                                             {item.product.name}
                                         </Link>
                                         {/* Display variant information if available */}
-                                        {(item.variant || item.variantId) && (
+                                        {((item.selectedVariants &&
+                                            item.selectedVariants.attributes &&
+                                            item.selectedVariants.attributes.length > 0) ||
+                                            item.variant ||
+                                            item.variantId) && (
                                             <div className="cart-item-variant">
-                                                {item.variant?.displayName ||
-                                                    (item.variant
-                                                        ? `${item.variant.name}: ${item.variant.value}`
-                                                        : `Variant: ${item.variantId}`)}
+                                                {/* Debug log for this specific item */}
+                                                {console.log(
+                                                    `🔍 Variant Debug for "${item.product?.name}":`,
+                                                    {
+                                                        selectedVariants: item.selectedVariants,
+                                                        variant: item.variant,
+                                                        variantId: item.variantId,
+                                                        attributesLength:
+                                                            item.selectedVariants?.attributes
+                                                                ?.length,
+                                                    },
+                                                )}
+
+                                                {item.selectedVariants &&
+                                                item.selectedVariants.attributes &&
+                                                item.selectedVariants.attributes.length > 0 ? (
+                                                    <div className="variant-attributes">
+                                                        {item.selectedVariants.attributes.map(
+                                                            (attr, index) => (
+                                                                <div
+                                                                    key={index}
+                                                                    className="variant-attribute"
+                                                                >
+                                                                    <span className="attribute-name">
+                                                                        {attr.attributeDisplayName ||
+                                                                            attr.attributeName}
+                                                                        :
+                                                                    </span>
+                                                                    <span className="attribute-value">
+                                                                        {attr.valueDisplayName ||
+                                                                            attr.attributeValue}
+                                                                    </span>
+                                                                    {attr.colorCode && (
+                                                                        <span
+                                                                            className="color-swatch"
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    attr.colorCode,
+                                                                            }}
+                                                                            title={
+                                                                                attr.valueDisplayName ||
+                                                                                attr.attributeValue
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    // Enhanced fallback display
+                                                    <div
+                                                        className="variant-fallback"
+                                                        style={{
+                                                            color: '#666',
+                                                            fontSize: '0.9rem',
+                                                            fontStyle: 'italic',
+                                                        }}
+                                                    >
+                                                        {item.variant?.displayName ||
+                                                            (item.variant
+                                                                ? `${item.variant.name}: ${item.variant.value}`
+                                                                : item.variantId
+                                                                ? `Variant ID: ${item.variantId}`
+                                                                : '🔍 DEBUG: No variant data')}
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                         <p>
@@ -155,7 +243,7 @@ const Cart = () => {
                                                 handleQuantityChange(
                                                     item.product._id,
                                                     item.quantity - 1,
-                                                    item.variantId,
+                                                    effectiveVariantId,
                                                 )
                                             }
                                         >
@@ -167,7 +255,7 @@ const Cart = () => {
                                                 handleQuantityChange(
                                                     item.product._id,
                                                     item.quantity + 1,
-                                                    item.variantId,
+                                                    effectiveVariantId,
                                                 )
                                             }
                                         >
@@ -179,7 +267,10 @@ const Cart = () => {
                                         <button
                                             className="remove-btn"
                                             onClick={() =>
-                                                handleRemoveItem(item.product._id, item.variantId)
+                                                handleRemoveItem(
+                                                    item.product._id,
+                                                    effectiveVariantId,
+                                                )
                                             }
                                         >
                                             {t('cart.remove')}

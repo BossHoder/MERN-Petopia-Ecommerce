@@ -369,68 +369,89 @@ const OrderHistory = () => {
                     </thead>
                     <tbody>
                         {orders && orders.length > 0 ? (
-                            orders.map((order) => (
-                                <tr key={order._id}>
-                                    <td>{order._id}</td>
-                                    <td>{moment(order.createdAt).format('YYYY-MM-DD')}</td>
-                                    <td>${order.totalPrice.toFixed(2)}</td>
-                                    <td>
-                                        <span
-                                            className={`order-status order-status-${order.orderStatus}`}
-                                        >
-                                            {order.orderStatus?.toUpperCase()}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {order.estimatedDeliveryDate ? (
-                                            moment(order.estimatedDeliveryDate).format(
-                                                'MMM DD, YYYY',
-                                            )
-                                        ) : order.estimatedDeliveryRange?.end ? (
-                                            `By ${moment(order.estimatedDeliveryRange.end).format(
-                                                'MMM DD',
-                                            )}`
-                                        ) : (
-                                            <span style={{ color: '#666' }}>TBD</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {order.isPaid ? (
-                                            moment(order.paidAt).format('YYYY-MM-DD')
-                                        ) : (
-                                            <i
-                                                className="fas fa-times"
-                                                style={{ color: 'red' }}
-                                            ></i>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {order.orderStatus === 'delivered' ? (
-                                            order.deliveredAt ? (
-                                                moment(order.deliveredAt).format('YYYY-MM-DD')
+                            orders.map((order) => {
+                                // Count items with variants for summary
+                                const variantItemsCount =
+                                    order.orderItems?.filter(
+                                        (item) => item.selectedVariants || item.variantName,
+                                    ).length || 0;
+                                const totalItemsCount = order.orderItems?.length || 0;
+
+                                return (
+                                    <tr key={order._id}>
+                                        <td>
+                                            <div className="order-id-cell">
+                                                <div className="order-id">{order._id}</div>
+                                                {variantItemsCount > 0 && (
+                                                    <div className="order-variant-summary">
+                                                        <span className="variant-indicator">
+                                                            🎨 {variantItemsCount}/{totalItemsCount}{' '}
+                                                            with variants
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>{moment(order.createdAt).format('YYYY-MM-DD')}</td>
+                                        <td>${order.totalPrice.toFixed(2)}</td>
+                                        <td>
+                                            <span
+                                                className={`order-status order-status-${order.orderStatus}`}
+                                            >
+                                                {order.orderStatus?.toUpperCase()}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {order.estimatedDeliveryDate ? (
+                                                moment(order.estimatedDeliveryDate).format(
+                                                    'MMM DD, YYYY',
+                                                )
+                                            ) : order.estimatedDeliveryRange?.end ? (
+                                                `By ${moment(
+                                                    order.estimatedDeliveryRange.end,
+                                                ).format('MMM DD')}`
+                                            ) : (
+                                                <span style={{ color: '#666' }}>TBD</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {order.isPaid ? (
+                                                moment(order.paidAt).format('YYYY-MM-DD')
                                             ) : (
                                                 <i
-                                                    className="fas fa-check"
-                                                    style={{ color: 'green' }}
+                                                    className="fas fa-times"
+                                                    style={{ color: 'red' }}
                                                 ></i>
-                                            )
-                                        ) : (
-                                            <i
-                                                className="fas fa-times"
-                                                style={{ color: 'red' }}
-                                            ></i>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <button
-                                            className="btn btn-sm"
-                                            onClick={() => navigate(`/order/${order._id}`)}
-                                        >
-                                            {t('profile.orders.details', 'Details')}
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
+                                            )}
+                                        </td>
+                                        <td>
+                                            {order.orderStatus === 'delivered' ? (
+                                                order.deliveredAt ? (
+                                                    moment(order.deliveredAt).format('YYYY-MM-DD')
+                                                ) : (
+                                                    <i
+                                                        className="fas fa-check"
+                                                        style={{ color: 'green' }}
+                                                    ></i>
+                                                )
+                                            ) : (
+                                                <i
+                                                    className="fas fa-times"
+                                                    style={{ color: 'red' }}
+                                                ></i>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm"
+                                                onClick={() => navigate(`/order/${order._id}`)}
+                                            >
+                                                {t('profile.orders.details', 'Details')}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
                         ) : (
                             <tr>
                                 <td colSpan="8">

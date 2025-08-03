@@ -107,7 +107,7 @@
         "noProductsFound": "No products found",
         "adjustFilters": "Try adjusting your filters or search criteria to find what you're looking for.",
         "clearAllFilters": "Clear All Filters",
-        "selectOption": "Select {{attribute}}",
+        "selectOption": "Select attribute",
         "noOptionsAvailable": "No options available for current selection"
     },
     "names": {
@@ -159,6 +159,8 @@
         "securePayment": "Secure Payment",
         "qualityGuarantee": "Quality Guarantee",
         "selectVariant": "Select Options",
+        "selectOptions": "Select Options",
+        "selectVariantsFirst": "Please select all required options first",
         "selectedVariant": "Selected",
         "variant": "Variant",
         "variantImages": "Variant Images",
@@ -1446,7 +1448,12 @@
             "outOfStock": "Out of stock",
             "reviews": "reviews",
             "addedToCart": "Added to cart successfully!",
-            "addToCartError": "Failed to add to cart. Please try again."
+            "addToCartError": "Failed to add to cart. Please try again.",
+            "selectOptions": "Select Options",
+            "selectOptionsToAdd": "Click to select options",
+            "selectOptionsToBuy": "Click to select options",
+            "buyNow": "Buy Now",
+            "buyNowError": "Failed to proceed to checkout. Please try again."
         },
         "wishlist": {
             "addToWishlist": "Add to wishlist",

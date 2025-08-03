@@ -138,6 +138,7 @@ const createOrder = asyncHandler(async (req, res) => {
             const product = await Product.findById(item.product?._id || item.productId);
             let variantName = null;
 
+            // Legacy variant support
             if (item.variantId && product) {
                 const variant = product.variants.find((v) => v.sku === item.variantId);
                 if (variant) {
@@ -145,7 +146,7 @@ const createOrder = asyncHandler(async (req, res) => {
                 }
             }
 
-            return {
+            const orderItem = {
                 name: item.product?.name || product?.name || 'Unknown Product',
                 quantity: item.quantity,
                 image:
@@ -159,6 +160,13 @@ const createOrder = asyncHandler(async (req, res) => {
                 variantId: item.variantId || null,
                 variantName: variantName,
             };
+
+            // Add selectedVariants if provided from cart
+            if (item.selectedVariants) {
+                orderItem.selectedVariants = item.selectedVariants;
+            }
+
+            return orderItem;
         }),
     );
 

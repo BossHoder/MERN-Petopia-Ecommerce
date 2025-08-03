@@ -181,6 +181,8 @@
         "securePayment": "Thanh Toán An Toàn",
         "qualityGuarantee": "Bảo Hành Chất Lượng",
         "selectVariant": "Chọn Tùy Chọn",
+        "selectOptions": "Chọn tùy chọn",
+        "selectVariantsFirst": "Vui lòng chọn tất cả các tùy chọn bắt buộc trước",
         "selectedVariant": "Đã Chọn",
         "variant": "Biến Thể",
         "variantImages": "Hình Ảnh Biến Thể",
@@ -202,7 +204,7 @@
         "noImage": "Không có hình ảnh",
         "clearSelections": "Xóa tất cả lựa chọn",
         "clearAll": "Xóa tất cả",
-        "selectOption": "Chọn {{attribute}}",
+        "selectOption": "Chọn thuộc tính",
         "selectAllRequired": "Vui lòng chọn tất cả các tùy chọn bắt buộc để tiếp tục"
     },
     "brands": {
@@ -1884,6 +1886,18 @@
             "to": "Đến",
             "apply": "Áp dụng",
             "clearFilter": "Xóa bộ lọc"
+        },
+        "productCard": {
+            "addToWishlist": "Thêm vào danh sách yêu thích",
+            "outOfStock": "Hết hàng",
+            "reviews": "đánh giá",
+            "addedToCart": "Đã thêm vào giỏ hàng thành công!",
+            "addToCartError": "Không thể thêm vào giỏ hàng. Vui lòng thử lại.",
+            "selectOptions": "Chọn tùy chọn",
+            "selectOptionsToAdd": "Nhấp để chọn tùy chọn",
+            "selectOptionsToBuy": "Nhấp để chọn tùy chọn",
+            "buyNow": "Mua ngay",
+            "buyNowError": "Không thể tiến hành thanh toán. Vui lòng thử lại."
         }
     }
 }

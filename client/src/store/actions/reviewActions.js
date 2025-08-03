@@ -28,17 +28,24 @@ export const addProductReview = (productId, review) => async (dispatch) => {
 
         const { data } = await api.post(`/api/products/${productId}/reviews`, review);
 
-        dispatch({
+        const successAction = {
             type: types.ADD_REVIEW_SUCCESS,
             payload: data.data,
-        });
+        };
 
-        // Refresh reviews list to get updated count
-        dispatch(getProductReviews(productId));
+        dispatch(successAction);
+
+        // Return success action so component can detect success
+        return successAction;
     } catch (error) {
-        dispatch({
+        const errorAction = {
             type: types.ADD_REVIEW_FAIL,
             payload: error.response?.data?.message || error.message,
-        });
+        };
+
+        dispatch(errorAction);
+
+        // Return error action
+        return errorAction;
     }
 };

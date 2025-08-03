@@ -42,9 +42,10 @@ const OrderReviewForm = ({ orderItem, orderId, onReviewSubmitted }) => {
         }
 
         try {
-            await dispatch(addProductReview(orderItem.product, formData));
+            const result = await dispatch(addProductReview(orderItem.product, formData));
 
-            if (success) {
+            // Check if the action was successful
+            if (result.type && !result.type.includes('FAIL')) {
                 toast.success(t('reviews.submitSuccess', 'Đánh giá đã được gửi thành công!'));
                 setFormData({ rating: 5, title: '', comment: '' });
                 setShowForm(false);
@@ -53,6 +54,7 @@ const OrderReviewForm = ({ orderItem, orderId, onReviewSubmitted }) => {
                 }
             }
         } catch (error) {
+            console.error('Review submission error:', error);
             toast.error(t('reviews.submitError', 'Có lỗi khi gửi đánh giá. Vui lòng thử lại.'));
         }
     };

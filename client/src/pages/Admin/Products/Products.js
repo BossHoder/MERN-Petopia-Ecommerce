@@ -65,12 +65,11 @@ const Products = () => {
             width: '25%',
             render: (value, item) => (
                 <div className="product-name">
-                    <div className="product-image">
+                    <div className="product-image" id="product-image">
                         <img src={item.images?.[0] || '/placeholder-product.jpg'} alt={value} />
                     </div>
                     <div className="product-info">
                         <span className="name">{value}</span>
-                        <span className="sku">SKU: {item.sku || 'N/A'}</span>
                     </div>
                 </div>
             ),

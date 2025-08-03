@@ -111,9 +111,9 @@ class Analytics {
         try {
             const payload = {
                 eventType,
+                sessionId: this.sessionId, // ✅ Move sessionId to root level
                 eventData: {
                     ...eventData,
-                    session_id: this.sessionId,
                     user_id: this.userId,
                     timestamp: new Date().toISOString(),
                     url: window.location.href,

@@ -177,8 +177,56 @@ const OrderDetails = () => {
                                     <div className="order-item-image">
                                         <img src={item.image} alt={item.name} />
                                     </div>
-                                    <div className="order-item-name">
-                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                    <div className="order-item-details">
+                                        <div className="order-item-name">
+                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                        </div>
+
+                                        {/* Display variant information if available */}
+                                        {(item.selectedVariants || item.variantName) && (
+                                            <div className="order-item-variant">
+                                                {item.selectedVariants ? (
+                                                    <div className="variant-attributes">
+                                                        {item.selectedVariants.attributes?.map(
+                                                            (attr, attrIndex) => (
+                                                                <div
+                                                                    key={attrIndex}
+                                                                    className="variant-attribute"
+                                                                >
+                                                                    <span className="attribute-name">
+                                                                        {attr.attributeDisplayName ||
+                                                                            attr.attributeName}
+                                                                        :
+                                                                    </span>
+                                                                    <span className="attribute-value">
+                                                                        {attr.valueDisplayName ||
+                                                                            attr.attributeValue}
+                                                                    </span>
+                                                                    {attr.colorCode && (
+                                                                        <span
+                                                                            className="color-swatch"
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    attr.colorCode,
+                                                                            }}
+                                                                            title={
+                                                                                attr.valueDisplayName ||
+                                                                                attr.attributeValue
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    // Legacy variant display
+                                                    <div className="legacy-variant">
+                                                        {item.variantName}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="order-item-total">
                                         {item.quantity} x {formatPrice(item.price)} ={' '}

@@ -105,14 +105,22 @@ export const saveGuestCart = (cartData) => {
 /**
  * Add item to guest cart
  */
-export const addItemToGuestCart = (product, quantity = 1, variantId = null) => {
+export const addItemToGuestCart = (
+    product,
+    quantity = 1,
+    variantId = null,
+    selectedVariants = null,
+) => {
     const cart = getGuestCart();
 
     // Find existing item considering both product ID and variant ID
-    const existingItemIndex = cart.items.findIndex(
-        (item) =>
-            item.product._id === product._id && (item.variantId || null) === (variantId || null),
-    );
+    const existingItemIndex = cart.items.findIndex((item) => {
+        const productMatch = item.product._id === product._id;
+        const variantMatch = selectedVariants
+            ? item.selectedVariants?.variantId === selectedVariants.variantId
+            : (item.variantId || null) === (variantId || null);
+        return productMatch && variantMatch;
+    });
 
     if (existingItemIndex > -1) {
         // Update existing item quantity
@@ -134,7 +142,14 @@ export const addItemToGuestCart = (product, quantity = 1, variantId = null) => {
         };
 
         // Add variant information if provided
-        if (variantId && product.variant) {
+        if (selectedVariants) {
+            cartItem.selectedVariants = selectedVariants;
+            // Use variant price if available
+            if (selectedVariants.price) {
+                cartItem.price = selectedVariants.price;
+            }
+        } else if (variantId && product.variant) {
+            // Legacy variant support
             cartItem.variantId = variantId;
             cartItem.variant = {
                 id: product.variant.id,
@@ -159,10 +174,21 @@ export const addItemToGuestCart = (product, quantity = 1, variantId = null) => {
  */
 export const removeItemFromGuestCart = (productId, variantId = null) => {
     const cart = getGuestCart();
-    cart.items = cart.items.filter(
-        (item) =>
-            !(item.product._id === productId && (item.variantId || null) === (variantId || null)),
-    );
+    cart.items = cart.items.filter((item) => {
+        const productMatch = item.product._id === productId;
+        if (!productMatch) return true;
+
+        // Check variant match
+        if (variantId) {
+            // Remove by variantId (could be selectedVariants.variantId or legacy variantId)
+            return !(
+                item.selectedVariants?.variantId === variantId || item.variantId === variantId
+            );
+        } else {
+            // Remove items without variants
+            return item.selectedVariants?.variantId != null || item.variantId != null;
+        }
+    });
     return saveGuestCart(cart);
 };
 
@@ -171,10 +197,13 @@ export const removeItemFromGuestCart = (productId, variantId = null) => {
  */
 export const updateGuestCartItemQuantity = (productId, quantity, variantId = null) => {
     const cart = getGuestCart();
-    const itemIndex = cart.items.findIndex(
-        (item) =>
-            item.product._id === productId && (item.variantId || null) === (variantId || null),
-    );
+    const itemIndex = cart.items.findIndex((item) => {
+        const productMatch = item.product._id === productId;
+        const variantMatch = variantId
+            ? item.selectedVariants?.variantId === variantId || item.variantId === variantId
+            : !item.selectedVariants?.variantId && !item.variantId;
+        return productMatch && variantMatch;
+    });
 
     if (itemIndex > -1) {
         if (quantity <= 0) {
@@ -224,6 +253,9 @@ export const getGuestCartForMigration = () => {
             productId: item.product._id,
             quantity: item.quantity,
             price: item.price,
+            ...(item.selectedVariants && { selectedVariants: item.selectedVariants }),
+            // Legacy support
+            ...(item.variantId && !item.selectedVariants && { variantId: item.variantId }),
         })),
     };
 };

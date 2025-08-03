@@ -17,6 +17,55 @@ const CartItemSchema = new Schema({
         type: Number,
         required: true,
     },
+    // Variant information for products with variants
+    selectedVariants: {
+        variantId: {
+            type: String,
+            required: false,
+            // This stores the combination SKU or unique identifier
+        },
+        attributes: [
+            {
+                attributeName: {
+                    type: String,
+                    required: true,
+                    // e.g., "Color", "Size"
+                },
+                attributeDisplayName: {
+                    type: String,
+                    required: false,
+                    // e.g., "Màu sắc", "Kích cỡ"
+                },
+                attributeValue: {
+                    type: String,
+                    required: true,
+                    // e.g., "red", "large"
+                },
+                valueDisplayName: {
+                    type: String,
+                    required: false,
+                    // e.g., "Đỏ", "Lớn"
+                },
+                colorCode: {
+                    type: String,
+                    required: false,
+                    // For color attributes, hex color code
+                },
+            },
+        ],
+        combinationKey: {
+            type: String,
+            required: false,
+            // For quick lookup, e.g., "color:red,size:large"
+        },
+        images: [
+            {
+                type: String,
+                required: false,
+                // Variant-specific images
+            },
+        ],
+    },
 });
 
 const CartSchema = new Schema(

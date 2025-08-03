@@ -45,7 +45,7 @@ export const getCart = () => async (dispatch, getState) => {
 
 // Add item to cart (supports both authenticated and guest users)
 export const addToCart =
-    (productId, quantity, productData = null, variantId = null) =>
+    (productId, quantity, productData = null, variantId = null, selectedVariants = null) =>
     async (dispatch, getState) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -56,10 +56,18 @@ export const addToCart =
 
                 if (isAuthenticated) {
                     // Add to server cart for authenticated users
-                    console.log('🛒 Adding to cart:', { productId, quantity, variantId });
+                    console.log('🛒 Adding to cart:', {
+                        productId,
+                        quantity,
+                        variantId,
+                        selectedVariants,
+                    });
                     const requestData = { productId, quantity };
                     if (variantId) {
                         requestData.variantId = variantId;
+                    }
+                    if (selectedVariants) {
+                        requestData.selectedVariants = selectedVariants;
                     }
                     const { data } = await api.post('/api/cart', requestData);
                     dispatch({
@@ -74,7 +82,12 @@ export const addToCart =
                         productData = productResponse.data.data;
                     }
 
-                    const updatedCart = addItemToGuestCart(productData, quantity, variantId);
+                    const updatedCart = addItemToGuestCart(
+                        productData,
+                        quantity,
+                        variantId,
+                        selectedVariants,
+                    );
                     dispatch({
                         type: types.ADD_TO_CART_SUCCESS,
                         payload: updatedCart,
