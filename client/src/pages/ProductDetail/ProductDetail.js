@@ -13,7 +13,12 @@ import ErrorMessage from '../../components/Common/ErrorMessage';
 import { getProductBySlug } from '../../store/actions/productActions';
 import { addToCart } from '../../store/actions/cartActions';
 import { renderValue } from '../../utils/displayUtils';
+import analytics from '../../utils/analytics-minimal';
 import './styles.css';
+
+// Debug analytics import
+console.log('📊 Analytics import in ProductDetail:', analytics);
+console.log('📊 Analytics trackProductView method:', analytics?.trackProductView);
 
 const ProductDetail = () => {
     const { slug } = useParams();
@@ -45,6 +50,16 @@ const ProductDetail = () => {
         if (product) {
             setCurrentPrice(product.salePrice || product.price);
             setCurrentStock(product.stockQuantity || 0);
+
+            // Track product view
+            analytics.trackProductView({
+                _id: product.id || product._id,
+                name: product.name,
+                price: product.salePrice || product.price,
+                category: product.category,
+                brand: product.brand,
+                sku: product.sku,
+            });
         }
     }, [product]);
 
@@ -172,6 +187,19 @@ const ProductDetail = () => {
 
             // Dispatch add to cart action with variant information
             await dispatch(addToCart(productId, quantity, productData, variantId));
+
+            // Track add to cart event
+            analytics.trackAddToCart({
+                _id: productId,
+                name: product.name,
+                price: currentPrice,
+                category: product.category,
+                brand: product.brand,
+                sku: product.sku,
+                quantity,
+                variantId,
+                variantDisplayName,
+            });
 
             // Show success message with variant info
             const variantText = variantDisplayName ? ` (${variantDisplayName})` : '';

@@ -22,6 +22,7 @@ import { showSuccessToast } from '../../utils/toastUtils';
 import { calculateOrderPricing, getOrderSummary } from '../../utils/checkoutUtils';
 import CouponInput from '../../components/CouponInput/CouponInput';
 import { formatPrice } from '../../utils/displayUtils';
+import analytics from '../../utils/analytics';
 import './Checkout.css';
 
 const Checkout = () => {
@@ -219,6 +220,28 @@ const Checkout = () => {
             });
             return;
         }
+
+        // Track purchase event before placing order
+        analytics.trackPurchase({
+            transaction_id: Date.now().toString(), // Temporary ID, will be replaced with actual order ID
+            value: totalPrice,
+            currency: 'VND',
+            items: cartItems.map((item) => ({
+                _id: item.product._id,
+                name: item.product.name,
+                price: item.price,
+                category: item.product.category,
+                brand: item.product.brand,
+                sku: item.product.sku,
+                quantity: item.quantity,
+                variantId: item.variantId,
+            })),
+            coupon: coupon.applied?.code || undefined,
+            shipping: shippingPrice,
+            tax: taxPrice,
+            discount: couponDiscount,
+        });
+
         const orderData = {
             orderItems: cartItems,
             shippingAddress,

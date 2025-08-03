@@ -10,6 +10,7 @@ import adminRoutes from './admin.js'; // Import admin routes
 import stockRoutes from './stock.js'; // Import stock management routes
 import couponRoutes from './coupons.js'; // Import public coupon routes
 import notificationRoutes from './notifications.js'; // Import notification routes
+import analyticsRoutes from '../analyticsRoutes.js'; // Import analytics routes
 
 // import messagesRoutes from './messages.js';
 
@@ -26,6 +27,7 @@ router.use('/admin', adminRoutes); // Use admin routes
 router.use('/stock', stockRoutes); // Use stock management routes
 router.use('/coupons', couponRoutes); // Use public coupon routes
 router.use('/notifications', notificationRoutes); // Use notification routes
+router.use('/analytics', analyticsRoutes); // Use analytics routes
 
 // router.use('/messages', messagesRoutes);
 

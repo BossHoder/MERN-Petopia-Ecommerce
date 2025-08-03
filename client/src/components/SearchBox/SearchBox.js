@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { fetchProductSuggestions } from '../../store/actions/productActions';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import analytics from '../../utils/analytics';
 import './SearchBox.css';
 
 const SearchBox = () => {
@@ -67,10 +68,12 @@ const SearchBox = () => {
         [dispatch],
     );
 
-    const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), [
-        fetchSuggestions,
-        debounce,
-    ]);
+    const debouncedFetchSuggestions = useCallback(
+        (value) => {
+            debounce(fetchSuggestions, 300)(value);
+        },
+        [fetchSuggestions, debounce],
+    );
 
     const handleChange = (e) => {
         const value = e.target.value;
@@ -109,6 +112,10 @@ const SearchBox = () => {
     const handleSelect = (suggestion) => {
         setKeyword('');
         setSuggestions([]);
+
+        // Track search analytics
+        analytics.trackSearch(keyword, suggestion.type, suggestion.id || suggestion._id);
+
         // Điều hướng theo type
         if (suggestion.type === 'product') {
             navigate(`/product/${suggestion.slug}`);

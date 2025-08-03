@@ -8,6 +8,7 @@ import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../utils/displayUtils';
+import analytics from '../../utils/analytics';
 import './Cart.css';
 import { toast } from 'react-toastify';
 
@@ -41,6 +42,26 @@ const Cart = () => {
     };
 
     const handleRemoveItem = (productId, variantId = null) => {
+        const item = items.find(
+            (item) =>
+                item.product._id === productId && (item.variantId || null) === (variantId || null),
+        );
+
+        if (item) {
+            // Track remove from cart event
+            analytics.trackRemoveFromCart({
+                _id: productId,
+                name: item.product.name,
+                price: item.price,
+                category: item.product.category,
+                brand: item.product.brand,
+                sku: item.product.sku,
+                quantity: item.quantity,
+                variantId: variantId,
+                variantDisplayName: item.variant?.displayName,
+            });
+        }
+
         dispatch(removeFromCart(productId, variantId));
     };
 
@@ -50,6 +71,24 @@ const Cart = () => {
             toast.error(t('cart.quantityError'));
             return;
         }
+
+        // Track begin checkout event
+        analytics.trackBeginCheckout({
+            items: items.map((item) => ({
+                _id: item.product._id,
+                name: item.product.name,
+                price: item.price,
+                category: item.product.category,
+                brand: item.product.brand,
+                sku: item.product.sku,
+                quantity: item.quantity,
+                variantId: item.variantId,
+                variantDisplayName: item.variant?.displayName,
+            })),
+            value: subtotal,
+            currency: 'VND',
+        });
+
         navigate('/checkout');
     };
 

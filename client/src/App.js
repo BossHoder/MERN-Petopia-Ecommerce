@@ -9,6 +9,9 @@ import './i18n/i18n';
 // Import toast styles
 import './styles/toastStyles.css';
 
+// Test analytics import
+import AnalyticsTest from './components/AnalyticsTest';
+
 import Layout from './layout/Layout'; // Import Layout
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
@@ -24,6 +27,7 @@ import AdminProducts from './pages/Admin/Products/Products'; // Import Admin Pro
 import AdminOrders from './pages/Admin/Orders/Orders'; // Import Admin Orders
 import AdminCoupons from './pages/Admin/Coupons/Coupons'; // Import Admin Coupons
 import AdminNotifications from './pages/Admin/Notifications/Notifications'; // Import Admin Notifications
+import Analytics from './pages/Admin/Analytics/Analytics'; // Import Analytics
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
@@ -108,6 +112,7 @@ const App = () => {
 
     return (
         <>
+            <AnalyticsTest />
             <ToastDispatcher />
             {appLoaded ? (
                 <Routes>
@@ -129,10 +134,7 @@ const App = () => {
                         <Route path="orders" element={<AdminOrders />} />
                         <Route path="coupons" element={<AdminCoupons />} />
                         <Route path="notifications" element={<AdminNotifications />} />
-                        <Route
-                            path="analytics"
-                            element={<div>Admin Analytics - Coming Soon</div>}
-                        />
+                        <Route path="analytics" element={<Analytics />} />
                         <Route path="settings" element={<div>Admin Settings - Coming Soon</div>} />
                     </Route>
 

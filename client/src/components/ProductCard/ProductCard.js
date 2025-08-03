@@ -6,6 +6,7 @@ import './ProductCard.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/actions/cartActions';
 import { showSuccessToast, showErrorToast } from '../../utils/toastUtils';
+import analytics from '../../utils/analytics';
 
 const ProductCard = ({ product }) => {
     const { t } = useTranslation();
@@ -125,6 +126,18 @@ const ProductCard = ({ product }) => {
                     try {
                         console.log('Add to cart product:', product); // Debug product object
                         await dispatch(addToCart(product.id, 1, product));
+
+                        // Track add to cart event
+                        analytics.trackAddToCart({
+                            _id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            category: product.category,
+                            brand: product.brand,
+                            sku: product.sku,
+                            quantity: 1,
+                        });
+
                         showSuccessToast(
                             t('productCard.addedToCart', 'Added to cart successfully!'),
                         );
