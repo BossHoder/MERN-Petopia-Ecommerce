@@ -23,6 +23,7 @@ import Categories from './pages/Admin/Categories/Categories'; // Import Categori
 import AdminProducts from './pages/Admin/Products/Products'; // Import Admin Products
 import AdminOrders from './pages/Admin/Orders/Orders'; // Import Admin Orders
 import AdminCoupons from './pages/Admin/Coupons/Coupons'; // Import Admin Coupons
+import AdminNotifications from './pages/Admin/Notifications/Notifications'; // Import Admin Notifications
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
@@ -32,6 +33,7 @@ import ProductDetail from './pages/ProductDetail/ProductDetail'; // Import Produ
 import CategoryPage from './pages/Category/CategoryPage'; // Import CategoryPage
 import SubcategoryPage from './pages/Category/SubcategoryPage'; // Import SubcategoryPage
 import Coupons from './pages/Coupons/Coupons'; // Import Coupons
+import NotificationsPage from './pages/NotificationsPage'; // Import Notifications
 
 import Loader from './components/Loader/Loader';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
@@ -40,6 +42,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import authDebugger from './utils/authDebugger'; // Import auth debugger
 
 import { logInUserWithOauth, loadMe } from './store/actions/authActions';
+import socketService from './services/socketService';
 
 function ToastDispatcher() {
     const queue = useSelector((state) => state.toast.queue);
@@ -58,7 +61,7 @@ function ToastDispatcher() {
 
 const App = () => {
     const dispatch = useDispatch();
-    const { appLoaded } = useSelector((state) => state.auth);
+    const { appLoaded, isAuthenticated, user } = useSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(loadMe());
@@ -69,6 +72,29 @@ const App = () => {
             console.log('🔧 Auth Debugger available: window.authDebugger');
         }
     }, [dispatch]);
+
+    // Socket.io connection management
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            // Connect to socket when user is authenticated
+            socketService.connect();
+            
+            // Request notification permission
+            socketService.requestNotificationPermission();
+            
+            // Update user presence
+            socketService.updateUserPresence(true);
+        } else {
+            // Disconnect socket when user logs out
+            socketService.disconnect();
+        }
+
+        // Cleanup on component unmount
+        return () => {
+            socketService.updateUserPresence(false);
+            socketService.disconnect();
+        };
+    }, [isAuthenticated, user]);
 
     useEffect(() => {
         if (window.location.hash === '#_=_') window.location.hash = '';
@@ -102,6 +128,7 @@ const App = () => {
                         <Route path="products" element={<AdminProducts />} />
                         <Route path="orders" element={<AdminOrders />} />
                         <Route path="coupons" element={<AdminCoupons />} />
+                        <Route path="notifications" element={<AdminNotifications />} />
                         <Route
                             path="analytics"
                             element={<div>Admin Analytics - Coming Soon</div>}
@@ -139,6 +166,14 @@ const App = () => {
                                         element={<SubcategoryPage />}
                                     />
                                     <Route path="/coupons" element={<Coupons />} />
+                                    <Route
+                                        path="/notifications"
+                                        element={
+                                            <ProtectedRoute requireAuth={true}>
+                                                <NotificationsPage />
+                                            </ProtectedRoute>
+                                        }
+                                    />
 
                                     <Route path="/notfound" element={<NotFound />} />
 

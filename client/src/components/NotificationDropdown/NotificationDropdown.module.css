@@ -1,0 +1,342 @@
+/* ===========================================
+   NOTIFICATION DROPDOWN STYLES
+   ========================================== */
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 380px;
+    max-height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+/* ===========================================
+   HEADER
+   ========================================== */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, var(--primary-color, #007bff) 0%, var(--primary-dark, #0056b3) 100%);
+    color: white;
+}
+
+.title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unreadCount {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.markAllReadBtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.markAllReadBtn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.markAllReadBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===========================================
+   CONTENT
+   ========================================== */
+
+.content {
+    max-height: 350px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+}
+
+.content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* ===========================================
+   LOADING STATE
+   ========================================== */
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--text-muted, #666);
+    gap: 12px;
+}
+
+.loadingSpinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--primary-color, #007bff);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ===========================================
+   EMPTY STATE
+   ========================================== */
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted, #666);
+}
+
+.emptyIcon {
+    color: var(--text-light, #999);
+    margin-bottom: 16px;
+}
+
+.emptyMessage {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color, #333);
+}
+
+.emptyDescription {
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 250px;
+}
+
+/* ===========================================
+   NOTIFICATION LIST
+   ========================================== */
+
+.notificationList {
+    padding: 8px 0;
+}
+
+/* ===========================================
+   SHOW MORE BUTTON
+   ========================================== */
+
+.showMoreBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(0, 123, 255, 0.05);
+    color: var(--primary-color, #007bff);
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.showMoreBtn:hover {
+    background: rgba(0, 123, 255, 0.1);
+}
+
+.showMoreBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ===========================================
+   FOOTER
+   ========================================== */
+
+.footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.viewAllBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.viewAllBtn:hover {
+    background: var(--primary-dark, #0056b3);
+    transform: translateY(-1px);
+}
+
+.viewAllBtn:active {
+    transform: translateY(0);
+}
+
+/* ===========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 480px) {
+    .dropdown {
+        width: 320px;
+        max-height: 400px;
+        right: -20px;
+    }
+    
+    .header {
+        padding: 12px 16px;
+    }
+    
+    .title {
+        font-size: 14px;
+    }
+    
+    .markAllReadBtn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .content {
+        max-height: 250px;
+    }
+    
+    .footer {
+        padding: 10px 16px;
+    }
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   ========================================== */
+
+.dropdown:focus-within {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 2px;
+}
+
+.markAllReadBtn:focus,
+.showMoreBtn:focus,
+.viewAllBtn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .dropdown {
+        border-width: 2px;
+    }
+    
+    .header {
+        border-bottom-width: 2px;
+    }
+    
+    .markAllReadBtn {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .dropdown {
+        animation: none;
+    }
+    
+    .loadingSpinner {
+        animation: none;
+        border: 2px solid var(--primary-color, #007bff);
+    }
+    
+    .viewAllBtn:hover {
+        transform: none;
+    }
+    
+    .viewAllBtn:active {
+        transform: none;
+    }
+}

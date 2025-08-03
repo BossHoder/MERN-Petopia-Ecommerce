@@ -6,6 +6,7 @@ import { getCart } from '../../store/actions/cartActions';
 import { useI18n } from '../../hooks/useI18n';
 import LanguageSelector from '../LanguageSelector';
 import SearchBox from '../SearchBox/SearchBox';
+import NotificationBell from '../NotificationBell/NotificationBell';
 import './styles.css';
 import { getAvatarUrl } from '../../utils/helpers';
 
@@ -122,6 +123,7 @@ const AppNavbar = () => {
                         <SearchBox />
                     </div>
                     <LanguageSelector />
+                    <NotificationBell />
                     <Link to="/cart" className="nav-link cart-icon">
                         <i className="fas fa-shopping-cart"></i>
                         {totalQuantity > 0 && <span className="badge">{totalQuantity}</span>}

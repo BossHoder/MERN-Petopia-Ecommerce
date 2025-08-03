@@ -51,6 +51,12 @@ const AdminSidebar = ({ collapsed, onToggle }) => {
             icon: '🎫',
         },
         {
+            id: 'notifications',
+            label: t('admin.notifications.title', 'Notifications'),
+            path: '/admin/notifications',
+            icon: '🔔',
+        },
+        {
             id: 'analytics',
             label: t('admin.analytics', 'Analytics'),
             path: '/admin/analytics',

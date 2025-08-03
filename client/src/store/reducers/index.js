@@ -21,6 +21,7 @@ import checkoutReducer from './checkoutReducer';
 import breadcrumbReducer from './breadcrumbReducer';
 import adminReducer from './adminReducer';
 import couponReducer from './couponReducer';
+import notificationReducer from './notificationReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -43,4 +44,5 @@ export default combineReducers({
     breadcrumb: breadcrumbReducer,
     admin: adminReducer,
     coupons: couponReducer,
+    notifications: notificationReducer,
 });

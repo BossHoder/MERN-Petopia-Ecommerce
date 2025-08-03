@@ -1,0 +1,429 @@
+/* ===========================================
+   NOTIFICATIONS PAGE STYLES
+   ========================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: calc(100vh - 200px);
+}
+
+/* ===========================================
+   HEADER
+   ========================================== */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.headerLeft {
+    flex: 1;
+}
+
+.pageTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color, #333);
+}
+
+.titleIcon {
+    color: var(--primary-color, #007bff);
+}
+
+.unreadBadge {
+    background: var(--danger-color, #dc3545);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.actionBtn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: white;
+    color: var(--text-color, #333);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+    background: var(--hover-color, rgba(0, 123, 255, 0.05));
+    border-color: var(--primary-color, #007bff);
+    color: var(--primary-color, #007bff);
+}
+
+.actionBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.actionBtn.active {
+    background: var(--primary-color, #007bff);
+    color: white;
+    border-color: var(--primary-color, #007bff);
+}
+
+.filterCount {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: var(--danger-color, #dc3545);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===========================================
+   FILTERS PANEL
+   ========================================== */
+
+.filterPanel {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.filterPanel.visible {
+    max-height: 300px;
+    opacity: 1;
+}
+
+.filterTitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color, #333);
+}
+
+.filterGroup {
+    margin-bottom: 16px;
+}
+
+.filterLabel {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color, #333);
+    cursor: pointer;
+}
+
+.filterCheckbox {
+    margin-right: 8px;
+    transform: scale(1.1);
+}
+
+.filterSelect {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+    color: var(--text-color, #333);
+    transition: border-color 0.2s ease;
+}
+
+.filterSelect:focus {
+    outline: none;
+    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+/* ===========================================
+   CONTENT
+   ========================================== */
+
+.content {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.errorMessage {
+    margin-bottom: 2rem;
+}
+
+/* ===========================================
+   LOADING STATE
+   ========================================== */
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted, #666);
+    gap: 16px;
+}
+
+/* ===========================================
+   NOTIFICATIONS LIST
+   ========================================== */
+
+.notificationsList {
+    /* Individual NotificationItem components handle their own styling */
+    background: inherit;
+}
+
+/* ===========================================
+   EMPTY STATE
+   ========================================== */
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted, #666);
+}
+
+.emptyIcon {
+    color: var(--text-light, #999);
+    margin-bottom: 24px;
+}
+
+.emptyTitle {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color, #333);
+}
+
+.emptyDescription {
+    margin: 0 0 24px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 400px;
+}
+
+.showAllBtn {
+    padding: 12px 24px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.showAllBtn:hover {
+    background: var(--primary-dark, #0056b3);
+    transform: translateY(-1px);
+}
+
+/* ===========================================
+   PAGINATION
+   ========================================== */
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.pageBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(.disabled) {
+    background: var(--primary-dark, #0056b3);
+    transform: translateY(-1px);
+}
+
+.pageBtn.disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pageInfo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color, #333);
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    
+    .pageTitle {
+        font-size: 1.5rem;
+    }
+    
+    .headerActions {
+        justify-content: flex-start;
+    }
+    
+    .actionBtn {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    
+    .filterPanel {
+        padding: 16px;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .emptyTitle {
+        font-size: 20px;
+    }
+    
+    .emptyDescription {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0.5rem;
+    }
+    
+    .pageTitle {
+        font-size: 1.25rem;
+        flex-wrap: wrap;
+    }
+    
+    .headerActions {
+        flex-wrap: wrap;
+    }
+    
+    .filterPanel.visible {
+        max-height: 400px;
+    }
+    
+    .actionBtn {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
+
+/* ===========================================
+   ACCESSIBILITY
+   ========================================== */
+
+.actionBtn:focus,
+.filterSelect:focus,
+.filterCheckbox:focus,
+.showAllBtn:focus,
+.pageBtn:focus {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 2px;
+}
+
+.actionBtn:focus:not(:focus-visible),
+.filterSelect:focus:not(:focus-visible),
+.filterCheckbox:focus:not(:focus-visible),
+.showAllBtn:focus:not(:focus-visible),
+.pageBtn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .filterPanel,
+    .content {
+        border-width: 2px;
+    }
+    
+    .actionBtn,
+    .filterSelect {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .filterPanel,
+    .actionBtn,
+    .pageBtn,
+    .showAllBtn {
+        transition: none;
+    }
+    
+    .pageBtn:hover:not(.disabled),
+    .showAllBtn:hover {
+        transform: none;
+    }
+}
