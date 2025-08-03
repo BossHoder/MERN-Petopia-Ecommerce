@@ -9,9 +9,6 @@ import './i18n/i18n';
 // Import toast styles
 import './styles/toastStyles.css';
 
-// Test analytics import
-import AnalyticsTest from './components/AnalyticsTest';
-
 import Layout from './layout/Layout'; // Import Layout
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
@@ -112,7 +109,6 @@ const App = () => {
 
     return (
         <>
-            <AnalyticsTest />
             <ToastDispatcher />
             {appLoaded ? (
                 <Routes>

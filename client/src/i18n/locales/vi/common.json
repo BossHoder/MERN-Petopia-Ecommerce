@@ -199,7 +199,11 @@
         "viewImage": "Xem hình",
         "scrollLeft": "Cuộn trái",
         "scrollRight": "Cuộn phải",
-        "noImage": "Không có hình ảnh"
+        "noImage": "Không có hình ảnh",
+        "clearSelections": "Xóa tất cả lựa chọn",
+        "clearAll": "Xóa tất cả",
+        "selectOption": "Chọn {{attribute}}",
+        "selectAllRequired": "Vui lòng chọn tất cả các tùy chọn bắt buộc để tiếp tục"
     },
     "brands": {
         "PetNutritionPro": "PetNutrition Pro",
