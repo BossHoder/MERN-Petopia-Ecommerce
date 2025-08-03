@@ -1,0 +1,265 @@
+/* Analytics Enhanced Styles */
+.analytics-enhanced {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.header-content {
+    flex: 1;
+}
+
+.analytics-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+}
+
+.analytics-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+}
+
+.global-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-range-select {
+    padding: 10px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+}
+
+.date-range-select:hover {
+    border-color: #3b82f6;
+}
+
+.date-range-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Tab Navigation Styles */
+.analytics-tabs {
+    margin-bottom: 30px;
+    background: white;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f2f5;
+}
+
+.tabs-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 44px;
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+}
+
+.tab-button:hover {
+    background: #f8fafc;
+    color: #374151;
+    transform: translateY(-1px);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.tab-button.active:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-2px);
+}
+
+.tab-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.tab-label {
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+/* Content Area */
+.analytics-content {
+    background: white;
+    border-radius: 12px;
+    min-height: 600px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f0f2f5;
+    overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .analytics-enhanced {
+        padding: 16px;
+    }
+
+    .analytics-title {
+        font-size: 1.8rem;
+    }
+
+    .analytics-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .global-controls {
+        justify-content: flex-end;
+    }
+
+    .tabs-container {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        justify-content: flex-start;
+        min-width: auto;
+        flex: none;
+    }
+
+    .analytics-title {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .analytics-enhanced {
+        padding: 12px;
+    }
+
+    .tab-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .tab-icon {
+        font-size: 16px;
+    }
+
+    .analytics-title {
+        font-size: 1.4rem;
+    }
+
+    .analytics-subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading and Error States */
+.tab-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.tab-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 40px;
+    text-align: center;
+}
+
+.tab-error h3 {
+    color: #dc2626;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+}
+
+.tab-error p {
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+.retry-button {
+    padding: 10px 20px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.retry-button:hover {
+    background: #2563eb;
+}
+
+/* Animation for tab transitions */
+.analytics-content {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

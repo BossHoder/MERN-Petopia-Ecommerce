@@ -90,7 +90,28 @@ const AdminNotifications = () => {
         e.preventDefault();
 
         try {
-            await dispatch(broadcastNotification(broadcastForm));
+            // Clean payload - only send needed fields based on broadcast type
+            const cleanPayload = { ...broadcastForm };
+
+            // If using targetAudience, don't send empty userIds array
+            if (
+                cleanPayload.targetAudience &&
+                (!cleanPayload.userIds || cleanPayload.userIds.length === 0)
+            ) {
+                delete cleanPayload.userIds;
+            }
+
+            // If using specific userIds, don't send targetAudience
+            if (cleanPayload.userIds && cleanPayload.userIds.length > 0) {
+                delete cleanPayload.targetAudience;
+            }
+
+            // Remove empty expiresAt
+            if (!cleanPayload.expiresAt) {
+                delete cleanPayload.expiresAt;
+            }
+
+            await dispatch(broadcastNotification(cleanPayload));
 
             // Reset form
             setBroadcastForm({

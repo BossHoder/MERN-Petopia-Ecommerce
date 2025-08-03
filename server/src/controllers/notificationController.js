@@ -34,7 +34,7 @@ const notificationQuerySchema = Joi.object({
 
 const broadcastNotificationSchema = Joi.object({
     // Either provide specific userIds or use targetAudience
-    userIds: Joi.array().items(Joi.string().required()).optional(),
+    userIds: Joi.array().items(Joi.string().required()).min(1).optional(),
     targetAudience: Joi.string().valid('all', 'active_users', 'specific_users').optional(),
     type: Joi.string().required(),
     title: Joi.string().required().max(100),

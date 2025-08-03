@@ -24,7 +24,7 @@ import AdminProducts from './pages/Admin/Products/Products'; // Import Admin Pro
 import AdminOrders from './pages/Admin/Orders/Orders'; // Import Admin Orders
 import AdminCoupons from './pages/Admin/Coupons/Coupons'; // Import Admin Coupons
 import AdminNotifications from './pages/Admin/Notifications/Notifications'; // Import Admin Notifications
-import Analytics from './pages/Admin/Analytics/Analytics'; // Import Analytics
+import Analytics from './pages/Admin/Analytics/AnalyticsEnhanced'; // Import Enhanced Analytics
 import NotFound from './pages/NotFound/NotFound';
 import Cart from './pages/Cart/Cart'; // Import Cart
 import Checkout from './pages/Checkout/Checkout'; // Import Checkout
