@@ -236,9 +236,27 @@ class NotificationService {
     }
 
     // Send bulk notifications
-    async sendBulkNotifications(userIds, type, title, message, relatedData = {}, channels = {}) {
+    async sendBulkNotifications(
+        userIds,
+        type,
+        title,
+        message,
+        relatedData = {},
+        channels = {},
+        priority = 'medium',
+        expiresAt = null,
+    ) {
         try {
-            const result = await createBulkNotifications(userIds, type, title, message, relatedData, channels);
+            const result = await createBulkNotifications(
+                userIds,
+                type,
+                title,
+                message,
+                relatedData,
+                channels,
+                priority,
+                expiresAt,
+            );
             return result;
         } catch (error) {
             console.error('Error sending bulk notifications:', error);

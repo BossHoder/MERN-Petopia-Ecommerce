@@ -4,7 +4,7 @@
 // Real-time notification service using Socket.io
 
 import { io } from 'socket.io-client';
-import { store } from '../store';
+import store from '../store';
 import { receiveNotification } from '../store/actions/notificationActions';
 
 class SocketService {

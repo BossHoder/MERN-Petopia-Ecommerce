@@ -136,12 +136,22 @@ notificationSchema.methods.markAsRead = function () {
 // STATIC METHODS
 // ===========================================
 // Create notification for user
-notificationSchema.statics.createForUser = function (userId, type, title, message, relatedData = {}, channels = {}) {
-    return this.create({
+notificationSchema.statics.createForUser = function (
+    userId,
+    type,
+    title,
+    message,
+    relatedData = {},
+    channels = {},
+    priority = 'medium',
+    expiresAt = null,
+) {
+    const notificationData = {
         recipient: userId,
         type,
         title,
         message,
+        priority,
         relatedData,
         channels: {
             inApp: true,
@@ -149,7 +159,13 @@ notificationSchema.statics.createForUser = function (userId, type, title, messag
             sms: false,
             ...channels,
         },
-    });
+    };
+
+    if (expiresAt) {
+        notificationData.expiresAt = expiresAt;
+    }
+
+    return this.create(notificationData);
 };
 
 // Get unread notifications for user

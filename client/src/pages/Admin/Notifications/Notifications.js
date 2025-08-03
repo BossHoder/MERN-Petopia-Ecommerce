@@ -11,7 +11,7 @@ import {
     FaBroadcastTower,
     FaChartBar,
     FaFilter,
-    FaRefresh,
+    FaSync,
     FaSearch,
     FaChevronLeft,
     FaChevronRight,
@@ -472,7 +472,7 @@ const AdminNotifications = () => {
                         onClick={handleRefresh}
                         disabled={loading.stats}
                     >
-                        <FaRefresh />
+                        <FaSync />
                         Refresh
                     </button>
                 </div>

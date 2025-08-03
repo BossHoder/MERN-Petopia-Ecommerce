@@ -10,7 +10,7 @@ import {
     FaBell,
     FaFilter,
     FaCheck,
-    FaRefresh,
+    FaSync,
     FaChevronLeft,
     FaChevronRight,
     FaExclamationTriangle,
@@ -273,7 +273,7 @@ const NotificationsPage = () => {
                         disabled={loading.notifications}
                         title="Refresh notifications"
                     >
-                        <FaRefresh size={14} />
+                        <FaSync size={14} />
                     </button>
                 </div>
             </div>

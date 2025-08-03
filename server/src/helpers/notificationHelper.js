@@ -24,7 +24,16 @@ export const createNotification = async (userId, type, title, message, relatedDa
 };
 
 // Create bulk notifications for multiple users
-export const createBulkNotifications = async (userIds, type, title, message, relatedData = {}, channels = {}) => {
+export const createBulkNotifications = async (
+    userIds,
+    type,
+    title,
+    message,
+    relatedData = {},
+    channels = {},
+    priority = 'medium',
+    expiresAt = null,
+) => {
     try {
         const notifications = [];
         const failed = [];
@@ -38,6 +47,8 @@ export const createBulkNotifications = async (userIds, type, title, message, rel
                     message,
                     relatedData,
                     channels,
+                    priority,
+                    expiresAt,
                 );
                 notifications.push(notification);
             } catch (error) {
@@ -89,13 +100,17 @@ export const createOrderStatusNotification = async (userId, orderId, status, ord
         },
         delivered: {
             title: 'Order Delivered',
-            message: `Your order ${orderNumber || orderId} has been successfully delivered. Thank you for shopping with us!`,
+            message: `Your order ${
+                orderNumber || orderId
+            } has been successfully delivered. Thank you for shopping with us!`,
             priority: 'medium',
             channels: { inApp: true, email: true, sms: false },
         },
         cancelled: {
             title: 'Order Cancelled',
-            message: `Your order ${orderNumber || orderId} has been cancelled. If you have any questions, please contact support.`,
+            message: `Your order ${
+                orderNumber || orderId
+            } has been cancelled. If you have any questions, please contact support.`,
             priority: 'high',
             channels: { inApp: true, email: true, sms: false },
         },
@@ -132,13 +147,17 @@ export const createPaymentNotification = async (userId, orderId, paymentStatus, 
         },
         failed: {
             title: 'Payment Failed',
-            message: `We couldn't process your payment${amount ? ` of ${amount.toLocaleString()}đ` : ''}. Please try again.`,
+            message: `We couldn't process your payment${
+                amount ? ` of ${amount.toLocaleString()}đ` : ''
+            }. Please try again.`,
             priority: 'high',
             channels: { inApp: true, email: true, sms: false },
         },
         refunded: {
             title: 'Payment Refunded',
-            message: `Your refund${amount ? ` of ${amount.toLocaleString()}đ` : ''} has been processed and will appear in your account within 5-7 business days.`,
+            message: `Your refund${
+                amount ? ` of ${amount.toLocaleString()}đ` : ''
+            } has been processed and will appear in your account within 5-7 business days.`,
             priority: 'medium',
             channels: { inApp: true, email: true, sms: false },
         },

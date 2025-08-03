@@ -7,6 +7,7 @@ import asyncHandler from '../middleware/asyncHandler.js';
 import { successResponse, errorResponse, validationErrorResponse } from '../helpers/responseHelper.js';
 import notificationService from '../services/notificationService.js';
 import { ERROR_MESSAGES } from '../constants/errorMessages.js';
+import User from '../models/User.js';
 import Joi from 'joi';
 
 // ===========================================
@@ -32,18 +33,17 @@ const notificationQuerySchema = Joi.object({
 });
 
 const broadcastNotificationSchema = Joi.object({
-    userIds: Joi.array().items(Joi.string().required()).min(1).required(),
+    // Either provide specific userIds or use targetAudience
+    userIds: Joi.array().items(Joi.string().required()).optional(),
+    targetAudience: Joi.string().valid('all', 'active_users', 'specific_users').optional(),
     type: Joi.string().required(),
     title: Joi.string().required().max(100),
     message: Joi.string().required().max(500),
     priority: Joi.string().valid('low', 'medium', 'high').default('medium'),
     relatedData: Joi.object().default({}),
-    channels: Joi.object({
-        inApp: Joi.boolean().default(true),
-        email: Joi.boolean().default(false),
-        sms: Joi.boolean().default(false),
-    }).default({}),
-});
+    channels: Joi.array().items(Joi.string().valid('app', 'email', 'sms')).default(['app']),
+    expiresAt: Joi.date().optional(),
+}).or('userIds', 'targetAudience'); // At least one of these must be provided
 
 // ===========================================
 // USER NOTIFICATION ENDPOINTS
@@ -229,22 +229,67 @@ const getAllNotifications = asyncHandler(async (req, res) => {
  */
 const broadcastNotification = asyncHandler(async (req, res) => {
     try {
+        console.log('📨 Received broadcast request:', {
+            body: req.body,
+            headers: req.headers['content-type'],
+            user: req.user ? { id: req.user._id, role: req.user.role } : 'No user',
+        });
+
         const { error, value } = broadcastNotificationSchema.validate(req.body);
         if (error) {
+            console.log('❌ Validation error:', error.details[0].message);
+            console.log('📋 Validation schema expected:', broadcastNotificationSchema.describe());
             return validationErrorResponse(res, error.details[0].message);
         }
 
-        const { userIds, type, title, message, priority, relatedData, channels } = value;
+        console.log('✅ Validation passed:', value);
 
-        console.log('📡 Broadcasting notification to', userIds.length, 'users');
+        const { userIds, targetAudience, type, title, message, priority, relatedData, channels, expiresAt } = value;
+
+        let finalUserIds = userIds;
+
+        // Handle targetAudience to get userIds
+        if (targetAudience && !userIds) {
+            let users = [];
+
+            switch (targetAudience) {
+                case 'all':
+                    users = await User.find({}, '_id');
+                    break;
+                case 'active_users':
+                    // Users who logged in within last 30 days
+                    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                    users = await User.find(
+                        {
+                            lastLoginAt: { $gte: thirtyDaysAgo },
+                        },
+                        '_id',
+                    );
+                    break;
+                case 'specific_users':
+                    return validationErrorResponse(res, 'specific_users requires userIds array');
+                default:
+                    return validationErrorResponse(res, 'Invalid targetAudience');
+            }
+
+            finalUserIds = users.map((user) => user._id.toString());
+        }
+
+        if (!finalUserIds || finalUserIds.length === 0) {
+            return validationErrorResponse(res, 'No users found to send notification');
+        }
+
+        console.log('📡 Broadcasting notification to', finalUserIds.length, 'users');
 
         const result = await notificationService.sendBulkNotifications(
-            userIds,
+            finalUserIds,
             type,
             title,
             message,
             relatedData,
-            channels,
+            { inApp: channels.includes('app'), email: channels.includes('email'), sms: channels.includes('sms') },
+            priority,
+            expiresAt,
         );
 
         if (!result.success) {
@@ -256,6 +301,7 @@ const broadcastNotification = asyncHandler(async (req, res) => {
             {
                 created: result.created,
                 failed: result.failed,
+                recipientCount: finalUserIds.length,
             },
             'Notification broadcast completed successfully',
         );

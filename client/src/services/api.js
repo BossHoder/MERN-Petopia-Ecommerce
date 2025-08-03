@@ -47,6 +47,9 @@ API.interceptors.request.use(
         if (token) {
             // Backend expects x-auth-token header, not Authorization Bearer
             config.headers['x-auth-token'] = token;
+            console.log('🔑 Auth token attached:', token.substring(0, 20) + '...');
+        } else {
+            console.log('⚠️ No auth token found in localStorage');
         }
 
         // For FormData, remove Content-Type to let browser set it automatically

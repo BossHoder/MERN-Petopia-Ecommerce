@@ -25,6 +25,8 @@ Phong cách Hướng dẫn (Sơ bộ trước, chi tiết sau): Khi tôi yêu c�
 
 Xử lý Lỗi & Testing:
 
+sử dụng lệnh đúng chuẩn powershell
+
 Khi hướng dẫn về backend, hãy đề xuất một cấu trúc JSON trả về lỗi nhất quán.
 
 Khi cung cấp code cho một component hoặc hàm logic, hãy gợi ý một vài test case cơ bản sử dụng Jest và React Testing Library để tôi có thể thực hành.

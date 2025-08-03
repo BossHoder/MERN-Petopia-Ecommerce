@@ -248,6 +248,9 @@ export const broadcastNotification = (notificationData) => async (dispatch) => {
     try {
         dispatch({ type: ADMIN_NOTIFICATION_BROADCAST_REQUEST });
 
+        console.log('📤 Sending broadcast data:', notificationData);
+        console.log('🔑 Token check:', localStorage.getItem('token') ? 'Present' : 'Missing');
+
         const response = await API.post('/api/notifications/admin/broadcast', notificationData);
 
         dispatch({
