@@ -770,7 +770,9 @@
         "settings": "Cài đặt",
         "profile": "Hồ sơ",
         "backToStore": "Quay lại Cửa hàng",
-        "notifications": "Thông báo",
+        "notifications": {
+            "title": "Thông báo"
+        },
         "userMenu": "Menu người dùng",
         "toggleSidebar": "Bật/tắt thanh bên",
         "expandSidebar": "Mở rộng thanh bên",
@@ -1650,6 +1652,10 @@
             "bulkDeactivate": "Vô hiệu hóa",
             "changeRole": "Thay đổi vai trò"
         }
+    },
+    "breadcrumb": {
+        "navigation": "Điều hướng breadcrumb",
+        "goTo": "Đi tới"
     },
     "breadcrumbNavigation": {
         "home": "Điều hướng trang chủ",

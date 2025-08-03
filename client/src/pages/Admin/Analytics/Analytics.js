@@ -1,55 +1,123 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BreadcrumbNavigation from '../../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../../hooks/useBreadcrumb';
+import { useI18n } from '../../../hooks/useI18n';
 import API from '../../../services/api';
-import StatsCard from '../../../components/Admin/StatsCard/StatsCard';
+import TabNavigation from '../../../components/Admin/TabNavigation';
+import DateRangeControls from '../../../components/Admin/DateRangeControls/DateRangeControls';
+import {
+    OverviewTab,
+    SalesTab,
+    OrdersTab,
+    ProductsTab,
+    CustomersTab,
+    ConversionTab,
+} from '../../../components/Admin/AnalyticsTabs';
+import { getDaysInPeriod } from '../../../utils/analyticsUtils';
+import { CONFIG } from '../../../config/analyticsConfig';
 import './styles.css';
 
 const Analytics = () => {
+    const { t } = useI18n();
     const [analyticsData, setAnalyticsData] = useState(null);
     const [realTimeData, setRealTimeData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Date range state management
     const [dateRange, setDateRange] = useState('30days');
+    const [customDateFrom, setCustomDateFrom] = useState(null);
+    const [customDateTo, setCustomDateTo] = useState(null);
+
+    // URL and navigation handling
+    const location = useLocation();
+    const navigate = useNavigate();
+    const searchParams = new URLSearchParams(location.search);
+    const activeTab = searchParams.get('tab') || 'overview';
 
     // Breadcrumb hook
     const { items: breadcrumbItems } = useBreadcrumb('admin/analytics');
 
+    // Tab configuration
+    const tabs = [
+        { id: 'overview', label: t('analytics.tabs.overview'), icon: '📊' },
+        { id: 'sales', label: t('analytics.tabs.sales'), icon: '💰' },
+        { id: 'orders', label: t('analytics.tabs.orders'), icon: '📦' },
+        { id: 'products', label: t('analytics.tabs.products'), icon: '🛍️' },
+        { id: 'customers', label: t('analytics.tabs.customers'), icon: '👥' },
+    ];
+
     const fetchAnalyticsData = async () => {
         try {
             setLoading(true);
-            const endDate = new Date().toISOString();
-            const startDate = new Date();
+            setError(null);
 
-            switch (dateRange) {
-                case '7days':
-                    startDate.setDate(startDate.getDate() - 7);
-                    break;
-                case '30days':
-                    startDate.setDate(startDate.getDate() - 30);
-                    break;
-                case '90days':
-                    startDate.setDate(startDate.getDate() - 90);
-                    break;
-                default:
-                    startDate.setDate(startDate.getDate() - 30);
+            // Calculate date range - handle both predefined and custom ranges
+            let startDate, endDate;
+
+            if (dateRange === 'custom' && customDateFrom && customDateTo) {
+                // Custom date range - ensure we have valid ISO strings
+                startDate = customDateFrom.includes('T')
+                    ? customDateFrom
+                    : new Date(customDateFrom).toISOString();
+                endDate = customDateTo.includes('T')
+                    ? customDateTo
+                    : new Date(customDateTo).toISOString();
+            } else {
+                // Use predefined range
+                const endDateObj = new Date();
+                const startDateObj = new Date();
+                const days = getDaysInPeriod(dateRange);
+                startDateObj.setDate(startDateObj.getDate() - days);
+
+                startDate = startDateObj.toISOString();
+                endDate = endDateObj.toISOString();
             }
 
+            console.log('📅 Date range for analytics:', {
+                dateRange,
+                startDate,
+                endDate,
+                customDateFrom,
+                customDateTo,
+            });
+
+            // Parallel API calls for better performance with improved error handling
             const [dashboardResponse, businessResponse] = await Promise.all([
-                API.get('/api/analytics/dashboard'),
-                API.get(
-                    `/api/analytics/business?startDate=${startDate.toISOString()}&endDate=${endDate}`,
+                API.get('/api/analytics/dashboard').catch((err) => {
+                    console.error('Dashboard API failed:', err);
+                    return { data: { success: false, data: null, error: err.message } };
+                }),
+                API.get(`/api/analytics/business?startDate=${startDate}&endDate=${endDate}`).catch(
+                    (err) => {
+                        console.error('Business analytics API failed:', err);
+                        return { data: { success: false, data: null, error: err.message } };
+                    },
                 ),
             ]);
 
+            // Check if APIs returned successful responses
+            const dashboardData =
+                dashboardResponse.data.success !== false ? dashboardResponse.data.data : null;
+            const businessData =
+                businessResponse.data.success !== false ? businessResponse.data.data : null;
+
+            // Set data even if some APIs failed
             setAnalyticsData({
-                dashboard: dashboardResponse.data.data,
-                business: businessResponse.data.data,
+                dashboard: dashboardData,
+                business: businessData,
             });
-            setError(null);
+
+            // Set error if both APIs failed
+            if (!dashboardData && !businessData) {
+                setError(t('analytics.messages.errorLoadingData'));
+            } else if (!dashboardData || !businessData) {
+                console.warn('Partial analytics data loaded - some features may be limited');
+            }
         } catch (err) {
             console.error('Error fetching analytics data:', err);
-            setError('Failed to load analytics data');
+            setError(t('analytics.messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -61,25 +129,75 @@ const Analytics = () => {
             setRealTimeData(response.data.data);
         } catch (err) {
             console.error('Error fetching real-time data:', err);
+            // Don't throw - real-time data is not critical
         }
     };
 
     useEffect(() => {
+        // Initial data fetch
         fetchAnalyticsData();
-        const interval = setInterval(fetchRealTimeData, 30000);
-        return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dateRange]);
 
-    const handleDateRangeChange = (newRange) => {
-        setDateRange(newRange);
+        // Set up real-time data polling using CONFIG interval
+        fetchRealTimeData(); // Initial real-time fetch
+        const realtimeInterval = setInterval(fetchRealTimeData, CONFIG.intervals.realTime);
+
+        // Set up periodic analytics refresh (every 5 minutes)
+        const analyticsInterval = setInterval(fetchAnalyticsData, CONFIG.intervals.dashboard);
+
+        return () => {
+            clearInterval(realtimeInterval);
+            clearInterval(analyticsInterval);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dateRange, customDateFrom, customDateTo]); // Re-fetch when date range or custom dates change
+
+    const handleDateRangeChange = ({ range, customFrom, customTo }) => {
+        setDateRange(range);
+        setCustomDateFrom(customFrom);
+        setCustomDateTo(customTo);
+    };
+
+    const handleTabChange = (tabId) => {
+        const newSearchParams = new URLSearchParams(location.search);
+        newSearchParams.set('tab', tabId);
+        navigate(`${location.pathname}?${newSearchParams.toString()}`);
+    };
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'sales':
+                return <SalesTab analyticsData={analyticsData} dateRange={dateRange} />;
+            case 'orders':
+                return (
+                    <OrdersTab
+                        analyticsData={analyticsData}
+                        realTimeData={realTimeData}
+                        dateRange={dateRange}
+                    />
+                );
+            case 'products':
+                return <ProductsTab analyticsData={analyticsData} dateRange={dateRange} />;
+            case 'customers':
+                return <CustomersTab analyticsData={analyticsData} dateRange={dateRange} />;
+            case 'conversion':
+                return <ConversionTab analyticsData={analyticsData} dateRange={dateRange} />;
+            case 'overview':
+            default:
+                return (
+                    <OverviewTab
+                        analyticsData={analyticsData}
+                        realTimeData={realTimeData}
+                        dateRange={dateRange}
+                    />
+                );
+        }
     };
 
     if (loading && !analyticsData) {
         return (
             <div className="analytics-page">
                 <BreadcrumbNavigation items={breadcrumbItems} />
-                <div className="loading-state">Loading analytics data...</div>
+                <div className="loading-state">{t('analytics.messages.loadingAnalyticsData')}</div>
             </div>
         );
     }
@@ -89,17 +207,15 @@ const Analytics = () => {
             <div className="analytics-page">
                 <BreadcrumbNavigation items={breadcrumbItems} />
                 <div className="error-state">
-                    <h3>Error</h3>
+                    <h3>{t('common.error')}</h3>
                     <p>{error}</p>
                     <button onClick={fetchAnalyticsData} className="retry-btn">
-                        Retry
+                        {t('analytics.buttons.retry')}
                     </button>
                 </div>
             </div>
         );
     }
-
-    const businessData = analyticsData?.business;
 
     return (
         <div className="analytics-page">
@@ -107,208 +223,22 @@ const Analytics = () => {
             <BreadcrumbNavigation items={breadcrumbItems} />
 
             <div className="analytics-header">
-                <h1 className="analytics-title">Business Analytics</h1>
-                <div className="analytics-controls">
-                    <select
-                        value={dateRange}
-                        onChange={(e) => handleDateRangeChange(e.target.value)}
-                        className="date-range-select"
-                    >
-                        <option value="7days">Last 7 days</option>
-                        <option value="30days">Last 30 days</option>
-                        <option value="90days">Last 90 days</option>
-                    </select>
-                    <button onClick={fetchAnalyticsData} className="refresh-btn">
-                        Refresh Data
-                    </button>
-                </div>
+                <h1 className="analytics-title">{t('analytics.title')}</h1>
+                <DateRangeControls
+                    dateRange={dateRange}
+                    customDateFrom={customDateFrom}
+                    customDateTo={customDateTo}
+                    onDateRangeChange={handleDateRangeChange}
+                    onRefresh={fetchAnalyticsData}
+                    loading={loading}
+                />
             </div>
 
-            {/* Real-Time Stats */}
-            {realTimeData && (
-                <div className="realtime-section">
-                    <h2>Real-Time Activity</h2>
-                    <div className="realtime-grid">
-                        <div className="realtime-card">
-                            <h3>{realTimeData.activeUsers}</h3>
-                            <p>Active Users</p>
-                        </div>
-                        <div className="realtime-card">
-                            <h3>{realTimeData.todayEvents}</h3>
-                            <p>Events Today</p>
-                        </div>
-                        <div className="realtime-card">
-                            <h3>{realTimeData.recentSignups}</h3>
-                            <p>New Signups</p>
-                        </div>
-                        <div className="realtime-card">
-                            <h3>{realTimeData.recentOrders?.length || 0}</h3>
-                            <p>Recent Orders</p>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Tab Navigation */}
+            <TabNavigation activeTab={activeTab} onTabChange={handleTabChange} tabs={tabs} />
 
-            {/* Revenue Analytics */}
-            {businessData?.revenue && (
-                <div className="revenue-section">
-                    <h2>Revenue Analytics</h2>
-                    <div className="stats-grid">
-                        <StatsCard
-                            title="Total Revenue"
-                            value={`${businessData.revenue.totalRevenue.toLocaleString()}đ`}
-                            icon="💰"
-                            color="success"
-                        />
-                        <StatsCard
-                            title="Total Orders"
-                            value={businessData.revenue.totalOrders}
-                            icon="📦"
-                            color="primary"
-                        />
-                        <StatsCard
-                            title="Average Order Value"
-                            value={`${businessData.revenue.averageOrderValue.toFixed(0)}đ`}
-                            icon="📊"
-                            color="info"
-                        />
-                        <StatsCard
-                            title="Conversion Rate"
-                            value={`${
-                                businessData.conversion?.order_completed?.conversionRate || 0
-                            }%`}
-                            icon="🎯"
-                            color="warning"
-                        />
-                    </div>
-                </div>
-            )}
-
-            {/* Product Analytics */}
-            {businessData?.products && (
-                <div className="products-section">
-                    <h2>Product Performance</h2>
-                    <div className="product-analytics">
-                        <div className="top-products">
-                            <h3>Top Selling Products</h3>
-                            <div className="products-list">
-                                {businessData.products.topSellingProducts
-                                    ?.slice(0, 5)
-                                    .map((product, index) => (
-                                        <div key={product._id} className="product-item">
-                                            <span className="rank">#{index + 1}</span>
-                                            <span className="product-name">
-                                                {product.productInfo?.name}
-                                            </span>
-                                            <span className="product-sales">
-                                                {product.totalQuantity} sold
-                                            </span>
-                                                                            <span className="product-revenue">
-                                    {product.totalRevenue.toFixed(0)}đ
-                                </span>
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-
-                        <div className="product-metrics">
-                            <h3>Product Metrics</h3>
-                            <div className="metrics-grid">
-                                <div className="metric-item">
-                                    <h4>
-                                        {businessData.products.productMetrics?.totalProducts || 0}
-                                    </h4>
-                                    <p>Total Products</p>
-                                </div>
-                                <div className="metric-item">
-                                    <h4>
-                                        {businessData.products.productMetrics?.lowStockProducts ||
-                                            0}
-                                    </h4>
-                                    <p>Low Stock</p>
-                                </div>
-                                <div className="metric-item">
-                                    <h4>
-                                        {businessData.products.productMetrics?.outOfStockProducts ||
-                                            0}
-                                    </h4>
-                                    <p>Out of Stock</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Customer Analytics */}
-            {businessData?.customers && (
-                <div className="customers-section">
-                    <h2>Customer Analytics</h2>
-                    <div className="customer-analytics">
-                        <div className="customer-metrics">
-                            <StatsCard
-                                title="New Customers"
-                                value={businessData.customers.newCustomers}
-                                icon="👥"
-                                color="success"
-                            />
-                            <StatsCard
-                                title="Average LTV"
-                                                            value={`${(
-                                businessData.customers.lifetimeValue?.averageLifetimeValue || 0
-                            ).toFixed(0)}đ`}
-                                icon="💎"
-                                color="info"
-                            />
-                            <StatsCard
-                                title="Customer Retention"
-                                value={`${businessData.customers.retention?.retentionRate || 0}%`}
-                                icon="🔄"
-                                color="warning"
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Conversion Funnel */}
-            {businessData?.conversion && (
-                <div className="conversion-section">
-                    <h2>Conversion Funnel</h2>
-                    <div className="funnel-chart">
-                        {Object.entries(businessData.conversion).map(([step, data]) => (
-                            <div key={step} className="funnel-step">
-                                <div className="step-name">
-                                    {step.replace('_', ' ').toUpperCase()}
-                                </div>
-                                <div className="step-count">{data.count}</div>
-                                <div className="step-rate">{data.conversionRate}%</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Recent Orders */}
-            {realTimeData?.recentOrders && (
-                <div className="recent-orders-section">
-                    <h2>Recent Orders</h2>
-                    <div className="orders-list">
-                        {realTimeData.recentOrders.map((order) => (
-                            <div key={order._id} className="order-item">
-                                <span className="order-number">#{order.orderNumber}</span>
-                                <span className="customer-name">{order.user?.name || 'Guest'}</span>
-                                <span className="order-total">
-                                    {order.pricing?.total?.toFixed(0) || '0'}đ
-                                </span>
-                                <span className="order-date">
-                                    {new Date(order.createdAt).toLocaleDateString()}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* Tab Content */}
+            <div className="tab-content">{renderTabContent()}</div>
         </div>
     );
 };

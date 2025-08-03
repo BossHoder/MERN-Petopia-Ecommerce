@@ -125,6 +125,54 @@ export const generateAnalyticsReport = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Get stock alerts and inventory data
+ * @route   GET /api/analytics/stock-alerts
+ * @access  Private/Admin
+ */
+export const getStockAlerts = asyncHandler(async (req, res) => {
+    try {
+        const result = await analyticsService.getStockAlerts();
+
+        if (!result.success) {
+            return errorResponse(res, result.error, 400);
+        }
+
+        return successResponse(res, result.stockAlerts, 'Stock alerts retrieved successfully');
+    } catch (error) {
+        console.error('Error getting stock alerts:', error);
+        return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
+    }
+});
+
+/**
+ * @desc    Get product trends and growth data
+ * @route   GET /api/analytics/product-trends
+ * @access  Private/Admin
+ */
+export const getProductTrends = asyncHandler(async (req, res) => {
+    try {
+        const { startDate, endDate } = req.query;
+
+        const dateRange = {};
+        if (startDate && endDate) {
+            dateRange.start = startDate;
+            dateRange.end = endDate;
+        }
+
+        const result = await analyticsService.getProductTrends(dateRange);
+
+        if (!result.success) {
+            return errorResponse(res, result.error, 400);
+        }
+
+        return successResponse(res, result.trends, 'Product trends retrieved successfully');
+    } catch (error) {
+        console.error('Error getting product trends:', error);
+        return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
+    }
+});
+
+/**
  * @desc    Get analytics dashboard data
  * @route   GET /api/analytics/dashboard
  * @access  Private/Admin

@@ -126,7 +126,7 @@ export const internalNoteSchema = Joi.object({
 export const orderQuerySchema = Joi.object({
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(20),
-    sort: Joi.string().valid('createdAt', 'updatedAt', 'status', 'pricing.total', 'orderNumber').default('createdAt'),
+    sort: Joi.string().valid('createdAt', 'updatedAt', 'orderStatus', 'totalPrice', 'orderNumber').default('createdAt'),
     order: Joi.string().valid('asc', 'desc').default('desc'),
     status: Joi.string()
         .valid('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded')

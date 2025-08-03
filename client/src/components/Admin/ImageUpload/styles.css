@@ -8,41 +8,41 @@
 .image-upload-label {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     margin-bottom: 8px;
 }
 
 .image-upload-label .required {
-    color: var(--danger, #DC2626);
+    color: var(--danger, #dc2626);
     margin-left: 4px;
 }
 
 /* Upload Dropzone */
 .image-upload-dropzone {
-    border: 2px dashed var(--border-light, #E5E7EB);
+    border: 2px dashed var(--border-light, #e5e7eb);
     border-radius: 12px;
     padding: 32px 16px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    background: var(--bg-gray-50, #F9FAFB);
+    background: var(--bg-gray-50, #f9fafb);
     position: relative;
 }
 
 .image-upload-dropzone:hover {
-    border-color: var(--brand-orange, #FF6B35);
-    background: var(--brand-cream-light, #FFF8F6);
+    border-color: var(--brand-orange, #ff6b35);
+    background: var(--brand-cream-light, #fff8f6);
 }
 
 .image-upload-dropzone.drag-over {
-    border-color: var(--brand-orange, #FF6B35);
-    background: var(--brand-cream-light, #FFF8F6);
+    border-color: var(--brand-orange, #ff6b35);
+    background: var(--brand-cream-light, #fff8f6);
     transform: scale(1.02);
 }
 
 .image-upload-dropzone.error {
-    border-color: var(--danger, #DC2626);
-    background: var(--danger-light, #FEE2E2);
+    border-color: var(--danger, #dc2626);
+    background: var(--danger-light, #fee2e2);
 }
 
 .image-upload-input {
@@ -64,19 +64,19 @@
 .image-upload-text {
     font-size: 16px;
     font-weight: 500;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     margin: 0;
 }
 
 .image-upload-subtext {
     font-size: 14px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     margin: 0;
 }
 
 .image-upload-error {
     font-size: 12px;
-    color: var(--danger, #DC2626);
+    color: var(--danger, #dc2626);
     margin-top: 4px;
 }
 
@@ -99,8 +99,8 @@
     aspect-ratio: 1;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid var(--border-light, #E5E7EB);
-    background: var(--bg-white, #FFFFFF);
+    border: 1px solid var(--border-light, #e5e7eb);
+    background: var(--bg-white, #ffffff);
 }
 
 .image-preview {
@@ -144,23 +144,23 @@
 }
 
 .image-control-btn.remove {
-    background: var(--danger, #DC2626);
+    background: var(--danger, #dc2626);
     color: white;
 }
 
 .image-control-btn.remove:hover {
-    background: var(--danger-dark, #B91C1C);
+    background: var(--danger-dark, #b91c1c);
 }
 
 .image-control-btn.move-left,
 .image-control-btn.move-right {
-    background: var(--brand-orange, #FF6B35);
+    background: var(--brand-orange, #ff6b35);
     color: white;
 }
 
 .image-control-btn.move-left:hover,
 .image-control-btn.move-right:hover {
-    background: var(--brand-orange-dark, #E55A2B);
+    background: var(--brand-orange-dark, #e55a2b);
 }
 
 /* Primary Image Badge */
@@ -168,7 +168,7 @@
     position: absolute;
     bottom: 8px;
     left: 8px;
-    background: var(--brand-orange, #FF6B35);
+    background: var(--brand-orange, #ff6b35);
     color: white;
     font-size: 10px;
     font-weight: 600;
@@ -186,12 +186,12 @@
 }
 
 .image-index {
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     font-weight: 500;
 }
 
 .image-new-badge {
-    background: var(--success, #10B981);
+    background: var(--success, #10b981);
     color: white;
     padding: 2px 6px;
     border-radius: 4px;
@@ -205,35 +205,41 @@
     flex-direction: column;
     gap: 8px;
     padding: 16px;
-    background: var(--bg-gray-50, #F9FAFB);
+    background: var(--bg-gray-50, #f9fafb);
     border-radius: 8px;
-    border: 1px solid var(--border-light, #E5E7EB);
+    border: 1px solid var(--border-light, #e5e7eb);
 }
 
 .progress-bar {
     width: 100%;
     height: 4px;
-    background: var(--bg-gray-200, #E5E7EB);
+    background: var(--bg-gray-200, #e5e7eb);
     border-radius: 2px;
     overflow: hidden;
 }
 
-.progress-fill {
+.image-upload-container .progress-fill {
     height: 100%;
-    background: var(--brand-orange, #FF6B35);
+    background: var(--brand-orange, #ff6b35);
     border-radius: 2px;
     animation: progress-animation 2s ease-in-out infinite;
 }
 
 @keyframes progress-animation {
-    0% { width: 0%; }
-    50% { width: 70%; }
-    100% { width: 100%; }
+    0% {
+        width: 0%;
+    }
+    50% {
+        width: 70%;
+    }
+    100% {
+        width: 100%;
+    }
 }
 
 .progress-text {
     font-size: 14px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     text-align: center;
 }
 
@@ -243,12 +249,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-top: 1px solid var(--border-light, #E5E7EB);
+    border-top: 1px solid var(--border-light, #e5e7eb);
 }
 
 .image-count {
     font-size: 12px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     font-weight: 500;
 }
 
@@ -289,12 +295,12 @@
 
 /* Accessibility */
 .image-upload-dropzone:focus-within {
-    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline: 2px solid var(--brand-orange, #ff6b35);
     outline-offset: 2px;
 }
 
 .image-control-btn:focus {
-    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline: 2px solid var(--brand-orange, #ff6b35);
     outline-offset: 2px;
 }
 
