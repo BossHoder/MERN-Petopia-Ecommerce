@@ -156,7 +156,7 @@ const Analytics = () => {
                     <div className="stats-grid">
                         <StatsCard
                             title="Total Revenue"
-                            value={`$${businessData.revenue.totalRevenue.toLocaleString()}`}
+                            value={`${businessData.revenue.totalRevenue.toLocaleString()}đ`}
                             icon="💰"
                             color="success"
                         />
@@ -168,7 +168,7 @@ const Analytics = () => {
                         />
                         <StatsCard
                             title="Average Order Value"
-                            value={`$${businessData.revenue.averageOrderValue.toFixed(2)}`}
+                            value={`${businessData.revenue.averageOrderValue.toFixed(0)}đ`}
                             icon="📊"
                             color="info"
                         />
@@ -203,9 +203,9 @@ const Analytics = () => {
                                             <span className="product-sales">
                                                 {product.totalQuantity} sold
                                             </span>
-                                            <span className="product-revenue">
-                                                ${product.totalRevenue.toFixed(2)}
-                                            </span>
+                                                                            <span className="product-revenue">
+                                    {product.totalRevenue.toFixed(0)}đ
+                                </span>
                                         </div>
                                     ))}
                             </div>
@@ -254,9 +254,9 @@ const Analytics = () => {
                             />
                             <StatsCard
                                 title="Average LTV"
-                                value={`$${(
-                                    businessData.customers.lifetimeValue?.averageLifetimeValue || 0
-                                ).toFixed(2)}`}
+                                                            value={`${(
+                                businessData.customers.lifetimeValue?.averageLifetimeValue || 0
+                            ).toFixed(0)}đ`}
                                 icon="💎"
                                 color="info"
                             />
@@ -299,7 +299,7 @@ const Analytics = () => {
                                 <span className="order-number">#{order.orderNumber}</span>
                                 <span className="customer-name">{order.user?.name || 'Guest'}</span>
                                 <span className="order-total">
-                                    ${order.pricing?.total?.toFixed(2) || '0.00'}
+                                    {order.pricing?.total?.toFixed(0) || '0'}đ
                                 </span>
                                 <span className="order-date">
                                     {new Date(order.createdAt).toLocaleDateString()}
