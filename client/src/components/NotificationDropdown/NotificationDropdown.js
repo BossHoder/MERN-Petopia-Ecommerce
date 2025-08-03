@@ -9,26 +9,26 @@ import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaEye, FaChevronRight, FaBell } from 'react-icons/fa';
 import styles from './NotificationDropdown.module.css';
 import NotificationItem from '../NotificationItem/NotificationItem';
-import { 
+import {
     markAllNotificationsAsRead,
-    getUserNotifications
+    getUserNotifications,
 } from '../../store/actions/notificationActions';
 
 const NotificationDropdown = ({ onClose, notifications, unreadCount }) => {
     // ===========================================
     // STATE & HOOKS
     // ===========================================
-    
+
     const [showAllNotifications, setShowAllNotifications] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
-    const { loading } = useSelector(state => state.notifications);
+
+    const { loading } = useSelector((state) => state.notifications);
 
     // ===========================================
     // HANDLERS
     // ===========================================
-    
+
     const handleMarkAllAsRead = async () => {
         try {
             await dispatch(markAllNotificationsAsRead());
@@ -73,25 +73,23 @@ const NotificationDropdown = ({ onClose, notifications, unreadCount }) => {
                 // Do nothing for general notifications
                 break;
         }
-        
+
         onClose();
     };
 
     // ===========================================
     // COMPUTED VALUES
     // ===========================================
-    
-    const displayNotifications = showAllNotifications 
-        ? notifications 
-        : notifications.slice(0, 5);
-    
+
+    const displayNotifications = showAllNotifications ? notifications : notifications.slice(0, 5);
+
     const hasMoreNotifications = notifications.length > 5;
     const showMarkAllRead = unreadCount > 0;
 
     // ===========================================
     // RENDER
     // ===========================================
-    
+
     return (
         <div className={styles.dropdown} role="dialog" aria-label="Notifications">
             {/* Header */}
@@ -99,12 +97,10 @@ const NotificationDropdown = ({ onClose, notifications, unreadCount }) => {
                 <h3 className={styles.title}>
                     Notifications
                     {unreadCount > 0 && (
-                        <span className={styles.unreadCount}>
-                            ({unreadCount} unread)
-                        </span>
+                        <span className={styles.unreadCount}>({unreadCount} unread)</span>
                     )}
                 </h3>
-                
+
                 {/* Header Actions */}
                 <div className={styles.headerActions}>
                     {showMarkAllRead && (

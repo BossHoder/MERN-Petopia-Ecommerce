@@ -279,35 +279,35 @@
     .notificationItem {
         padding: 12px;
     }
-    
+
     .header {
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
-    
+
     .titleSection {
         align-items: flex-start;
     }
-    
+
     .title {
         font-size: 13px;
     }
-    
+
     .message {
         font-size: 12px;
     }
-    
+
     .timestamp {
         font-size: 10px;
         align-self: flex-end;
     }
-    
+
     .actions {
         opacity: 1;
         margin-top: 4px;
     }
-    
+
     .metadataItem {
         font-size: 9px;
     }
@@ -340,15 +340,15 @@
     .notificationItem {
         border-bottom-width: 2px;
     }
-    
+
     .notificationItem.unread {
         border-left-width: 4px;
     }
-    
+
     .actionBtn {
         border: 1px solid currentColor;
     }
-    
+
     .metadataItem {
         border: 1px solid currentColor;
     }
@@ -361,12 +361,12 @@
     .actions {
         transition: none;
     }
-    
+
     .loadingSpinner {
         animation: none;
         border: 2px solid var(--primary-color, #007bff);
     }
-    
+
     .actionBtn:hover {
         transform: none;
     }

@@ -6,32 +6,32 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { 
-    FaBell, 
-    FaFilter, 
-    FaCheck, 
+import {
+    FaBell,
+    FaFilter,
+    FaCheck,
     FaRefresh,
     FaChevronLeft,
     FaChevronRight,
-    FaExclamationTriangle
+    FaExclamationTriangle,
 } from 'react-icons/fa';
 import styles from './NotificationsPage.module.css';
 import NotificationItem from '../../components/NotificationItem/NotificationItem';
 import Loader from '../../components/Loader/Loader';
 import Message from '../../components/Message/Message';
-import { 
+import {
     getUserNotifications,
     markAllNotificationsAsRead,
-    clearNotificationErrors 
+    clearNotificationErrors,
 } from '../../store/actions/notificationActions';
 
 const NotificationsPage = () => {
     // ===========================================
     // STATE & HOOKS
     // ===========================================
-    
+
     const dispatch = useDispatch();
-    
+
     const [filters, setFilters] = useState({
         unreadOnly: false,
         type: 'all',
@@ -39,19 +39,15 @@ const NotificationsPage = () => {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const [showFilters, setShowFilters] = useState(false);
-    
-    const { 
-        notifications, 
-        notificationsPagination,
-        loading, 
-        error,
-        summary 
-    } = useSelector(state => state.notifications);
+
+    const { notifications, notificationsPagination, loading, error, summary } = useSelector(
+        (state) => state.notifications,
+    );
 
     // ===========================================
     // EFFECTS
     // ===========================================
-    
+
     useEffect(() => {
         loadNotifications();
     }, [currentPage, filters]);
@@ -64,15 +60,10 @@ const NotificationsPage = () => {
     // ===========================================
     // HANDLERS
     // ===========================================
-    
+
     const loadNotifications = React.useCallback(() => {
         const { unreadOnly, type } = filters;
-        dispatch(getUserNotifications(
-            currentPage, 
-            20, 
-            unreadOnly, 
-            type === 'all' ? null : type
-        ));
+        dispatch(getUserNotifications(currentPage, 20, unreadOnly, type === 'all' ? null : type));
     }, [currentPage, filters, dispatch]);
 
     const handleRefresh = () => {
@@ -85,9 +76,9 @@ const NotificationsPage = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setFilters(prev => ({
+        setFilters((prev) => ({
             ...prev,
-            [key]: value
+            [key]: value,
         }));
         setCurrentPage(1); // Reset to first page when filters change
     };
@@ -108,14 +99,14 @@ const NotificationsPage = () => {
     // ===========================================
     // RENDER HELPERS
     // ===========================================
-    
+
     const renderFilters = () => (
         <div className={`${styles.filterPanel} ${showFilters ? styles.visible : ''}`}>
             <h4 className={styles.filterTitle}>
                 <FaFilter size={14} />
                 Filters
             </h4>
-            
+
             {/* Unread Only Toggle */}
             <div className={styles.filterGroup}>
                 <label className={styles.filterLabel}>
@@ -167,7 +158,7 @@ const NotificationsPage = () => {
         if (!notificationsPagination || notificationsPagination.totalPages <= 1) return null;
 
         const { page, totalPages, hasPrev, hasNext } = notificationsPagination;
-        
+
         return (
             <div className={styles.pagination}>
                 <button
@@ -179,11 +170,11 @@ const NotificationsPage = () => {
                     <FaChevronLeft size={12} />
                     Previous
                 </button>
-                
+
                 <span className={styles.pageInfo}>
                     Page {page} of {totalPages}
                 </span>
-                
+
                 <button
                     type="button"
                     className={`${styles.pageBtn} ${!hasNext ? styles.disabled : ''}`}
@@ -204,10 +195,9 @@ const NotificationsPage = () => {
                 {filters.unreadOnly ? 'No unread notifications' : 'No notifications yet'}
             </h3>
             <p className={styles.emptyDescription}>
-                {filters.unreadOnly 
+                {filters.unreadOnly
                     ? 'All caught up! You have no unread notifications.'
-                    : 'You\'ll see notifications about orders, promotions, and updates here.'
-                }
+                    : "You'll see notifications about orders, promotions, and updates here."}
             </p>
             {filters.unreadOnly && (
                 <button
@@ -224,12 +214,15 @@ const NotificationsPage = () => {
     // ===========================================
     // MAIN RENDER
     // ===========================================
-    
+
     return (
         <div className={styles.container}>
             <Helmet>
                 <title>Notifications - Petopia</title>
-                <meta name="description" content="Manage your notifications and stay updated with order status, promotions, and more." />
+                <meta
+                    name="description"
+                    content="Manage your notifications and stay updated with order status, promotions, and more."
+                />
             </Helmet>
 
             {/* Header */}
@@ -239,9 +232,7 @@ const NotificationsPage = () => {
                         <FaBell className={styles.titleIcon} />
                         Notifications
                         {summary?.unreadCount > 0 && (
-                            <span className={styles.unreadBadge}>
-                                {summary.unreadCount}
-                            </span>
+                            <span className={styles.unreadBadge}>{summary.unreadCount}</span>
                         )}
                     </h1>
                 </div>
@@ -311,7 +302,7 @@ const NotificationsPage = () => {
                         {/* Notifications List */}
                         {notifications.length > 0 ? (
                             <div className={styles.notificationsList}>
-                                {notifications.map(notification => (
+                                {notifications.map((notification) => (
                                     <NotificationItem
                                         key={notification._id}
                                         notification={notification}

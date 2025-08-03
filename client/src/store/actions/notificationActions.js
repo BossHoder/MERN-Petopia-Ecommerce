@@ -41,39 +41,42 @@ import { toast } from 'react-toastify';
 /**
  * Get user notifications with pagination and filtering
  */
-export const getUserNotifications = (page = 1, limit = 20, unreadOnly = false, type = null) => async (dispatch) => {
-    try {
-        dispatch({ type: GET_NOTIFICATIONS_REQUEST });
+export const getUserNotifications =
+    (page = 1, limit = 20, unreadOnly = false, type = null) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: GET_NOTIFICATIONS_REQUEST });
 
-        const params = new URLSearchParams({
-            page: page.toString(),
-            limit: limit.toString(),
-            unreadOnly: unreadOnly.toString(),
-        });
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+                unreadOnly: unreadOnly.toString(),
+            });
 
-        if (type) {
-            params.append('type', type);
+            if (type) {
+                params.append('type', type);
+            }
+
+            const response = await API.get(`/api/notifications?${params}`);
+
+            dispatch({
+                type: GET_NOTIFICATIONS_SUCCESS,
+                payload: response.data.data,
+            });
+
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Failed to fetch notifications';
+
+            dispatch({
+                type: GET_NOTIFICATIONS_FAIL,
+                payload: errorMessage,
+            });
+
+            throw error;
         }
-
-        const response = await API.get(`/api/notifications?${params}`);
-
-        dispatch({
-            type: GET_NOTIFICATIONS_SUCCESS,
-            payload: response.data.data,
-        });
-
-        return response.data;
-    } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to fetch notifications';
-        
-        dispatch({
-            type: GET_NOTIFICATIONS_FAIL,
-            payload: errorMessage,
-        });
-        
-        throw error;
-    }
-};
+    };
 
 /**
  * Get notification summary (unread count + recent notifications)
@@ -91,13 +94,14 @@ export const getNotificationSummary = () => async (dispatch) => {
 
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to fetch notification summary';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to fetch notification summary';
+
         dispatch({
             type: GET_NOTIFICATION_SUMMARY_FAIL,
             payload: errorMessage,
         });
-        
+
         throw error;
     }
 };
@@ -107,9 +111,9 @@ export const getNotificationSummary = () => async (dispatch) => {
  */
 export const markNotificationAsRead = (notificationId) => async (dispatch) => {
     try {
-        dispatch({ 
+        dispatch({
             type: MARK_NOTIFICATION_READ_REQUEST,
-            payload: { notificationId }
+            payload: { notificationId },
         });
 
         const response = await API.post(`/api/notifications/${notificationId}/read`);
@@ -121,13 +125,14 @@ export const markNotificationAsRead = (notificationId) => async (dispatch) => {
 
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to mark notification as read';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to mark notification as read';
+
         dispatch({
             type: MARK_NOTIFICATION_READ_FAIL,
             payload: errorMessage,
         });
-        
+
         throw error;
     }
 };
@@ -148,13 +153,14 @@ export const markAllNotificationsAsRead = () => async (dispatch) => {
         toast.success('All notifications marked as read');
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to mark all notifications as read';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to mark all notifications as read';
+
         dispatch({
             type: MARK_ALL_NOTIFICATIONS_READ_FAIL,
             payload: errorMessage,
         });
-        
+
         toast.error(errorMessage);
         throw error;
     }
@@ -165,9 +171,9 @@ export const markAllNotificationsAsRead = () => async (dispatch) => {
  */
 export const deleteNotification = (notificationId) => async (dispatch) => {
     try {
-        dispatch({ 
+        dispatch({
             type: DELETE_NOTIFICATION_REQUEST,
-            payload: { notificationId }
+            payload: { notificationId },
         });
 
         const response = await API.delete(`/api/notifications/${notificationId}`);
@@ -180,13 +186,14 @@ export const deleteNotification = (notificationId) => async (dispatch) => {
         toast.success('Notification deleted successfully');
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to delete notification';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to delete notification';
+
         dispatch({
             type: DELETE_NOTIFICATION_FAIL,
             payload: errorMessage,
         });
-        
+
         toast.error(errorMessage);
         throw error;
     }
@@ -199,37 +206,40 @@ export const deleteNotification = (notificationId) => async (dispatch) => {
 /**
  * Get all notifications (admin)
  */
-export const getAdminNotifications = (page = 1, limit = 20, filters = {}) => async (dispatch) => {
-    try {
-        dispatch({ type: ADMIN_NOTIFICATIONS_REQUEST });
+export const getAdminNotifications =
+    (page = 1, limit = 20, filters = {}) =>
+    async (dispatch) => {
+        try {
+            dispatch({ type: ADMIN_NOTIFICATIONS_REQUEST });
 
-        const params = new URLSearchParams({
-            page: page.toString(),
-            limit: limit.toString(),
-        });
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: limit.toString(),
+            });
 
-        if (filters.type) params.append('type', filters.type);
-        if (filters.priority) params.append('priority', filters.priority);
+            if (filters.type) params.append('type', filters.type);
+            if (filters.priority) params.append('priority', filters.priority);
 
-        const response = await API.get(`/api/notifications/admin/all?${params}`);
+            const response = await API.get(`/api/notifications/admin/all?${params}`);
 
-        dispatch({
-            type: ADMIN_NOTIFICATIONS_SUCCESS,
-            payload: response.data.data,
-        });
+            dispatch({
+                type: ADMIN_NOTIFICATIONS_SUCCESS,
+                payload: response.data.data,
+            });
 
-        return response.data;
-    } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to fetch admin notifications';
-        
-        dispatch({
-            type: ADMIN_NOTIFICATIONS_FAIL,
-            payload: errorMessage,
-        });
-        
-        throw error;
-    }
-};
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.error?.message || 'Failed to fetch admin notifications';
+
+            dispatch({
+                type: ADMIN_NOTIFICATIONS_FAIL,
+                payload: errorMessage,
+            });
+
+            throw error;
+        }
+    };
 
 /**
  * Broadcast notification to multiple users (admin)
@@ -248,13 +258,14 @@ export const broadcastNotification = (notificationData) => async (dispatch) => {
         toast.success(`Notification sent to ${response.data.data.created} users`);
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to broadcast notification';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to broadcast notification';
+
         dispatch({
             type: ADMIN_NOTIFICATION_BROADCAST_FAIL,
             payload: errorMessage,
         });
-        
+
         toast.error(errorMessage);
         throw error;
     }
@@ -276,13 +287,14 @@ export const getNotificationStats = () => async (dispatch) => {
 
         return response.data;
     } catch (error) {
-        const errorMessage = error.response?.data?.error?.message || 'Failed to fetch notification stats';
-        
+        const errorMessage =
+            error.response?.data?.error?.message || 'Failed to fetch notification stats';
+
         dispatch({
             type: ADMIN_NOTIFICATION_STATS_FAIL,
             payload: errorMessage,
         });
-        
+
         throw error;
     }
 };

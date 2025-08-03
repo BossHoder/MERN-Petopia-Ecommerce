@@ -6,8 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
-import { 
-    FaBell, 
+import {
+    FaBell,
     FaBroadcastTower,
     FaChartBar,
     FaFilter,
@@ -18,23 +18,23 @@ import {
     FaExclamationTriangle,
     FaUsers,
     FaEye,
-    FaClock
+    FaClock,
 } from 'react-icons/fa';
 import './styles.css';
 import NotificationItem from '../../../components/NotificationItem/NotificationItem';
-import { 
+import {
     getAdminNotifications,
     broadcastNotification,
-    getNotificationStats 
+    getNotificationStats,
 } from '../../../store/actions/notificationActions';
 
 const AdminNotifications = () => {
     // ===========================================
     // STATE & HOOKS
     // ===========================================
-    
+
     const dispatch = useDispatch();
-    
+
     const [activeTab, setActiveTab] = useState('overview'); // overview, broadcast, manage
     const [filters, setFilters] = useState({
         type: 'all',
@@ -43,7 +43,7 @@ const AdminNotifications = () => {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    
+
     // Broadcast form state
     const [broadcastForm, setBroadcastForm] = useState({
         title: '',
@@ -56,18 +56,14 @@ const AdminNotifications = () => {
         expiresAt: '',
     });
 
-    const { 
-        adminNotifications,
-        adminPagination,
-        stats,
-        loading,
-        error 
-    } = useSelector(state => state.notifications);
+    const { adminNotifications, adminPagination, stats, loading, error } = useSelector(
+        (state) => state.notifications,
+    );
 
     // ===========================================
     // EFFECTS
     // ===========================================
-    
+
     useEffect(() => {
         dispatch(getNotificationStats());
     }, [dispatch]);
@@ -81,21 +77,21 @@ const AdminNotifications = () => {
     // ===========================================
     // HANDLERS
     // ===========================================
-    
+
     const loadNotifications = React.useCallback(() => {
         const filterObj = {};
         if (filters.type !== 'all') filterObj.type = filters.type;
         if (filters.priority !== 'all') filterObj.priority = filters.priority;
-        
+
         dispatch(getAdminNotifications(currentPage, 20, filterObj));
     }, [currentPage, filters, dispatch]);
 
     const handleBroadcast = async (e) => {
         e.preventDefault();
-        
+
         try {
             await dispatch(broadcastNotification(broadcastForm));
-            
+
             // Reset form
             setBroadcastForm({
                 title: '',
@@ -107,7 +103,7 @@ const AdminNotifications = () => {
                 channels: ['app'],
                 expiresAt: '',
             });
-            
+
             // Refresh stats
             dispatch(getNotificationStats());
         } catch (error) {
@@ -116,9 +112,9 @@ const AdminNotifications = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setFilters(prev => ({
+        setFilters((prev) => ({
             ...prev,
-            [key]: value
+            [key]: value,
         }));
         setCurrentPage(1);
     };
@@ -137,7 +133,7 @@ const AdminNotifications = () => {
     // ===========================================
     // RENDER HELPERS
     // ===========================================
-    
+
     const renderOverviewTab = () => (
         <div className="overview-content">
             {/* Stats Cards */}
@@ -151,7 +147,7 @@ const AdminNotifications = () => {
                         <p>Total Notifications</p>
                     </div>
                 </div>
-                
+
                 <div className="stat-card">
                     <div className="stat-icon">
                         <FaEye />
@@ -161,7 +157,7 @@ const AdminNotifications = () => {
                         <p>Unread Notifications</p>
                     </div>
                 </div>
-                
+
                 <div className="stat-card">
                     <div className="stat-icon">
                         <FaUsers />
@@ -171,7 +167,7 @@ const AdminNotifications = () => {
                         <p>Active Users</p>
                     </div>
                 </div>
-                
+
                 <div className="stat-card">
                     <div className="stat-icon">
                         <FaClock />
@@ -192,10 +188,16 @@ const AdminNotifications = () => {
                             <div key={type} className="chart-bar">
                                 <span className="chart-label">{type}</span>
                                 <div className="chart-bar-bg">
-                                    <div 
-                                        className="chart-bar-fill" 
-                                        style={{ 
-                                            width: `${(count / Math.max(...Object.values(stats.byType || {}))) * 100}%` 
+                                    <div
+                                        className="chart-bar-fill"
+                                        style={{
+                                            width: `${
+                                                (count /
+                                                    Math.max(
+                                                        ...Object.values(stats.byType || {}),
+                                                    )) *
+                                                100
+                                            }%`,
                                         }}
                                     />
                                 </div>
@@ -238,24 +240,28 @@ const AdminNotifications = () => {
                             type="text"
                             id="title"
                             value={broadcastForm.title}
-                            onChange={(e) => setBroadcastForm(prev => ({
-                                ...prev,
-                                title: e.target.value
-                            }))}
+                            onChange={(e) =>
+                                setBroadcastForm((prev) => ({
+                                    ...prev,
+                                    title: e.target.value,
+                                }))
+                            }
                             required
                             placeholder="Enter notification title"
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="type">Type</label>
                         <select
                             id="type"
                             value={broadcastForm.type}
-                            onChange={(e) => setBroadcastForm(prev => ({
-                                ...prev,
-                                type: e.target.value
-                            }))}
+                            onChange={(e) =>
+                                setBroadcastForm((prev) => ({
+                                    ...prev,
+                                    type: e.target.value,
+                                }))
+                            }
                         >
                             <option value="system">System</option>
                             <option value="promotion">Promotion</option>
@@ -269,10 +275,12 @@ const AdminNotifications = () => {
                     <textarea
                         id="message"
                         value={broadcastForm.message}
-                        onChange={(e) => setBroadcastForm(prev => ({
-                            ...prev,
-                            message: e.target.value
-                        }))}
+                        onChange={(e) =>
+                            setBroadcastForm((prev) => ({
+                                ...prev,
+                                message: e.target.value,
+                            }))
+                        }
                         required
                         rows={4}
                         placeholder="Enter notification message"
@@ -285,10 +293,12 @@ const AdminNotifications = () => {
                         <select
                             id="priority"
                             value={broadcastForm.priority}
-                            onChange={(e) => setBroadcastForm(prev => ({
-                                ...prev,
-                                priority: e.target.value
-                            }))}
+                            onChange={(e) =>
+                                setBroadcastForm((prev) => ({
+                                    ...prev,
+                                    priority: e.target.value,
+                                }))
+                            }
                         >
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
@@ -296,16 +306,18 @@ const AdminNotifications = () => {
                             <option value="urgent">Urgent</option>
                         </select>
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="targetAudience">Target Audience</label>
                         <select
                             id="targetAudience"
                             value={broadcastForm.targetAudience}
-                            onChange={(e) => setBroadcastForm(prev => ({
-                                ...prev,
-                                targetAudience: e.target.value
-                            }))}
+                            onChange={(e) =>
+                                setBroadcastForm((prev) => ({
+                                    ...prev,
+                                    targetAudience: e.target.value,
+                                }))
+                            }
                         >
                             <option value="all">All Users</option>
                             <option value="active_users">Active Users</option>
@@ -320,16 +332,18 @@ const AdminNotifications = () => {
                         type="datetime-local"
                         id="expiresAt"
                         value={broadcastForm.expiresAt}
-                        onChange={(e) => setBroadcastForm(prev => ({
-                            ...prev,
-                            expiresAt: e.target.value
-                        }))}
+                        onChange={(e) =>
+                            setBroadcastForm((prev) => ({
+                                ...prev,
+                                expiresAt: e.target.value,
+                            }))
+                        }
                     />
                 </div>
 
                 <div className="form-actions">
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="btn btn-primary"
                         disabled={loading.broadcasting}
                     >
@@ -356,7 +370,7 @@ const AdminNotifications = () => {
                         <option value="system">System</option>
                     </select>
                 </div>
-                
+
                 <div className="filter-group">
                     <select
                         value={filters.priority}
@@ -369,7 +383,7 @@ const AdminNotifications = () => {
                         <option value="low">Low</option>
                     </select>
                 </div>
-                
+
                 <div className="search-group">
                     <FaSearch />
                     <input
@@ -386,7 +400,7 @@ const AdminNotifications = () => {
                 {loading.adminNotifications ? (
                     <div className="loading-state">Loading notifications...</div>
                 ) : adminNotifications.length > 0 ? (
-                    adminNotifications.map(notification => (
+                    adminNotifications.map((notification) => (
                         <NotificationItem
                             key={notification._id}
                             notification={notification}
@@ -413,11 +427,11 @@ const AdminNotifications = () => {
                     >
                         <FaChevronLeft /> Previous
                     </button>
-                    
+
                     <span className="page-info">
                         Page {adminPagination.page} of {adminPagination.totalPages}
                     </span>
-                    
+
                     <button
                         type="button"
                         className="page-btn"
@@ -434,7 +448,7 @@ const AdminNotifications = () => {
     // ===========================================
     // MAIN RENDER
     // ===========================================
-    
+
     return (
         <div className="admin-notifications">
             <Helmet>
@@ -483,7 +497,7 @@ const AdminNotifications = () => {
                         <FaChartBar />
                         Overview
                     </button>
-                    
+
                     <button
                         type="button"
                         className={`tab-btn ${activeTab === 'broadcast' ? 'active' : ''}`}
@@ -492,7 +506,7 @@ const AdminNotifications = () => {
                         <FaBroadcastTower />
                         Broadcast
                     </button>
-                    
+
                     <button
                         type="button"
                         className={`tab-btn ${activeTab === 'manage' ? 'active' : ''}`}

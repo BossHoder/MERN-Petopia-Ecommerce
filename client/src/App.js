@@ -78,10 +78,10 @@ const App = () => {
         if (isAuthenticated && user) {
             // Connect to socket when user is authenticated
             socketService.connect();
-            
+
             // Request notification permission
             socketService.requestNotificationPermission();
-            
+
             // Update user presence
             socketService.updateUserPresence(true);
         } else {

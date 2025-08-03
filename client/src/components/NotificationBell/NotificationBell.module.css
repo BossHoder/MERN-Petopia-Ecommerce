@@ -111,7 +111,8 @@
    ========================================== */
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
@@ -134,7 +135,8 @@
 }
 
 @keyframes notificationAlert {
-    0%, 100% {
+    0%,
+    100% {
         box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
     }
     50% {
@@ -160,7 +162,7 @@
         width: 40px;
         height: 40px;
     }
-    
+
     .badge {
         min-width: 16px;
         height: 16px;
@@ -188,7 +190,7 @@
     .bellButton {
         border: 1px solid currentColor;
     }
-    
+
     .badge {
         border-width: 3px;
     }
@@ -202,11 +204,11 @@
         animation: none;
         transition: none;
     }
-    
+
     .bellButton:hover {
         transform: none;
     }
-    
+
     .bellButton:active {
         transform: none;
     }

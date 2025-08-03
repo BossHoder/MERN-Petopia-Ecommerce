@@ -27,7 +27,11 @@
     justify-content: space-between;
     padding: 16px 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, var(--primary-color, #007bff) 0%, var(--primary-dark, #0056b3) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary-color, #007bff) 0%,
+        var(--primary-dark, #0056b3) 100%
+    );
     color: white;
 }
 
@@ -267,24 +271,24 @@
         max-height: 400px;
         right: -20px;
     }
-    
+
     .header {
         padding: 12px 16px;
     }
-    
+
     .title {
         font-size: 14px;
     }
-    
+
     .markAllReadBtn {
         padding: 4px 8px;
         font-size: 11px;
     }
-    
+
     .content {
         max-height: 250px;
     }
-    
+
     .footer {
         padding: 10px 16px;
     }
@@ -311,11 +315,11 @@
     .dropdown {
         border-width: 2px;
     }
-    
+
     .header {
         border-bottom-width: 2px;
     }
-    
+
     .markAllReadBtn {
         border-width: 2px;
     }
@@ -326,16 +330,16 @@
     .dropdown {
         animation: none;
     }
-    
+
     .loadingSpinner {
         animation: none;
         border: 2px solid var(--primary-color, #007bff);
     }
-    
+
     .viewAllBtn:hover {
         transform: none;
     }
-    
+
     .viewAllBtn:active {
         transform: none;
     }

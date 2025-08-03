@@ -47,11 +47,7 @@ export const SocketProvider = ({ children }) => {
         socketService,
     };
 
-    return (
-        <SocketContext.Provider value={contextValue}>
-            {children}
-        </SocketContext.Provider>
-    );
+    return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>;
 };
 
 // Custom hook to use socket context

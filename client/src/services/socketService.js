@@ -34,7 +34,7 @@ class SocketService {
         try {
             this.socket = io(process.env.REACT_APP_API_URL || 'http://localhost:5000', {
                 auth: {
-                    token: token
+                    token: token,
                 },
                 transports: ['websocket', 'polling'],
                 timeout: 20000,
@@ -71,7 +71,7 @@ class SocketService {
             console.log('Socket connected successfully');
             this.isConnected = true;
             this.reconnectAttempts = 0;
-            
+
             // Join user's notification room
             const state = store.getState();
             const userId = state.auth?.user?._id;
@@ -83,13 +83,13 @@ class SocketService {
         this.socket.on('disconnect', (reason) => {
             console.log('Socket disconnected:', reason);
             this.isConnected = false;
-            
+
             // Attempt to reconnect if disconnection was unexpected
             if (reason === 'io server disconnect') {
                 // Server initiated disconnect, don't reconnect automatically
                 return;
             }
-            
+
             this.handleReconnection();
         });
 
@@ -102,10 +102,10 @@ class SocketService {
         // Notification events
         this.socket.on('notification', (notification) => {
             console.log('Real-time notification received:', notification);
-            
+
             // Dispatch to Redux store
             store.dispatch(receiveNotification(notification));
-            
+
             // Show browser notification if permission granted
             this.showBrowserNotification(notification);
         });
@@ -117,8 +117,8 @@ class SocketService {
 
         this.socket.on('bulk-notifications', (notifications) => {
             console.log('Bulk notifications received:', notifications);
-            
-            notifications.forEach(notification => {
+
+            notifications.forEach((notification) => {
                 store.dispatch(receiveNotification(notification));
             });
         });
@@ -142,9 +142,11 @@ class SocketService {
 
         this.reconnectAttempts++;
         const delay = Math.min(this.reconnectDelay * Math.pow(2, this.reconnectAttempts), 30000);
-        
-        console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-        
+
+        console.log(
+            `Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`,
+        );
+
         setTimeout(() => {
             if (!this.isConnected) {
                 this.connect();
@@ -195,8 +197,8 @@ class SocketService {
                 {
                     action: 'view-order',
                     title: 'View Order',
-                    icon: '/logo192.png'
-                }
+                    icon: '/logo192.png',
+                },
             ];
         }
 
@@ -205,14 +207,14 @@ class SocketService {
         // Handle notification click
         browserNotification.onclick = () => {
             window.focus();
-            
+
             // Navigate to relevant page based on notification type
             if (notification.type === 'order_status' && notification.metadata?.orderId) {
                 window.location.href = `/order/${notification.metadata.orderId}`;
             } else {
                 window.location.href = '/notifications';
             }
-            
+
             browserNotification.close();
         };
 

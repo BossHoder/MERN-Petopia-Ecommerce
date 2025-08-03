@@ -316,40 +316,40 @@
     .container {
         padding: 1rem;
     }
-    
+
     .header {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
-    
+
     .pageTitle {
         font-size: 1.5rem;
     }
-    
+
     .headerActions {
         justify-content: flex-start;
     }
-    
+
     .actionBtn {
         font-size: 13px;
         padding: 6px 12px;
     }
-    
+
     .filterPanel {
         padding: 16px;
     }
-    
+
     .pagination {
         flex-direction: column;
         gap: 12px;
         text-align: center;
     }
-    
+
     .emptyTitle {
         font-size: 20px;
     }
-    
+
     .emptyDescription {
         font-size: 14px;
     }
@@ -359,20 +359,20 @@
     .container {
         padding: 0.5rem;
     }
-    
+
     .pageTitle {
         font-size: 1.25rem;
         flex-wrap: wrap;
     }
-    
+
     .headerActions {
         flex-wrap: wrap;
     }
-    
+
     .filterPanel.visible {
         max-height: 400px;
     }
-    
+
     .actionBtn {
         font-size: 12px;
         padding: 4px 8px;
@@ -406,7 +406,7 @@
     .content {
         border-width: 2px;
     }
-    
+
     .actionBtn,
     .filterSelect {
         border-width: 2px;
@@ -421,7 +421,7 @@
     .showAllBtn {
         transition: none;
     }
-    
+
     .pageBtn:hover:not(.disabled),
     .showAllBtn:hover {
         transform: none;

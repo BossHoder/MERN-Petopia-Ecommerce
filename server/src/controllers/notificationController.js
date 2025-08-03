@@ -26,7 +26,7 @@ const notificationQuerySchema = Joi.object({
         'promotion',
         'welcome',
         'review_request',
-        'system'
+        'system',
     ),
     priority: Joi.string().valid('low', 'medium', 'high'),
 });
@@ -73,11 +73,14 @@ const getUserNotifications = asyncHandler(async (req, res) => {
             return errorResponse(res, result.error, 400);
         }
 
-        return successResponse(res, {
-            notifications: result.notifications,
-            pagination: result.pagination,
-        }, 'Notifications retrieved successfully');
-
+        return successResponse(
+            res,
+            {
+                notifications: result.notifications,
+                pagination: result.pagination,
+            },
+            'Notifications retrieved successfully',
+        );
     } catch (error) {
         console.error('Error getting user notifications:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -99,7 +102,6 @@ const getNotificationSummary = asyncHandler(async (req, res) => {
         }
 
         return successResponse(res, result.summary, 'Notification summary retrieved successfully');
-
     } catch (error) {
         console.error('Error getting notification summary:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -127,7 +129,6 @@ const markNotificationAsRead = asyncHandler(async (req, res) => {
         }
 
         return successResponse(res, {}, result.message);
-
     } catch (error) {
         console.error('Error marking notification as read:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -149,7 +150,6 @@ const markAllNotificationsAsRead = asyncHandler(async (req, res) => {
         }
 
         return successResponse(res, {}, result.message);
-
     } catch (error) {
         console.error('Error marking all notifications as read:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -177,7 +177,6 @@ const deleteNotification = asyncHandler(async (req, res) => {
         }
 
         return successResponse(res, {}, result.message);
-
     } catch (error) {
         console.error('Error deleting notification:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -209,11 +208,14 @@ const getAllNotifications = asyncHandler(async (req, res) => {
             return errorResponse(res, result.error, 400);
         }
 
-        return successResponse(res, {
-            notifications: result.notifications,
-            pagination: result.pagination,
-        }, 'All notifications retrieved successfully');
-
+        return successResponse(
+            res,
+            {
+                notifications: result.notifications,
+                pagination: result.pagination,
+            },
+            'All notifications retrieved successfully',
+        );
     } catch (error) {
         console.error('Error getting all notifications:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -242,18 +244,21 @@ const broadcastNotification = asyncHandler(async (req, res) => {
             title,
             message,
             relatedData,
-            channels
+            channels,
         );
 
         if (!result.success) {
             return errorResponse(res, result.error, 400);
         }
 
-        return successResponse(res, {
-            created: result.created,
-            failed: result.failed,
-        }, 'Notification broadcast completed successfully');
-
+        return successResponse(
+            res,
+            {
+                created: result.created,
+                failed: result.failed,
+            },
+            'Notification broadcast completed successfully',
+        );
     } catch (error) {
         console.error('Error broadcasting notification:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);
@@ -274,7 +279,6 @@ const getNotificationStats = asyncHandler(async (req, res) => {
         }
 
         return successResponse(res, result.stats, 'Notification statistics retrieved successfully');
-
     } catch (error) {
         console.error('Error getting notification stats:', error);
         return errorResponse(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, 500);

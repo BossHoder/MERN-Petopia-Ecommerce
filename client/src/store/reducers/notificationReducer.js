@@ -50,7 +50,7 @@ const initialState = {
         unreadCount: 0,
         recentNotifications: [],
     },
-    
+
     // Admin notifications
     adminNotifications: [],
     adminPagination: {
@@ -67,7 +67,7 @@ const initialState = {
         byPriority: {},
         recentActivity: [],
     },
-    
+
     // Loading states
     loading: {
         notifications: false,
@@ -79,10 +79,10 @@ const initialState = {
         broadcasting: false,
         stats: false,
     },
-    
+
     // Error states
     error: null,
-    
+
     // Real-time
     newNotificationsCount: 0,
 };
@@ -96,14 +96,14 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // USER NOTIFICATIONS
         // ===========================================
-        
+
         case GET_NOTIFICATIONS_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, notifications: true },
                 error: null,
             };
-            
+
         case GET_NOTIFICATIONS_SUCCESS:
             return {
                 ...state,
@@ -113,7 +113,7 @@ const notificationReducer = (state = initialState, action) => {
                 error: null,
                 newNotificationsCount: 0,
             };
-            
+
         case GET_NOTIFICATIONS_FAIL:
             return {
                 ...state,
@@ -125,14 +125,14 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // NOTIFICATION SUMMARY
         // ===========================================
-        
+
         case GET_NOTIFICATION_SUMMARY_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, summary: true },
                 error: null,
             };
-            
+
         case GET_NOTIFICATION_SUMMARY_SUCCESS:
             return {
                 ...state,
@@ -140,7 +140,7 @@ const notificationReducer = (state = initialState, action) => {
                 summary: action.payload,
                 error: null,
             };
-            
+
         case GET_NOTIFICATION_SUMMARY_FAIL:
             return {
                 ...state,
@@ -151,22 +151,22 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // MARK AS READ
         // ===========================================
-        
+
         case MARK_NOTIFICATION_READ_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, markingRead: true },
                 error: null,
             };
-            
+
         case MARK_NOTIFICATION_READ_SUCCESS:
             return {
                 ...state,
                 loading: { ...state.loading, markingRead: false },
-                notifications: state.notifications.map(notification =>
+                notifications: state.notifications.map((notification) =>
                     notification._id === action.payload.notificationId
                         ? { ...notification, isRead: true, readAt: new Date() }
-                        : notification
+                        : notification,
                 ),
                 summary: {
                     ...state.summary,
@@ -174,7 +174,7 @@ const notificationReducer = (state = initialState, action) => {
                 },
                 error: null,
             };
-            
+
         case MARK_NOTIFICATION_READ_FAIL:
             return {
                 ...state,
@@ -185,19 +185,19 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // MARK ALL AS READ
         // ===========================================
-        
+
         case MARK_ALL_NOTIFICATIONS_READ_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, markingAllRead: true },
                 error: null,
             };
-            
+
         case MARK_ALL_NOTIFICATIONS_READ_SUCCESS:
             return {
                 ...state,
                 loading: { ...state.loading, markingAllRead: false },
-                notifications: state.notifications.map(notification => ({
+                notifications: state.notifications.map((notification) => ({
                     ...notification,
                     isRead: true,
                     readAt: new Date(),
@@ -208,7 +208,7 @@ const notificationReducer = (state = initialState, action) => {
                 },
                 error: null,
             };
-            
+
         case MARK_ALL_NOTIFICATIONS_READ_FAIL:
             return {
                 ...state,
@@ -219,35 +219,35 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // DELETE NOTIFICATION
         // ===========================================
-        
+
         case DELETE_NOTIFICATION_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, deleting: true },
                 error: null,
             };
-            
+
         case DELETE_NOTIFICATION_SUCCESS:
             const deletedNotification = state.notifications.find(
-                n => n._id === action.payload.notificationId
+                (n) => n._id === action.payload.notificationId,
             );
             const wasUnread = deletedNotification && !deletedNotification.isRead;
-            
+
             return {
                 ...state,
                 loading: { ...state.loading, deleting: false },
                 notifications: state.notifications.filter(
-                    notification => notification._id !== action.payload.notificationId
+                    (notification) => notification._id !== action.payload.notificationId,
                 ),
                 summary: {
                     ...state.summary,
-                    unreadCount: wasUnread 
+                    unreadCount: wasUnread
                         ? Math.max(0, state.summary.unreadCount - 1)
                         : state.summary.unreadCount,
                 },
                 error: null,
             };
-            
+
         case DELETE_NOTIFICATION_FAIL:
             return {
                 ...state,
@@ -258,14 +258,14 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // ADMIN NOTIFICATIONS
         // ===========================================
-        
+
         case ADMIN_NOTIFICATIONS_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, adminNotifications: true },
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATIONS_SUCCESS:
             return {
                 ...state,
@@ -274,7 +274,7 @@ const notificationReducer = (state = initialState, action) => {
                 adminPagination: action.payload.pagination,
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATIONS_FAIL:
             return {
                 ...state,
@@ -285,21 +285,21 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // ADMIN BROADCAST
         // ===========================================
-        
+
         case ADMIN_NOTIFICATION_BROADCAST_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, broadcasting: true },
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATION_BROADCAST_SUCCESS:
             return {
                 ...state,
                 loading: { ...state.loading, broadcasting: false },
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATION_BROADCAST_FAIL:
             return {
                 ...state,
@@ -310,14 +310,14 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // ADMIN STATS
         // ===========================================
-        
+
         case ADMIN_NOTIFICATION_STATS_REQUEST:
             return {
                 ...state,
                 loading: { ...state.loading, stats: true },
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATION_STATS_SUCCESS:
             return {
                 ...state,
@@ -325,7 +325,7 @@ const notificationReducer = (state = initialState, action) => {
                 stats: action.payload,
                 error: null,
             };
-            
+
         case ADMIN_NOTIFICATION_STATS_FAIL:
             return {
                 ...state,
@@ -336,7 +336,7 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // REAL-TIME NOTIFICATIONS
         // ===========================================
-        
+
         case NOTIFICATION_RECEIVED:
             return {
                 ...state,
@@ -345,7 +345,7 @@ const notificationReducer = (state = initialState, action) => {
                     unreadCount: state.summary.unreadCount + 1,
                     recentNotifications: [
                         action.payload,
-                        ...state.summary.recentNotifications.slice(0, 4)
+                        ...state.summary.recentNotifications.slice(0, 4),
                     ],
                 },
                 newNotificationsCount: state.newNotificationsCount + 1,
@@ -354,7 +354,7 @@ const notificationReducer = (state = initialState, action) => {
         // ===========================================
         // CLEAR ERRORS
         // ===========================================
-        
+
         case CLEAR_NOTIFICATION_ERRORS:
             return {
                 ...state,
