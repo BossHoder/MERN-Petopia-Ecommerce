@@ -3,7 +3,10 @@ import * as types from '../types';
 
 export const getProductReviews = (productId) => async (dispatch) => {
     try {
-        dispatch({ type: types.GET_REVIEWS_REQUEST });
+        dispatch({
+            type: types.GET_REVIEWS_REQUEST,
+            payload: { productId },
+        });
 
         const { data } = await api.get(`/api/reviews/product/${productId}`);
 
@@ -29,6 +32,9 @@ export const addProductReview = (productId, review) => async (dispatch) => {
             type: types.ADD_REVIEW_SUCCESS,
             payload: data.data,
         });
+
+        // Refresh reviews list to get updated count
+        dispatch(getProductReviews(productId));
     } catch (error) {
         dispatch({
             type: types.ADD_REVIEW_FAIL,

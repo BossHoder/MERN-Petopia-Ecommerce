@@ -272,6 +272,19 @@
     }
 }
 
+/* Product Tabs Section */
+.product-detail-tabs {
+    margin-top: 40px;
+    width: 100%;
+}
+
+/* Responsive adjustments for tabs */
+@media (max-width: 768px) {
+    .product-detail-tabs {
+        margin-top: 30px;
+    }
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     .product-detail-content {

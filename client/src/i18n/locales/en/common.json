@@ -106,7 +106,9 @@
         "gridView": "Grid view",
         "noProductsFound": "No products found",
         "adjustFilters": "Try adjusting your filters or search criteria to find what you're looking for.",
-        "clearAllFilters": "Clear All Filters"
+        "clearAllFilters": "Clear All Filters",
+        "selectOption": "Select {{attribute}}",
+        "noOptionsAvailable": "No options available for current selection"
     },
     "names": {
         "premiumDryDogFoodChickenRice": "Premium Dry Dog Food - Chicken & Rice",
@@ -458,7 +460,29 @@
     "validation": {
         "email": {
             "required": "Email is required",
-            "invalid": "Invalid email"
+            "invalid": "Invalid email",
+            "minLength": "Email must be at least 5 characters",
+            "maxLength": "Email must not exceed 255 characters"
+        },
+        "name": {
+            "minLength": "Name must be at least 2 characters",
+            "maxLength": "Name must not exceed 50 characters",
+            "required": "Name is required"
+        },
+        "username": {
+            "minLength": "Username must be at least 3 characters",
+            "maxLength": "Username must not exceed 20 characters",
+            "invalid": "Username can only contain letters, numbers, and underscores",
+            "required": "Username is required"
+        },
+        "password": {
+            "minLength": "Password must be at least 6 characters",
+            "maxLength": "Password must not exceed 255 characters",
+            "required": "Please enter a password"
+        },
+        "confirmPassword": {
+            "match": "Passwords must match",
+            "required": "Please confirm your password"
         }
     },
     "cart": {
@@ -1462,7 +1486,46 @@
             "generatingSku": "Generating...",
             "checkingSku": "Checking availability...",
             "skuHelpText": "Unique product identifier. Leave empty to auto-generate from name."
+        },
+        "auth": {
+            "hero": {
+                "welcomeTitle": "Welcome to Petopia",
+                "welcomeSubtitle": "Your one-stop shop for everything your pet needs."
+            },
+            "login": {
+                "emailPlaceholder": "you@example.com",
+                "passwordPlaceholder": "••••••••",
+                "signUp": "Sign up"
+            },
+            "register": {
+                "subtitle": "Your one-stop shop for everything your pet needs.",
+                "createAccount": "Create your account",
+                "fullName": "Full Name",
+                "fullNamePlaceholder": "Full Name",
+                "username": "Username",
+                "usernamePlaceholder": "Username"
+            }
+        },
+        "validation": {
+            "email": {
+                "invalid": "Please enter a valid email address",
+                "required": "Email is required"
+            },
+            "password": {
+                "minLength": "Password must be at least 6 characters",
+                "required": "Please enter a password"
+            }
+        },
+        "search": {
+            "placeholder": "Search products, categories..."
+        },
+        "productCard": {
+            "reviews": "reviews"
         }
+    },
+    "productCard": {
+        "addToWishlist": "Add to Wishlist",
+        "addedToCart": "Added to cart successfully!"
     },
     "analytics": {
         "title": "Business Analytics",

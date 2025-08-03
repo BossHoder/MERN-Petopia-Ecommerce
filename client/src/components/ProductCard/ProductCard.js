@@ -13,6 +13,20 @@ const ProductCard = ({ product }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isAuthenticated } = useSelector((state) => state.auth);
+    const { reviews, currentProductId } = useSelector((state) => state.reviewList);
+
+    // Smart review count: use Redux state if available, fallback to product.numReviews
+    const getReviewCount = () => {
+        // If we have reviews loaded in Redux state for this specific product, use that count
+        const productIdToCheck = product.id || product._id;
+
+        if (reviews && currentProductId === productIdToCheck) {
+            return reviews.length;
+        }
+
+        // Fallback to product data from server
+        return product.numReviews || 0;
+    };
 
     // Use centralized price formatting function
     const formatPriceVND = (price) => {
@@ -89,87 +103,95 @@ const ProductCard = ({ product }) => {
                 </div>
 
                 <div className="product-info">
-                    <div className="product-category">
-                        {product.category?.name || product.category || ''}
-                    </div>
-                    <h3 className="product-name">{product.name}</h3>
-                    {product.brand && <div className="product-brand">{product.brand}</div>}
-                    <div className="product-rating">
-                        <div className="stars">{renderStars(product.ratings || 0)}</div>
-                        <span className="rating-text">
-                            ({product.numReviews || 0} {t('admin.productCard.reviews')})
-                        </span>
-                    </div>
-                    <div className="product-price">
-                        {product.salePrice ? (
-                            <>
-                                <span className="current-price">
-                                    {formatPriceVND(product.salePrice)}
-                                </span>
-                                <span className="original-price">
-                                    {formatPriceVND(product.price)}
-                                </span>
-                            </>
-                        ) : (
-                            <span className="current-price">
-                                {formatPriceVND(product.finalPrice || product.price)}
+                    <div className="product-content">
+                        <div className="product-category">
+                            {product.category?.name || product.category || ''}
+                        </div>
+                        <h3 className="product-name">{product.name}</h3>
+                        {product.brand && <div className="product-brand">{product.brand}</div>}
+                        <div className="product-rating">
+                            <div className="stars">{renderStars(product.ratings || 0)}</div>
+                            <span className="rating-text">
+                                ({getReviewCount()} {t('admin.productCard.reviews')})
                             </span>
-                        )}
+                        </div>
+                    </div>
+
+                    <div className="product-actions">
+                        <div className="product-price">
+                            {product.salePrice ? (
+                                <>
+                                    <span className="current-price">
+                                        {formatPriceVND(product.salePrice)}
+                                    </span>
+                                    <span className="original-price">
+                                        {formatPriceVND(product.price)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="current-price">
+                                    {formatPriceVND(product.finalPrice || product.price)}
+                                </span>
+                            )}
+                        </div>
+
+                        <button
+                            className="add-to-cart-btn"
+                            disabled={!product.inStock}
+                            onClick={async (e) => {
+                                e.preventDefault();
+                                try {
+                                    console.log('Add to cart product:', product); // Debug product object
+                                    await dispatch(addToCart(product.id, 1, product));
+
+                                    // Track add to cart event
+                                    analytics.trackAddToCart({
+                                        _id: product.id,
+                                        name: product.name,
+                                        price: product.price,
+                                        category: product.category,
+                                        brand: product.brand,
+                                        sku: product.sku,
+                                        quantity: 1,
+                                    });
+
+                                    showSuccessToast(
+                                        t('productCard.addedToCart', 'Added to cart successfully!'),
+                                    );
+                                } catch (error) {
+                                    console.error('Error adding to cart:', error);
+                                    showErrorToast(
+                                        t(
+                                            'productCard.addToCartError',
+                                            'Failed to add to cart. Please try again.',
+                                        ),
+                                    );
+                                }
+                            }}
+                        >
+                            {/* Shopping cart SVG */}
+                            <svg
+                                className="cart-icon"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="9" cy="21" r="1" />
+                                <circle cx="20" cy="21" r="1" />
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.59H6.5" />
+                            </svg>
+                            {product.inStock
+                                ? t('products.addToCart')
+                                : t('productCard.outOfStock')}
+                        </button>
                     </div>
                 </div>
             </Link>
-            <button
-                className="add-to-cart-btn"
-                disabled={!product.inStock}
-                onClick={async (e) => {
-                    e.preventDefault();
-                    try {
-                        console.log('Add to cart product:', product); // Debug product object
-                        await dispatch(addToCart(product.id, 1, product));
-
-                        // Track add to cart event
-                        analytics.trackAddToCart({
-                            _id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            category: product.category,
-                            brand: product.brand,
-                            sku: product.sku,
-                            quantity: 1,
-                        });
-
-                        showSuccessToast(
-                            t('productCard.addedToCart', 'Added to cart successfully!'),
-                        );
-                    } catch (error) {
-                        console.error('Error adding to cart:', error);
-                        showErrorToast(
-                            t(
-                                'productCard.addToCartError',
-                                'Failed to add to cart. Please try again.',
-                            ),
-                        );
-                    }
-                }}
-            >
-                {/* Shopping cart SVG */}
-                <svg
-                    className="cart-icon"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.59H6.5" />
-                </svg>
-                {product.inStock ? t('products.addToCart') : t('productCard.outOfStock')}
-            </button>
         </div>
     );
 };

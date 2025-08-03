@@ -7,6 +7,8 @@
     "scripts": {
         "start": "npm run start-prod --prefix server",
         "start-dev": "node --experimental-modules babel-node server/src/index.js",
+        "dev": "npm run dev --prefix server",
+        "kill-ports": "npm run kill-ports --prefix server",
         "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --legacy-peer-deps --prefix server && npm install --legacy-peer-deps --prefix client && npm run build --prefix client",
         "docker:prod:client:build": "docker compose build mdp-client",
         "docker:prod:server:build": "docker compose build mdp-server",

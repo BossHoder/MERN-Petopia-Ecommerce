@@ -4,17 +4,33 @@ const initialState = {
     reviews: [],
     loading: false,
     error: null,
-    success: false, // For tracking add review success
+    currentProductId: null, // Track which product's reviews are currently loaded
 };
 
-export const reviewListReducer = (state = { reviews: [] }, action) => {
+export const reviewListReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.GET_REVIEWS_REQUEST:
-            return { loading: true, reviews: [] };
+            return {
+                ...state,
+                loading: true,
+                reviews: [],
+                error: null,
+                currentProductId: action.payload?.productId || null,
+            };
         case types.GET_REVIEWS_SUCCESS:
-            return { loading: false, reviews: action.payload };
+            return {
+                ...state,
+                loading: false,
+                reviews: action.payload,
+                error: null,
+            };
         case types.GET_REVIEWS_FAIL:
-            return { loading: false, error: action.payload };
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                reviews: [],
+            };
         default:
             return state;
     }

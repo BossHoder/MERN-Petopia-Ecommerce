@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -8,12 +8,16 @@ import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../utils/displayUtils';
+import { OrderReviewForm } from '../../components/Reviews';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
     const { id: orderId } = useParams();
     const dispatch = useDispatch();
     const { t } = useTranslation('common');
+
+    // Local state for tracking reviewed products
+    const [reviewedProducts, setReviewedProducts] = useState(new Set());
 
     // Breadcrumb hook
     const { items: breadcrumbItems } = useBreadcrumb('order', orderId);
@@ -25,6 +29,14 @@ const OrderDetails = () => {
             dispatch(getOrderDetails(orderId));
         }
     }, [dispatch, orderId, order]);
+
+    // Handle when a review is submitted
+    const handleReviewSubmitted = (productId) => {
+        setReviewedProducts((prev) => new Set([...prev, productId]));
+    };
+
+    // Check if order is eligible for reviews (delivered and paid)
+    const canWriteReviews = order && order.orderStatus === 'delivered' && order.isPaid;
 
     return loading ? (
         <Loader />
@@ -200,6 +212,31 @@ const OrderDetails = () => {
                     </ul>
                     {/* PayPal Button will go here */}
                 </div>
+
+                {/* Product Reviews Section - Only show if order is delivered and paid */}
+                {canWriteReviews && (
+                    <div className="order-reviews-section">
+                        <h3 className="reviews-section-title">
+                            {t('orderDetails.productReviews', 'Đánh giá sản phẩm')}
+                        </h3>
+                        <p className="reviews-section-subtitle">
+                            {t(
+                                'orderDetails.reviewsSubtitle',
+                                'Chia sẻ trải nghiệm của bạn về các sản phẩm đã mua',
+                            )}
+                        </p>
+                        <div className="review-forms-container">
+                            {order.orderItems.map((item, index) => (
+                                <OrderReviewForm
+                                    key={`${item.product}-${index}`}
+                                    orderItem={item}
+                                    orderId={orderId}
+                                    onReviewSubmitted={handleReviewSubmitted}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

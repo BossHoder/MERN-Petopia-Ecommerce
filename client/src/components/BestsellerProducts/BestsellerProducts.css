@@ -21,7 +21,9 @@
 .bestseller-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-auto-rows: 1fr; /* Equal height rows */
+    gap: 24px;
+    align-items: stretch; /* Stretch items to fill grid cells */
 }
 
 /* Responsive Design */
@@ -36,7 +38,7 @@
 
     .bestseller-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1rem;
+        gap: 16px;
     }
 }
 

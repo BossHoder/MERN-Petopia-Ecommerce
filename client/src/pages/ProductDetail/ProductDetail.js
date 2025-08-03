@@ -14,6 +14,7 @@ import { getProductBySlug } from '../../store/actions/productActions';
 import { addToCart } from '../../store/actions/cartActions';
 import { renderValue } from '../../utils/displayUtils';
 import analytics from '../../utils/analytics-minimal';
+import { ProductReviewTabs } from '../../components/Reviews';
 import './styles.css';
 
 // Debug analytics import
@@ -343,28 +344,10 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    {/* Product Description */}
-                    <div className="product-detail-description">
-                        <h2>{t('product.description', 'Description')}</h2>
-                        <div className="product-description-content">{product.description}</div>
+                    {/* Product Description & Reviews Tabs */}
+                    <div className="product-detail-tabs">
+                        <ProductReviewTabs product={product} />
                     </div>
-
-                    {/* Product Attributes */}
-                    {currentAttributes && Object.keys(currentAttributes).length > 0 && (
-                        <div className="product-detail-attributes">
-                            <h2>{t('product.specifications', 'Specifications')}</h2>
-                            <div className="product-attributes-grid">
-                                {Object.entries(currentAttributes).map(([key, value]) => (
-                                    <div key={key} className="product-attribute-item">
-                                        <span className="attribute-label">{key}:</span>
-                                        <span className="attribute-value">
-                                            {renderValue(value, key)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </>
