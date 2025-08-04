@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -8,12 +8,16 @@ import BreadcrumbNavigation from '../../components/BreadcrumbNavigation';
 import { useBreadcrumb } from '../../hooks/useBreadcrumb';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../utils/displayUtils';
+import { OrderReviewForm } from '../../components/Reviews';
 import './OrderDetails.css';
 
 const OrderDetails = () => {
     const { id: orderId } = useParams();
     const dispatch = useDispatch();
     const { t } = useTranslation('common');
+
+    // Local state for tracking reviewed products
+    const [reviewedProducts, setReviewedProducts] = useState(new Set());
 
     // Breadcrumb hook
     const { items: breadcrumbItems } = useBreadcrumb('order', orderId);
@@ -25,6 +29,14 @@ const OrderDetails = () => {
             dispatch(getOrderDetails(orderId));
         }
     }, [dispatch, orderId, order]);
+
+    // Handle when a review is submitted
+    const handleReviewSubmitted = (productId) => {
+        setReviewedProducts((prev) => new Set([...prev, productId]));
+    };
+
+    // Check if order is eligible for reviews (delivered and paid)
+    const canWriteReviews = order && order.orderStatus === 'delivered' && order.isPaid;
 
     return loading ? (
         <Loader />
@@ -165,8 +177,56 @@ const OrderDetails = () => {
                                     <div className="order-item-image">
                                         <img src={item.image} alt={item.name} />
                                     </div>
-                                    <div className="order-item-name">
-                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                    <div className="order-item-details">
+                                        <div className="order-item-name">
+                                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                        </div>
+
+                                        {/* Display variant information if available */}
+                                        {(item.selectedVariants || item.variantName) && (
+                                            <div className="order-item-variant">
+                                                {item.selectedVariants ? (
+                                                    <div className="variant-attributes">
+                                                        {item.selectedVariants.attributes?.map(
+                                                            (attr, attrIndex) => (
+                                                                <div
+                                                                    key={attrIndex}
+                                                                    className="variant-attribute"
+                                                                >
+                                                                    <span className="attribute-name">
+                                                                        {attr.attributeDisplayName ||
+                                                                            attr.attributeName}
+                                                                        :
+                                                                    </span>
+                                                                    <span className="attribute-value">
+                                                                        {attr.valueDisplayName ||
+                                                                            attr.attributeValue}
+                                                                    </span>
+                                                                    {attr.colorCode && (
+                                                                        <span
+                                                                            className="color-swatch"
+                                                                            style={{
+                                                                                backgroundColor:
+                                                                                    attr.colorCode,
+                                                                            }}
+                                                                            title={
+                                                                                attr.valueDisplayName ||
+                                                                                attr.attributeValue
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    // Legacy variant display
+                                                    <div className="legacy-variant">
+                                                        {item.variantName}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="order-item-total">
                                         {item.quantity} x {formatPrice(item.price)} ={' '}
@@ -200,6 +260,31 @@ const OrderDetails = () => {
                     </ul>
                     {/* PayPal Button will go here */}
                 </div>
+
+                {/* Product Reviews Section - Only show if order is delivered and paid */}
+                {canWriteReviews && (
+                    <div className="order-reviews-section">
+                        <h3 className="reviews-section-title">
+                            {t('orderDetails.productReviews', 'Đánh giá sản phẩm')}
+                        </h3>
+                        <p className="reviews-section-subtitle">
+                            {t(
+                                'orderDetails.reviewsSubtitle',
+                                'Chia sẻ trải nghiệm của bạn về các sản phẩm đã mua',
+                            )}
+                        </p>
+                        <div className="review-forms-container">
+                            {order.orderItems.map((item, index) => (
+                                <OrderReviewForm
+                                    key={`${item.product}-${index}`}
+                                    orderItem={item}
+                                    orderId={orderId}
+                                    onReviewSubmitted={handleReviewSubmitted}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

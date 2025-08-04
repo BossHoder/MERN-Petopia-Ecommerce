@@ -203,7 +203,9 @@
 .products-grid.grid-view {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-auto-rows: 1fr; /* Equal height rows */
     gap: 24px;
+    align-items: stretch; /* Stretch items to fill grid cells */
 }
 
 .products-grid.list-view {

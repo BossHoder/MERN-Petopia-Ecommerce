@@ -95,7 +95,7 @@ const Coupons = () => {
             width: '10%',
             render: (value) => (
                 <span className={`discount-type ${value}`}>
-                    {value === 'percentage' ? '%' : '$'}
+                    {value === 'percentage' ? '%' : 'đ'}
                 </span>
             ),
         },
@@ -105,7 +105,7 @@ const Coupons = () => {
             width: '10%',
             render: (value, item) => (
                 <span className="discount-value">
-                    {item.discountType === 'percentage' ? `${value}%` : `$${value}`}
+                    {item.discountType === 'percentage' ? `${value}%` : `${value}đ`}
                 </span>
             ),
         },

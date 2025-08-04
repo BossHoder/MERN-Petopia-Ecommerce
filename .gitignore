@@ -24,3 +24,4 @@ server/MONGODB_OPTIMIZATION.md
 demo
 .augment/rules
 server/config/default.json
+server/kill-ports.ps1

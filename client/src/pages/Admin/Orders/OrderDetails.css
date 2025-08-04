@@ -566,3 +566,72 @@
 .transition-item .transition-status.scheduled {
     border-left-color: #ffc107;
 }
+
+/* Order Item Variant Attributes Styles */
+.item-variant {
+    margin: 8px 0;
+    font-size: 13px;
+    color: var(--text-secondary, #6b7280);
+}
+
+.item-variant .variant-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item-variant .variant-attribute {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.item-variant .attribute-name {
+    font-weight: 500;
+    color: var(--text-primary, #374151);
+    min-width: 60px;
+}
+
+.item-variant .attribute-value {
+    color: var(--text-secondary, #6b7280);
+}
+
+.item-variant .color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--border-light, #d1d5db);
+    margin-left: 4px;
+}
+
+.item-variant .legacy-variant {
+    color: var(--text-secondary, #6b7280);
+    font-style: italic;
+}
+
+/* Mobile responsive styles for admin order details */
+@media (max-width: 768px) {
+    .order-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .item-details {
+        gap: 6px;
+    }
+
+    .item-variant .variant-attributes {
+        font-size: 12px;
+    }
+
+    .item-variant .variant-attribute {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .item-meta {
+        gap: 12px;
+    }
+}

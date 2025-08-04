@@ -28,7 +28,7 @@ class OrderService {
 
             if (result.success) {
                 // Update user order statistics
-                await userService.updateOrderStats(orderData.username, result.order.pricing.total);
+                await userService.updateOrderStats(orderData.username, result.order.totalPrice);
 
                 // Update product sales counts
                 for (const item of result.order.items) {
@@ -439,7 +439,7 @@ class OrderService {
                     $group: {
                         _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
                         dailyOrders: { $sum: 1 },
-                        dailyRevenue: { $sum: '$pricing.total' },
+                        dailyRevenue: { $sum: '$totalPrice' },
                     },
                 },
                 { $sort: { _id: 1 } },

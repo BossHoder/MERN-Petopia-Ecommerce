@@ -32,7 +32,7 @@ export const formatTimeAgo = (date) => {
 
 // Avatar URL utility
 export const getAvatarUrl = (avatarPath) => {
-    if (!avatarPath) return '/public/images/avatar0.jpg'; // default avatar
+    if (!avatarPath) return '/user-icon.png'; // default avatar
 
     // If already a full URL, return as is
     if (avatarPath.startsWith('http')) return avatarPath;

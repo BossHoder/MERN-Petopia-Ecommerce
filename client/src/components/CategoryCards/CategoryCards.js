@@ -51,37 +51,6 @@ const CategoryCards = () => {
             </section>
         );
     }
-
-    return (
-        <section className="category-cards">
-            <div className="category-cards-container">
-                <h2 className="category-cards-title">{t('categories.title')}</h2>
-
-                <div className="category-cards-grid">
-                    {featuredCategories.map((category) => (
-                        <a
-                            key={category.id}
-                            href={'/category/' + category.slug}
-                            className="category-card-link"
-                        >
-                            <div className="category-card">
-                                <div
-                                    className="category-image"
-                                    style={{
-                                        backgroundImage: `url(${
-                                            category.image ||
-                                            '../../../public/logo192.png?height=160&width=160'
-                                        })`,
-                                    }}
-                                />
-                                <p className="category-name">{category.name}</p>
-                            </div>
-                        </a>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
 };
 
 export default CategoryCards;

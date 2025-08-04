@@ -44,8 +44,8 @@ const Login = ({ auth, loginUserWithEmail }) => {
             <div className="hero-section">
                 <div className="hero-overlay">
                     <div className="hero-content">
-                        <h1 className="hero-title">{t('auth.hero.welcomeTitle')}</h1>
-                        <p className="hero-subtitle">{t('auth.hero.welcomeSubtitle')}</p>
+                        <h1 className="hero-title">{t('admin.auth.hero.welcomeTitle')}</h1>
+                        <p className="hero-subtitle">{t('admin.auth.hero.welcomeSubtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder={t('auth.login.emailPlaceholder')}
+                                    placeholder={t('admin.auth.login.emailPlaceholder')}
                                     value={formik.values.email}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -106,7 +106,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    placeholder={t('auth.login.passwordPlaceholder')}
+                                    placeholder={t('admin.auth.login.passwordPlaceholder')}
                                     value={formik.values.password}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -238,7 +238,7 @@ const Login = ({ auth, loginUserWithEmail }) => {
                         <p className="auth-footer">
                             {t('auth.login.noAccount')}{' '}
                             <Link to="/register" className="auth-link">
-                                {t('auth.login.signUp')}
+                                {t('admin.auth.login.signUp')}
                             </Link>
                         </p>
                     </div>

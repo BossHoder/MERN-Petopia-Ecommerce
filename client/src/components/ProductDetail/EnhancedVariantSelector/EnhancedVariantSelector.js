@@ -369,25 +369,6 @@ const EnhancedVariantSelector = ({
                                 .join(', ')}
                         </span>
                     </div>
-
-                    <div className="combination-info">
-                        <span className="combination-price">
-                            ${currentCombination.effectivePrice?.toFixed(2)}
-                        </span>
-
-                        <span
-                            className={`combination-stock ${
-                                currentCombination.isLowStock ? 'low-stock' : ''
-                            }`}
-                        >
-                            {currentCombination.inStock
-                                ? `${currentCombination.stockQuantity} ${t(
-                                      'product.inStock',
-                                      'in stock',
-                                  )}`
-                                : t('product.outOfStock', 'Out of stock')}
-                        </span>
-                    </div>
                 </div>
             )}
 

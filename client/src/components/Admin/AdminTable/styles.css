@@ -1,8 +1,8 @@
 /* Admin Table Styles */
 .admin-table-container {
-    background: var(--bg-white, #FFFFFF);
+    background: var(--bg-white, #ffffff);
     border-radius: 12px;
-    border: 1px solid var(--border-light, #E5E7EB);
+    border: 1px solid var(--border-light, #e5e7eb);
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -19,75 +19,80 @@
 
 /* Header Styles */
 .admin-table-header {
-    background: var(--bg-gray-50, #F9FAFB);
-    border-bottom: 1px solid var(--border-light, #E5E7EB);
+    background: var(--bg-gray-50, #f9fafb);
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
 }
 
 .admin-table-header-cell {
-    padding: 16px 20px;
+    padding: 12px 20px;
     text-align: left;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     white-space: nowrap;
-    border-bottom: 1px solid var(--border-light, #E5E7EB);
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
 }
 
 .admin-table-checkbox-cell {
     width: 48px;
-    padding: 16px 20px;
+    padding: 12px 20px;
     text-align: center;
+    vertical-align: middle;
+    height: 72px; /* Match row height */
 }
 
 /* Body Styles */
 .admin-table-body {
-    background: var(--bg-white, #FFFFFF);
+    background: var(--bg-white, #ffffff);
 }
 
 .admin-table-row {
+    height: 72px; /* Fixed height for consistent rows */
     transition: background-color 0.2s ease;
-    border-bottom: 1px solid var(--border-light, #E5E7EB);
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
 }
 
 .admin-table-row:hover {
-    background: var(--bg-gray-50, #F9FAFB);
+    background: var(--bg-gray-50, #f9fafb);
 }
 
 .admin-table-row.selected {
-    background: var(--brand-cream-light, #FFF8F6);
-    border-color: var(--brand-orange-light, #FFE4DC);
+    background: var(--brand-cream-light, #fff8f6);
+    border-color: var(--brand-orange-light, #ffe4dc);
 }
 
 .admin-table-row.selected:hover {
-    background: var(--brand-cream, #FCF9F8);
+    background: var(--brand-cream, #fcf9f8);
 }
 
 .admin-table-cell {
-    padding: 16px 20px;
+    padding: 12px 20px;
     font-size: 14px;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     vertical-align: middle;
-    border-bottom: 1px solid var(--border-light, #E5E7EB);
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
+    line-height: 1.4;
+    height: 72px; /* Match row height */
 }
 
 /* Checkbox Styles */
 .admin-table-checkbox {
     width: 18px;
     height: 18px;
-    border: 2px solid var(--border-gray-300, #D1D5DB);
+    border: 2px solid var(--border-gray-300, #d1d5db);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
-    accent-color: var(--brand-orange, #FF6B35);
+    accent-color: var(--brand-orange, #ff6b35);
 }
 
 .admin-table-checkbox:checked {
-    background: var(--brand-orange, #FF6B35);
-    border-color: var(--brand-orange, #FF6B35);
+    background: var(--brand-orange, #ff6b35);
+    border-color: var(--brand-orange, #ff6b35);
 }
 
 .admin-table-checkbox:focus {
-    outline: 2px solid var(--brand-orange, #FF6B35);
+    outline: 2px solid var(--brand-orange, #ff6b35);
     outline-offset: 2px;
 }
 
@@ -98,10 +103,18 @@
 
 .text-center {
     text-align: center;
+    vertical-align: middle;
 }
 
 .text-right {
     text-align: right;
+    vertical-align: middle;
+}
+
+/* Ensure content alignment in table cells */
+.admin-table-cell.text-center,
+.admin-table-cell.text-right {
+    vertical-align: middle;
 }
 
 /* Loading State */
@@ -123,7 +136,7 @@
 
 .admin-table-skeleton-cell {
     height: 20px;
-    background: var(--bg-gray-200, #E5E7EB);
+    background: var(--bg-gray-200, #e5e7eb);
     border-radius: 4px;
     animation: skeleton-pulse 1.5s ease-in-out infinite;
 }
@@ -151,7 +164,8 @@
 }
 
 @keyframes skeleton-pulse {
-    0%, 100% {
+    0%,
+    100% {
         opacity: 1;
     }
     50% {
@@ -178,13 +192,13 @@
 .admin-table-empty-title {
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #1F2937);
+    color: var(--text-primary, #1f2937);
     margin: 0 0 8px 0;
 }
 
 .admin-table-empty-message {
     font-size: 14px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
     margin: 0;
 }
 
@@ -235,17 +249,17 @@
 }
 
 .status-badge.published {
-    background: var(--success-light, #D1FAE5);
-    color: var(--success-dark, #065F46);
+    background: var(--success-light, #d1fae5);
+    color: var(--success-dark, #065f46);
 }
 
 .status-badge.unpublished {
-    background: var(--warning-light, #FEF3C7);
-    color: var(--warning-dark, #92400E);
+    background: var(--warning-light, #fef3c7);
+    color: var(--warning-dark, #92400e);
 }
 
 .status-badge.draft {
-    background: var(--gray-light, #F3F4F6);
+    background: var(--gray-light, #f3f4f6);
     color: var(--gray-dark, #374151);
 }
 
@@ -264,26 +278,26 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-size: 12px;
-    color: var(--text-secondary, #6B7280);
+    color: var(--text-secondary, #6b7280);
 }
 
 .table-action-btn:hover {
-    background: var(--bg-gray-100, #F3F4F6);
-    color: var(--text-primary, #1F2937);
+    background: var(--bg-gray-100, #f3f4f6);
+    color: var(--text-primary, #1f2937);
 }
 
 .table-action-btn.edit {
-    color: var(--brand-orange, #FF6B35);
+    color: var(--brand-orange, #ff6b35);
 }
 
 .table-action-btn.delete {
-    color: var(--danger, #DC2626);
+    color: var(--danger, #dc2626);
 }
 
 .table-action-btn.edit:hover {
-    background: var(--brand-cream-light, #FFF8F6);
+    background: var(--brand-cream-light, #fff8f6);
 }
 
 .table-action-btn.delete:hover {
-    background: var(--danger-light, #FEE2E2);
+    background: var(--danger-light, #fee2e2);
 }

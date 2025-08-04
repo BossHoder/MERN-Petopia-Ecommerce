@@ -265,22 +265,25 @@ export const getOrderStats = async (userId = null, dateRange = {}) => {
                 $group: {
                     _id: null,
                     totalOrders: { $sum: 1 },
-                    totalRevenue: { $sum: '$pricing.total' },
-                    averageOrderValue: { $avg: '$pricing.total' },
+                    totalRevenue: { $sum: '$totalPrice' },
+                    averageOrderValue: { $avg: '$totalPrice' },
                     pendingOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] },
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'pending'] }, 1, 0] },
                     },
-                    confirmedOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'confirmed'] }, 1, 0] },
+                    processingOrders: {
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'processing'] }, 1, 0] },
                     },
-                    shippedOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'shipped'] }, 1, 0] },
+                    deliveringOrders: {
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'delivering'] }, 1, 0] },
                     },
                     deliveredOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'delivered'] }, 1, 0] },
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'delivered'] }, 1, 0] },
                     },
                     cancelledOrders: {
-                        $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] },
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'cancelled'] }, 1, 0] },
+                    },
+                    refundedOrders: {
+                        $sum: { $cond: [{ $eq: ['$orderStatus', 'refunded'] }, 1, 0] },
                     },
                 },
             },

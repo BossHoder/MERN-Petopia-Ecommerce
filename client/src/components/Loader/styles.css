@@ -169,263 +169,6 @@
 }
 
 /* ===========================================
-   BEATING HEART LOADER - Loving heartbeat
-   =========================================== */
-.heart-loader {
-    position: relative;
-}
-
-.beating-heart {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.heart {
-    font-size: 3rem;
-    animation: heartbeat 1.2s ease-in-out infinite;
-    filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
-}
-
-@keyframes heartbeat {
-    0%,
-    100% {
-        transform: scale(1);
-        filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
-    }
-    25% {
-        transform: scale(1.1);
-        filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
-    }
-    50% {
-        transform: scale(1.3);
-        filter: drop-shadow(0 8px 16px rgba(255, 107, 53, 0.5));
-    }
-    75% {
-        transform: scale(1.1);
-        filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
-    }
-}
-
-/* Size variants for heart loader */
-.heart-loader.sm .heart {
-    font-size: 2rem;
-}
-.heart-loader.lg .heart {
-    font-size: 4rem;
-}
-
-/* ===========================================
-   SPINNING BONE LOADER - Playful bone spin
-   =========================================== */
-.bone-loader {
-    position: relative;
-}
-
-.spinning-bone {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.bone {
-    font-size: 2.5rem;
-    animation: boneSpin 2s linear infinite;
-    filter: drop-shadow(0 3px 6px rgba(161, 99, 69, 0.3));
-}
-
-@keyframes boneSpin {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    25% {
-        transform: rotate(90deg) scale(1.1);
-    }
-    50% {
-        transform: rotate(180deg) scale(1.2);
-    }
-    75% {
-        transform: rotate(270deg) scale(1.1);
-    }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
-
-/* Size variants for bone loader */
-.bone-loader.sm .bone {
-    font-size: 2rem;
-}
-.bone-loader.lg .bone {
-    font-size: 3rem;
-}
-
-/* ===========================================
-   BOUNCING DOTS LOADER - Playful bouncing
-   =========================================== */
-.dots-loader {
-    position: relative;
-}
-
-.bouncing-dots {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--loader-orange);
-    animation: dotBounce 1.4s ease-in-out infinite;
-    box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
-}
-
-.dot.dot-1 {
-    animation-delay: 0s;
-}
-.dot.dot-2 {
-    animation-delay: 0.2s;
-}
-.dot.dot-3 {
-    animation-delay: 0.4s;
-}
-
-@keyframes dotBounce {
-    0%,
-    80%,
-    100% {
-        transform: scale(1) translateY(0);
-        opacity: 0.7;
-    }
-    40% {
-        transform: scale(1.3) translateY(-20px);
-        opacity: 1;
-    }
-}
-
-/* Size variants for dots loader */
-.dots-loader.sm .dot {
-    width: 8px;
-    height: 8px;
-}
-
-.dots-loader.lg .dot {
-    width: 16px;
-    height: 16px;
-}
-
-/* Color variants for dots */
-.dots-loader.brown .dot {
-    background: var(--loader-brown-light);
-    box-shadow: 0 2px 4px rgba(161, 99, 69, 0.3);
-}
-
-.dots-loader.cream .dot {
-    background: var(--loader-brown);
-    box-shadow: 0 2px 4px rgba(29, 18, 12, 0.3);
-}
-
-/* ===========================================
-   MINIMAL RING LOADER - Clean and elegant
-   =========================================== */
-.minimal-loader {
-    position: relative;
-}
-
-.spinner-ring {
-    position: relative;
-    width: 60px;
-    height: 60px;
-}
-
-.ring {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px solid transparent;
-    border-top-color: var(--loader-orange);
-    border-radius: 50%;
-    animation: ringRotate 1.2s linear infinite;
-}
-
-.ring:nth-child(1) {
-    animation-delay: 0s;
-    border-width: 3px;
-}
-
-.ring:nth-child(2) {
-    animation-delay: 0.1s;
-    border-width: 2px;
-    width: 80%;
-    height: 80%;
-    top: 10%;
-    left: 10%;
-    border-top-color: var(--loader-orange-light);
-}
-
-.ring:nth-child(3) {
-    animation-delay: 0.2s;
-    border-width: 2px;
-    width: 60%;
-    height: 60%;
-    top: 20%;
-    left: 20%;
-    border-top-color: var(--loader-brown-light);
-}
-
-.ring:nth-child(4) {
-    animation-delay: 0.3s;
-    border-width: 1px;
-    width: 40%;
-    height: 40%;
-    top: 30%;
-    left: 30%;
-    border-top-color: var(--loader-brown);
-}
-
-@keyframes ringRotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Size variants for minimal loader */
-.minimal-loader.sm .spinner-ring {
-    width: 40px;
-    height: 40px;
-}
-
-.minimal-loader.lg .spinner-ring {
-    width: 80px;
-    height: 80px;
-}
-
-/* Color variants for minimal loader */
-.minimal-loader.brown .ring:nth-child(1) {
-    border-top-color: var(--loader-brown);
-}
-
-.minimal-loader.brown .ring:nth-child(2) {
-    border-top-color: var(--loader-brown-light);
-}
-
-.minimal-loader.cream .ring:nth-child(1) {
-    border-top-color: var(--loader-brown-light);
-}
-
-.minimal-loader.cream .ring:nth-child(2) {
-    border-top-color: var(--loader-brown);
-}
-
-/* ===========================================
    RESPONSIVE DESIGN & ACCESSIBILITY
    =========================================== */
 
@@ -450,24 +193,6 @@
     .paw-print {
         font-size: 1.75rem;
     }
-
-    .heart {
-        font-size: 2.5rem;
-    }
-
-    .bone {
-        font-size: 2rem;
-    }
-
-    .spinner-ring {
-        width: 50px;
-        height: 50px;
-    }
-
-    .dot {
-        width: 10px;
-        height: 10px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -483,23 +208,11 @@
     .paw-print {
         font-size: 1.5rem;
     }
-
-    .heart {
-        font-size: 2rem;
-    }
-
-    .bone {
-        font-size: 1.75rem;
-    }
 }
 
 /* Accessibility features */
 @media (prefers-reduced-motion: reduce) {
-    .paw-print,
-    .heart,
-    .bone,
-    .dot,
-    .ring {
+    .paw-print {
         animation: none;
     }
 
@@ -511,23 +224,6 @@
     /* Provide static visual feedback for reduced motion */
     .paw-print {
         opacity: 0.8;
-    }
-
-    .heart {
-        transform: scale(1.1);
-    }
-
-    .bone {
-        transform: rotate(45deg);
-    }
-
-    .dot {
-        opacity: 0.8;
-    }
-
-    .ring {
-        border-top-color: var(--loader-orange);
-        opacity: 0.7;
     }
 }
 
@@ -541,15 +237,6 @@
     .loader-message {
         color: black;
         font-weight: 600;
-    }
-
-    .dot {
-        background: black;
-        box-shadow: none;
-    }
-
-    .ring {
-        border-top-color: black;
     }
 }
 

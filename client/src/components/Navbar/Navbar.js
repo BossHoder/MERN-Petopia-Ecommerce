@@ -131,11 +131,7 @@ const AppNavbar = () => {
                     <div className="avatar-container" ref={dropdownRef}>
                         {isAuthenticated ? (
                             <img
-                                src={
-                                    me?.avatar
-                                        ? getAvatarUrl(me.avatar)
-                                        : 'https://i.pravatar.cc/150?u=a042581f4e29026704d'
-                                }
+                                src={me?.avatar ? getAvatarUrl(me.avatar) : 'user-icon.png'}
                                 alt="User Avatar"
                                 className="avatar"
                                 onClick={toggleDropdown}

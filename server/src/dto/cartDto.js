@@ -12,6 +12,8 @@ export const cartItemDto = (item, productDetails = null) => {
         price: item.price,
         quantity: item.quantity,
         addedAt: item.addedAt,
+        // Include selectedVariants if available
+        ...(item.selectedVariants && { selectedVariants: item.selectedVariants }),
         // Include full product details if populated
         ...(productDetails && {
             product: {
@@ -66,6 +68,8 @@ export const cartCheckoutDto = (cart) => {
             productImage: item.productImage,
             price: item.price,
             quantity: item.quantity,
+            // Include selectedVariants for checkout
+            ...(item.selectedVariants && { selectedVariants: item.selectedVariants }),
         })),
         totals: cart.totals,
         appliedCoupon: cart.appliedCoupon,

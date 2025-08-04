@@ -190,7 +190,7 @@ userSchema.methods.toJSON = function () {
 
     if (!this.avatar) {
         // No avatar set, use default
-        avatar = `${IMAGES_FOLDER_PATH}avatar2.jpg`;
+        avatar = `../../public/user-icon.png`;
     } else if (isValidUrl(this.avatar)) {
         // Avatar is a URL
         avatar = this.avatar;
@@ -199,7 +199,7 @@ userSchema.methods.toJSON = function () {
         const absoluteAvatarFilePath = `${join(__dirname, '../..', IMAGES_FOLDER_PATH)}${this.avatar}`;
         avatar = fs.existsSync(absoluteAvatarFilePath)
             ? `${IMAGES_FOLDER_PATH}${this.avatar}` // Use local file
-            : `${IMAGES_FOLDER_PATH}avatar2.jpg`; // Use default avatar
+            : `../../public/user-icon.png`; // Use default avatar
     }
 
     return {

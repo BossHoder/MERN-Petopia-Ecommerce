@@ -7,6 +7,8 @@ import {
     getRealTimeAnalytics,
     generateAnalyticsReport,
     getAnalyticsDashboard,
+    getStockAlerts,
+    getProductTrends,
 } from '../controllers/analyticsController.js';
 
 const router = express.Router();
@@ -53,5 +55,30 @@ router.get('/realtime', requireJwtAuth, requireAdmin, getRealTimeAnalytics);
  * @access  Private/Admin
  */
 router.get('/report', requireJwtAuth, requireAdmin, generateAnalyticsReport);
+
+/**
+ * @desc    Get stock alerts and inventory data
+ * @route   GET /api/analytics/stock-alerts
+ * @access  Private/Admin
+ */
+router.get('/stock-alerts', requireJwtAuth, requireAdmin, getStockAlerts);
+
+/**
+ * @desc    Get product trends and growth data
+ * @route   GET /api/analytics/product-trends
+ * @access  Private/Admin
+ */
+router.get('/product-trends', requireJwtAuth, requireAdmin, getProductTrends);
+
+// ===========================================
+// DEBUG ROUTES (TEMPORARY - REMOVE IN PRODUCTION)
+// ===========================================
+
+/**
+ * @desc    Debug business analytics (no auth required)
+ * @route   GET /api/analytics/debug-business
+ * @access  Public (FOR DEBUGGING ONLY)
+ */
+router.get('/debug-business', getBusinessAnalytics);
 
 export default router;

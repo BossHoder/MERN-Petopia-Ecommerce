@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FaCheck, FaEye, FaChevronRight, FaBell } from 'react-icons/fa';
 import styles from './NotificationDropdown.module.css';
+import Loader from '../Loader';
 import NotificationItem from '../NotificationItem/NotificationItem';
 import {
     markAllNotificationsAsRead,
@@ -123,8 +124,7 @@ const NotificationDropdown = ({ onClose, notifications, unreadCount }) => {
                 {/* Loading State */}
                 {loading.notifications && (
                     <div className={styles.loading}>
-                        <div className={styles.loadingSpinner} />
-                        <span>Loading notifications...</span>
+                        <Loader size="sm" message="Loading notifications..." />
                     </div>
                 )}
 

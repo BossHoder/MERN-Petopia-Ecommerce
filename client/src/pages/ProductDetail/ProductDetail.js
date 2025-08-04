@@ -8,12 +8,13 @@ import ImageGallery from '../../components/ProductDetail/ImageGallery';
 import VariantSelector from '../../components/ProductDetail/VariantSelector';
 import EnhancedVariantSelector from '../../components/ProductDetail/EnhancedVariantSelector';
 import ProductInfo from '../../components/ProductDetail/ProductInfo';
-import LoadingSpinner from '../../components/Common/LoadingSpinner';
+import Loader from '../../components/Loader';
 import ErrorMessage from '../../components/Common/ErrorMessage';
 import { getProductBySlug } from '../../store/actions/productActions';
 import { addToCart } from '../../store/actions/cartActions';
 import { renderValue } from '../../utils/displayUtils';
 import analytics from '../../utils/analytics-minimal';
+import { ProductReviewTabs } from '../../components/Reviews';
 import './styles.css';
 
 // Debug analytics import
@@ -175,6 +176,23 @@ const ProductDetail = () => {
             // Get product ID (use id field from server DTO)
             const productId = product.id;
 
+            // Create selectedVariants object for new variant system
+            let selectedVariantsData = null;
+            if (selectedVariantCombination) {
+                selectedVariantsData = {
+                    variantId: selectedVariantCombination.sku,
+                    attributes: selectedVariantCombination.attributes.map((attr) => ({
+                        attributeName: attr.attributeName,
+                        attributeDisplayName: attr.attributeDisplayName || attr.attributeName,
+                        attributeValue: attr.attributeValue,
+                        valueDisplayName: attr.valueDisplayName || attr.attributeValue,
+                        colorCode: attr.colorCode || null,
+                    })),
+                    combinationKey: selectedVariantCombination.combinationKey,
+                    images: selectedVariantCombination.images || [],
+                };
+            }
+
             console.log('🛒 Using productId:', productId);
             console.log('🛒 Using variantId:', variantId);
             console.log('🛒 ProductDetail - Adding to cart:', {
@@ -183,10 +201,13 @@ const ProductDetail = () => {
                 quantity,
                 productData,
                 selectedVariant,
+                selectedVariantsData,
             });
 
             // Dispatch add to cart action with variant information
-            await dispatch(addToCart(productId, quantity, productData, variantId));
+            await dispatch(
+                addToCart(productId, quantity, productData, variantId, selectedVariantsData),
+            );
 
             // Track add to cart event
             analytics.trackAddToCart({
@@ -225,8 +246,7 @@ const ProductDetail = () => {
     if (loading) {
         return (
             <div className="product-detail-loading">
-                <LoadingSpinner size="large" />
-                <p>{t('product.loading', 'Loading product...')}</p>
+                <Loader size="lg" message={t('product.loading', 'Loading product...')} />
             </div>
         );
     }
@@ -343,28 +363,10 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    {/* Product Description */}
-                    <div className="product-detail-description">
-                        <h2>{t('product.description', 'Description')}</h2>
-                        <div className="product-description-content">{product.description}</div>
+                    {/* Product Description & Reviews Tabs */}
+                    <div className="product-detail-tabs">
+                        <ProductReviewTabs product={product} />
                     </div>
-
-                    {/* Product Attributes */}
-                    {currentAttributes && Object.keys(currentAttributes).length > 0 && (
-                        <div className="product-detail-attributes">
-                            <h2>{t('product.specifications', 'Specifications')}</h2>
-                            <div className="product-attributes-grid">
-                                {Object.entries(currentAttributes).map(([key, value]) => (
-                                    <div key={key} className="product-attribute-item">
-                                        <span className="attribute-label">{key}:</span>
-                                        <span className="attribute-value">
-                                            {renderValue(value, key)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </>

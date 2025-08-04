@@ -13,7 +13,7 @@ import {
 // @route   GET /api/cart
 // @access  Private
 const getCart = asyncHandler(async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'name price image slug');
+    const cart = await Cart.findOne({ user: req.user.id }).populate('items.product', 'name price images slug');
 
     if (!cart) {
         return successResponse(res, { items: [], total: 0 }, 'Cart is empty');
@@ -27,7 +27,7 @@ const getCart = asyncHandler(async (req, res) => {
 // @access  Private
 const addItemToCart = asyncHandler(async (req, res) => {
     console.log('🛒 Cart Controller - Request body:', req.body);
-    const { productId: productIdentifier, quantity } = req.body; // Rename for clarity
+    const { productId: productIdentifier, quantity, selectedVariants } = req.body; // Rename for clarity
 
     // Ensure user is authenticated
     if (!req.user || !req.user.id) {
@@ -74,9 +74,20 @@ const addItemToCart = asyncHandler(async (req, res) => {
     if (!cart) {
         // If no cart, create a new one
         try {
+            const cartItem = {
+                product: product._id,
+                quantity,
+                price: product.price,
+            };
+
+            // Add selectedVariants if provided
+            if (selectedVariants) {
+                cartItem.selectedVariants = selectedVariants;
+            }
+
             cart = await Cart.create({
                 user: userId,
-                items: [{ product: product._id, quantity, price: product.price }],
+                items: [cartItem],
             });
         } catch (error) {
             // Handle duplicate key error
@@ -85,9 +96,14 @@ const addItemToCart = asyncHandler(async (req, res) => {
                 cart = await Cart.findOne({ user: userId });
                 if (cart) {
                     // Add item to existing cart
-                    const itemIndex = cart.items.findIndex(
-                        (item) => item.product.toString() === product._id.toString(),
-                    );
+                    const itemIndex = cart.items.findIndex((item) => {
+                        const productMatch = item.product.toString() === product._id.toString();
+                        const variantMatch = selectedVariants
+                            ? item.selectedVariants?.variantId === selectedVariants.variantId
+                            : !item.selectedVariants?.variantId;
+                        return productMatch && variantMatch;
+                    });
+
                     if (itemIndex > -1) {
                         const newQuantity = cart.items[itemIndex].quantity + quantity;
                         if (product.stockQuantity < newQuantity) {
@@ -95,7 +111,15 @@ const addItemToCart = asyncHandler(async (req, res) => {
                         }
                         cart.items[itemIndex].quantity = newQuantity;
                     } else {
-                        cart.items.push({ product: product._id, quantity, price: product.price });
+                        const cartItem = {
+                            product: product._id,
+                            quantity,
+                            price: product.price,
+                        };
+                        if (selectedVariants) {
+                            cartItem.selectedVariants = selectedVariants;
+                        }
+                        cart.items.push(cartItem);
                     }
                     await cart.save();
                 } else {
@@ -106,8 +130,14 @@ const addItemToCart = asyncHandler(async (req, res) => {
             }
         }
     } else {
-        // If cart exists, find the item using the product's actual ObjectId
-        const itemIndex = cart.items.findIndex((item) => item.product.toString() === product._id.toString());
+        // If cart exists, find the item using the product's actual ObjectId and variant information
+        const itemIndex = cart.items.findIndex((item) => {
+            const productMatch = item.product.toString() === product._id.toString();
+            const variantMatch = selectedVariants
+                ? item.selectedVariants?.variantId === selectedVariants.variantId
+                : !item.selectedVariants?.variantId;
+            return productMatch && variantMatch;
+        });
 
         if (itemIndex > -1) {
             // If item exists, update quantity
@@ -118,7 +148,15 @@ const addItemToCart = asyncHandler(async (req, res) => {
             cart.items[itemIndex].quantity = newQuantity;
         } else {
             // If item does not exist, add it
-            cart.items.push({ product: product._id, quantity, price: product.price });
+            const cartItem = {
+                product: product._id,
+                quantity,
+                price: product.price,
+            };
+            if (selectedVariants) {
+                cartItem.selectedVariants = selectedVariants;
+            }
+            cart.items.push(cartItem);
         }
         await cart.save();
     }
@@ -137,6 +175,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
 // @access  Private
 const removeItemFromCart = asyncHandler(async (req, res) => {
     const { productId } = req.params;
+    const { variantId } = req.query; // Support variantId as query parameter
     const userId = req.user.id;
 
     const cart = await Cart.findOne({ user: userId });
@@ -145,10 +184,20 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
         return notFoundResponse(res, ERROR_MESSAGES.CART_NOT_FOUND);
     }
 
-    cart.items = cart.items.filter((item) => item.product.toString() !== productId);
-    await cart.save();
+    cart.items = cart.items.filter((item) => {
+        const productMatch = item.product.toString() !== productId;
+        if (productMatch) return true;
 
-    await cart.populate('items.product', 'name price image slug');
+        // If product matches, check variant
+        if (variantId) {
+            return item.selectedVariants?.variantId !== variantId;
+        } else {
+            return item.selectedVariants?.variantId != null;
+        }
+    });
+
+    await cart.save();
+    await cart.populate('items.product', 'name price images slug');
 
     return successResponse(res, cart);
 });
@@ -158,7 +207,7 @@ const removeItemFromCart = asyncHandler(async (req, res) => {
 // @access  Private
 const updateItemQuantity = asyncHandler(async (req, res) => {
     const { productId } = req.params;
-    const { quantity } = req.body;
+    const { quantity, variantId } = req.body;
     const userId = req.user.id;
 
     if (quantity <= 0) {
@@ -171,12 +220,18 @@ const updateItemQuantity = asyncHandler(async (req, res) => {
         return notFoundResponse(res, ERROR_MESSAGES.CART_NOT_FOUND);
     }
 
-    const itemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+    const itemIndex = cart.items.findIndex((item) => {
+        const productMatch = item.product.toString() === productId;
+        const variantMatch = variantId
+            ? item.selectedVariants?.variantId === variantId
+            : !item.selectedVariants?.variantId;
+        return productMatch && variantMatch;
+    });
 
     if (itemIndex > -1) {
         cart.items[itemIndex].quantity = quantity;
         await cart.save();
-        await cart.populate('items.product', 'name price image slug');
+        await cart.populate('items.product', 'name price images slug');
         return successResponse(res, cart);
     } else {
         return notFoundResponse(res, ERROR_MESSAGES.ITEM_NOT_FOUND_IN_CART);
@@ -219,7 +274,7 @@ const migrateGuestCart = asyncHandler(async (req, res) => {
 
     // Migrate each item from guest cart
     for (const guestItem of items) {
-        const { productId, quantity, price } = guestItem;
+        const { productId, quantity, price, selectedVariants } = guestItem;
 
         // Validate product exists
         const product = await Product.findById(productId);
@@ -227,8 +282,14 @@ const migrateGuestCart = asyncHandler(async (req, res) => {
             continue; // Skip invalid products
         }
 
-        // Check if item already exists in user cart
-        const existingItemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+        // Check if item already exists in user cart (including variant check)
+        const existingItemIndex = cart.items.findIndex((item) => {
+            const productMatch = item.product.toString() === productId;
+            const variantMatch = selectedVariants
+                ? item.selectedVariants?.variantId === selectedVariants.variantId
+                : !item.selectedVariants?.variantId;
+            return productMatch && variantMatch;
+        });
 
         if (existingItemIndex > -1) {
             // Update existing item quantity
@@ -239,17 +300,21 @@ const migrateGuestCart = asyncHandler(async (req, res) => {
         } else {
             // Add new item if stock is available
             if (product.stockQuantity >= quantity) {
-                cart.items.push({
+                const cartItem = {
                     product: productId,
                     quantity,
                     price: product.price, // Use current price
-                });
+                };
+                if (selectedVariants) {
+                    cartItem.selectedVariants = selectedVariants;
+                }
+                cart.items.push(cartItem);
             }
         }
     }
 
     await cart.save();
-    await cart.populate('items.product', 'name price image slug');
+    await cart.populate('items.product', 'name price images slug');
 
     return successResponse(res, cart);
 });

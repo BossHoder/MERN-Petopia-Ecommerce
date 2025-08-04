@@ -36,8 +36,8 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
             <div className="hero-section">
                 <div className="hero-overlay">
                     <div className="hero-content">
-                        <h1 className="hero-title">{t('auth.register.title')}</h1>
-                        <p className="hero-subtitle">{t('auth.register.subtitle')}</p>
+                        <h1 className="hero-title">{t('admin.auth.hero.welcomeTitle')}</h1>
+                        <p className="hero-subtitle">{t('admin.auth.register.subtitle')}</p>
                     </div>
                 </div>
             </div>
@@ -46,12 +46,12 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
             <div className="form-section">
                 <div className="form-container">
                     <div className="register-card">
-                        <h2 className="register-title">{t('auth.register.createAccount')}</h2>
+                        <h2 className="register-title">{t('admin.auth.register.createAccount')}</h2>
                         <form onSubmit={formik.handleSubmit} noValidate className="petopia-form">
                             {/* Full Name Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="name">
-                                    {t('auth.register.fullName')}
+                                    {t('admin.auth.register.fullName')}
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -60,7 +60,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                                     id="name"
                                     name="name"
                                     type="text"
-                                    placeholder={t('auth.register.fullNamePlaceholder')}
+                                    placeholder={t('admin.auth.register.fullNamePlaceholder')}
                                     value={formik.values.name}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -80,7 +80,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                             {/* Username Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="username">
-                                    {t('auth.register.username')}
+                                    {t('admin.auth.register.username')}
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -91,7 +91,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                                     id="username"
                                     name="username"
                                     type="text"
-                                    placeholder={t('auth.register.usernamePlaceholder')}
+                                    placeholder={t('admin.auth.register.usernamePlaceholder')}
                                     value={formik.values.username}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -140,7 +140,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                             {/* Password Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="password">
-                                    Password
+                                    Mật khẩu
                                 </label>
                                 <input
                                     className={`form-input ${
@@ -171,7 +171,7 @@ const Register = ({ auth, register, registerUserWithEmail }) => {
                             {/* Confirm Password Field */}
                             <div className="form-group">
                                 <label className="form-label" htmlFor="confirmPassword">
-                                    Confirm Password
+                                    Xác nhận mật khẩu
                                 </label>
                                 <input
                                     className={`form-input ${

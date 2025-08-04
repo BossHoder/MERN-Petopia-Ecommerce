@@ -179,8 +179,55 @@
     text-align: center;
 }
 
+/* Variant attributes styles */
+.cart-item-variant {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.variant-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.variant-attribute {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.attribute-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.attribute-value {
+    color: #6b7280;
+}
+
+.color-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #d1d5db;
+    margin-left: 0.25rem;
+}
+
 @media (max-width: 768px) {
     .cart-content {
         grid-template-columns: 1fr;
+    }
+
+    .variant-attributes {
+        font-size: 0.8rem;
+    }
+
+    .variant-attribute {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.125rem;
     }
 }
