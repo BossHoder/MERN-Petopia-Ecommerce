@@ -25,3 +25,8 @@ demo
 .augment/rules
 server/config/default.json
 server/kill-ports.ps1
+.idea/AugmentWebviewStateStore.xml
+.idea/MERN-Petopia-Ecommerce.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml

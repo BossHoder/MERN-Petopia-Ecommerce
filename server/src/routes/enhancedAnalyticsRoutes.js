@@ -1,6 +1,7 @@
 import express from 'express';
 import enhancedAnalyticsController from '../controllers/enhancedAnalyticsController.js';
-import { authenticateToken, authorizeRoles } from '../middleware/authMiddleware.js';
+import requireJwtAuth from '../middleware/requireJwtAuth.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.post('/track', enhancedAnalyticsController.trackEvent);
 router.get('/ab-test/:testId', enhancedAnalyticsController.getABTestVariant);
 
 // Protected routes (authentication required)
-router.use(authenticateToken);
+router.use(requireJwtAuth);
 
 // Customer-specific analytics
 router.get('/customer-insights/:userId', enhancedAnalyticsController.getCustomerInsights);
@@ -25,7 +26,7 @@ router.get('/churn-prediction/:userId', enhancedAnalyticsController.getChurnPred
 router.get('/customer-journey/:userId/:sessionId', enhancedAnalyticsController.getCustomerJourney);
 
 // Admin-only routes
-router.use(authorizeRoles(['ADMIN']));
+router.use(requireAdmin);
 
 // Business intelligence
 router.get('/business-intelligence', enhancedAnalyticsController.getBusinessIntelligence);
