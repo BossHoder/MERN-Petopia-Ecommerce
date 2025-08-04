@@ -393,13 +393,6 @@ productSchema.index({ name: 'text', description: 'text' }); // Search functional
 productSchema.index({ 'variantCombinations.sku': 1 }); // For variant SKU lookups
 productSchema.index({ 'variantCombinations.combinationKey': 1 }); // For combination lookups
 
-// REMOVED FOR SMALL SCALE (can add back when needed):
-// productSchema.index({ category: 1 }); // Covered by compound index above
-// productSchema.index({ brand: 1 }); // Not critical for 1000 users
-// productSchema.index({ price: 1, salePrice: 1 }); // Price filtering not common
-// productSchema.index({ stockQuantity: 1, isPublished: 1 }); // Stock check via app logic
-// productSchema.index({ ratings: -1, numReviews: -1 }); // Sorting can be done in memory
-
 // ===========================================
 // VIRTUAL FIELDS (calculated fields)
 // ===========================================

@@ -31,14 +31,7 @@ const Dashboard = () => {
             trendValue: dashboardStats.growth?.orders || 0,
             color: 'primary',
         },
-        {
-            title: t('admin.dashboard.totalRevenue', 'Total Revenue'),
-            value: formatPrice(dashboardStats.totalRevenue || 0),
-            icon: '💰',
-            trend: 'up',
-            trendValue: dashboardStats.growth?.revenue || 0,
-            color: 'success',
-        },
+
         {
             title: t('admin.dashboard.totalProducts', 'Total Products'),
             value: dashboardStats.totalProducts || 0,
